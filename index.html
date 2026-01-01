@@ -2640,6 +2640,58 @@
       border-color: var(--accent-cyan);
     }
 
+    /* Ask Claude Button */
+    .ask-claude-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+      border: none;
+      border-radius: 8px;
+      color: #000;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .ask-claude-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    }
+    
+    .ask-claude-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    
+    .ask-claude-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.25rem 0 0.75rem 0;
+    }
+    
+    .ask-claude-divider::before,
+    .ask-claude-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    
+    .ask-claude-divider span {
+      color: var(--text-dim);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
     /* Performance Explainer Modal */
     .perf-explainer-modal {
       display: none;
@@ -15124,6 +15176,11 @@
               <span class="perf-breakdown-detail">${breakdown.reliability.details}</span>
             </div>
           </div>
+          <div class="ask-claude-divider"><span>Need Help?</span></div>
+          <button class="ask-claude-btn" onclick="askClaudeForHelp('${voteAccount}', '${validatorName.replace(/'/g, "\\'")}', ${totalScore.toFixed(2)}, '${breakdown.skipRate.details.replace(/'/g, "\\'")}')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            Ask Claude to Help Optimize My Validator
+          </button>
         `;
         breakdownSection.style.display = 'block';
       } else {
@@ -15138,6 +15195,41 @@
       if (event && event.target !== event.currentTarget) return;
       document.getElementById('perfExplainerModal').style.display = 'none';
       document.body.style.overflow = '';
+    }
+
+    // Ask Claude for Help - opens Claude.ai with pre-filled validator info
+    function askClaudeForHelp(voteAccount, validatorName, score, skipRateDetails) {
+      // Get more validator details if available
+      const validator = allValidators.find(v => v.votePubkey === voteAccount);
+      let nodePubkey = '';
+      let stake = '';
+      let commission = '';
+      
+      if (validator) {
+        nodePubkey = validator.nodePubkey || '';
+        stake = validator.activatedStake ? (validator.activatedStake / 1e9).toFixed(0) + ' XN' : '';
+        commission = validator.commission !== undefined ? validator.commission + '%' : '';
+      }
+      
+      // Build the pre-filled message
+      const message = `Help me optimize my X1 validator performance.
+
+**My Validator Info:**
+- Name: ${validatorName}
+- Vote Account: ${voteAccount}
+${nodePubkey ? '- Node Pubkey: ' + nodePubkey : ''}
+- Performance Score: ${score}/100
+- Skip Rate: ${skipRateDetails}
+${stake ? '- Stake: ' + stake : ''}
+${commission ? '- Commission: ' + commission : ''}
+
+Please give me the diagnostic commands to run on my server so you can help me identify issues and optimize my setup. I want to reduce my skip rate and improve my performance score.`;
+
+      // URL encode the message
+      const encodedMessage = encodeURIComponent(message);
+      
+      // Open Claude.ai with the pre-filled message
+      window.open(`https://claude.ai/new?q=${encodedMessage}`, '_blank');
     }
 
     // ===== STAKE BREAKDOWN MODAL =====
