@@ -3,7 +3,7 @@ name: Update Validator Geo Data
 on:
   schedule:
     # Run every 6 hours
-    - cron: '21 */6 * * *'
+    - cron: '21 */2 * * *'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
