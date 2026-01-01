@@ -14716,6 +14716,13 @@
         const displayUsdCost = isMonthly ? annualUsdCost / 12 : annualUsdCost;
         const currentUsdValue = displayRewards * price;
         const priceNeededText = breakevenPrice > 0 ? `$${breakevenPrice.toFixed(4)}` : 'N/A';
+        const isProfitable = profit >= 0;
+        const breakevenLabel = isProfitable 
+          ? 'Profitable down to:' 
+          : 'Price needed to break even:';
+        const breakevenHeader = isProfitable
+          ? '💵 Break-Even Floor'
+          : '💵 Break-Even XNT Price';
         
         resultsContent.innerHTML = `
           <div class="calc-section-header actual">
@@ -14744,10 +14751,10 @@
             ${statusText} — Earning ${formatNumber(avgDaily, 2)} XNT/day
           </div>
           <div class="breakeven-price-box">
-            <div class="breakeven-price-header">💵 Break-Even XNT Price</div>
+            <div class="breakeven-price-header">${breakevenHeader}</div>
             <div class="breakeven-price-content">
               <div class="breakeven-price-item">
-                <span class="breakeven-price-label">Price needed to break even:</span>
+                <span class="breakeven-price-label">${breakevenLabel}</span>
                 <span class="breakeven-price-value highlight">${priceNeededText}</span>
               </div>
               <div class="breakeven-price-item">
@@ -18198,7 +18205,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       document.getElementById('withdrawStakeSummaryTotal').textContent = '0.0000 XNT';
       document.getElementById('withdrawStakeMessage').style.display = 'none';
       confirmBtn.textContent = 'Withdraw XNT';
-      confirmBtn.onclick = confirmWithdrawFromStake;
+      confirmBtn.onclick = confirmWithdrawStake;
       document.getElementById('withdrawStakeCancelBtn').textContent = 'Cancel';
       
       // Show close account option only for inactive stakes with authority
