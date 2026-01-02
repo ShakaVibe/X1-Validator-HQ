@@ -15027,9 +15027,11 @@
           authorityBadge.innerHTML = '<span class="authority-badge-icon">⏳</span><span class="authority-badge-text">Checking authority...</span>';
           checkWithdrawAuthority();
         } else if (selectedAccountType === 'vote') {
-          // Vote account selected - just show wallet connected
-          authorityBadge.className = 'authority-badge has-authority';
-          authorityBadge.innerHTML = '<span class="authority-badge-icon">✓</span><span class="authority-badge-text">Wallet connected</span>';
+          // Vote account selected - check if wallet has withdraw authority for the vote account
+          document.getElementById('selectedWithdrawAuthority').textContent = 'Checking...';
+          authorityBadge.className = 'authority-badge';
+          authorityBadge.innerHTML = '<span class="authority-badge-icon">⏳</span><span class="authority-badge-text">Checking authority...</span>';
+          checkWithdrawAuthority();
         }
         // If no account selected (selectedAccountType is null), badges are already hidden
       } else {
@@ -16312,13 +16314,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Re-fetch credits
         fetchManageValidatorData(currentManageValidator.voteAccount);
         
-        // Update authority badge (no withdraw authority check needed for vote view)
+        // Update authority badge - check if wallet has withdraw authority
         document.getElementById('authorityBadge').style.display = 'flex';
         document.getElementById('authorityBadgePair').style.display = 'none';
         
         if (walletPublicKey) {
-          authorityBadge.className = 'authority-badge has-authority';
-          authorityBadge.innerHTML = '<span class="authority-badge-icon">✓</span><span class="authority-badge-text">Wallet connected</span>';
+          // Show loading state while checking authority
+          authorityBadge.className = 'authority-badge';
+          authorityBadge.innerHTML = '<span class="authority-badge-icon">⏳</span><span class="authority-badge-text">Checking authority...</span>';
+          checkWithdrawAuthority();
         } else {
           authorityBadge.className = 'authority-badge clickable';
           authorityBadge.innerHTML = '<span class="authority-badge-icon">🔗</span><span class="authority-badge-text">No wallet connected</span>';
