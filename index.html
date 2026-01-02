@@ -15032,6 +15032,8 @@
           authorityBadge.className = 'authority-badge';
           authorityBadge.innerHTML = '<span class="authority-badge-icon">⏳</span><span class="authority-badge-text">Checking authority...</span>';
           checkWithdrawAuthority();
+          // Also refresh the authority badges in the Select Account list
+          fetchVoteAccountAuthoritiesForDisplay();
         }
         // If no account selected (selectedAccountType is null), badges are already hidden
       } else {
