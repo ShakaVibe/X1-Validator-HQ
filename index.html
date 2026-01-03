@@ -12295,7 +12295,9 @@
     }
 
     // Geolocation - loads from pre-generated JSON file for instant loading
-    const GEO_DATA_URL = 'validator-locations.json';
+    // Use central GitHub raw URL so both sites get the same data
+    const GEO_DATA_URL = 'https://raw.githubusercontent.com/ShakaVibe/X1-Validator-HQ/main/validator-locations.json';
+    const GEO_DATA_URL_LOCAL = 'validator-locations.json'; // Fallback to local
     const GEO_CACHE_KEY = 'x1GeoCache';
     const GEO_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours
     
@@ -12303,6 +12305,7 @@
     
     // Load pre-generated geo data from static JSON file
     async function loadStaticGeoData() {
+      // Try central GitHub URL first (ensures both sites show same data)
       try {
         const response = await fetch(GEO_DATA_URL + '?t=' + Date.now());
         if (response.ok) {
@@ -12310,7 +12313,18 @@
           return geoData;
         }
       } catch (e) {
-        debugLog('Static geo data not available, using dynamic lookup');
+        debugLog('Central geo data not available, trying local');
+      }
+      
+      // Fallback to local file
+      try {
+        const response = await fetch(GEO_DATA_URL_LOCAL + '?t=' + Date.now());
+        if (response.ok) {
+          geoData = await response.json();
+          return geoData;
+        }
+      } catch (e) {
+        debugLog('Local geo data not available, using dynamic lookup');
       }
       return null;
     }
@@ -12483,10 +12497,24 @@
           // Use static data - instant load!
           document.getElementById('mapLoading').style.display = 'none';
           
-          // Render countries from static data
+          // Render countries from static data (use pre-calculated counts)
           if (staticData.countries) {
             const sortedCountries = Object.entries(staticData.countries)
               .sort((a, b) => b[1].count - a[1].count);
+            
+            // Calculate total from pre-calculated country counts
+            const totalGeolocated = sortedCountries.reduce((sum, [_, data]) => sum + data.count, 0);
+            const totalValidators = staticData.totalNodes || allValidators.length || totalGeolocated;
+            
+            const summaryHtml = `
+              <div class="country-item" style="border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; padding-bottom: 0.5rem;">
+                <div class="country-info">
+                  <span class="country-flag">🌐</span>
+                  <span class="country-name" style="color: var(--accent-cyan);">Geolocated</span>
+                </div>
+                <span class="country-count" style="color: var(--accent-cyan);">${totalGeolocated}</span>
+              </div>
+            `;
             
             const countryListHtml = sortedCountries.map(([code, data]) => `
               <div class="country-item">
@@ -12498,7 +12526,7 @@
               </div>
             `).join('');
             
-            document.getElementById('countryList').innerHTML = countryListHtml;
+            document.getElementById('countryList').innerHTML = summaryHtml + countryListHtml;
           }
           
           // Add markers from static data
@@ -12687,14 +12715,11 @@
         btn.classList.add('refreshing');
       }
       
-      // Clear geo cache from localStorage
-      localStorage.removeItem(GEO_CACHE_KEY);
-      
-      // Clear static geoData to force fresh API lookup
+      // Clear cached geoData to force fresh fetch from central URL
       geoData = null;
       
       // Show loading state
-      document.getElementById('countryList').innerHTML = '<div class="map-loading-text" style="text-align: center; padding: 2rem;">Refreshing geo data...<br><small style="color: var(--text-dim);">This may take a minute</small></div>';
+      document.getElementById('countryList').innerHTML = '<div class="map-loading-text" style="text-align: center; padding: 2rem;">Refreshing from server...</div>';
       document.getElementById('mapLoading').style.display = 'flex';
       
       // Clear existing markers from map
@@ -12706,7 +12731,7 @@
         });
       }
       
-      // Reload validator locations
+      // Reload validator locations (will fetch fresh from central GitHub URL)
       await loadValidatorLocations();
       
       if (btn) {
