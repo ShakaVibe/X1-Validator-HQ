@@ -12687,11 +12687,14 @@
         btn.classList.add('refreshing');
       }
       
-      // Clear geo cache
+      // Clear geo cache from localStorage
       localStorage.removeItem(GEO_CACHE_KEY);
       
+      // Clear static geoData to force fresh API lookup
+      geoData = null;
+      
       // Show loading state
-      document.getElementById('countryList').innerHTML = '<div class="map-loading-text" style="text-align: center; padding: 2rem;">Refreshing geo data...</div>';
+      document.getElementById('countryList').innerHTML = '<div class="map-loading-text" style="text-align: center; padding: 2rem;">Refreshing geo data...<br><small style="color: var(--text-dim);">This may take a minute</small></div>';
       document.getElementById('mapLoading').style.display = 'flex';
       
       // Clear existing markers from map
