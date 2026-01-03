@@ -12502,20 +12502,6 @@
             const sortedCountries = Object.entries(staticData.countries)
               .sort((a, b) => b[1].count - a[1].count);
             
-            // Calculate total from pre-calculated country counts
-            const totalGeolocated = sortedCountries.reduce((sum, [_, data]) => sum + data.count, 0);
-            const totalValidators = staticData.totalNodes || allValidators.length || totalGeolocated;
-            
-            const summaryHtml = `
-              <div class="country-item" style="border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; padding-bottom: 0.5rem;">
-                <div class="country-info">
-                  <span class="country-flag">🌐</span>
-                  <span class="country-name" style="color: var(--accent-cyan);">Geolocated</span>
-                </div>
-                <span class="country-count" style="color: var(--accent-cyan);">${totalGeolocated}</span>
-              </div>
-            `;
-            
             const countryListHtml = sortedCountries.map(([code, data]) => `
               <div class="country-item">
                 <div class="country-info">
@@ -12526,7 +12512,7 @@
               </div>
             `).join('');
             
-            document.getElementById('countryList').innerHTML = summaryHtml + countryListHtml;
+            document.getElementById('countryList').innerHTML = countryListHtml;
           }
           
           // Add markers from static data
