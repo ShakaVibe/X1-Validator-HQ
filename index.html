@@ -11651,12 +11651,20 @@
       return '';
     }
 
+    // Cache for last epoch earned data
+    const lastEpochCache = {};
+
     function renderValidatorCard(validator, showAddBtn = true, showRemoveBtn = false) {
       // Use cached performance score if available, otherwise calculate
       const perfScore = validator.performanceScore !== undefined ? validator.performanceScore : calculatePerformanceScore(validator);
       const perfColor = getPerformanceColor(perfScore);
       const perfBarColor = getPerformanceBarColor(perfScore);
       const perfTooltip = getPerformanceTooltipHtml(validator);
+      
+      // Check if we have cached last epoch data
+      const cachedLastEpoch = lastEpochCache[validator.voteAccount];
+      const lastEpochValue = cachedLastEpoch ? formatNumber(cachedLastEpoch.amount, 2) : '--';
+      const lastEpochChangeHtml = cachedLastEpoch && cachedLastEpoch.changeHtml ? cachedLastEpoch.changeHtml : '';
       
       // Current epoch skip rate
       const currentSkipRate = validator.skipRate;
@@ -11810,9 +11818,9 @@
             
             <div class="stat-item" title="Total validator rewards (vote + self-stake) earned in the last completed epoch." id="lastEpoch-${validator.voteAccount.slice(0,8)}">
               <div class="stat-label">Last Epoch<br>Earned</div>
-              <div class="stat-value" style="color: var(--success);">--</div>
+              <div class="stat-value" style="color: var(--success);">${lastEpochValue}</div>
               <div class="stat-subtext">XNT</div>
-              <div class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}"></div>
+              <div class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}">${lastEpochChangeHtml}</div>
             </div>
             
             <div class="stat-item clickable-stat" onclick="openStakeSelection('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}')" title="Click to manage self-stake vs delegated classification">
@@ -12215,24 +12223,39 @@
           const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
           const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
           
-          if (cardEl && rewards && rewards.length > 0) {
+          if (rewards && rewards.length > 0) {
             // Sort by epoch descending to ensure newest first
             const sortedRewards = [...rewards].sort((a, b) => b.epoch - a.epoch);
             const lastEpochAmount = (sortedRewards[0].amount || 0) / 1e9;
-            cardEl.querySelector('.stat-value').textContent = formatNumber(lastEpochAmount, 2);
             
-            // Calculate change if we have 2 epochs of data
-            if (changeEl && sortedRewards.length >= 2 && sortedRewards[1].amount > 0) {
+            // Build change HTML
+            let changeHtml = '';
+            if (sortedRewards.length >= 2 && sortedRewards[1].amount > 0) {
               const priorEpochAmount = (sortedRewards[1].amount || 0) / 1e9;
               const changePercent = ((lastEpochAmount - priorEpochAmount) / priorEpochAmount) * 100;
               
               if (changePercent > 0) {
-                changeEl.innerHTML = `<span style="color: var(--success);">↑ ${formatNumber(changePercent, 2)}%</span>`;
+                changeHtml = `<span style="color: var(--success);">↑ ${formatNumber(changePercent, 2)}%</span>`;
               } else if (changePercent < 0) {
-                changeEl.innerHTML = `<span style="color: var(--danger);">↓ ${formatNumber(Math.abs(changePercent), 2)}%</span>`;
+                changeHtml = `<span style="color: var(--danger);">↓ ${formatNumber(Math.abs(changePercent), 2)}%</span>`;
               } else {
-                changeEl.innerHTML = `<span style="color: var(--text-dim);">→ 0%</span>`;
+                changeHtml = `<span style="color: var(--text-dim);">→ 0%</span>`;
               }
+            }
+            
+            // Save to cache for future renders
+            lastEpochCache[v.voteAccount] = {
+              amount: lastEpochAmount,
+              changeHtml: changeHtml,
+              timestamp: Date.now()
+            };
+            
+            // Update DOM if elements exist
+            if (cardEl) {
+              cardEl.querySelector('.stat-value').textContent = formatNumber(lastEpochAmount, 2);
+            }
+            if (changeEl && changeHtml) {
+              changeEl.innerHTML = changeHtml;
             }
           }
           
