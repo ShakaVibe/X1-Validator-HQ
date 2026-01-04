@@ -12218,6 +12218,21 @@
       // Fetch validators sequentially with small delays to avoid RPC rate limiting
       for (const v of validators) {
         try {
+          // Check if we already have cached data (less than 5 minutes old)
+          const cached = lastEpochCache[v.voteAccount];
+          if (cached && cached.timestamp > Date.now() - 300000) {
+            // Use cached data - just update the DOM
+            const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
+            const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
+            if (cardEl) {
+              cardEl.querySelector('.stat-value').textContent = formatNumber(cached.amount, 2);
+            }
+            if (changeEl && cached.changeHtml) {
+              changeEl.innerHTML = cached.changeHtml;
+            }
+            continue; // Skip RPC call, move to next validator
+          }
+          
           // Fetch 2 epochs to calculate change
           const rewards = await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 2);
           const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
