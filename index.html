@@ -9749,6 +9749,26 @@
     const RPC_URL = 'https://rpc.mainnet.x1.xyz';
     const REWARDS_API_URL = null; // Set to your API URL when rewards tracker is running
     
+    // Global RPC rate limiter - prevents overwhelming the RPC
+    const rpcRateLimiter = {
+      lastRequestTime: 0,
+      minInterval: 150, // Minimum ms between requests
+      async throttle() {
+        const now = Date.now();
+        const timeSinceLastRequest = now - this.lastRequestTime;
+        if (timeSinceLastRequest < this.minInterval) {
+          await new Promise(r => setTimeout(r, this.minInterval - timeSinceLastRequest));
+        }
+        this.lastRequestTime = Date.now();
+      }
+    };
+    
+    // Rate-limited fetch for RPC calls
+    async function rateLimitedFetch(url, options) {
+      await rpcRateLimiter.throttle();
+      return fetch(url, options);
+    }
+    
     let allValidators = [];
     let validatorInfoCache = {};
     let myPortfolio = JSON.parse(localStorage.getItem('x1Portfolio') || '[]');
@@ -9938,11 +9958,11 @@
           epochsToFetch.push(currentEpochNumber - i);
         }
 
-        // Step 1: Fetch vote account rewards SEQUENTIALLY with delays to avoid rate limiting
+        // Step 1: Fetch vote account rewards SEQUENTIALLY with rate limiting
         const rewardsByEpoch = {};
         for (const epoch of epochsToFetch) {
           try {
-            const response = await fetch(RPC_URL, {
+            const response = await rateLimitedFetch(RPC_URL, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -9961,14 +9981,12 @@
           } catch (e) {
             rewardsByEpoch[epoch] = 0;
           }
-          // Small delay between requests to avoid rate limiting
-          await new Promise(r => setTimeout(r, 100));
         }
 
         // Step 2: Fetch vote account info to get authorizedWithdrawer
         let voteAccountWithdrawer = null;
         try {
-          const voteAcctResponse = await fetch(RPC_URL, {
+          const voteAcctResponse = await rateLimitedFetch(RPC_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -9987,8 +10005,7 @@
         }
 
         // Step 3: Fetch stake accounts delegated to this validator
-        await new Promise(r => setTimeout(r, 100));
-        const stakeResponse = await fetch(RPC_URL, {
+        const stakeResponse = await rateLimitedFetch(RPC_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -10032,8 +10049,7 @@
         if (selfStakeAccounts.length > 0) {
           for (const epoch of epochsToFetch) {
             try {
-              await new Promise(r => setTimeout(r, 100));
-              const response = await fetch(RPC_URL, {
+              const response = await rateLimitedFetch(RPC_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -10218,7 +10234,7 @@
     }
 
     async function rpcCall(method, params = []) {
-      const response = await fetch(RPC_URL, {
+      const response = await rateLimitedFetch(RPC_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -11960,8 +11976,8 @@
         document.getElementById('resultCount').textContent = validators.length;
         document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
         
-        // Fetch last epoch rewards for each card
-        fetchLastEpochForCards(validators);
+        // Don't auto-fetch last epoch rewards in Validator Lookup to save RPC calls
+        // This data will be fetched when user goes to My Data Center
         
         loading.style.display = 'none';
         results.style.display = 'block';
@@ -21202,8 +21218,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }, 5000);
         
         try {
-          // Helper function with timeout
+          // Helper function with timeout and rate limiting
           const fetchWithTimeout = async (url, options, timeout = 15000) => {
+            await rpcRateLimiter.throttle(); // Rate limit before fetching
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
             try {
