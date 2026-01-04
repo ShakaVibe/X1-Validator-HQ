@@ -982,6 +982,162 @@
       margin-top: 0.4rem;
     }
 
+    /* Search result card (minimal) */
+    .search-result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .search-result-card:hover {
+      border-color: var(--accent-blue);
+      background: var(--bg-card-hover);
+    }
+
+    .search-result-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .search-result-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-result-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .search-result-address {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-top: 0.25rem;
+    }
+
+    .search-result-address:hover {
+      color: var(--accent-cyan);
+    }
+
+    .search-result-address .copy-icon {
+      font-size: 0.7rem;
+      opacity: 0.6;
+    }
+
+    .search-result-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .search-result-meta .meta-item {
+      background: var(--bg-tertiary);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .search-result-meta .meta-item.delinquent {
+      background: rgba(244, 67, 54, 0.2);
+      color: var(--danger);
+    }
+
+    .search-result-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .view-details-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .view-details-btn:hover {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+
+    .search-result-expanded {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .expanded-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .expanded-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+    }
+
+    .expanded-stat {
+      text-align: center;
+      padding: 0.75rem;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+    }
+
+    .expanded-stat .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .expanded-stat .stat-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .expanded-stat .stat-value.accent {
+      color: var(--accent-cyan);
+    }
+
+    .expanded-stat .stat-subtext {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+
+    .expanded-error {
+      text-align: center;
+      padding: 1rem;
+      color: var(--danger);
+      font-size: 0.85rem;
+    }
+
     /* Validator card */
     .validator-card {
       background: var(--bg-card);
@@ -10544,6 +10700,45 @@
       return info;
     }
 
+    // Lightweight version for Validator Lookup - uses existing data, minimal RPC calls
+    function getValidatorInfoLight(voteAccount) {
+      // Check cache first
+      if (validatorInfoCache[voteAccount]) {
+        return validatorInfoCache[voteAccount];
+      }
+
+      // Find in allValidators (already loaded)
+      const validator = allValidators.find(v => v.votePubkey === voteAccount);
+      if (!validator) return null;
+      
+      const rank = allValidators.findIndex(v => v.votePubkey === voteAccount) + 1;
+      const totalValidators = allValidators.length;
+      const epochCreditsHistory = validator.epochCredits || [];
+      
+      const info = {
+        name: validator.name || validator.nodePubkey.slice(0, 8) + '...',
+        voteAccount: voteAccount,
+        nodePubkey: validator.nodePubkey,
+        iconUrl: validator.iconUrl || '',
+        activatedStake: lamportsToXNT(validator.activatedStake),
+        rewardsBalance: 0, // Will show as 0, user can see real value in My Data Center
+        commission: validator.commission,
+        isDelinquent: validator.delinquent || false,
+        epochCredits: epochCreditsHistory.length > 0 ? epochCreditsHistory[epochCreditsHistory.length - 1][1] : 0,
+        epochCreditsHistory: epochCreditsHistory,
+        skipRate: null, // Not fetched in light mode
+        skipRateHistory: null, // Not fetched in light mode
+        rank: rank,
+        totalValidators: totalValidators,
+        version: validator.version || null
+      };
+      
+      // Calculate performance score with available data
+      info.performanceScore = calculatePerformanceScore(info);
+      
+      return info;
+    }
+
     // Fetch extended epoch credits history using getAccountInfo (returns more epochs than getVoteAccounts)
     async function fetchExtendedEpochCredits(voteAccount) {
       try {
@@ -11641,6 +11836,163 @@
     // Cache for last epoch earned data
     const lastEpochCache = {};
 
+    // Minimal card for search results - no RPC calls needed
+    function renderSearchResultCard(validator) {
+      const isInPortfolio = myPortfolio.includes(validator.voteAccount);
+      
+      // Generate logo or placeholder
+      const firstLetter = validator.name.charAt(0).toUpperCase();
+      const logoHtml = validator.iconUrl 
+        ? `<img class="validator-logo" src="${validator.iconUrl}" alt="${validator.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+           <div class="validator-logo-placeholder" style="display:none;">${firstLetter}</div>`
+        : `<div class="validator-logo-placeholder">${firstLetter}</div>`;
+
+      const stakeDisplay = formatXntCompact(validator.activatedStake);
+      const rank = validator.rank || '--';
+      
+      return `
+        <div class="search-result-card" id="search-card-${validator.voteAccount.slice(0,8)}">
+          <div class="search-result-header">
+            ${logoHtml}
+            <div class="search-result-info">
+              <div class="search-result-name">${validator.name}</div>
+              <div class="search-result-address" onclick="copyAddress('${validator.voteAccount}')" title="Click to copy">
+                ${validator.voteAccount.slice(0, 8)}...${validator.voteAccount.slice(-6)}
+                <span class="copy-icon">📋</span>
+              </div>
+              <div class="search-result-meta">
+                <span class="meta-item">Rank #${rank}</span>
+                <span class="meta-item">${stakeDisplay} XNT</span>
+                <span class="meta-item">${validator.commission}% commission</span>
+                ${validator.isDelinquent ? '<span class="meta-item delinquent">⚠️ Delinquent</span>' : ''}
+              </div>
+            </div>
+          </div>
+          <div class="search-result-actions">
+            <button class="view-details-btn" onclick="expandSearchResult('${validator.voteAccount}')">
+              📊 View Details
+            </button>
+            ${isInPortfolio 
+              ? `<button class="add-btn" style="opacity: 0.5;" disabled>✓ In Data Center</button>`
+              : `<button class="add-btn" onclick="addToPortfolio('${validator.voteAccount}')">+ Add to Data Center</button>`
+            }
+          </div>
+          <div class="search-result-expanded" id="expanded-${validator.voteAccount.slice(0,8)}" style="display: none;">
+            <div class="expanded-loading">
+              <div class="loading-spinner-small"></div>
+              <span>Loading validator details...</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Expand search result to show full details
+    async function expandSearchResult(voteAccount) {
+      const expandedEl = document.getElementById(`expanded-${voteAccount.slice(0,8)}`);
+      if (!expandedEl) return;
+      
+      // Toggle if already expanded
+      if (expandedEl.style.display !== 'none' && expandedEl.dataset.loaded === 'true') {
+        expandedEl.style.display = 'none';
+        return;
+      }
+      
+      expandedEl.style.display = 'block';
+      
+      // Check if already loaded
+      if (expandedEl.dataset.loaded === 'true') {
+        return;
+      }
+      
+      try {
+        // Fetch full validator info (this makes RPC calls)
+        const validator = await getValidatorInfo(voteAccount, true);
+        if (!validator) {
+          expandedEl.innerHTML = '<div class="expanded-error">Failed to load validator details</div>';
+          return;
+        }
+        
+        // Also fetch last epoch rewards
+        const rewards = await fetchLastEpochSimple(voteAccount, 2);
+        let lastEpochAmount = '--';
+        let changeHtml = '';
+        
+        if (rewards && rewards.length > 0) {
+          const sortedRewards = [...rewards].sort((a, b) => b.epoch - a.epoch);
+          lastEpochAmount = formatNumber((sortedRewards[0].amount || 0) / 1e9, 2);
+          
+          if (sortedRewards.length >= 2 && sortedRewards[1].amount > 0) {
+            const priorAmount = (sortedRewards[1].amount || 0) / 1e9;
+            const currentAmount = (sortedRewards[0].amount || 0) / 1e9;
+            const changePercent = ((currentAmount - priorAmount) / priorAmount) * 100;
+            
+            if (changePercent > 0) {
+              changeHtml = `<span style="color: var(--success);">↑ ${formatNumber(changePercent, 2)}%</span>`;
+            } else if (changePercent < 0) {
+              changeHtml = `<span style="color: var(--danger);">↓ ${formatNumber(Math.abs(changePercent), 2)}%</span>`;
+            }
+          }
+          
+          // Cache for later
+          lastEpochCache[voteAccount] = {
+            amount: (sortedRewards[0].amount || 0) / 1e9,
+            changeHtml: changeHtml,
+            timestamp: Date.now()
+          };
+        }
+        
+        // Build skip rate display
+        const skipHistory = validator.skipRateHistory;
+        const avgSkipRate = skipHistory ? skipHistory.avgSkipRate : null;
+        let skipDisplay = 'N/A';
+        let skipColor = '';
+        if (avgSkipRate !== null) {
+          skipDisplay = formatNumber(avgSkipRate, 2) + '%';
+          skipColor = getSkipRateColor(avgSkipRate);
+        } else if (validator.skipRate !== null) {
+          skipDisplay = formatNumber(validator.skipRate, 2) + '%';
+          skipColor = getSkipRateColor(validator.skipRate);
+        }
+        
+        // Calculate performance score
+        const perfScore = calculatePerformanceScore(validator);
+        const perfColor = getPerformanceBarColor(perfScore);
+        
+        expandedEl.innerHTML = `
+          <div class="expanded-stats">
+            <div class="expanded-stat">
+              <div class="stat-label">Performance</div>
+              <div class="stat-value" style="color: ${perfColor};">${formatNumber(perfScore, 1)}</div>
+            </div>
+            <div class="expanded-stat">
+              <div class="stat-label">Rewards Balance</div>
+              <div class="stat-value accent">${formatNumber(validator.rewardsBalance)}</div>
+              <div class="stat-subtext">XNT</div>
+            </div>
+            <div class="expanded-stat">
+              <div class="stat-label">Last Epoch Earned</div>
+              <div class="stat-value" style="color: var(--success);">${lastEpochAmount}</div>
+              <div class="stat-subtext">XNT ${changeHtml}</div>
+            </div>
+            <div class="expanded-stat">
+              <div class="stat-label">Skip Rate (7-epoch)</div>
+              <div class="stat-value ${skipColor ? 'score-' + getSkipRateColor(avgSkipRate || validator.skipRate) : ''}">${skipDisplay}</div>
+            </div>
+            <div class="expanded-stat">
+              <div class="stat-label">Epoch Credits</div>
+              <div class="stat-value">${formatNumber(validator.epochCredits, 0)}</div>
+            </div>
+          </div>
+        `;
+        expandedEl.dataset.loaded = 'true';
+        
+      } catch (e) {
+        console.error('Error expanding search result:', e);
+        expandedEl.innerHTML = '<div class="expanded-error">Failed to load details. Try again later.</div>';
+      }
+    }
+
     function renderValidatorCard(validator, showAddBtn = true, showRemoveBtn = false) {
       // Use cached performance score if available, otherwise calculate
       const perfScore = validator.performanceScore !== undefined ? validator.performanceScore : calculatePerformanceScore(validator);
@@ -11946,7 +12298,8 @@
 
         // Check if it's a vote account address (44 characters)
         if (input.length >= 43 && input.length <= 44) {
-          const validator = await getValidatorInfo(input);
+          // Use lightweight version - no RPC calls
+          const validator = getValidatorInfoLight(input);
           if (validator) {
             validators.push(validator);
           }
@@ -11960,7 +12313,8 @@
           ).slice(0, 20); // Limit to 20 results
 
           for (const match of matches) {
-            const validator = await getValidatorInfo(match.votePubkey);
+            // Use lightweight version - no RPC calls
+            const validator = getValidatorInfoLight(match.votePubkey);
             if (validator) {
               validators.push(validator);
             }
@@ -11971,13 +12325,12 @@
           throw new Error('No validators found');
         }
 
-        // Render results
-        document.getElementById('validatorResults').innerHTML = validators.map(v => renderValidatorCard(v, true, false)).join('');
+        // Render MINIMAL search result cards - NO RPC calls at all
+        document.getElementById('validatorResults').innerHTML = validators.map(v => renderSearchResultCard(v)).join('');
         document.getElementById('resultCount').textContent = validators.length;
         document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
         
-        // Don't auto-fetch last epoch rewards in Validator Lookup to save RPC calls
-        // This data will be fetched when user goes to My Data Center
+        // NO automatic data fetching - user must click "View Details" or add to Data Center
         
         loading.style.display = 'none';
         results.style.display = 'block';
@@ -12202,7 +12555,7 @@
 
     // Fetch last epoch rewards for each validator card
     async function fetchLastEpochForCards(validators) {
-      // Fetch validators sequentially with small delays to avoid RPC rate limiting
+      // Fetch validators sequentially - use lightweight method to avoid rate limiting
       for (const v of validators) {
         try {
           // Check if we already have cached data (less than 5 minutes old)
@@ -12220,13 +12573,12 @@
             continue; // Skip RPC call, move to next validator
           }
           
-          // Fetch 2 epochs to calculate change
-          const rewards = await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 2);
+          // Lightweight fetch - only vote account rewards (2 RPC calls total instead of 10+)
+          const rewards = await fetchLastEpochSimple(v.voteAccount, 2);
           const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
           const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
           
           if (rewards && rewards.length > 0) {
-            // Sort by epoch descending to ensure newest first
             const sortedRewards = [...rewards].sort((a, b) => b.epoch - a.epoch);
             const lastEpochAmount = (sortedRewards[0].amount || 0) / 1e9;
             
@@ -12260,12 +12612,45 @@
               changeEl.innerHTML = changeHtml;
             }
           }
-          
-          // Small delay between validators to avoid RPC rate limiting
-          await new Promise(r => setTimeout(r, 500));
         } catch (e) {
           console.error(`Error fetching last epoch for ${v.voteAccount}:`, e);
         }
+      }
+    }
+
+    // Super lightweight last epoch fetch - only vote account rewards, minimal RPC calls
+    async function fetchLastEpochSimple(voteAccount, numEpochs = 2) {
+      try {
+        // Get current epoch
+        if (!currentEpochNumber) {
+          const epochInfo = await rpcCall('getEpochInfo');
+          currentEpochNumber = epochInfo.epoch;
+        }
+        
+        const rewards = [];
+        for (let i = 1; i <= numEpochs; i++) {
+          const epoch = currentEpochNumber - i;
+          const response = await rateLimitedFetch(RPC_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0',
+              id: 1,
+              method: 'getInflationReward',
+              params: [[voteAccount], { epoch: epoch }]
+            })
+          });
+          const data = await response.json();
+          if (data.result && data.result[0]) {
+            rewards.push({ epoch, amount: data.result[0].amount || 0 });
+          } else {
+            rewards.push({ epoch, amount: 0 });
+          }
+        }
+        return rewards;
+      } catch (e) {
+        console.error('Error in fetchLastEpochSimple:', e);
+        return [];
       }
     }
 
