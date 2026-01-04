@@ -12013,6 +12013,7 @@
       if (!myPortfolio.includes(voteAccount)) {
         myPortfolio.push(voteAccount);
         savePortfolio();
+        portfolioLoaded = false; // Force reload when switching to portfolio tab
         
         // Re-render current results to update button
         performSearch();
@@ -12033,7 +12034,8 @@
       
       myPortfolio = myPortfolio.filter(v => v !== voteAccount);
       savePortfolio();
-      loadPortfolio();
+      portfolioLoaded = false;
+      loadPortfolio(true);
     }
 
     function clearPortfolio() {
@@ -12054,15 +12056,25 @@
       }
     }
 
-    async function loadPortfolio() {
+    let portfolioLoaded = false;
+    let portfolioValidators = [];
+    
+    async function loadPortfolio(forceRefresh = false) {
       const loading = document.getElementById('portfolioLoading');
       const results = document.getElementById('portfolioResults');
       const empty = document.getElementById('emptyPortfolio');
+
+      // Skip reload if already loaded and not forcing refresh
+      if (portfolioLoaded && !forceRefresh && portfolioValidators.length === myPortfolio.length) {
+        return;
+      }
 
       if (myPortfolio.length === 0) {
         results.style.display = 'none';
         empty.style.display = 'block';
         loading.style.display = 'none';
+        portfolioLoaded = true;
+        portfolioValidators = [];
         return;
       }
 
@@ -12083,8 +12095,13 @@
         if (validators.length === 0) {
           empty.style.display = 'block';
           loading.style.display = 'none';
+          portfolioLoaded = true;
+          portfolioValidators = [];
           return;
         }
+
+        // Store for later checks
+        portfolioValidators = validators;
 
         // Update summary
         let totalStake = 0;
@@ -12136,6 +12153,7 @@
 
         loading.style.display = 'none';
         results.style.display = 'block';
+        portfolioLoaded = true;
 
         // Destroy old combined chart if exists
         if (chartInstances['combinedChart']) {
@@ -12153,7 +12171,8 @@
     function refreshPortfolio() {
       // Clear cache to force refresh
       validatorInfoCache = {};
-      loadPortfolio();
+      portfolioLoaded = false;
+      loadPortfolio(true);
     }
 
     // Fetch last epoch rewards for all portfolio validators
@@ -15287,6 +15306,7 @@
       if (!myPortfolio.includes(voteAccount)) {
         myPortfolio.push(voteAccount);
         savePortfolio();
+        portfolioLoaded = false; // Force reload when switching to portfolio tab
         renderValidatorList(allValidators.filter(v => {
           const search = document.getElementById('validatorSearchInput').value.toLowerCase();
           return v.name.toLowerCase().includes(search) || 
