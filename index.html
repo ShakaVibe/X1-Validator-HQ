@@ -9932,14 +9932,15 @@
         const epochInfo = await rpcCall('getEpochInfo');
         currentEpochNumber = epochInfo.epoch;
 
-        // Step 1: Fetch vote account rewards (commission) in parallel
-        // Start from currentEpoch - 1 to exclude the current incomplete epoch
+        // Build list of epochs to fetch
         const epochsToFetch = [];
         for (let i = 1; i <= Math.min(numEpochs, currentEpochNumber); i++) {
           epochsToFetch.push(currentEpochNumber - i);
         }
 
-        const voteRewardsPromises = epochsToFetch.map(async (epoch) => {
+        // Step 1: Fetch vote account rewards SEQUENTIALLY with delays to avoid rate limiting
+        const rewardsByEpoch = {};
+        for (const epoch of epochsToFetch) {
           try {
             const response = await fetch(RPC_URL, {
               method: 'POST',
@@ -9953,13 +9954,16 @@
             });
             const data = await response.json();
             if (data.result && data.result[0]) {
-              return { epoch, amount: data.result[0].amount || 0 };
+              rewardsByEpoch[epoch] = data.result[0].amount || 0;
+            } else {
+              rewardsByEpoch[epoch] = 0;
             }
-            return { epoch, amount: 0 };
           } catch (e) {
-            return { epoch, amount: 0 };
+            rewardsByEpoch[epoch] = 0;
           }
-        });
+          // Small delay between requests to avoid rate limiting
+          await new Promise(r => setTimeout(r, 100));
+        }
 
         // Step 2: Fetch vote account info to get authorizedWithdrawer
         let voteAccountWithdrawer = null;
@@ -9983,6 +9987,7 @@
         }
 
         // Step 3: Fetch stake accounts delegated to this validator
+        await new Promise(r => setTimeout(r, 100));
         const stakeResponse = await fetch(RPC_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -10001,29 +10006,16 @@
         });
         const stakeData = await stakeResponse.json();
 
-        // Wait for vote rewards
-        const voteRewardsResults = await Promise.all(voteRewardsPromises);
-        
-        // Build vote rewards map by epoch
-        const rewardsByEpoch = {};
-        voteRewardsResults.forEach(r => {
-          rewardsByEpoch[r.epoch] = r.amount;
-        });
-
         // Step 4: Identify self-stake accounts using WITHDRAWER MATCHING
-        // (same method as stake breakdown - much more accurate than reward rate analysis)
         let selfStakeAccounts = [];
         
         if (stakeData.result && stakeData.result.length > 0 && voteAccountWithdrawer) {
-          // Check for user selections first
           const userSelections = typeof getSelfStakeSelections === 'function' ? getSelfStakeSelections(voteAccount) : null;
           
           if (userSelections && userSelections.pubkeys && userSelections.pubkeys.length > 0) {
-            // Use user-selected self-stake accounts
             selfStakeAccounts = userSelections.pubkeys;
             debugLog(`[${voteAccount.slice(0,8)}] Using ${selfStakeAccounts.length} user-selected self-stake accounts`);
           } else {
-            // Match stake account withdrawers against vote account withdrawer
             for (const acc of stakeData.result) {
               const stakeInfo = acc.account.data.parsed?.info;
               const stakeWithdrawer = stakeInfo?.meta?.authorized?.withdrawer;
@@ -10032,57 +10024,36 @@
                 selfStakeAccounts.push(acc.pubkey);
               }
             }
-            debugLog(`[${voteAccount.slice(0,8)}] Found ${selfStakeAccounts.length} self-stake accounts out of ${stakeData.result.length} total delegated (vote withdrawer: ${voteAccountWithdrawer?.slice(0,8)})`);
+            debugLog(`[${voteAccount.slice(0,8)}] Found ${selfStakeAccounts.length} self-stake accounts out of ${stakeData.result.length} total delegated`);
           }
-        } else {
-          debugLog(`[${voteAccount.slice(0,8)}] No stake accounts or no withdrawer - stakeData: ${stakeData.result?.length || 0}, withdrawer: ${voteAccountWithdrawer?.slice(0,8) || 'null'}`);
         }
 
-        // Step 5: If we have self-stake accounts, fetch their rewards for all epochs
+        // Step 5: If we have self-stake accounts, fetch their rewards SEQUENTIALLY
         if (selfStakeAccounts.length > 0) {
-          // Batch epochs to avoid too many parallel requests
-          const batchSize = 50;
-          
-          for (let i = 0; i < epochsToFetch.length; i += batchSize) {
-            const batchEpochs = epochsToFetch.slice(i, i + batchSize);
-            
-            const selfStakePromises = batchEpochs.map(async (epoch) => {
-              try {
-                const response = await fetch(RPC_URL, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    id: 1,
-                    method: 'getInflationReward',
-                    params: [selfStakeAccounts, { epoch: epoch }]
-                  })
+          for (const epoch of epochsToFetch) {
+            try {
+              await new Promise(r => setTimeout(r, 100));
+              const response = await fetch(RPC_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  jsonrpc: '2.0',
+                  id: 1,
+                  method: 'getInflationReward',
+                  params: [selfStakeAccounts, { epoch: epoch }]
+                })
+              });
+              const data = await response.json();
+              if (data.result) {
+                let totalSelfStakeReward = 0;
+                data.result.forEach(r => {
+                  if (r && r.amount) totalSelfStakeReward += r.amount;
                 });
-                const data = await response.json();
-                if (data.result) {
-                  // Sum up all self-stake rewards for this epoch
-                  let totalSelfStakeReward = 0;
-                  data.result.forEach(r => {
-                    if (r && r.amount) totalSelfStakeReward += r.amount;
-                  });
-                  return { epoch, amount: totalSelfStakeReward };
-                }
-                return { epoch, amount: 0 };
-              } catch (e) {
-                return { epoch, amount: 0 };
+                rewardsByEpoch[epoch] = (rewardsByEpoch[epoch] || 0) + totalSelfStakeReward;
               }
-            });
-
-            const selfStakeResults = await Promise.all(selfStakePromises);
-            
-            // Add self-stake rewards to vote rewards
-            selfStakeResults.forEach(r => {
-              if (rewardsByEpoch[r.epoch] !== undefined) {
-                rewardsByEpoch[r.epoch] += r.amount;
-              } else {
-                rewardsByEpoch[r.epoch] = r.amount;
-              }
-            });
+            } catch (e) {
+              // Keep existing vote reward
+            }
           }
         }
 
@@ -21828,8 +21799,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
           data.creditsLabels = data.labels;
           data.creditsData = data.data;
           
-          // Show loading while fetching XNT data
-          if (loadingEl) loadingEl.style.display = 'flex';
+          // Show loading with progress message while fetching XNT data
+          if (loadingEl) {
+            loadingEl.style.display = 'flex';
+            loadingEl.innerHTML = `
+              <div class="loading-spinner-small"></div>
+              <span>Loading rewards data (this may take a few seconds)...</span>
+            `;
+          }
           
           // Fetch XNT rewards data (vote account + self-stake rewards)
           const rewards = await fetchTotalValidatorRewards(data.voteAccount, data.commission, 30);
@@ -21920,7 +21897,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
           if (peakEl) peakEl.textContent = formatNumber(Math.max(...xntData), 2) + ' XNT';
         } else {
           // Show loading and fetch
-          if (loadingEl) loadingEl.style.display = 'flex';
+          if (loadingEl) {
+            loadingEl.style.display = 'flex';
+            loadingEl.innerHTML = `
+              <div class="loading-spinner-small"></div>
+              <span>Loading rewards data (this may take a few seconds)...</span>
+            `;
+          }
           if (statsEl) statsEl.style.opacity = '0.5';
           
           // Fetch XNT rewards data (vote account + self-stake rewards)
