@@ -12188,6 +12188,7 @@
 
     // Fetch last epoch rewards for each validator card
     async function fetchLastEpochForCards(validators) {
+      // Fetch validators sequentially with small delays to avoid RPC rate limiting
       for (const v of validators) {
         try {
           // Fetch 2 epochs to calculate change
@@ -12196,12 +12197,14 @@
           const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
           
           if (cardEl && rewards && rewards.length > 0) {
-            const lastEpochAmount = (rewards[0].amount || 0) / 1e9;
+            // Sort by epoch descending to ensure newest first
+            const sortedRewards = [...rewards].sort((a, b) => b.epoch - a.epoch);
+            const lastEpochAmount = (sortedRewards[0].amount || 0) / 1e9;
             cardEl.querySelector('.stat-value').textContent = formatNumber(lastEpochAmount, 2);
             
             // Calculate change if we have 2 epochs of data
-            if (changeEl && rewards.length >= 2 && rewards[1].amount > 0) {
-              const priorEpochAmount = (rewards[1].amount || 0) / 1e9;
+            if (changeEl && sortedRewards.length >= 2 && sortedRewards[1].amount > 0) {
+              const priorEpochAmount = (sortedRewards[1].amount || 0) / 1e9;
               const changePercent = ((lastEpochAmount - priorEpochAmount) / priorEpochAmount) * 100;
               
               if (changePercent > 0) {
@@ -12213,6 +12216,9 @@
               }
             }
           }
+          
+          // Small delay between validators to avoid RPC rate limiting
+          await new Promise(r => setTimeout(r, 500));
         } catch (e) {
           console.error(`Error fetching last epoch for ${v.voteAccount}:`, e);
         }
@@ -12296,7 +12302,7 @@
 
     // Geolocation - loads from pre-generated JSON file for instant loading
     // Use central GitHub raw URL so both sites get the same data
-    const GEO_DATA_URL = 'https://raw.githubusercontent.com/ShakaVibe/X1-Validator-Dashboard/main/validator-locations.json';
+    const GEO_DATA_URL = 'https://raw.githubusercontent.com/ShakaVibe/X1-Validator-HQ/main/validator-locations.json';
     const GEO_DATA_URL_LOCAL = 'validator-locations.json'; // Fallback to local
     const GEO_CACHE_KEY = 'x1GeoCache';
     const GEO_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours
@@ -21107,6 +21113,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // Toggle stake details visibility and fetch data
     async function toggleStakeDetails(voteAccount, validatorName, totalStake, commission, button) {
       const section = document.getElementById('stake-' + voteAccount + '-section');
+      
+      if (!section) {
+        console.error('Stake section not found for:', voteAccount);
+        return;
+      }
+      
       const isExpanded = section.classList.contains('expanded');
       
       if (isExpanded) {
@@ -21725,6 +21737,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // Toggle chart visibility and initialize
     async function toggleChart(chartId, button) {
       const section = document.getElementById(chartId + '-section');
+      
+      if (!section) {
+        console.error('Chart section not found for:', chartId);
+        return;
+      }
+      
       const isExpanded = section.classList.contains('expanded');
       
       if (isExpanded) {
