@@ -10114,11 +10114,10 @@
           epochsToFetch.push(currentEpochNumber - i);
         }
 
-        // Step 1: Fetch vote account rewards SEQUENTIALLY with rate limiting
-        const rewardsByEpoch = {};
-        for (const epoch of epochsToFetch) {
+        // Step 1: Fetch vote account rewards in PARALLEL (fast!)
+        const voteRewardsPromises = epochsToFetch.map(async (epoch) => {
           try {
-            const response = await rateLimitedFetch(RPC_URL, {
+            const response = await fetch(RPC_URL, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -10130,19 +10129,18 @@
             });
             const data = await response.json();
             if (data.result && data.result[0]) {
-              rewardsByEpoch[epoch] = data.result[0].amount || 0;
-            } else {
-              rewardsByEpoch[epoch] = 0;
+              return { epoch, amount: data.result[0].amount || 0 };
             }
+            return { epoch, amount: 0 };
           } catch (e) {
-            rewardsByEpoch[epoch] = 0;
+            return { epoch, amount: 0 };
           }
-        }
+        });
 
         // Step 2: Fetch vote account info to get authorizedWithdrawer
         let voteAccountWithdrawer = null;
         try {
-          const voteAcctResponse = await rateLimitedFetch(RPC_URL, {
+          const voteAcctResponse = await fetch(RPC_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -10161,7 +10159,7 @@
         }
 
         // Step 3: Fetch stake accounts delegated to this validator
-        const stakeResponse = await rateLimitedFetch(RPC_URL, {
+        const stakeResponse = await fetch(RPC_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -10178,6 +10176,15 @@
           })
         });
         const stakeData = await stakeResponse.json();
+
+        // Wait for vote rewards
+        const voteRewardsResults = await Promise.all(voteRewardsPromises);
+        
+        // Build vote rewards map by epoch
+        const rewardsByEpoch = {};
+        voteRewardsResults.forEach(r => {
+          rewardsByEpoch[r.epoch] = r.amount;
+        });
 
         // Step 4: Identify self-stake accounts using WITHDRAWER MATCHING
         let selfStakeAccounts = [];
@@ -10201,11 +10208,11 @@
           }
         }
 
-        // Step 5: If we have self-stake accounts, fetch their rewards SEQUENTIALLY
+        // Step 5: If we have self-stake accounts, fetch their rewards in PARALLEL
         if (selfStakeAccounts.length > 0) {
-          for (const epoch of epochsToFetch) {
+          const selfStakePromises = epochsToFetch.map(async (epoch) => {
             try {
-              const response = await rateLimitedFetch(RPC_URL, {
+              const response = await fetch(RPC_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -10221,12 +10228,24 @@
                 data.result.forEach(r => {
                   if (r && r.amount) totalSelfStakeReward += r.amount;
                 });
-                rewardsByEpoch[epoch] = (rewardsByEpoch[epoch] || 0) + totalSelfStakeReward;
+                return { epoch, amount: totalSelfStakeReward };
               }
+              return { epoch, amount: 0 };
             } catch (e) {
-              // Keep existing vote reward
+              return { epoch, amount: 0 };
             }
-          }
+          });
+
+          const selfStakeResults = await Promise.all(selfStakePromises);
+          
+          // Add self-stake rewards to vote rewards
+          selfStakeResults.forEach(r => {
+            if (rewardsByEpoch[r.epoch] !== undefined) {
+              rewardsByEpoch[r.epoch] += r.amount;
+            } else {
+              rewardsByEpoch[r.epoch] = r.amount;
+            }
+          });
         }
 
         // Step 6: Build final rewards array (sorted descending - most recent first)
@@ -10390,7 +10409,7 @@
     }
 
     async function rpcCall(method, params = []) {
-      const response = await rateLimitedFetch(RPC_URL, {
+      const response = await fetch(RPC_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -21603,9 +21622,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }, 5000);
         
         try {
-          // Helper function with timeout and rate limiting
+          // Helper function with timeout
           const fetchWithTimeout = async (url, options, timeout = 15000) => {
-            await rpcRateLimiter.throttle(); // Rate limit before fetching
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
             try {
