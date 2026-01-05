@@ -5259,6 +5259,38 @@
       color: var(--danger);
     }
 
+    .merge-epoch-group {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .merge-epoch-group:last-child {
+      border-bottom: none;
+    }
+
+    .merge-epoch-header {
+      padding: 0.5rem 1rem;
+      background: rgba(77, 166, 255, 0.1);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .merge-epoch-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+    }
+
+    .merge-ineligible-header {
+      padding: 0.5rem 1rem;
+      background: rgba(255, 82, 82, 0.1);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--danger);
+      text-transform: uppercase;
+    }
+
     .commission-epoch-warning {
       display: flex;
       gap: 0.75rem;
@@ -17857,29 +17889,82 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
       });
       
-      container.innerHTML = analyzedStakes.map(stake => `
-        <div class="merge-stake-item ${stake.eligible ? '' : 'disabled'}" 
-             onclick="${stake.eligible ? `toggleMergeStakeSelection('${stake.pubkey}')` : ''}">
-          <input type="checkbox" 
-                 class="merge-stake-checkbox" 
-                 id="merge-${stake.pubkey}" 
-                 ${stake.eligible ? '' : 'disabled'}
-                 ${mergeStakesSelected.includes(stake.pubkey) ? 'checked' : ''}
-                 onclick="event.stopPropagation(); toggleMergeStakeSelection('${stake.pubkey}')">
-          <div class="merge-stake-info">
-            <div class="merge-stake-address">${shortenAddress(stake.pubkey)}</div>
-            <div class="merge-stake-details">
-              <span>Staker: ${shortenAddress(stake.staker || '-')}</span>
-              <span>Withdrawer: ${shortenAddress(stake.withdrawer || '-')}</span>
-              <span>Activated: Epoch ${stake.activationEpoch || '?'}</span>
+      // Sort stakes: eligible first (grouped by activation epoch), then ineligible
+      const sortedStakes = [...analyzedStakes].sort((a, b) => {
+        // Eligible stakes come first
+        if (a.eligible && !b.eligible) return -1;
+        if (!a.eligible && b.eligible) return 1;
+        
+        // Within eligible stakes, group by activation epoch
+        if (a.eligible && b.eligible) {
+          if (a.activationEpoch !== b.activationEpoch) {
+            return a.activationEpoch - b.activationEpoch;
+          }
+          // Within same activation epoch, sort by amount (largest first)
+          return b.lamports - a.lamports;
+        }
+        
+        // Within ineligible stakes, sort by amount
+        return b.lamports - a.lamports;
+      });
+      
+      // Build HTML with group headers for eligible stakes
+      let lastEpoch = null;
+      let html = '';
+      
+      sortedStakes.forEach(stake => {
+        // Add epoch group header for eligible stakes
+        if (stake.eligible && stake.activationEpoch !== lastEpoch) {
+          if (lastEpoch !== null) {
+            html += '</div>'; // Close previous group
+          }
+          html += `
+            <div class="merge-epoch-group">
+              <div class="merge-epoch-header">
+                <span class="merge-epoch-label">Activation Epoch ${stake.activationEpoch}</span>
+              </div>
+          `;
+          lastEpoch = stake.activationEpoch;
+        }
+        
+        // Add separator before ineligible section
+        if (!stake.eligible && lastEpoch !== null) {
+          html += '</div>'; // Close last eligible group
+          html += '<div class="merge-ineligible-header">Ineligible Stakes</div>';
+          lastEpoch = null; // Reset so we don't add another separator
+        }
+        
+        html += `
+          <div class="merge-stake-item ${stake.eligible ? '' : 'disabled'}" 
+               onclick="${stake.eligible ? `toggleMergeStakeSelection('${stake.pubkey}')` : ''}">
+            <input type="checkbox" 
+                   class="merge-stake-checkbox" 
+                   id="merge-${stake.pubkey}" 
+                   ${stake.eligible ? '' : 'disabled'}
+                   ${mergeStakesSelected.includes(stake.pubkey) ? 'checked' : ''}
+                   onclick="event.stopPropagation(); toggleMergeStakeSelection('${stake.pubkey}')">
+            <div class="merge-stake-info">
+              <div class="merge-stake-address">${shortenAddress(stake.pubkey)}</div>
+              <div class="merge-stake-details">
+                <span>Staker: ${shortenAddress(stake.staker || '-')}</span>
+                <span>Withdrawer: ${shortenAddress(stake.withdrawer || '-')}</span>
+                ${!stake.eligible ? `<span>Epoch ${stake.activationEpoch || '?'}</span>` : ''}
+              </div>
             </div>
+            <div class="merge-stake-amount">${formatNumber(lamportsToXNT(stake.lamports), 2)} XNT</div>
+            <span class="merge-stake-status ${stake.eligible ? 'eligible' : 'ineligible'}">
+              ${stake.eligible ? '✓ELIGIBLE' : stake.reason.toUpperCase()}
+            </span>
           </div>
-          <div class="merge-stake-amount">${formatNumber(lamportsToXNT(stake.lamports), 2)} XNT</div>
-          <span class="merge-stake-status ${stake.eligible ? 'eligible' : 'ineligible'}">
-            ${stake.eligible ? '✓ELIGIBLE' : stake.reason.toUpperCase()}
-          </span>
-        </div>
-      `).join('');
+        `;
+      });
+      
+      // Close last group if it was eligible
+      if (lastEpoch !== null) {
+        html += '</div>';
+      }
+      
+      container.innerHTML = html;
     }
     
     function toggleMergeStakeSelection(pubkey) {
