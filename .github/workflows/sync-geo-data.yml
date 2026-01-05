@@ -17,13 +17,26 @@ jobs:
       - name: Download latest geo data from X1-Validator-HQ
         run: |
           echo "Fetching latest validator-locations.json..."
-          curl -sfL -o validator-locations.json https://raw.githubusercontent.com/ShakaVibe/X1-Validator-HQ/main/validator-locations.json
+          
+          # Try to download and show what we get
+          HTTP_CODE=$(curl -sL -w "%{http_code}" -o validator-locations.json https://raw.githubusercontent.com/ShakaVibe/X1-Validator-HQ/main/validator-locations.json)
+          
+          echo "HTTP response code: $HTTP_CODE"
+          echo "File size: $(wc -c < validator-locations.json) bytes"
+          echo "First 200 chars:"
+          head -c 200 validator-locations.json
+          echo ""
+          
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Failed to download file (HTTP $HTTP_CODE)"
+            exit 1
+          fi
           
           # Verify it's valid JSON
           if jq empty validator-locations.json 2>/dev/null; then
             TOTAL=$(jq -r '.totalLocations // .totalNodes // "unknown"' validator-locations.json)
             UPDATED=$(jq -r '.lastUpdated // "unknown"' validator-locations.json)
-            echo "Downloaded valid JSON: $TOTAL locations, last updated: $UPDATED"
+            echo "Valid JSON: $TOTAL locations, last updated: $UPDATED"
           else
             echo "Downloaded file is not valid JSON"
             exit 1
