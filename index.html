@@ -982,162 +982,6 @@
       margin-top: 0.4rem;
     }
 
-    /* Search result card (minimal) */
-    .search-result-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 0.75rem;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .search-result-card:hover {
-      border-color: var(--accent-blue);
-      background: var(--bg-card-hover);
-    }
-
-    .search-result-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .search-result-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .search-result-name {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .search-result-address {
-      font-family: monospace;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      margin-top: 0.25rem;
-    }
-
-    .search-result-address:hover {
-      color: var(--accent-cyan);
-    }
-
-    .search-result-address .copy-icon {
-      font-size: 0.7rem;
-      opacity: 0.6;
-    }
-
-    .search-result-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 0.5rem;
-      font-size: 0.8rem;
-      color: var(--text-dim);
-    }
-
-    .search-result-meta .meta-item {
-      background: var(--bg-tertiary);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-    }
-
-    .search-result-meta .meta-item.delinquent {
-      background: rgba(244, 67, 54, 0.2);
-      color: var(--danger);
-    }
-
-    .search-result-actions {
-      display: flex;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .view-details-btn {
-      background: var(--bg-tertiary);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-
-    .view-details-btn:hover {
-      background: var(--accent-blue);
-      border-color: var(--accent-blue);
-    }
-
-    .search-result-expanded {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .expanded-loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 1rem;
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-    }
-
-    .expanded-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 1rem;
-    }
-
-    .expanded-stat {
-      text-align: center;
-      padding: 0.75rem;
-      background: var(--bg-tertiary);
-      border-radius: 8px;
-    }
-
-    .expanded-stat .stat-label {
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      margin-bottom: 0.25rem;
-    }
-
-    .expanded-stat .stat-value {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .expanded-stat .stat-value.accent {
-      color: var(--accent-cyan);
-    }
-
-    .expanded-stat .stat-subtext {
-      font-size: 0.7rem;
-      color: var(--text-dim);
-    }
-
-    .expanded-error {
-      text-align: center;
-      padding: 1rem;
-      color: var(--danger);
-      font-size: 0.85rem;
-    }
-
     /* Validator card */
     .validator-card {
       background: var(--bg-card);
@@ -2006,38 +1850,6 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-    }
-
-    .map-refresh-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-      width: 24px;
-      height: 24px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-      margin-left: auto;
-    }
-
-    .map-refresh-btn:hover {
-      border-color: var(--accent-cyan);
-      color: var(--accent-cyan);
-      background: rgba(0, 212, 255, 0.1);
-    }
-
-    .map-refresh-btn.refreshing {
-      animation: spin 1s linear infinite;
-      pointer-events: none;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
     }
 
     .sidebar-x1-logo {
@@ -5259,38 +5071,6 @@
       color: var(--danger);
     }
 
-    .merge-epoch-group {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .merge-epoch-group:last-child {
-      border-bottom: none;
-    }
-
-    .merge-epoch-header {
-      padding: 0.5rem 1rem;
-      background: rgba(77, 166, 255, 0.1);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .merge-epoch-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--accent-blue);
-      text-transform: uppercase;
-    }
-
-    .merge-ineligible-header {
-      padding: 0.5rem 1rem;
-      background: rgba(255, 82, 82, 0.1);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--danger);
-      text-transform: uppercase;
-    }
-
     .commission-epoch-warning {
       display: flex;
       gap: 0.75rem;
@@ -7717,7 +7497,6 @@
             <div class="map-sidebar-title">
               <span class="sidebar-x1-logo"><span style="color: #fff;">X</span><span style="color: var(--accent-blue);">1</span></span>
               Validators by Country
-              <button class="map-refresh-btn" onclick="refreshMapData()" title="Refresh map data">↻</button>
             </div>
             <div class="country-list" id="countryList">
               <div class="map-loading-text" style="text-align: center; padding: 2rem;">Loading...</div>
@@ -9596,18 +9375,16 @@
           <div class="info-icon">ℹ️</div>
           <div class="info-text">
             <p><strong>Merge Requirements:</strong></p>
-            <p>• You can only merge 2 stakes at a time</p>
-            <p>• Both stakes must have the same stake authority</p>
-            <p>• Both stakes must have the same withdraw authority</p>
-            <p>• Both stakes must be fully active (not activating/deactivating)</p>
-            <p>• Both stakes must have the same activation epoch</p>
+            <p>• All selected stakes must have the same stake authority</p>
+            <p>• All selected stakes must have the same withdraw authority</p>
             <p>• Your connected wallet must be the stake authority</p>
+            <p>• Stakes must be in compatible states</p>
           </div>
         </div>
         
         <!-- Stakes List -->
         <div class="send-section">
-          <div class="send-label">Select 2 Stakes to Merge: <span style="font-weight: 400; color: var(--text-dim); font-size: 0.8rem;">(first selected = destination account)</span></div>
+          <div class="send-label">Select Stakes to Merge: <span style="font-weight: 400; color: var(--text-dim); font-size: 0.8rem;">(first selected = destination account)</span></div>
           <div class="merge-stakes-list" id="mergeStakesList">
             <div class="loading-text">Loading stakes...</div>
           </div>
@@ -9932,32 +9709,8 @@
   </footer>
 
   <script>
-    // Debug mode - set to true to enable console logging
-    const DEBUG = false;
-    const debugLog = (...args) => { if (DEBUG) console.log(...args); };
-    
     const RPC_URL = 'https://rpc.mainnet.x1.xyz';
     const REWARDS_API_URL = null; // Set to your API URL when rewards tracker is running
-    
-    // Global RPC rate limiter - prevents overwhelming the RPC
-    const rpcRateLimiter = {
-      lastRequestTime: 0,
-      minInterval: 150, // Minimum ms between requests
-      async throttle() {
-        const now = Date.now();
-        const timeSinceLastRequest = now - this.lastRequestTime;
-        if (timeSinceLastRequest < this.minInterval) {
-          await new Promise(r => setTimeout(r, this.minInterval - timeSinceLastRequest));
-        }
-        this.lastRequestTime = Date.now();
-      }
-    };
-    
-    // Rate-limited fetch for RPC calls
-    async function rateLimitedFetch(url, options) {
-      await rpcRateLimiter.throttle();
-      return fetch(url, options);
-    }
     
     let allValidators = [];
     let validatorInfoCache = {};
@@ -10142,13 +9895,13 @@
         const epochInfo = await rpcCall('getEpochInfo');
         currentEpochNumber = epochInfo.epoch;
 
-        // Build list of epochs to fetch
+        // Step 1: Fetch vote account rewards (commission) in parallel
+        // Start from currentEpoch - 1 to exclude the current incomplete epoch
         const epochsToFetch = [];
         for (let i = 1; i <= Math.min(numEpochs, currentEpochNumber); i++) {
           epochsToFetch.push(currentEpochNumber - i);
         }
 
-        // Step 1: Fetch vote account rewards in PARALLEL (fast!)
         const voteRewardsPromises = epochsToFetch.map(async (epoch) => {
           try {
             const response = await fetch(RPC_URL, {
@@ -10221,15 +9974,19 @@
         });
 
         // Step 4: Identify self-stake accounts using WITHDRAWER MATCHING
+        // (same method as stake breakdown - much more accurate than reward rate analysis)
         let selfStakeAccounts = [];
         
         if (stakeData.result && stakeData.result.length > 0 && voteAccountWithdrawer) {
+          // Check for user selections first
           const userSelections = typeof getSelfStakeSelections === 'function' ? getSelfStakeSelections(voteAccount) : null;
           
           if (userSelections && userSelections.pubkeys && userSelections.pubkeys.length > 0) {
+            // Use user-selected self-stake accounts
             selfStakeAccounts = userSelections.pubkeys;
-            debugLog(`[${voteAccount.slice(0,8)}] Using ${selfStakeAccounts.length} user-selected self-stake accounts`);
+            console.log(`[${voteAccount.slice(0,8)}] Using ${selfStakeAccounts.length} user-selected self-stake accounts`);
           } else {
+            // Match stake account withdrawers against vote account withdrawer
             for (const acc of stakeData.result) {
               const stakeInfo = acc.account.data.parsed?.info;
               const stakeWithdrawer = stakeInfo?.meta?.authorized?.withdrawer;
@@ -10238,48 +9995,58 @@
                 selfStakeAccounts.push(acc.pubkey);
               }
             }
-            debugLog(`[${voteAccount.slice(0,8)}] Found ${selfStakeAccounts.length} self-stake accounts out of ${stakeData.result.length} total delegated`);
+            console.log(`[${voteAccount.slice(0,8)}] Found ${selfStakeAccounts.length} self-stake accounts out of ${stakeData.result.length} total delegated (vote withdrawer: ${voteAccountWithdrawer?.slice(0,8)})`);
           }
+        } else {
+          console.log(`[${voteAccount.slice(0,8)}] No stake accounts or no withdrawer - stakeData: ${stakeData.result?.length || 0}, withdrawer: ${voteAccountWithdrawer?.slice(0,8) || 'null'}`);
         }
 
-        // Step 5: If we have self-stake accounts, fetch their rewards in PARALLEL
+        // Step 5: If we have self-stake accounts, fetch their rewards for all epochs
         if (selfStakeAccounts.length > 0) {
-          const selfStakePromises = epochsToFetch.map(async (epoch) => {
-            try {
-              const response = await fetch(RPC_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  jsonrpc: '2.0',
-                  id: 1,
-                  method: 'getInflationReward',
-                  params: [selfStakeAccounts, { epoch: epoch }]
-                })
-              });
-              const data = await response.json();
-              if (data.result) {
-                let totalSelfStakeReward = 0;
-                data.result.forEach(r => {
-                  if (r && r.amount) totalSelfStakeReward += r.amount;
-                });
-                return { epoch, amount: totalSelfStakeReward };
-              }
-              return { epoch, amount: 0 };
-            } catch (e) {
-              return { epoch, amount: 0 };
-            }
-          });
-
-          const selfStakeResults = await Promise.all(selfStakePromises);
+          // Batch epochs to avoid too many parallel requests
+          const batchSize = 50;
           
-          // Add self-stake rewards to vote rewards
-          selfStakeResults.forEach(r => {
-            if (rewardsByEpoch[r.epoch] !== undefined) {
-              rewardsByEpoch[r.epoch] += r.amount;
-            } else {
-              rewardsByEpoch[r.epoch] = r.amount;
-            }
-          });
+          for (let i = 0; i < epochsToFetch.length; i += batchSize) {
+            const batchEpochs = epochsToFetch.slice(i, i + batchSize);
+            
+            const selfStakePromises = batchEpochs.map(async (epoch) => {
+              try {
+                const response = await fetch(RPC_URL, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    id: 1,
+                    method: 'getInflationReward',
+                    params: [selfStakeAccounts, { epoch: epoch }]
+                  })
+                });
+                const data = await response.json();
+                if (data.result) {
+                  // Sum up all self-stake rewards for this epoch
+                  let totalSelfStakeReward = 0;
+                  data.result.forEach(r => {
+                    if (r && r.amount) totalSelfStakeReward += r.amount;
+                  });
+                  return { epoch, amount: totalSelfStakeReward };
+                }
+                return { epoch, amount: 0 };
+              } catch (e) {
+                return { epoch, amount: 0 };
+              }
+            });
+
+            const selfStakeResults = await Promise.all(selfStakePromises);
+            
+            // Add self-stake rewards to vote rewards
+            selfStakeResults.forEach(r => {
+              if (rewardsByEpoch[r.epoch] !== undefined) {
+                rewardsByEpoch[r.epoch] += r.amount;
+              } else {
+                rewardsByEpoch[r.epoch] = r.amount;
+              }
+            });
+          }
         }
 
         // Step 6: Build final rewards array (sorted descending - most recent first)
@@ -10300,7 +10067,7 @@
           };
         }
 
-        debugLog(`Total rewards for ${voteAccount.slice(0,8)}...: vote + ${selfStakeAccounts.length} self-stake accounts, ${rewards.length} epochs`);
+        console.log(`Total rewards for ${voteAccount.slice(0,8)}...: vote + ${selfStakeAccounts.length} self-stake accounts, ${rewards.length} epochs`);
         
         return rewards;
       } catch (e) {
@@ -10750,45 +10517,6 @@
 
       // Cache it
       validatorInfoCache[voteAccount] = info;
-      return info;
-    }
-
-    // Lightweight version for Validator Lookup - uses existing data, minimal RPC calls
-    function getValidatorInfoLight(voteAccount) {
-      // Check cache first
-      if (validatorInfoCache[voteAccount]) {
-        return validatorInfoCache[voteAccount];
-      }
-
-      // Find in allValidators (already loaded)
-      const validator = allValidators.find(v => v.votePubkey === voteAccount);
-      if (!validator) return null;
-      
-      const rank = allValidators.findIndex(v => v.votePubkey === voteAccount) + 1;
-      const totalValidators = allValidators.length;
-      const epochCreditsHistory = validator.epochCredits || [];
-      
-      const info = {
-        name: validator.name || validator.nodePubkey.slice(0, 8) + '...',
-        voteAccount: voteAccount,
-        nodePubkey: validator.nodePubkey,
-        iconUrl: validator.iconUrl || '',
-        activatedStake: lamportsToXNT(validator.activatedStake),
-        rewardsBalance: 0, // Will show as 0, user can see real value in My Data Center
-        commission: validator.commission,
-        isDelinquent: validator.delinquent || false,
-        epochCredits: epochCreditsHistory.length > 0 ? epochCreditsHistory[epochCreditsHistory.length - 1][1] : 0,
-        epochCreditsHistory: epochCreditsHistory,
-        skipRate: null, // Not fetched in light mode
-        skipRateHistory: null, // Not fetched in light mode
-        rank: rank,
-        totalValidators: totalValidators,
-        version: validator.version || null
-      };
-      
-      // Calculate performance score with available data
-      info.performanceScore = calculatePerformanceScore(info);
-      
       return info;
     }
 
@@ -11886,177 +11614,12 @@
       return '';
     }
 
-    // Cache for last epoch earned data
-    const lastEpochCache = {};
-
-    // Minimal card for search results - no RPC calls needed
-    function renderSearchResultCard(validator) {
-      const isInPortfolio = myPortfolio.includes(validator.voteAccount);
-      
-      // Generate logo or placeholder
-      const firstLetter = validator.name.charAt(0).toUpperCase();
-      const logoHtml = validator.iconUrl 
-        ? `<img class="validator-logo" src="${validator.iconUrl}" alt="${validator.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-           <div class="validator-logo-placeholder" style="display:none;">${firstLetter}</div>`
-        : `<div class="validator-logo-placeholder">${firstLetter}</div>`;
-
-      const stakeDisplay = formatXntCompact(validator.activatedStake);
-      const rank = validator.rank || '--';
-      
-      return `
-        <div class="search-result-card" id="search-card-${validator.voteAccount.slice(0,8)}">
-          <div class="search-result-header">
-            ${logoHtml}
-            <div class="search-result-info">
-              <div class="search-result-name">${validator.name}</div>
-              <div class="search-result-address" onclick="copyAddress('${validator.voteAccount}')" title="Click to copy">
-                ${validator.voteAccount.slice(0, 8)}...${validator.voteAccount.slice(-6)}
-                <span class="copy-icon">📋</span>
-              </div>
-              <div class="search-result-meta">
-                <span class="meta-item">Rank #${rank}</span>
-                <span class="meta-item">${stakeDisplay} XNT</span>
-                <span class="meta-item">${validator.commission}% commission</span>
-                ${validator.isDelinquent ? '<span class="meta-item delinquent">⚠️ Delinquent</span>' : ''}
-              </div>
-            </div>
-          </div>
-          <div class="search-result-actions">
-            <button class="view-details-btn" onclick="expandSearchResult('${validator.voteAccount}')">
-              📊 View Details
-            </button>
-            ${isInPortfolio 
-              ? `<button class="add-btn" style="opacity: 0.5;" disabled>✓ In Data Center</button>`
-              : `<button class="add-btn" onclick="addToPortfolio('${validator.voteAccount}')">+ Add to Data Center</button>`
-            }
-          </div>
-          <div class="search-result-expanded" id="expanded-${validator.voteAccount.slice(0,8)}" style="display: none;">
-            <div class="expanded-loading">
-              <div class="loading-spinner-small"></div>
-              <span>Loading validator details...</span>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    // Expand search result to show full details
-    async function expandSearchResult(voteAccount) {
-      const expandedEl = document.getElementById(`expanded-${voteAccount.slice(0,8)}`);
-      if (!expandedEl) return;
-      
-      // Toggle if already expanded
-      if (expandedEl.style.display !== 'none' && expandedEl.dataset.loaded === 'true') {
-        expandedEl.style.display = 'none';
-        return;
-      }
-      
-      expandedEl.style.display = 'block';
-      
-      // Check if already loaded
-      if (expandedEl.dataset.loaded === 'true') {
-        return;
-      }
-      
-      try {
-        // Fetch full validator info (this makes RPC calls)
-        const validator = await getValidatorInfo(voteAccount, true);
-        if (!validator) {
-          expandedEl.innerHTML = '<div class="expanded-error">Failed to load validator details</div>';
-          return;
-        }
-        
-        // Also fetch last epoch rewards
-        const rewards = await fetchLastEpochSimple(voteAccount, 2);
-        let lastEpochAmount = '--';
-        let changeHtml = '';
-        
-        if (rewards && rewards.length > 0) {
-          const sortedRewards = [...rewards].sort((a, b) => b.epoch - a.epoch);
-          lastEpochAmount = formatNumber((sortedRewards[0].amount || 0) / 1e9, 2);
-          
-          if (sortedRewards.length >= 2 && sortedRewards[1].amount > 0) {
-            const priorAmount = (sortedRewards[1].amount || 0) / 1e9;
-            const currentAmount = (sortedRewards[0].amount || 0) / 1e9;
-            const changePercent = ((currentAmount - priorAmount) / priorAmount) * 100;
-            
-            if (changePercent > 0) {
-              changeHtml = `<span style="color: var(--success);">↑ ${formatNumber(changePercent, 2)}%</span>`;
-            } else if (changePercent < 0) {
-              changeHtml = `<span style="color: var(--danger);">↓ ${formatNumber(Math.abs(changePercent), 2)}%</span>`;
-            }
-          }
-          
-          // Cache for later
-          lastEpochCache[voteAccount] = {
-            amount: (sortedRewards[0].amount || 0) / 1e9,
-            changeHtml: changeHtml,
-            timestamp: Date.now()
-          };
-        }
-        
-        // Build skip rate display
-        const skipHistory = validator.skipRateHistory;
-        const avgSkipRate = skipHistory ? skipHistory.avgSkipRate : null;
-        let skipDisplay = 'N/A';
-        let skipColor = '';
-        if (avgSkipRate !== null) {
-          skipDisplay = formatNumber(avgSkipRate, 2) + '%';
-          skipColor = getSkipRateColor(avgSkipRate);
-        } else if (validator.skipRate !== null) {
-          skipDisplay = formatNumber(validator.skipRate, 2) + '%';
-          skipColor = getSkipRateColor(validator.skipRate);
-        }
-        
-        // Calculate performance score
-        const perfScore = calculatePerformanceScore(validator);
-        const perfColor = getPerformanceBarColor(perfScore);
-        
-        expandedEl.innerHTML = `
-          <div class="expanded-stats">
-            <div class="expanded-stat">
-              <div class="stat-label">Performance</div>
-              <div class="stat-value" style="color: ${perfColor};">${formatNumber(perfScore, 1)}</div>
-            </div>
-            <div class="expanded-stat">
-              <div class="stat-label">Rewards Balance</div>
-              <div class="stat-value accent">${formatNumber(validator.rewardsBalance)}</div>
-              <div class="stat-subtext">XNT</div>
-            </div>
-            <div class="expanded-stat">
-              <div class="stat-label">Last Epoch Earned</div>
-              <div class="stat-value" style="color: var(--success);">${lastEpochAmount}</div>
-              <div class="stat-subtext">XNT ${changeHtml}</div>
-            </div>
-            <div class="expanded-stat">
-              <div class="stat-label">Skip Rate (7-epoch)</div>
-              <div class="stat-value ${skipColor ? 'score-' + getSkipRateColor(avgSkipRate || validator.skipRate) : ''}">${skipDisplay}</div>
-            </div>
-            <div class="expanded-stat">
-              <div class="stat-label">Epoch Credits</div>
-              <div class="stat-value">${formatNumber(validator.epochCredits, 0)}</div>
-            </div>
-          </div>
-        `;
-        expandedEl.dataset.loaded = 'true';
-        
-      } catch (e) {
-        console.error('Error expanding search result:', e);
-        expandedEl.innerHTML = '<div class="expanded-error">Failed to load details. Try again later.</div>';
-      }
-    }
-
     function renderValidatorCard(validator, showAddBtn = true, showRemoveBtn = false) {
       // Use cached performance score if available, otherwise calculate
       const perfScore = validator.performanceScore !== undefined ? validator.performanceScore : calculatePerformanceScore(validator);
       const perfColor = getPerformanceColor(perfScore);
       const perfBarColor = getPerformanceBarColor(perfScore);
       const perfTooltip = getPerformanceTooltipHtml(validator);
-      
-      // Check if we have cached last epoch data
-      const cachedLastEpoch = lastEpochCache[validator.voteAccount];
-      const lastEpochValue = cachedLastEpoch ? formatNumber(cachedLastEpoch.amount, 2) : '--';
-      const lastEpochChangeHtml = cachedLastEpoch && cachedLastEpoch.changeHtml ? cachedLastEpoch.changeHtml : '';
       
       // Current epoch skip rate
       const currentSkipRate = validator.skipRate;
@@ -12210,9 +11773,9 @@
             
             <div class="stat-item" title="Total validator rewards (vote + self-stake) earned in the last completed epoch." id="lastEpoch-${validator.voteAccount.slice(0,8)}">
               <div class="stat-label">Last Epoch<br>Earned</div>
-              <div class="stat-value" style="color: var(--success);">${lastEpochValue}</div>
+              <div class="stat-value" style="color: var(--success);">--</div>
               <div class="stat-subtext">XNT</div>
-              <div class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}">${lastEpochChangeHtml}</div>
+              <div class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}"></div>
             </div>
             
             <div class="stat-item clickable-stat" onclick="openStakeSelection('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}')" title="Click to manage self-stake vs delegated classification">
@@ -12351,8 +11914,7 @@
 
         // Check if it's a vote account address (44 characters)
         if (input.length >= 43 && input.length <= 44) {
-          // Use lightweight version - no RPC calls
-          const validator = getValidatorInfoLight(input);
+          const validator = await getValidatorInfo(input);
           if (validator) {
             validators.push(validator);
           }
@@ -12366,8 +11928,7 @@
           ).slice(0, 20); // Limit to 20 results
 
           for (const match of matches) {
-            // Use lightweight version - no RPC calls
-            const validator = getValidatorInfoLight(match.votePubkey);
+            const validator = await getValidatorInfo(match.votePubkey);
             if (validator) {
               validators.push(validator);
             }
@@ -12378,12 +11939,13 @@
           throw new Error('No validators found');
         }
 
-        // Render MINIMAL search result cards - NO RPC calls at all
-        document.getElementById('validatorResults').innerHTML = validators.map(v => renderSearchResultCard(v)).join('');
+        // Render results
+        document.getElementById('validatorResults').innerHTML = validators.map(v => renderValidatorCard(v, true, false)).join('');
         document.getElementById('resultCount').textContent = validators.length;
         document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
         
-        // NO automatic data fetching - user must click "View Details" or add to Data Center
+        // Fetch last epoch rewards for each card
+        fetchLastEpochForCards(validators);
         
         loading.style.display = 'none';
         results.style.display = 'block';
@@ -12414,7 +11976,6 @@
       if (!myPortfolio.includes(voteAccount)) {
         myPortfolio.push(voteAccount);
         savePortfolio();
-        portfolioLoaded = false; // Force reload when switching to portfolio tab
         
         // Re-render current results to update button
         performSearch();
@@ -12422,60 +11983,28 @@
     }
 
     function removeFromPortfolio(voteAccount) {
-      // Destroy chart instance for this validator if it exists
-      const chartId = 'chart-' + voteAccount;
-      if (chartInstances[chartId]) {
-        chartInstances[chartId].destroy();
-        delete chartInstances[chartId];
-      }
-      // Clean up chart data store
-      if (window.chartDataStore && window.chartDataStore[chartId]) {
-        delete window.chartDataStore[chartId];
-      }
-      
       myPortfolio = myPortfolio.filter(v => v !== voteAccount);
       savePortfolio();
-      portfolioLoaded = false;
-      loadPortfolio(true);
+      loadPortfolio();
     }
 
     function clearPortfolio() {
       if (confirm('Are you sure you want to remove all validators from your Data Center?')) {
-        // Destroy all chart instances
-        Object.keys(chartInstances).forEach(chartId => {
-          if (chartInstances[chartId]) {
-            chartInstances[chartId].destroy();
-            delete chartInstances[chartId];
-          }
-        });
-        // Clear chart data store
-        window.chartDataStore = {};
-        
         myPortfolio = [];
         savePortfolio();
         loadPortfolio();
       }
     }
 
-    let portfolioLoaded = false;
-    let portfolioValidators = [];
-    
-    async function loadPortfolio(forceRefresh = false) {
+    async function loadPortfolio() {
       const loading = document.getElementById('portfolioLoading');
       const results = document.getElementById('portfolioResults');
       const empty = document.getElementById('emptyPortfolio');
-
-      // Skip reload if already loaded and not forcing refresh
-      if (portfolioLoaded && !forceRefresh && portfolioValidators.length === myPortfolio.length) {
-        return;
-      }
 
       if (myPortfolio.length === 0) {
         results.style.display = 'none';
         empty.style.display = 'block';
         loading.style.display = 'none';
-        portfolioLoaded = true;
-        portfolioValidators = [];
         return;
       }
 
@@ -12496,13 +12025,8 @@
         if (validators.length === 0) {
           empty.style.display = 'block';
           loading.style.display = 'none';
-          portfolioLoaded = true;
-          portfolioValidators = [];
           return;
         }
-
-        // Store for later checks
-        portfolioValidators = validators;
 
         // Update summary
         let totalStake = 0;
@@ -12554,7 +12078,6 @@
 
         loading.style.display = 'none';
         results.style.display = 'block';
-        portfolioLoaded = true;
 
         // Destroy old combined chart if exists
         if (chartInstances['combinedChart']) {
@@ -12572,8 +12095,7 @@
     function refreshPortfolio() {
       // Clear cache to force refresh
       validatorInfoCache = {};
-      portfolioLoaded = false;
-      loadPortfolio(true);
+      loadPortfolio();
     }
 
     // Fetch last epoch rewards for all portfolio validators
@@ -12608,102 +12130,34 @@
 
     // Fetch last epoch rewards for each validator card
     async function fetchLastEpochForCards(validators) {
-      // Fetch validators sequentially - use lightweight method to avoid rate limiting
       for (const v of validators) {
         try {
-          // Check if we already have cached data (less than 5 minutes old)
-          const cached = lastEpochCache[v.voteAccount];
-          if (cached && cached.timestamp > Date.now() - 300000) {
-            // Use cached data - just update the DOM
-            const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
-            const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
-            if (cardEl) {
-              cardEl.querySelector('.stat-value').textContent = formatNumber(cached.amount, 2);
-            }
-            if (changeEl && cached.changeHtml) {
-              changeEl.innerHTML = cached.changeHtml;
-            }
-            continue; // Skip RPC call, move to next validator
-          }
-          
-          // Lightweight fetch - only vote account rewards (2 RPC calls total instead of 10+)
-          const rewards = await fetchLastEpochSimple(v.voteAccount, 2);
+          // Fetch 2 epochs to calculate change
+          const rewards = await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 2);
           const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
           const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
           
-          if (rewards && rewards.length > 0) {
-            const sortedRewards = [...rewards].sort((a, b) => b.epoch - a.epoch);
-            const lastEpochAmount = (sortedRewards[0].amount || 0) / 1e9;
+          if (cardEl && rewards && rewards.length > 0) {
+            const lastEpochAmount = (rewards[0].amount || 0) / 1e9;
+            cardEl.querySelector('.stat-value').textContent = formatNumber(lastEpochAmount, 2);
             
-            // Build change HTML
-            let changeHtml = '';
-            if (sortedRewards.length >= 2 && sortedRewards[1].amount > 0) {
-              const priorEpochAmount = (sortedRewards[1].amount || 0) / 1e9;
+            // Calculate change if we have 2 epochs of data
+            if (changeEl && rewards.length >= 2 && rewards[1].amount > 0) {
+              const priorEpochAmount = (rewards[1].amount || 0) / 1e9;
               const changePercent = ((lastEpochAmount - priorEpochAmount) / priorEpochAmount) * 100;
               
               if (changePercent > 0) {
-                changeHtml = `<span style="color: var(--success);">↑ ${formatNumber(changePercent, 2)}%</span>`;
+                changeEl.innerHTML = `<span style="color: var(--success);">↑ ${formatNumber(changePercent, 2)}%</span>`;
               } else if (changePercent < 0) {
-                changeHtml = `<span style="color: var(--danger);">↓ ${formatNumber(Math.abs(changePercent), 2)}%</span>`;
+                changeEl.innerHTML = `<span style="color: var(--danger);">↓ ${formatNumber(Math.abs(changePercent), 2)}%</span>`;
               } else {
-                changeHtml = `<span style="color: var(--text-dim);">→ 0%</span>`;
+                changeEl.innerHTML = `<span style="color: var(--text-dim);">→ 0%</span>`;
               }
-            }
-            
-            // Save to cache for future renders
-            lastEpochCache[v.voteAccount] = {
-              amount: lastEpochAmount,
-              changeHtml: changeHtml,
-              timestamp: Date.now()
-            };
-            
-            // Update DOM if elements exist
-            if (cardEl) {
-              cardEl.querySelector('.stat-value').textContent = formatNumber(lastEpochAmount, 2);
-            }
-            if (changeEl && changeHtml) {
-              changeEl.innerHTML = changeHtml;
             }
           }
         } catch (e) {
           console.error(`Error fetching last epoch for ${v.voteAccount}:`, e);
         }
-      }
-    }
-
-    // Super lightweight last epoch fetch - only vote account rewards, minimal RPC calls
-    async function fetchLastEpochSimple(voteAccount, numEpochs = 2) {
-      try {
-        // Get current epoch
-        if (!currentEpochNumber) {
-          const epochInfo = await rpcCall('getEpochInfo');
-          currentEpochNumber = epochInfo.epoch;
-        }
-        
-        const rewards = [];
-        for (let i = 1; i <= numEpochs; i++) {
-          const epoch = currentEpochNumber - i;
-          const response = await rateLimitedFetch(RPC_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              jsonrpc: '2.0',
-              id: 1,
-              method: 'getInflationReward',
-              params: [[voteAccount], { epoch: epoch }]
-            })
-          });
-          const data = await response.json();
-          if (data.result && data.result[0]) {
-            rewards.push({ epoch, amount: data.result[0].amount || 0 });
-          } else {
-            rewards.push({ epoch, amount: 0 });
-          }
-        }
-        return rewards;
-      } catch (e) {
-        console.error('Error in fetchLastEpochSimple:', e);
-        return [];
       }
     }
 
@@ -12782,10 +12236,12 @@
       }
     }
 
-    // Geolocation - loads from pre-generated JSON file for instant loading
-    // Use central GitHub raw URL so both sites get the same data
-    const GEO_DATA_URL = 'https://raw.githubusercontent.com/ShakaVibe/X1-Validator-HQ/main/validator-locations.json';
-    const GEO_DATA_URL_LOCAL = 'validator-locations.json'; // Fallback to local
+    // Geolocation - loads from local JSON file (auto-updated hourly by GitHub Actions)
+    const GEO_DATA_URLS = [
+      'validator-locations.json',
+      './validator-locations.json',
+      '/X1-Validator-Dashboard/validator-locations.json'
+    ];
     const GEO_CACHE_KEY = 'x1GeoCache';
     const GEO_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours
     
@@ -12793,27 +12249,22 @@
     
     // Load pre-generated geo data from static JSON file
     async function loadStaticGeoData() {
-      // Try central GitHub URL first (ensures both sites show same data)
-      try {
-        const response = await fetch(GEO_DATA_URL + '?t=' + Date.now());
-        if (response.ok) {
-          geoData = await response.json();
-          return geoData;
+      for (const url of GEO_DATA_URLS) {
+        try {
+          const response = await fetch(url + '?t=' + Date.now());
+          if (response.ok) {
+            const data = await response.json();
+            if (data && data.locations && Object.keys(data.locations).length > 100) {
+              geoData = data;
+              console.log('Geo data loaded from:', url, '- Locations:', Object.keys(data.locations).length);
+              return geoData;
+            }
+          }
+        } catch (e) {
+          console.log('Failed to load geo data from:', url);
         }
-      } catch (e) {
-        debugLog('Central geo data not available, trying local');
       }
-      
-      // Fallback to local file
-      try {
-        const response = await fetch(GEO_DATA_URL_LOCAL + '?t=' + Date.now());
-        if (response.ok) {
-          geoData = await response.json();
-          return geoData;
-        }
-      } catch (e) {
-        debugLog('Local geo data not available, using dynamic lookup');
-      }
+      console.log('Static geo data not available, will use dynamic lookup');
       return null;
     }
     
@@ -12893,9 +12344,7 @@
               countryCode: data.country_code,
               city: data.city || 'Unknown',
               lat: data.latitude,
-              lon: data.longitude,
-              org: data.connection?.org || data.connection?.isp || null,
-              isp: data.connection?.isp || null
+              lon: data.longitude
             };
             successCount++;
           }
@@ -12954,9 +12403,7 @@
                   countryCode: d.country_code,
                   city: d.city || 'Unknown',
                   lat: d.latitude,
-                  lon: d.longitude,
-                  org: d.connection?.org || d.connection?.isp || null,
-                  isp: d.connection?.isp || null
+                  lon: d.longitude
                 };
               }
             }
@@ -12985,7 +12432,7 @@
           // Use static data - instant load!
           document.getElementById('mapLoading').style.display = 'none';
           
-          // Render countries from static data (use pre-calculated counts)
+          // Render countries from static data
           if (staticData.countries) {
             const sortedCountries = Object.entries(staticData.countries)
               .sort((a, b) => b[1].count - a[1].count);
@@ -13035,26 +12482,12 @@
           return;
         }
 
-        // Build a set of valid validator nodePubkeys for fast lookup
-        const validatorNodePubkeys = new Set(allValidators.map(v => v.nodePubkey));
-        
-        // Build node pubkey -> node info map (for version lookup)
-        const nodePubkeyToNode = {};
-        nodes.forEach(node => {
-          if (node.pubkey) {
-            nodePubkeyToNode[node.pubkey] = node;
-          }
-        });
-
-        // Extract unique IPs - ONLY for actual validators
+        // Extract unique IPs
         const ipSet = new Set();
-        const nodeMap = {}; // IP -> validator info (only validators, not all nodes)
+        const nodeMap = {}; // IP -> node info
         
         nodes.forEach(node => {
-          if (node.gossip && node.pubkey) {
-            // Only include if this node is an actual validator
-            if (!validatorNodePubkeys.has(node.pubkey)) return;
-            
+          if (node.gossip) {
             const ip = node.gossip.split(':')[0];
             if (ip && !ip.startsWith('127.') && !ip.startsWith('10.') && !ip.startsWith('192.168.') && !ip.startsWith('0.')) {
               ipSet.add(ip);
@@ -13065,12 +12498,12 @@
         });
 
         const uniqueIPs = Array.from(ipSet);
-        const totalValidatorsWithIP = Object.values(nodeMap).reduce((sum, arr) => sum + arr.length, 0);
+        const totalNodes = nodes.length;
         
         // Update loading text to show progress
         const loadingTextEl = document.querySelector('#mapLoading .map-loading-text');
         
-        // Geolocate validator IPs with progress updates
+        // Geolocate ALL IPs with progress updates
         const locations = await batchGeolocateIPs(uniqueIPs, (processed, total, found) => {
           if (loadingTextEl) {
             loadingTextEl.textContent = `Locating validators... ${found} found (${processed}/${total} IPs checked)`;
@@ -13080,17 +12513,17 @@
         // Hide loading
         document.getElementById('mapLoading').style.display = 'none';
         
-        // Count VALIDATORS per country (not nodes)
+        // Count validators per country and collect marker data
         const countryCount = {};
         const markers = [];
         
         Object.entries(locations).forEach(([ip, loc]) => {
           if (!loc || !loc.lat || !loc.lon) return;
           
-          const validatorsAtIP = nodeMap[ip] || [];
-          const validatorCount = validatorsAtIP.length;
+          const nodesAtIP = nodeMap[ip] || [];
+          const validatorCount = nodesAtIP.length;
           
-          // Count by country - this now counts actual validators only
+          // Count by country
           if (!countryCount[loc.countryCode]) {
             countryCount[loc.countryCode] = {
               name: loc.country,
@@ -13099,9 +12532,9 @@
           }
           countryCount[loc.countryCode].count += validatorCount;
           
-          // Add marker for each validator
-          validatorsAtIP.forEach(node => {
-            // Find validator info
+          // Add marker
+          nodesAtIP.forEach(node => {
+            // Find validator name
             const validator = allValidators.find(v => v.nodePubkey === node.pubkey);
             const name = validator ? validator.name : node.pubkey.slice(0, 12) + '...';
             
@@ -13112,8 +12545,7 @@
               city: loc.city,
               country: loc.country,
               pubkey: node.pubkey,
-              version: node.version,
-              isDelinquent: validator ? validator.delinquent : false
+              version: node.version
             });
           });
         });
@@ -13144,22 +12576,7 @@
         const sortedCountries = Object.entries(countryCount)
           .sort((a, b) => b[1].count - a[1].count);
         
-        // Calculate total geolocated validators
-        const totalGeolocated = sortedCountries.reduce((sum, [_, data]) => sum + data.count, 0);
-        const totalValidators = allValidators.length;
-        const geoPercentage = totalValidators > 0 ? ((totalGeolocated / totalValidators) * 100).toFixed(1) : 0;
-        
         if (sortedCountries.length > 0) {
-          const summaryHtml = `
-            <div class="country-item" style="border-bottom: 1px solid var(--border); margin-bottom: 0.5rem; padding-bottom: 0.5rem;">
-              <div class="country-info">
-                <span class="country-flag">🌐</span>
-                <span class="country-name" style="color: var(--accent-cyan);">Geolocated</span>
-              </div>
-              <span class="country-count" style="color: var(--accent-cyan);">${totalGeolocated}/${totalValidators}</span>
-            </div>
-          `;
-          
           const countryListHtml = sortedCountries.map(([code, data]) => `
             <div class="country-item">
               <div class="country-info">
@@ -13170,7 +12587,7 @@
             </div>
           `).join('');
           
-          document.getElementById('countryList').innerHTML = summaryHtml + countryListHtml;
+          document.getElementById('countryList').innerHTML = countryListHtml;
         } else {
           document.getElementById('countryList').innerHTML = '<div class="map-loading-text" style="padding: 1rem;">Could not load location data. Map shows network nodes exist but geolocation unavailable.</div>';
         }
@@ -13179,37 +12596,6 @@
         console.error('Error loading validator locations:', err);
         document.getElementById('mapLoading').style.display = 'none';
         document.getElementById('countryList').innerHTML = '<div class="map-loading-text">Error loading data</div>';
-      }
-    }
-
-    // Refresh map data - clears geo cache and reloads
-    async function refreshMapData() {
-      const btn = document.querySelector('.map-refresh-btn');
-      if (btn) {
-        btn.classList.add('refreshing');
-      }
-      
-      // Clear cached geoData to force fresh fetch from central URL
-      geoData = null;
-      
-      // Show loading state
-      document.getElementById('countryList').innerHTML = '<div class="map-loading-text" style="text-align: center; padding: 2rem;">Refreshing from server...</div>';
-      document.getElementById('mapLoading').style.display = 'flex';
-      
-      // Clear existing markers from map
-      if (validatorMap) {
-        validatorMap.eachLayer(layer => {
-          if (layer instanceof L.Marker || layer instanceof L.FeatureGroup) {
-            validatorMap.removeLayer(layer);
-          }
-        });
-      }
-      
-      // Reload validator locations (will fetch fresh from central GitHub URL)
-      await loadValidatorLocations();
-      
-      if (btn) {
-        btn.classList.remove('refreshing');
       }
     }
 
@@ -13653,110 +13039,15 @@
         validator = { ...validator, ...detailedInfo };
       }
 
-      // Fetch stake breakdown to get self-stake (needed for accurate APY calculation)
-      let selfStakeXNT = 0;
+      // Fetch last epoch rewards
       try {
-        const breakdownData = await fetchStakeBreakdownForCalc(votePubkey, validator.commission || 0);
-        if (breakdownData) {
-          selfStakeXNT = breakdownData.selfStake || 0;
-          validator.selfStake = selfStakeXNT;
-          validator.delegatedStake = breakdownData.delegatedStake || 0;
-        }
-      } catch (e) {
-        console.warn('Could not fetch stake breakdown for comparison:', e);
-      }
-
-      // Fetch rewards for APY calculation (7 epochs)
-      try {
-        const rewards = await fetchTotalValidatorRewards(votePubkey, validator.commission || 0, 7);
+        const rewards = await fetchTotalValidatorRewards(votePubkey, validator.commission || 0, 1);
         if (rewards && rewards.length > 0) {
           validator.lastEpochReward = rewards[0].amount / 1e9; // Convert lamports to XNT
           validator.lastEpochRewardEpoch = rewards[0].epoch;
-          
-          // 7-day total rewards
-          validator.sevenDayRewards = rewards.reduce((sum, r) => sum + r.amount / 1e9, 0);
-          
-          // Calculate Validator APY using SELF-STAKE (same as validator card)
-          // This matches the "VALIDATOR APY" shown on the card
-          if (selfStakeXNT > 0 && rewards.length > 0) {
-            const avgEpochRewardsXNT = validator.sevenDayRewards / rewards.length;
-            // ~365 epochs per year (roughly 1 epoch per day)
-            validator.validatorAPY = (avgEpochRewardsXNT * 365 / selfStakeXNT) * 100;
-          }
-          
-          // Calculate Delegator APY (what delegators earn after commission)
-          // Delegator APY = base network APY * (1 - commission)
-          // We derive base APY from the rewards data
-          const totalStakeXNT = validator.activatedStake || 0;
-          if (totalStakeXNT > 0 && rewards.length > 0) {
-            const avgEpochRewardsXNT = validator.sevenDayRewards / rewards.length;
-            // Base APY before commission
-            const baseAPY = (avgEpochRewardsXNT * 365 / totalStakeXNT) * 100;
-            // Delegators receive base APY minus commission
-            validator.delegatorAPY = baseAPY * (1 - (validator.commission || 0) / 100);
-          }
         }
       } catch (e) {
-        console.warn('Could not fetch rewards for comparison:', e);
-      }
-
-      // Fetch block production data for blocks produced and vote success rate
-      try {
-        const blockProdResponse = await fetch(RPC_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'getBlockProduction',
-            params: [{ identity: validator.nodePubkey }]
-          })
-        });
-        const blockProdData = await blockProdResponse.json();
-        if (blockProdData.result && blockProdData.result.value && blockProdData.result.value.byIdentity) {
-          const production = blockProdData.result.value.byIdentity[validator.nodePubkey];
-          if (production && production.length >= 2) {
-            validator.leaderSlots = production[0];
-            validator.blocksProduced = production[1];
-            validator.voteSuccessRate = validator.leaderSlots > 0 
-              ? (validator.blocksProduced / validator.leaderSlots) * 100 
-              : null;
-          }
-        }
-      } catch (e) {
-        console.warn('Could not fetch block production for comparison:', e);
-      }
-
-      // Fetch geo/location data from cluster nodes
-      try {
-        const clusterResponse = await fetch(RPC_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'getClusterNodes',
-            params: []
-          })
-        });
-        const clusterData = await clusterResponse.json();
-        if (clusterData.result) {
-          const node = clusterData.result.find(n => n.pubkey === validator.nodePubkey);
-          if (node && node.gossip) {
-            const ip = node.gossip.split(':')[0];
-            if (ip && !ip.startsWith('127.') && !ip.startsWith('10.') && !ip.startsWith('192.168.')) {
-              // Look up in geo data
-              if (geoData && geoData.locations && geoData.locations[ip]) {
-                const loc = geoData.locations[ip];
-                validator.city = loc.city;
-                validator.country = loc.country;
-                validator.datacenter = loc.org || loc.isp;
-              }
-            }
-          }
-        }
-      } catch (e) {
-        console.warn('Could not fetch geo data for comparison:', e);
+        console.warn('Could not fetch last epoch rewards for comparison:', e);
       }
 
       // Use cached performance score if available, otherwise calculate
@@ -13877,35 +13168,6 @@
           getColor: v => v.commission <= 5 ? 'var(--success)' : v.commission <= 10 ? 'var(--warning)' : 'var(--danger)'
         },
         { 
-          label: 'Validator APY', 
-          getValue: v => {
-            if (v.validatorAPY !== undefined) {
-              return v.validatorAPY.toFixed(2) + '%';
-            }
-            return 'N/A';
-          },
-          getRaw: v => v.validatorAPY || 0,
-          higherIsBetter: true,
-          getColor: v => {
-            if (v.validatorAPY === undefined) return 'var(--text-dim)';
-            if (v.validatorAPY >= 15) return 'var(--success)';
-            if (v.validatorAPY >= 8) return 'var(--warning)';
-            return 'var(--danger)';
-          }
-        },
-        { 
-          label: '7-Day Rewards', 
-          getValue: v => {
-            if (v.sevenDayRewards !== undefined) {
-              return formatNumber(v.sevenDayRewards, 2) + ' XNT';
-            }
-            return 'N/A';
-          },
-          getRaw: v => v.sevenDayRewards || 0,
-          higherIsBetter: true,
-          getColor: () => 'var(--success)'
-        },
-        { 
           label: 'Last Epoch Earned', 
           getValue: v => {
             if (v.lastEpochReward !== undefined) {
@@ -13930,35 +13192,6 @@
             if (rate === null || rate === undefined) return 'var(--text-dim)';
             if (rate <= 0.5) return 'var(--success)';
             if (rate <= 1) return 'var(--warning)';
-            return 'var(--danger)';
-          }
-        },
-        { 
-          label: 'Blocks Produced', 
-          getValue: v => {
-            if (v.blocksProduced !== undefined) {
-              return formatCompact(v.blocksProduced) + ' / ' + formatCompact(v.leaderSlots);
-            }
-            return 'N/A';
-          },
-          getRaw: v => v.blocksProduced || 0,
-          higherIsBetter: true,
-          getColor: () => 'var(--accent-blue)'
-        },
-        { 
-          label: 'Vote Success Rate', 
-          getValue: v => {
-            if (v.voteSuccessRate !== undefined && v.voteSuccessRate !== null) {
-              return v.voteSuccessRate.toFixed(2) + '%';
-            }
-            return 'N/A';
-          },
-          getRaw: v => v.voteSuccessRate || 0,
-          higherIsBetter: true,
-          getColor: v => {
-            if (v.voteSuccessRate === undefined || v.voteSuccessRate === null) return 'var(--text-dim)';
-            if (v.voteSuccessRate >= 99) return 'var(--success)';
-            if (v.voteSuccessRate >= 95) return 'var(--warning)';
             return 'var(--danger)';
           }
         },
@@ -13989,55 +13222,11 @@
           getColor: () => 'var(--accent-cyan)'
         },
         { 
-          label: 'Stake Rank', 
-          getValue: v => {
-            if (v.rank) {
-              return '#' + v.rank + ' / ' + (v.totalValidators || '?');
-            }
-            return 'N/A';
-          },
-          getRaw: v => v.rank ? (1000 - v.rank) : 0, // Invert so lower rank = higher raw value
-          higherIsBetter: true, // Lower rank number is better, but we inverted it
-          getColor: v => {
-            if (!v.rank) return 'var(--text-dim)';
-            if (v.rank <= 10) return 'var(--success)';
-            if (v.rank <= 50) return 'var(--warning)';
-            return 'var(--text-primary)';
-          }
-        },
-        { 
           label: 'Rewards Balance', 
           getValue: v => formatNumber(v.rewardsBalance || 0, 2) + ' XNT',
           getRaw: v => v.rewardsBalance || 0,
           higherIsBetter: true,
           getColor: () => 'var(--warning)'
-        },
-        { 
-          label: 'Location', 
-          getValue: v => {
-            if (v.city && v.country) {
-              return v.city + ', ' + v.country;
-            } else if (v.country) {
-              return v.country;
-            }
-            return 'Unknown';
-          },
-          getRaw: v => v.country || '',
-          higherIsBetter: null, // Not comparable
-          getColor: () => 'var(--text-secondary)'
-        },
-        { 
-          label: 'Data Center', 
-          getValue: v => {
-            if (v.datacenter) {
-              // Truncate long names
-              return v.datacenter.length > 25 ? v.datacenter.slice(0, 22) + '...' : v.datacenter;
-            }
-            return 'Unknown';
-          },
-          getRaw: v => v.datacenter || '',
-          higherIsBetter: null, // Not comparable
-          getColor: () => 'var(--text-secondary)'
         },
         { 
           label: 'Status', 
@@ -14057,13 +13246,14 @@
           label: 'First Seen', 
           getValue: v => {
             // Show the first epoch we have data for
-            // RPC only returns last 64 epochs, so if validator has full history, they started before that
+            // RPC only returns last 64 epochs, so if first epoch is 64+ ago, show "64+ epochs"
             if (v.epochCreditsHistory && v.epochCreditsHistory.length > 0) {
               const firstEpoch = v.epochCreditsHistory[0][0];
+              const currentEpoch = v.epochCreditsHistory[v.epochCreditsHistory.length - 1][0];
+              const epochsAgo = currentEpoch - firstEpoch;
               
               if (v.epochCreditsHistory.length >= 64) {
-                // Validator has been around longer than RPC history - started before or at this epoch
-                return 'Pre-Epoch ' + firstEpoch;
+                return 'Epoch ' + firstEpoch + '+';
               } else {
                 return 'Epoch ' + firstEpoch;
               }
@@ -15769,7 +14959,6 @@
       if (!myPortfolio.includes(voteAccount)) {
         myPortfolio.push(voteAccount);
         savePortfolio();
-        portfolioLoaded = false; // Force reload when switching to portfolio tab
         renderValidatorList(allValidators.filter(v => {
           const search = document.getElementById('validatorSearchInput').value.toLowerCase();
           return v.name.toLowerCase().includes(search) || 
@@ -15849,13 +15038,9 @@
           authorityBadge.innerHTML = '<span class="authority-badge-icon">⏳</span><span class="authority-badge-text">Checking authority...</span>';
           checkWithdrawAuthority();
         } else if (selectedAccountType === 'vote') {
-          // Vote account selected - check if wallet has withdraw authority for the vote account
-          document.getElementById('selectedWithdrawAuthority').textContent = 'Checking...';
-          authorityBadge.className = 'authority-badge';
-          authorityBadge.innerHTML = '<span class="authority-badge-icon">⏳</span><span class="authority-badge-text">Checking authority...</span>';
-          checkWithdrawAuthority();
-          // Also refresh the authority badges in the Select Account list
-          fetchVoteAccountAuthoritiesForDisplay();
+          // Vote account selected - just show wallet connected
+          authorityBadge.className = 'authority-badge has-authority';
+          authorityBadge.innerHTML = '<span class="authority-badge-icon">✓</span><span class="authority-badge-text">Wallet connected</span>';
         }
         // If no account selected (selectedAccountType is null), badges are already hidden
       } else {
@@ -16173,7 +15358,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const rewards2Data = await rewards2Response.json();
             if (rewards2Data.result) {
               rewards = rewards2Data.result;
-              debugLog('Using epoch-2 rewards for stake detection');
+              console.log('Using epoch-2 rewards for stake detection');
             }
           } catch (e) {
             console.warn('Could not fetch epoch-2 rewards:', e);
@@ -17138,15 +16323,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Re-fetch credits
         fetchManageValidatorData(currentManageValidator.voteAccount);
         
-        // Update authority badge - check if wallet has withdraw authority
+        // Update authority badge (no withdraw authority check needed for vote view)
         document.getElementById('authorityBadge').style.display = 'flex';
         document.getElementById('authorityBadgePair').style.display = 'none';
         
         if (walletPublicKey) {
-          // Show loading state while checking authority
-          authorityBadge.className = 'authority-badge';
-          authorityBadge.innerHTML = '<span class="authority-badge-icon">⏳</span><span class="authority-badge-text">Checking authority...</span>';
-          checkWithdrawAuthority();
+          authorityBadge.className = 'authority-badge has-authority';
+          authorityBadge.innerHTML = '<span class="authority-badge-icon">✓</span><span class="authority-badge-text">Wallet connected</span>';
         } else {
           authorityBadge.className = 'authority-badge clickable';
           authorityBadge.innerHTML = '<span class="authority-badge-icon">🔗</span><span class="authority-badge-text">No wallet connected</span>';
@@ -17815,41 +16998,25 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       // Analyze each stake for merge eligibility
       const analyzedStakes = stakeAccounts.map(stake => {
-        const staker = stake.staker || stake.data.meta?.authorized?.staker;
-        const withdrawer = stake.withdrawer || stake.data.meta?.authorized?.withdrawer;
+        const staker = stake.data.meta?.authorized?.staker;
+        const withdrawer = stake.data.meta?.authorized?.withdrawer;
         const delegation = stake.data.stake?.delegation;
         const voter = delegation?.voter;
-        const state = stake.state;
-        const activationEpoch = stake.activationEpoch;
         
-        // Check eligibility - must pass ALL checks
+        // Check eligibility
         let eligible = true;
         let reason = '';
         
-        // 1. Must be delegated to the current validator
+        // Must be delegated to the current validator
         if (voter !== currentManageValidator.voteAccount) {
           eligible = false;
           reason = 'Different validator';
         }
         
-        // 2. Connected wallet must be the stake authority
-        else if (staker !== walletPublicKey) {
+        // Connected wallet must be the stake authority
+        if (staker !== walletPublicKey) {
           eligible = false;
           reason = 'Not stake authority';
-        }
-        
-        // 3. Must be in "active" state (not activating, deactivating, or inactive)
-        else if (state !== 'active') {
-          eligible = false;
-          if (state === 'activating') {
-            reason = 'Still activating';
-          } else if (state === 'deactivating') {
-            reason = 'Deactivating';
-          } else if (state === 'inactive') {
-            reason = 'Inactive';
-          } else {
-            reason = 'Invalid state';
-          }
         }
         
         return {
@@ -17857,31 +17024,29 @@ Please give me the diagnostic commands to run on my server so you can help me id
           staker,
           withdrawer,
           voter,
-          activationEpoch,
-          state,
           eligible,
           reason
         };
       });
       
       // Find the "base" stake (first eligible one that others will merge into)
-      // All mergeable stakes must share the same staker AND withdrawer AND activation epoch
+      // All mergeable stakes must share the same staker AND withdrawer
       const eligibleStakes = analyzedStakes.filter(s => s.eligible);
       
-      // Group by staker+withdrawer+activationEpoch combination (all must match for merge)
+      // Group by staker+withdrawer combination
       const groups = {};
       eligibleStakes.forEach(stake => {
-        const key = `${stake.staker}_${stake.withdrawer}_${stake.activationEpoch}`;
+        const key = `${stake.staker}_${stake.withdrawer}`;
         if (!groups[key]) {
           groups[key] = [];
         }
         groups[key].push(stake);
       });
       
-      // Mark stakes as mergeable only if they have matching authorities AND activation epoch with at least one other stake
+      // Mark stakes as mergeable only if they have matching authorities with at least one other stake
       analyzedStakes.forEach(stake => {
         if (stake.eligible) {
-          const key = `${stake.staker}_${stake.withdrawer}_${stake.activationEpoch}`;
+          const key = `${stake.staker}_${stake.withdrawer}`;
           if (groups[key] && groups[key].length < 2) {
             stake.eligible = false;
             stake.reason = 'No matching stakes';
@@ -17889,102 +17054,36 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
       });
       
-      // Sort stakes: eligible first (grouped by activation epoch), then ineligible
-      const sortedStakes = [...analyzedStakes].sort((a, b) => {
-        // Eligible stakes come first
-        if (a.eligible && !b.eligible) return -1;
-        if (!a.eligible && b.eligible) return 1;
-        
-        // Within eligible stakes, group by activation epoch
-        if (a.eligible && b.eligible) {
-          if (a.activationEpoch !== b.activationEpoch) {
-            return a.activationEpoch - b.activationEpoch;
-          }
-          // Within same activation epoch, sort by amount (largest first)
-          return b.lamports - a.lamports;
-        }
-        
-        // Within ineligible stakes, sort by amount
-        return b.lamports - a.lamports;
-      });
-      
-      // Build HTML with group headers for eligible stakes
-      let lastEpoch = null;
-      let html = '';
-      
-      sortedStakes.forEach(stake => {
-        // Add epoch group header for eligible stakes
-        if (stake.eligible && stake.activationEpoch !== lastEpoch) {
-          if (lastEpoch !== null) {
-            html += '</div>'; // Close previous group
-          }
-          html += `
-            <div class="merge-epoch-group">
-              <div class="merge-epoch-header">
-                <span class="merge-epoch-label">Activation Epoch ${stake.activationEpoch}</span>
-              </div>
-          `;
-          lastEpoch = stake.activationEpoch;
-        }
-        
-        // Add separator before ineligible section
-        if (!stake.eligible && lastEpoch !== null) {
-          html += '</div>'; // Close last eligible group
-          html += '<div class="merge-ineligible-header">Ineligible Stakes</div>';
-          lastEpoch = null; // Reset so we don't add another separator
-        }
-        
-        html += `
-          <div class="merge-stake-item ${stake.eligible ? '' : 'disabled'}" 
-               onclick="${stake.eligible ? `toggleMergeStakeSelection('${stake.pubkey}')` : ''}">
-            <input type="checkbox" 
-                   class="merge-stake-checkbox" 
-                   id="merge-${stake.pubkey}" 
-                   ${stake.eligible ? '' : 'disabled'}
-                   ${mergeStakesSelected.includes(stake.pubkey) ? 'checked' : ''}
-                   onclick="event.stopPropagation(); toggleMergeStakeSelection('${stake.pubkey}')">
-            <div class="merge-stake-info">
-              <div class="merge-stake-address">${shortenAddress(stake.pubkey)}</div>
-              <div class="merge-stake-details">
-                <span>Staker: ${shortenAddress(stake.staker || '-')}</span>
-                <span>Withdrawer: ${shortenAddress(stake.withdrawer || '-')}</span>
-                ${!stake.eligible ? `<span>Epoch ${stake.activationEpoch || '?'}</span>` : ''}
-              </div>
+      container.innerHTML = analyzedStakes.map(stake => `
+        <div class="merge-stake-item ${stake.eligible ? '' : 'disabled'}" 
+             onclick="${stake.eligible ? `toggleMergeStakeSelection('${stake.pubkey}')` : ''}">
+          <input type="checkbox" 
+                 class="merge-stake-checkbox" 
+                 id="merge-${stake.pubkey}" 
+                 ${stake.eligible ? '' : 'disabled'}
+                 ${mergeStakesSelected.includes(stake.pubkey) ? 'checked' : ''}
+                 onclick="event.stopPropagation(); toggleMergeStakeSelection('${stake.pubkey}')">
+          <div class="merge-stake-info">
+            <div class="merge-stake-address">${shortenAddress(stake.pubkey)}</div>
+            <div class="merge-stake-details">
+              <span>Staker: ${shortenAddress(stake.staker || '-')}</span>
+              <span>Withdrawer: ${shortenAddress(stake.withdrawer || '-')}</span>
             </div>
-            <div class="merge-stake-amount">${formatNumber(lamportsToXNT(stake.lamports), 2)} XNT</div>
-            <span class="merge-stake-status ${stake.eligible ? 'eligible' : 'ineligible'}">
-              ${stake.eligible ? '✓ELIGIBLE' : stake.reason.toUpperCase()}
-            </span>
           </div>
-        `;
-      });
-      
-      // Close last group if it was eligible
-      if (lastEpoch !== null) {
-        html += '</div>';
-      }
-      
-      container.innerHTML = html;
+          <div class="merge-stake-amount">${formatNumber(lamportsToXNT(stake.lamports), 2)} XNT</div>
+          <span class="merge-stake-status ${stake.eligible ? 'eligible' : 'ineligible'}">
+            ${stake.eligible ? '✓ Eligible' : stake.reason}
+          </span>
+        </div>
+      `).join('');
     }
     
     function toggleMergeStakeSelection(pubkey) {
       const index = mergeStakesSelected.indexOf(pubkey);
       if (index > -1) {
-        // Deselecting - always allowed
         mergeStakesSelected.splice(index, 1);
       } else {
-        // Selecting - only allow if less than 2 are selected
-        if (mergeStakesSelected.length >= 2) {
-          // Already have 2 selected, show message
-          showMergeStakesMessage('You can only merge 2 stakes at a time. Deselect one first.', 'warning');
-          return;
-        }
         mergeStakesSelected.push(pubkey);
-        // Clear any warning message when valid selection
-        const msgEl = document.getElementById('mergeStakesMessage');
-        if (msgEl && msgEl.classList.contains('warning')) {
-          msgEl.style.display = 'none';
-        }
       }
       
       // Update checkbox state
@@ -18293,11 +17392,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         // Use StakeProgram.space (should be 200)
         const stakeAccountSize = StakeProgram.space;
-        debugLog('StakeProgram.space:', stakeAccountSize);
+        console.log('StakeProgram.space:', stakeAccountSize);
         
         // Get rent-exempt minimum for a stake account
         const rentExemptMinimum = await connection.getMinimumBalanceForRentExemption(stakeAccountSize);
-        debugLog('Rent exempt minimum:', rentExemptMinimum);
+        console.log('Rent exempt minimum:', rentExemptMinimum);
         
         // Get recent blockhash
         const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
@@ -19117,7 +18216,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       document.getElementById('withdrawStakeSummaryTotal').textContent = '0.0000 XNT';
       document.getElementById('withdrawStakeMessage').style.display = 'none';
       confirmBtn.textContent = 'Withdraw XNT';
-      confirmBtn.onclick = confirmWithdrawFromStake;
+      confirmBtn.onclick = confirmWithdrawStake;
       document.getElementById('withdrawStakeCancelBtn').textContent = 'Cancel';
       
       // Show close account option only for inactive stakes with authority
@@ -19583,7 +18682,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const result = await connectedWallet.provider.signAndSendTransaction(transaction);
             signature = result.signature;
           } catch (signError) {
-            debugLog('signAndSendTransaction failed, trying alternative method:', signError);
+            console.log('signAndSendTransaction failed, trying alternative method:', signError);
             
             // If that fails, try signing then sending separately
             if (connectedWallet.provider.signTransaction) {
@@ -19816,21 +18915,21 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const votePubkey = new PublicKey(currentManageValidator.voteAccount);
         
         // Log for debugging
-        debugLog('Creating stake with authorities set to:', walletPublicKey);
-        debugLog('fromPubkey:', fromPubkey.toString());
-        debugLog('votePubkey:', votePubkey.toString());
-        debugLog('stakeLamports:', stakeLamports);
+        console.log('Creating stake with authorities set to:', walletPublicKey);
+        console.log('fromPubkey:', fromPubkey.toString());
+        console.log('votePubkey:', votePubkey.toString());
+        console.log('stakeLamports:', stakeLamports);
         
         // Generate a new keypair for the stake account
         const stakeAccount = Keypair.generate();
-        debugLog('New stake account:', stakeAccount.publicKey.toString());
+        console.log('New stake account:', stakeAccount.publicKey.toString());
         
         // Calculate total lamports needed (stake amount + rent)
         const totalLamports = stakeLamports + STAKE_ACCOUNT_RENT;
         
         // Get recent blockhash
         const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
-        debugLog('Got blockhash:', blockhash);
+        console.log('Got blockhash:', blockhash);
         
         // StakeProgram.createAccount returns a Transaction object
         const createAccountTx = StakeProgram.createAccount({
@@ -19874,11 +18973,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
           transaction.add(delegateTx);
         }
         
-        debugLog('Transaction built with', transaction.instructions.length, 'instructions');
+        console.log('Transaction built with', transaction.instructions.length, 'instructions');
         
         // The stake account keypair needs to sign
         transaction.partialSign(stakeAccount);
-        debugLog('Partially signed with stake account');
+        console.log('Partially signed with stake account');
         
         btn.textContent = 'Awaiting Wallet Approval...';
         showCreateStakeMessage('Please approve the transaction in your wallet...', 'info');
@@ -19888,13 +18987,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
           let signature;
           
           try {
-            debugLog('Calling signAndSendTransaction...');
+            console.log('Calling signAndSendTransaction...');
             // The wallet needs to sign the partially signed transaction
             const result = await connectedWallet.provider.signAndSendTransaction(transaction);
             signature = result.signature || result;
-            debugLog('Got signature:', signature);
+            console.log('Got signature:', signature);
           } catch (signError) {
-            debugLog('signAndSendTransaction failed, trying alternative:', signError);
+            console.log('signAndSendTransaction failed, trying alternative:', signError);
             
             if (connectedWallet.provider.signTransaction) {
               const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
@@ -20468,7 +19567,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         wallet.provider.on('disconnect', handleDisconnect);
         wallet.provider.on('accountChanged', handleAccountChange);
         
-        debugLog('Wallet connected:', walletPublicKey);
+        console.log('Wallet connected:', walletPublicKey);
         
       } catch (error) {
         console.error('Wallet connection error:', error);
@@ -20524,7 +19623,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           });
         }
         
-        debugLog('Wallet account changed to:', walletPublicKey);
+        console.log('Wallet account changed to:', walletPublicKey);
       } else {
         handleDisconnect();
       }
@@ -20535,7 +19634,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         try {
           await connectedWallet.provider.disconnect();
         } catch (e) {
-          debugLog('Disconnect error:', e);
+          console.log('Disconnect error:', e);
         }
       }
       handleDisconnect();
@@ -20628,7 +19727,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       document.getElementById('withdrawMessage').style.display = 'none';
       document.getElementById('withdrawConfirmBtn').disabled = true;
       document.getElementById('withdrawConfirmBtn').textContent = 'Withdraw XNT';
-      document.getElementById('withdrawConfirmBtn').onclick = confirmWithdrawXnt;
+      document.getElementById('withdrawConfirmBtn').onclick = confirmWithdraw;
       document.getElementById('withdrawXntCancelBtn').textContent = 'Cancel';
       document.getElementById('withdrawAuthorityWarning').style.display = 'none';
       
@@ -20812,7 +19911,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const result = await connectedWallet.provider.signAndSendTransaction(transaction);
             signature = result.signature;
           } catch (signError) {
-            debugLog('signAndSendTransaction failed, trying alternative method:', signError);
+            console.log('signAndSendTransaction failed, trying alternative method:', signError);
             
             // If that fails, try signing then sending separately
             if (connectedWallet.provider.signTransaction) {
@@ -21029,7 +20128,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const result = await connectedWallet.provider.signAndSendTransaction(transaction);
             signature = result.signature;
           } catch (signError) {
-            debugLog('signAndSendTransaction failed, trying alternative method:', signError);
+            console.log('signAndSendTransaction failed, trying alternative method:', signError);
             
             // If that fails, try signing then sending separately
             if (connectedWallet.provider.signTransaction) {
@@ -21176,7 +20275,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const data = await response.json();
         // The identity info is stored separately, this just confirms the account exists
       } catch (e) {
-        debugLog('Could not load current identity info:', e);
+        console.log('Could not load current identity info:', e);
       }
     }
 
@@ -21300,7 +20399,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const result = await connectedWallet.provider.signAndSendTransaction(transaction);
             signature = result.signature;
           } catch (signError) {
-            debugLog('signAndSendTransaction failed:', signError);
+            console.log('signAndSendTransaction failed:', signError);
             
             if (connectedWallet.provider.signTransaction) {
               const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
@@ -21680,12 +20779,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // Toggle stake details visibility and fetch data
     async function toggleStakeDetails(voteAccount, validatorName, totalStake, commission, button) {
       const section = document.getElementById('stake-' + voteAccount + '-section');
-      
-      if (!section) {
-        console.error('Stake section not found for:', voteAccount);
-        return;
-      }
-      
       const isExpanded = section.classList.contains('expanded');
       
       if (isExpanded) {
@@ -21824,7 +20917,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           
           // If no rewards from epoch-1, try epoch-2
           const hasRewards = rewards.some(r => r && r.amount > 0);
-          debugLog('Epoch-1 rewards check:', { 
+          console.log('Epoch-1 rewards check:', { 
             epoch: currentEpochNumber - 1, 
             hasRewards, 
             rewardsCount: rewards.filter(r => r && r.amount > 0).length 
@@ -21847,7 +20940,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               const rewards2Data = await rewards2Response.json();
               if (rewards2Data.result) {
                 rewards = rewards2Data.result;
-                debugLog('Using epoch-2 rewards for stake detection, epoch:', currentEpochNumber - 2);
+                console.log('Using epoch-2 rewards for stake detection, epoch:', currentEpochNumber - 2);
               }
             } catch (e) {
               console.warn('Could not fetch epoch-2 rewards:', e);
@@ -21882,7 +20975,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
           
           // Debug: Log all accounts and their rates
-          debugLog('Stake accounts analysis:', accountsWithRates.map(a => ({
+          console.log('Stake accounts analysis:', accountsWithRates.map(a => ({
             pubkey: a.pubkey.slice(0, 8) + '...',
             stakeXNT: a.stakeXNT.toFixed(2),
             rewardRate: (a.rewardRate * 100).toFixed(6) + '%',
@@ -21960,7 +21053,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
           
           // Debug: Log classification results
-          debugLog('Classification result:', {
+          console.log('Classification result:', {
             method: detectionMethod,
             selfStake: selfStake.toFixed(2) + ' XNT',
             delegatedStake: delegatedStake.toFixed(2) + ' XNT',
@@ -22304,12 +21397,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // Toggle chart visibility and initialize
     async function toggleChart(chartId, button) {
       const section = document.getElementById(chartId + '-section');
-      
-      if (!section) {
-        console.error('Chart section not found for:', chartId);
-        return;
-      }
-      
       const isExpanded = section.classList.contains('expanded');
       
       if (isExpanded) {
@@ -22337,14 +21424,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
           data.creditsLabels = data.labels;
           data.creditsData = data.data;
           
-          // Show loading with progress message while fetching XNT data
-          if (loadingEl) {
-            loadingEl.style.display = 'flex';
-            loadingEl.innerHTML = `
-              <div class="loading-spinner-small"></div>
-              <span>Loading rewards data (this may take a few seconds)...</span>
-            `;
-          }
+          // Show loading while fetching XNT data
+          if (loadingEl) loadingEl.style.display = 'flex';
           
           // Fetch XNT rewards data (vote account + self-stake rewards)
           const rewards = await fetchTotalValidatorRewards(data.voteAccount, data.commission, 30);
@@ -22435,13 +21516,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           if (peakEl) peakEl.textContent = formatNumber(Math.max(...xntData), 2) + ' XNT';
         } else {
           // Show loading and fetch
-          if (loadingEl) {
-            loadingEl.style.display = 'flex';
-            loadingEl.innerHTML = `
-              <div class="loading-spinner-small"></div>
-              <span>Loading rewards data (this may take a few seconds)...</span>
-            `;
-          }
+          if (loadingEl) loadingEl.style.display = 'flex';
           if (statsEl) statsEl.style.opacity = '0.5';
           
           // Fetch XNT rewards data (vote account + self-stake rewards)
@@ -22544,7 +21619,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Check for validators that didn't return data and retry them
         const missingValidators = rewardResults.filter(r => !r.rewards || r.rewards.length === 0);
         if (missingValidators.length > 0 && missingValidators.length < validators.length) {
-          debugLog(`Retrying ${missingValidators.length} validators that didn't return data...`);
+          console.log(`Retrying ${missingValidators.length} validators that didn't return data...`);
           await new Promise(resolve => setTimeout(resolve, 500));
           
           const retryResults = await Promise.all(
@@ -23069,7 +22144,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // Check for validators that didn't return data and retry them
           const missingValidators = rewardResults.filter(r => !r.rewards || r.rewards.length === 0);
           if (missingValidators.length > 0 && missingValidators.length < validators.length) {
-            debugLog(`Retrying ${missingValidators.length} validators that didn't return data...`);
+            console.log(`Retrying ${missingValidators.length} validators that didn't return data...`);
             // Small delay before retry
             await new Promise(resolve => setTimeout(resolve, 500));
             
