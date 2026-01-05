@@ -12236,8 +12236,8 @@
       }
     }
 
-    // Geolocation - loads from pre-generated JSON file hosted on GitHub (auto-updated every 3 hours)
-    const GEO_DATA_URL = 'https://raw.githubusercontent.com/ShakaVibe/X1-Validator-HQ/main/validator-locations.json';
+    // Geolocation - loads from local JSON file (auto-synced from X1-Validator-HQ every 3 hours)
+    const GEO_DATA_URL = 'validator-locations.json';
     const GEO_CACHE_KEY = 'x1GeoCache';
     const GEO_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours
     
@@ -12249,6 +12249,7 @@
         const response = await fetch(GEO_DATA_URL + '?t=' + Date.now());
         if (response.ok) {
           geoData = await response.json();
+          console.log('Geo data loaded:', Object.keys(geoData.locations || {}).length, 'locations');
           return geoData;
         }
       } catch (e) {
