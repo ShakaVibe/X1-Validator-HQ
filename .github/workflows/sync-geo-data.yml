@@ -17,13 +17,16 @@ jobs:
       - name: Download latest geo data from X1-Validator-HQ
         run: |
           echo "Fetching latest validator-locations.json..."
-          curl -sL -o validator-locations.json https://raw.githubusercontent.com/ShakaVibe/X1-Validator-HQ/main/validator-locations.json
+          curl -sfL -o validator-locations.json https://raw.githubusercontent.com/ShakaVibe/X1-Validator-HQ/main/validator-locations.json
           
-          # Show summary
-          if [ -f validator-locations.json ]; then
+          # Verify it's valid JSON
+          if jq empty validator-locations.json 2>/dev/null; then
             TOTAL=$(jq -r '.totalLocations // .totalNodes // "unknown"' validator-locations.json)
             UPDATED=$(jq -r '.lastUpdated // "unknown"' validator-locations.json)
-            echo "Downloaded: $TOTAL locations, last updated: $UPDATED"
+            echo "Downloaded valid JSON: $TOTAL locations, last updated: $UPDATED"
+          else
+            echo "Downloaded file is not valid JSON"
+            exit 1
           fi
       
       - name: Commit and push if changed
