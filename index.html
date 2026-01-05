@@ -13533,14 +13533,13 @@
           label: 'First Seen', 
           getValue: v => {
             // Show the first epoch we have data for
-            // RPC only returns last 64 epochs, so if first epoch is 64+ ago, show "64+ epochs"
+            // RPC only returns last 64 epochs, so if we have full history, validator existed before that
             if (v.epochCreditsHistory && v.epochCreditsHistory.length > 0) {
               const firstEpoch = v.epochCreditsHistory[0][0];
-              const currentEpoch = v.epochCreditsHistory[v.epochCreditsHistory.length - 1][0];
-              const epochsAgo = currentEpoch - firstEpoch;
               
               if (v.epochCreditsHistory.length >= 64) {
-                return 'Epoch ' + firstEpoch + '+';
+                // Validator has been around longer than RPC history - they existed before this epoch
+                return 'Pre-Epoch ' + firstEpoch;
               } else {
                 return 'Epoch ' + firstEpoch;
               }
