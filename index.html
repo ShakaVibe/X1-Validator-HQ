@@ -2687,6 +2687,8 @@
       justify-content: center;
       align-items: center;
       padding: 1rem;
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
 
     .modal {
@@ -3783,6 +3785,7 @@
       padding: 1.25rem 1.5rem;
       overflow-y: auto;
       flex: 1;
+      overscroll-behavior: contain;
     }
 
     .manage-section {
@@ -15287,6 +15290,9 @@
       // Update wallet status display
       updateManageWalletDisplay();
       
+      // Prevent background scrolling
+      document.body.style.overflow = 'hidden';
+      
       // Show modal
       document.getElementById('manageValidatorModal').style.display = 'flex';
       
@@ -15381,6 +15387,9 @@
       document.getElementById('manageValidatorModal').style.display = 'none';
       currentManageValidator = null;
       stakeAccounts = [];
+      
+      // Restore background scrolling
+      document.body.style.overflow = '';
     }
 
     // Performance Explainer Modal functions
