@@ -1,0 +1,43 @@
+name: Sync Validator Locations
+
+on:
+  schedule:
+    # Run every hour at 15 minutes past
+    - cron: '15 * * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Download latest geo data from X1-Validator-HQ
+        run: |
+          echo "Fetching latest validator-locations.json..."
+          curl -sL -o validator-locations.json https://raw.githubusercontent.com/ShakaVibe/X1-Validator-HQ/main/validator-locations.json
+          
+          # Show summary
+          if [ -f validator-locations.json ]; then
+            TOTAL=$(jq -r '.totalLocations // .totalNodes // "unknown"' validator-locations.json)
+            UPDATED=$(jq -r '.lastUpdated // "unknown"' validator-locations.json)
+            echo "Downloaded: $TOTAL locations, last updated: $UPDATED"
+          fi
+      
+      - name: Commit and push if changed
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          
+          git add validator-locations.json
+          
+          if git diff --staged --quiet; then
+            echo "No changes to validator locations"
+          else
+            TOTAL=$(jq -r '.totalLocations // .totalNodes // "?"' validator-locations.json)
+            git commit -m "Sync validator locations ($TOTAL nodes)"
+            git push
+            echo "Updated validator-locations.json with $TOTAL locations"
+          fi
