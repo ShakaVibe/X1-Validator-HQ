@@ -1192,6 +1192,150 @@
     .score-orange { color: #ff9800; }
     .score-bad { color: var(--danger); }
 
+    /* Validator Preview Card - Lightweight lookup results */
+    .validator-preview {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .validator-preview:hover {
+      border-color: var(--accent-blue);
+      background: var(--bg-card-hover);
+    }
+
+    .validator-preview-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .validator-preview-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-secondary);
+      border: 2px solid var(--border);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .validator-preview-logo-placeholder {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--bg-primary);
+      flex-shrink: 0;
+    }
+
+    .validator-preview-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .validator-preview-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .validator-preview-address {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .validator-preview-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .validator-preview-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .validator-preview-btn.details-btn {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .validator-preview-btn.details-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-blue);
+    }
+
+    .validator-preview-btn.add-btn {
+      background: var(--accent-gradient);
+      color: var(--bg-primary);
+      border: none;
+    }
+
+    .validator-preview-btn.add-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .validator-preview-btn.added-btn {
+      background: transparent;
+      color: var(--success);
+      border-color: var(--success);
+      cursor: default;
+    }
+
+    .validator-preview-btn.added-btn:hover {
+      background: transparent;
+      transform: none;
+    }
+
+    /* Full validator detail view (shown when Details is clicked) */
+    .validator-detail-expanded {
+      margin-top: -0.75rem;
+      margin-bottom: 0.75rem;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .validator-detail-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+
     /* Expandable Chart Section */
     .validator-expand-btn {
       width: 100%;
@@ -11870,6 +12014,100 @@
       `;
     }
 
+    // Lightweight validator preview for search results (no RPC calls needed)
+    function renderValidatorPreview(validator) {
+      const isInPortfolio = myPortfolio.includes(validator.votePubkey);
+      const firstLetter = validator.name.charAt(0).toUpperCase();
+      
+      const logoHtml = validator.iconUrl 
+        ? `<img class="validator-preview-logo" src="${validator.iconUrl}" alt="${validator.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+           <div class="validator-preview-logo-placeholder" style="display:none;">${firstLetter}</div>`
+        : `<div class="validator-preview-logo-placeholder">${firstLetter}</div>`;
+
+      const addBtnHtml = isInPortfolio
+        ? `<button class="validator-preview-btn added-btn" disabled>✓ Added</button>`
+        : `<button class="validator-preview-btn add-btn" onclick="event.stopPropagation(); addToPortfolioFromPreview('${validator.votePubkey}', this)">+ Add</button>`;
+
+      return `
+        <div class="validator-preview" id="preview-${validator.votePubkey}">
+          <div class="validator-preview-info">
+            ${logoHtml}
+            <div class="validator-preview-details">
+              <div class="validator-preview-name">${validator.name}</div>
+              <div class="validator-preview-address">${validator.votePubkey}</div>
+            </div>
+          </div>
+          <div class="validator-preview-actions">
+            <button class="validator-preview-btn details-btn" onclick="showValidatorDetails('${validator.votePubkey}')">Details</button>
+            ${addBtnHtml}
+          </div>
+        </div>
+        <div class="validator-detail-expanded" id="details-${validator.votePubkey}" style="display: none;"></div>
+      `;
+    }
+
+    // Add to portfolio from preview card (updates button state)
+    function addToPortfolioFromPreview(voteAccount, btnElement) {
+      if (!myPortfolio.includes(voteAccount)) {
+        myPortfolio.push(voteAccount);
+        savePortfolio();
+        
+        // Update button to show "Added"
+        btnElement.className = 'validator-preview-btn added-btn';
+        btnElement.disabled = true;
+        btnElement.textContent = '✓ Added';
+      }
+    }
+
+    // Show full validator details (loads data on demand)
+    async function showValidatorDetails(voteAccount) {
+      const detailsContainer = document.getElementById('details-' + voteAccount);
+      const previewCard = document.getElementById('preview-' + voteAccount);
+      
+      // Toggle visibility
+      if (detailsContainer.style.display === 'block') {
+        detailsContainer.style.display = 'none';
+        previewCard.style.borderRadius = '12px';
+        return;
+      }
+      
+      // Show loading state
+      detailsContainer.innerHTML = `
+        <div class="validator-detail-loading">
+          <div class="loading-spinner-small"></div>
+          <span>Loading validator details...</span>
+        </div>
+      `;
+      detailsContainer.style.display = 'block';
+      previewCard.style.borderRadius = '12px 12px 0 0';
+      
+      try {
+        // Fetch full validator info (this makes the RPC calls)
+        const validator = await getValidatorInfo(voteAccount);
+        
+        if (validator) {
+          // Render the full card inside the details container
+          detailsContainer.innerHTML = renderValidatorCard(validator, true, false);
+          
+          // Fetch last epoch rewards for the card
+          fetchLastEpochForCards([validator]);
+        } else {
+          detailsContainer.innerHTML = `
+            <div class="validator-detail-loading">
+              <span>Could not load validator details</span>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error('Error loading validator details:', err);
+        detailsContainer.innerHTML = `
+          <div class="validator-detail-loading">
+            <span>Error loading details. Please try again.</span>
+          </div>
+        `;
+      }
+    }
+
     // Search functionality
     function handleSearchInput() {
       const input = document.getElementById('searchInput').value.trim();
@@ -11910,42 +12148,60 @@
       loading.style.display = 'flex';
 
       try {
-        let validators = [];
+        let matches = [];
 
         // Check if it's a vote account address (44 characters)
         if (input.length >= 43 && input.length <= 44) {
-          const validator = await getValidatorInfo(input);
+          // Direct lookup - find in allValidators first (no RPC call)
+          const validator = allValidators.find(v => v.votePubkey === input);
           if (validator) {
-            validators.push(validator);
+            matches.push(validator);
+          } else {
+            // Not in cache, try RPC lookup and show full details directly
+            const fullValidator = await getValidatorInfo(input);
+            if (fullValidator) {
+              // For direct address lookup, show full card immediately
+              document.getElementById('validatorResults').innerHTML = renderValidatorCard(fullValidator, true, false);
+              document.getElementById('resultCount').textContent = '1';
+              document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+              fetchLastEpochForCards([fullValidator]);
+              loading.style.display = 'none';
+              results.style.display = 'block';
+              return;
+            }
           }
         } else {
-          // Search by name
+          // Search by name - use local data only (NO RPC calls!)
           const searchLower = input.toLowerCase();
-          const matches = allValidators.filter(v => 
+          matches = allValidators.filter(v => 
             v.name.toLowerCase().includes(searchLower) ||
             v.votePubkey.toLowerCase().includes(searchLower) ||
             v.nodePubkey.toLowerCase().includes(searchLower)
-          ).slice(0, 20); // Limit to 20 results
-
-          for (const match of matches) {
-            const validator = await getValidatorInfo(match.votePubkey);
-            if (validator) {
-              validators.push(validator);
-            }
-          }
+          ).slice(0, 30); // Limit to 30 results
         }
         
-        if (validators.length === 0) {
+        if (matches.length === 0) {
           throw new Error('No validators found');
         }
 
-        // Render results
-        document.getElementById('validatorResults').innerHTML = validators.map(v => renderValidatorCard(v, true, false)).join('');
-        document.getElementById('resultCount').textContent = validators.length;
+        // For single exact match on address, show full card
+        if (matches.length === 1 && input.length >= 43) {
+          const fullValidator = await getValidatorInfo(matches[0].votePubkey);
+          if (fullValidator) {
+            document.getElementById('validatorResults').innerHTML = renderValidatorCard(fullValidator, true, false);
+            document.getElementById('resultCount').textContent = '1';
+            document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+            fetchLastEpochForCards([fullValidator]);
+            loading.style.display = 'none';
+            results.style.display = 'block';
+            return;
+          }
+        }
+
+        // Render lightweight preview cards (NO RPC calls - instant!)
+        document.getElementById('validatorResults').innerHTML = matches.map(v => renderValidatorPreview(v)).join('');
+        document.getElementById('resultCount').textContent = matches.length;
         document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
-        
-        // Fetch last epoch rewards for each card
-        fetchLastEpochForCards(validators);
         
         loading.style.display = 'none';
         results.style.display = 'block';
