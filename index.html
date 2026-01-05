@@ -12067,9 +12067,20 @@
       // Toggle visibility
       if (detailsContainer.style.display === 'block') {
         detailsContainer.style.display = 'none';
+        detailsContainer.innerHTML = ''; // Clear to avoid duplicate IDs
         previewCard.style.borderRadius = '12px';
         return;
       }
+      
+      // Close any other open details panels first to avoid duplicate IDs
+      document.querySelectorAll('.validator-detail-expanded').forEach(el => {
+        if (el.id !== 'details-' + voteAccount) {
+          el.style.display = 'none';
+          el.innerHTML = '';
+          const otherPreview = document.getElementById('preview-' + el.id.replace('details-', ''));
+          if (otherPreview) otherPreview.style.borderRadius = '12px';
+        }
+      });
       
       // Show loading state
       detailsContainer.innerHTML = `
@@ -13593,6 +13604,18 @@
 
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById(tab + 'Tab').classList.add('active');
+
+      // Clear lookup results when switching away to avoid duplicate element IDs
+      if (tab !== 'lookup') {
+        const validatorResults = document.getElementById('validatorResults');
+        if (validatorResults) {
+          validatorResults.innerHTML = '';
+        }
+        const resultsSection = document.getElementById('resultsSection');
+        if (resultsSection) {
+          resultsSection.style.display = 'none';
+        }
+      }
 
       if (tab === 'portfolio') {
         loadPortfolio();
