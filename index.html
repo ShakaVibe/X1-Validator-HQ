@@ -9564,16 +9564,18 @@
           <div class="info-icon">ℹ️</div>
           <div class="info-text">
             <p><strong>Merge Requirements:</strong></p>
-            <p>• All selected stakes must have the same stake authority</p>
-            <p>• All selected stakes must have the same withdraw authority</p>
+            <p>• You can only merge 2 stakes at a time</p>
+            <p>• Both stakes must have the same stake authority</p>
+            <p>• Both stakes must have the same withdraw authority</p>
+            <p>• Both stakes must be fully active (not activating/deactivating)</p>
+            <p>• Both stakes must have the same activation epoch</p>
             <p>• Your connected wallet must be the stake authority</p>
-            <p>• Stakes must be in compatible states</p>
           </div>
         </div>
         
         <!-- Stakes List -->
         <div class="send-section">
-          <div class="send-label">Select Stakes to Merge: <span style="font-weight: 400; color: var(--text-dim); font-size: 0.8rem;">(first selected = destination account)</span></div>
+          <div class="send-label">Select 2 Stakes to Merge: <span style="font-weight: 400; color: var(--text-dim); font-size: 0.8rem;">(first selected = destination account)</span></div>
           <div class="merge-stakes-list" id="mergeStakesList">
             <div class="loading-text">Loading stakes...</div>
           </div>
@@ -17781,25 +17783,41 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       // Analyze each stake for merge eligibility
       const analyzedStakes = stakeAccounts.map(stake => {
-        const staker = stake.data.meta?.authorized?.staker;
-        const withdrawer = stake.data.meta?.authorized?.withdrawer;
+        const staker = stake.staker || stake.data.meta?.authorized?.staker;
+        const withdrawer = stake.withdrawer || stake.data.meta?.authorized?.withdrawer;
         const delegation = stake.data.stake?.delegation;
         const voter = delegation?.voter;
+        const state = stake.state;
+        const activationEpoch = stake.activationEpoch;
         
-        // Check eligibility
+        // Check eligibility - must pass ALL checks
         let eligible = true;
         let reason = '';
         
-        // Must be delegated to the current validator
+        // 1. Must be delegated to the current validator
         if (voter !== currentManageValidator.voteAccount) {
           eligible = false;
           reason = 'Different validator';
         }
         
-        // Connected wallet must be the stake authority
-        if (staker !== walletPublicKey) {
+        // 2. Connected wallet must be the stake authority
+        else if (staker !== walletPublicKey) {
           eligible = false;
           reason = 'Not stake authority';
+        }
+        
+        // 3. Must be in "active" state (not activating, deactivating, or inactive)
+        else if (state !== 'active') {
+          eligible = false;
+          if (state === 'activating') {
+            reason = 'Still activating';
+          } else if (state === 'deactivating') {
+            reason = 'Deactivating';
+          } else if (state === 'inactive') {
+            reason = 'Inactive';
+          } else {
+            reason = 'Invalid state';
+          }
         }
         
         return {
@@ -17807,29 +17825,31 @@ Please give me the diagnostic commands to run on my server so you can help me id
           staker,
           withdrawer,
           voter,
+          activationEpoch,
+          state,
           eligible,
           reason
         };
       });
       
       // Find the "base" stake (first eligible one that others will merge into)
-      // All mergeable stakes must share the same staker AND withdrawer
+      // All mergeable stakes must share the same staker AND withdrawer AND activation epoch
       const eligibleStakes = analyzedStakes.filter(s => s.eligible);
       
-      // Group by staker+withdrawer combination
+      // Group by staker+withdrawer+activationEpoch combination (all must match for merge)
       const groups = {};
       eligibleStakes.forEach(stake => {
-        const key = `${stake.staker}_${stake.withdrawer}`;
+        const key = `${stake.staker}_${stake.withdrawer}_${stake.activationEpoch}`;
         if (!groups[key]) {
           groups[key] = [];
         }
         groups[key].push(stake);
       });
       
-      // Mark stakes as mergeable only if they have matching authorities with at least one other stake
+      // Mark stakes as mergeable only if they have matching authorities AND activation epoch with at least one other stake
       analyzedStakes.forEach(stake => {
         if (stake.eligible) {
-          const key = `${stake.staker}_${stake.withdrawer}`;
+          const key = `${stake.staker}_${stake.withdrawer}_${stake.activationEpoch}`;
           if (groups[key] && groups[key].length < 2) {
             stake.eligible = false;
             stake.reason = 'No matching stakes';
@@ -17851,11 +17871,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
             <div class="merge-stake-details">
               <span>Staker: ${shortenAddress(stake.staker || '-')}</span>
               <span>Withdrawer: ${shortenAddress(stake.withdrawer || '-')}</span>
+              <span>Activated: Epoch ${stake.activationEpoch || '?'}</span>
             </div>
           </div>
           <div class="merge-stake-amount">${formatNumber(lamportsToXNT(stake.lamports), 2)} XNT</div>
           <span class="merge-stake-status ${stake.eligible ? 'eligible' : 'ineligible'}">
-            ${stake.eligible ? '✓ Eligible' : stake.reason}
+            ${stake.eligible ? '✓ELIGIBLE' : stake.reason.toUpperCase()}
           </span>
         </div>
       `).join('');
@@ -17864,9 +17885,21 @@ Please give me the diagnostic commands to run on my server so you can help me id
     function toggleMergeStakeSelection(pubkey) {
       const index = mergeStakesSelected.indexOf(pubkey);
       if (index > -1) {
+        // Deselecting - always allowed
         mergeStakesSelected.splice(index, 1);
       } else {
+        // Selecting - only allow if less than 2 are selected
+        if (mergeStakesSelected.length >= 2) {
+          // Already have 2 selected, show message
+          showMergeStakesMessage('You can only merge 2 stakes at a time. Deselect one first.', 'warning');
+          return;
+        }
         mergeStakesSelected.push(pubkey);
+        // Clear any warning message when valid selection
+        const msgEl = document.getElementById('mergeStakesMessage');
+        if (msgEl && msgEl.classList.contains('warning')) {
+          msgEl.style.display = 'none';
+        }
       }
       
       // Update checkbox state
