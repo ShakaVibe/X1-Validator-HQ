@@ -13320,6 +13320,23 @@
         console.warn('Could not fetch last epoch rewards for comparison:', e);
       }
 
+      // Try to get location data
+      try {
+        if (geoData && geoData.locations && validator.nodePubkey) {
+          // Find the IP for this validator from cluster nodes
+          const nodes = await rpcCall('getClusterNodes').catch(() => []);
+          const node = nodes.find(n => n.pubkey === validator.nodePubkey);
+          if (node && node.gossip) {
+            const ip = node.gossip.split(':')[0];
+            if (ip && geoData.locations[ip]) {
+              validator.location = geoData.locations[ip];
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Could not fetch location for comparison:', e);
+      }
+
       // Use cached performance score if available, otherwise calculate
       if (validator.performanceScore === undefined) {
         validator.performanceScore = calculatePerformanceScore(validator);
@@ -13545,6 +13562,226 @@
             if (v.epochCreditsHistory.length >= 10) return 'var(--warning)';
             return 'var(--text-dim)';
           }
+        },
+        { 
+          label: 'Skip Rate (Current)', 
+          getValue: v => {
+            const rate = v.skipRate;
+            return rate !== null && rate !== undefined ? rate.toFixed(2) + '%' : 'N/A';
+          },
+          getRaw: v => v.skipRate ?? 999,
+          higherIsBetter: false,
+          getColor: v => {
+            const rate = v.skipRate;
+            if (rate === null || rate === undefined) return 'var(--text-dim)';
+            if (rate <= 0.5) return 'var(--success)';
+            if (rate <= 1) return 'var(--warning)';
+            return 'var(--danger)';
+          }
+        },
+        { 
+          label: 'Uptime %', 
+          getValue: v => {
+            // Calculate uptime from skip rate (inverse)
+            const skipRate = v.skipRateHistory?.avgSkipRate ?? v.skipRate;
+            if (skipRate === null || skipRate === undefined) return 'N/A';
+            const uptime = 100 - skipRate;
+            return uptime.toFixed(2) + '%';
+          },
+          getRaw: v => {
+            const skipRate = v.skipRateHistory?.avgSkipRate ?? v.skipRate;
+            if (skipRate === null || skipRate === undefined) return 0;
+            return 100 - skipRate;
+          },
+          higherIsBetter: true,
+          getColor: v => {
+            const skipRate = v.skipRateHistory?.avgSkipRate ?? v.skipRate;
+            if (skipRate === null || skipRate === undefined) return 'var(--text-dim)';
+            const uptime = 100 - skipRate;
+            if (uptime >= 99.5) return 'var(--success)';
+            if (uptime >= 99) return 'var(--warning)';
+            return 'var(--danger)';
+          }
+        },
+        { 
+          label: 'Delinquent History', 
+          getValue: v => {
+            // Check delinquency status - if we have history, count delinquent epochs
+            // For now, just show current status since we don't track historical delinquency
+            if (v.delinquent || v.isDelinquent) return 'Currently Delinquent';
+            return 'None';
+          },
+          getRaw: v => (v.delinquent || v.isDelinquent) ? 1 : 0,
+          higherIsBetter: false,
+          getColor: v => (v.delinquent || v.isDelinquent) ? 'var(--danger)' : 'var(--success)'
+        },
+        { 
+          label: 'Stake Rank', 
+          getValue: v => {
+            if (v.rank && v.totalValidators) {
+              return '#' + v.rank + ' of ' + v.totalValidators;
+            }
+            // Try to calculate from allValidators
+            const idx = allValidators.findIndex(av => av.votePubkey === v.votePubkey || av.votePubkey === v.voteAccount);
+            if (idx >= 0) {
+              return '#' + (idx + 1) + ' of ' + allValidators.length;
+            }
+            return 'N/A';
+          },
+          getRaw: v => {
+            if (v.rank) return v.rank;
+            const idx = allValidators.findIndex(av => av.votePubkey === v.votePubkey || av.votePubkey === v.voteAccount);
+            return idx >= 0 ? idx + 1 : 9999;
+          },
+          higherIsBetter: false, // Lower rank is better
+          getColor: v => {
+            let rank = v.rank;
+            if (!rank) {
+              const idx = allValidators.findIndex(av => av.votePubkey === v.votePubkey || av.votePubkey === v.voteAccount);
+              rank = idx >= 0 ? idx + 1 : 9999;
+            }
+            if (rank <= 50) return 'var(--success)';
+            if (rank <= 200) return 'var(--accent-cyan)';
+            if (rank <= 500) return 'var(--warning)';
+            return 'var(--text-secondary)';
+          }
+        },
+        { 
+          label: 'APY Estimate', 
+          getValue: v => {
+            // Calculate estimated APY based on commission and network average
+            // Base APY is roughly 5-8% on X1, adjusted by commission
+            const baseAPY = 6.5; // Approximate network average
+            const commission = v.commission || 0;
+            const delegatorAPY = baseAPY * (1 - commission / 100);
+            return delegatorAPY.toFixed(2) + '%';
+          },
+          getRaw: v => {
+            const baseAPY = 6.5;
+            const commission = v.commission || 0;
+            return baseAPY * (1 - commission / 100);
+          },
+          higherIsBetter: true,
+          getColor: v => {
+            const baseAPY = 6.5;
+            const commission = v.commission || 0;
+            const apy = baseAPY * (1 - commission / 100);
+            if (apy >= 6) return 'var(--success)';
+            if (apy >= 5) return 'var(--warning)';
+            return 'var(--danger)';
+          }
+        },
+        { 
+          label: '7-Day Earnings', 
+          getValue: v => {
+            // Sum last 7 epochs from epochCreditsHistory converted to XNT
+            if (v.epochCreditsHistory && v.epochCreditsHistory.length >= 7) {
+              let total = 0;
+              const recentEpochs = v.epochCreditsHistory.slice(-8, -1); // Last 7 complete epochs
+              recentEpochs.forEach(entry => {
+                if (entry.length >= 3) {
+                  total += (entry[1] - entry[2]); // credits earned
+                }
+              });
+              // Very rough conversion - credits to XNT (this is approximate)
+              // A better implementation would use actual reward data
+              if (v.lastEpochReward && recentEpochs.length > 0) {
+                const avgCreditsPerEpoch = total / recentEpochs.length;
+                const lastCredits = recentEpochs[recentEpochs.length - 1];
+                const lastCreditsEarned = lastCredits ? (lastCredits[1] - lastCredits[2]) : avgCreditsPerEpoch;
+                if (lastCreditsEarned > 0) {
+                  const xntPerCredit = v.lastEpochReward / lastCreditsEarned;
+                  const estimatedXNT = total * xntPerCredit;
+                  return formatNumber(estimatedXNT, 2) + ' XNT';
+                }
+              }
+              return formatCompact(total) + ' credits';
+            }
+            return 'N/A';
+          },
+          getRaw: v => {
+            if (v.epochCreditsHistory && v.epochCreditsHistory.length >= 7) {
+              let total = 0;
+              const recentEpochs = v.epochCreditsHistory.slice(-8, -1);
+              recentEpochs.forEach(entry => {
+                if (entry.length >= 3) {
+                  total += (entry[1] - entry[2]);
+                }
+              });
+              return total;
+            }
+            return 0;
+          },
+          higherIsBetter: true,
+          getColor: () => 'var(--success)'
+        },
+        { 
+          label: 'Avg Epoch Earnings', 
+          getValue: v => {
+            if (v.epochCreditsHistory && v.epochCreditsHistory.length > 1) {
+              let total = 0;
+              let count = 0;
+              // Skip current epoch (last entry), use previous epochs
+              const epochs = v.epochCreditsHistory.slice(0, -1);
+              epochs.forEach(entry => {
+                if (entry.length >= 3) {
+                  total += (entry[1] - entry[2]);
+                  count++;
+                }
+              });
+              if (count > 0) {
+                const avgCredits = total / count;
+                // If we have lastEpochReward, try to convert to XNT
+                if (v.lastEpochReward) {
+                  const lastCredits = epochs[epochs.length - 1];
+                  const lastCreditsEarned = lastCredits ? (lastCredits[1] - lastCredits[2]) : avgCredits;
+                  if (lastCreditsEarned > 0) {
+                    const xntPerCredit = v.lastEpochReward / lastCreditsEarned;
+                    const avgXNT = avgCredits * xntPerCredit;
+                    return formatNumber(avgXNT, 2) + ' XNT';
+                  }
+                }
+                return formatCompact(avgCredits) + ' credits';
+              }
+            }
+            return 'N/A';
+          },
+          getRaw: v => {
+            if (v.epochCreditsHistory && v.epochCreditsHistory.length > 1) {
+              let total = 0;
+              let count = 0;
+              const epochs = v.epochCreditsHistory.slice(0, -1);
+              epochs.forEach(entry => {
+                if (entry.length >= 3) {
+                  total += (entry[1] - entry[2]);
+                  count++;
+                }
+              });
+              return count > 0 ? total / count : 0;
+            }
+            return 0;
+          },
+          higherIsBetter: true,
+          getColor: () => 'var(--accent-cyan)'
+        },
+        { 
+          label: 'Location', 
+          getValue: v => {
+            // Try to find location from geoData using nodePubkey
+            if (geoData && geoData.locations) {
+              // Need to find IP for this validator - check if we have it cached
+              // This requires cluster nodes data which may not be available in compare context
+              // For now, return a placeholder or check if validator has location stored
+              if (v.location) {
+                const flag = countryFlags[v.location.countryCode] || '🌍';
+                return flag + ' ' + (v.location.city || v.location.country || 'Unknown');
+              }
+            }
+            return '🌍 Unknown';
+          },
+          getRaw: v => v.location?.country || '',
+          higherIsBetter: null,
+          getColor: () => 'var(--text-primary)'
         }
       ];
 
