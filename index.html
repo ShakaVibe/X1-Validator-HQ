@@ -18334,7 +18334,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // Populate modal
       document.getElementById('redelegateStakeAddress').textContent = shortenAddress(stake.pubkey);
       document.getElementById('redelegateStakeAddressCopyBtn').innerHTML = getCopyButtonHtml(stake.pubkey);
-      document.getElementById('redelegateCurrentValidator').textContent = currentManageValidator?.name || 'Unknown';
+      
+      // For inactive stakes, clarify that it's not really delegated anymore
+      const isInactive = stake.state === 'inactive';
+      if (isInactive) {
+        document.getElementById('redelegateCurrentValidator').textContent = (currentManageValidator?.name || 'Unknown') + ' (inactive)';
+        document.getElementById('redelegateCurrentValidator').style.color = 'var(--text-dim)';
+      } else {
+        document.getElementById('redelegateCurrentValidator').textContent = currentManageValidator?.name || 'Unknown';
+        document.getElementById('redelegateCurrentValidator').style.color = '#ff9800';
+      }
       document.getElementById('redelegateCurrentVoteAccount').textContent = shortenAddress(currentManageValidator?.voteAccount || '');
       document.getElementById('redelegateStakeAmount').textContent = formatNumber(stakedLamports / 1e9, 4);
       
@@ -18451,10 +18460,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
 
     async function loadValidatorsForRedelegate() {
+      // Check if stake is inactive - if so, allow selecting any validator including the "current" one
+      // because an inactive stake isn't really delegated to anyone anymore
+      const isInactive = redelegateStakeData?.state === 'inactive';
+      const currentVoteAccount = currentManageValidator?.voteAccount;
+      
       // Use existing allValidators if available and has data
       if (allValidators && allValidators.length > 0) {
         allValidatorsForRedelegate = allValidators
-          .filter(v => v.votePubkey && v.votePubkey !== currentManageValidator?.voteAccount) // Exclude current validator and invalid entries
+          .filter(v => {
+            if (!v.votePubkey) return false; // Must have valid votePubkey
+            // Only exclude current validator if stake is NOT inactive
+            if (!isInactive && v.votePubkey === currentVoteAccount) return false;
+            return true;
+          })
           .map(v => ({
             voteAccount: v.votePubkey, // Note: allValidators uses votePubkey
             nodePubkey: v.nodePubkey,
@@ -18504,7 +18523,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
               name: identities[v.nodePubkey] || identities[v.votePubkey] || shortenAddress(v.votePubkey),
               isDelinquent: true
             }))
-          ].filter(v => v.voteAccount && v.voteAccount !== currentManageValidator?.voteAccount);
+          ].filter(v => {
+            if (!v.voteAccount) return false;
+            // Only exclude current validator if stake is NOT inactive
+            if (!isInactive && v.voteAccount === currentVoteAccount) return false;
+            return true;
+          });
         }
       } catch (e) {
         console.error('Error loading validators for redelegate:', e);
