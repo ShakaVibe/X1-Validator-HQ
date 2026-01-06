@@ -22238,14 +22238,21 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Show loading
         if (loadingEl) loadingEl.style.display = 'flex';
         
+        // Clear the rewards cache to ensure fresh data
+        totalRewardsCache = {};
+        
         // Fetch XNT rewards for all validators (vote account + self-stake)
         const allRewards = {};
         const allEpochs = new Set();
         
+        console.log('[Combined XNT] Starting fetch for', validators.length, 'validators');
+        
         // Fetch rewards for each validator sequentially to avoid rate limiting
         for (const validator of validators) {
           try {
+            console.log('[Combined XNT] Fetching for', validator.name, 'voteAccount:', validator.voteAccount);
             const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
+            console.log('[Combined XNT]', validator.name, 'got', rewards?.length || 0, 'rewards');
             if (rewards && rewards.length > 0) {
               allRewards[validator.voteAccount] = {};
               rewards.forEach(r => {
@@ -22254,11 +22261,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
               });
             }
           } catch (e) {
-            console.error(`Error fetching rewards for ${validator.name}:`, e);
+            console.error(`[Combined XNT] Error fetching rewards for ${validator.name}:`, e);
           }
           // Small delay between validators to avoid rate limiting
           await new Promise(resolve => setTimeout(resolve, 100));
         }
+        
+        console.log('[Combined XNT] Total epochs collected:', allEpochs.size);
+        console.log('[Combined XNT] Validators with data:', Object.keys(allRewards).length);
         
         // Sort epochs (fetchInflationRewards already excludes current epoch)
         let sortedEpochs = Array.from(allEpochs).sort((a, b) => a - b);
