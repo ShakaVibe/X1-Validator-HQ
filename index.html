@@ -10062,18 +10062,12 @@
               })
             });
             const data = await response.json();
-            // Check if we got a valid response (result array exists)
-            if (data.result !== undefined) {
-              // result[0] can be null (no rewards) or an object with amount
-              const reward = data.result[0];
-              const amount = (reward && reward.amount !== undefined) ? reward.amount : 0;
-              return { epoch, amount, success: true };
+            if (data.result && data.result[0]) {
+              return { epoch, amount: data.result[0].amount || 0 };
             }
-            // RPC error or unexpected response
-            return { epoch, amount: 0, success: false };
+            return { epoch, amount: 0 };
           } catch (e) {
-            // Request failed - mark as unsuccessful
-            return { epoch, amount: 0, success: false };
+            return { epoch, amount: 0 };
           }
         });
 
@@ -10120,12 +10114,10 @@
         // Wait for vote rewards
         const voteRewardsResults = await Promise.all(voteRewardsPromises);
         
-        // Build vote rewards map by epoch - only store successful results
+        // Build vote rewards map by epoch
         const rewardsByEpoch = {};
         voteRewardsResults.forEach(r => {
-          if (r.success) {
-            rewardsByEpoch[r.epoch] = r.amount;
-          }
+          rewardsByEpoch[r.epoch] = r.amount;
         });
 
         // Step 4: Identify self-stake accounts using WITHDRAWER MATCHING
@@ -10177,33 +10169,28 @@
                   })
                 });
                 const data = await response.json();
-                // Check if we got a valid response (result array exists)
-                if (data.result !== undefined) {
+                if (data.result) {
                   // Sum up all self-stake rewards for this epoch
                   let totalSelfStakeReward = 0;
                   data.result.forEach(r => {
-                    if (r && r.amount !== undefined) {
-                      totalSelfStakeReward += r.amount;
-                    }
+                    if (r && r.amount) totalSelfStakeReward += r.amount;
                   });
-                  return { epoch, amount: totalSelfStakeReward, success: true };
+                  return { epoch, amount: totalSelfStakeReward };
                 }
-                return { epoch, amount: 0, success: false };
+                return { epoch, amount: 0 };
               } catch (e) {
-                return { epoch, amount: 0, success: false };
+                return { epoch, amount: 0 };
               }
             });
 
             const selfStakeResults = await Promise.all(selfStakePromises);
             
-            // Add self-stake rewards to vote rewards - only for successful fetches
+            // Add self-stake rewards to vote rewards
             selfStakeResults.forEach(r => {
-              if (r.success) {
-                if (rewardsByEpoch[r.epoch] !== undefined) {
-                  rewardsByEpoch[r.epoch] += r.amount;
-                } else {
-                  rewardsByEpoch[r.epoch] = r.amount;
-                }
+              if (rewardsByEpoch[r.epoch] !== undefined) {
+                rewardsByEpoch[r.epoch] += r.amount;
+              } else {
+                rewardsByEpoch[r.epoch] = r.amount;
               }
             });
           }
@@ -22252,64 +22239,26 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (loadingEl) loadingEl.style.display = 'flex';
         
         // Fetch XNT rewards for all validators (vote account + self-stake)
-        // Add staggered delays to prevent RPC rate limiting
         const allRewards = {};
         const allEpochs = new Set();
         
-        const fetchValidatorRewards = async (validator, delayMs = 0) => {
-          if (delayMs > 0) {
-            await new Promise(resolve => setTimeout(resolve, delayMs));
-          }
+        // Fetch rewards for each validator sequentially to avoid rate limiting
+        for (const validator of validators) {
           try {
             const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
-            console.log(`[Combined Chart] ${validator.name}: got ${rewards?.length || 0} epochs of data`);
-            return { voteAccount: validator.voteAccount, name: validator.name, rewards: rewards || [] };
-          } catch (e) {
-            console.error(`[Combined Chart] Error fetching rewards for ${validator.name}:`, e);
-            return { voteAccount: validator.voteAccount, name: validator.name, rewards: [] };
-          }
-        };
-        
-        // Stagger requests by 300ms each to avoid rate limiting
-        let rewardResults = await Promise.all(validators.map((v, i) => fetchValidatorRewards(v, i * 300)));
-        
-        // Check for validators that didn't return data and retry them with longer delays
-        const missingValidators = rewardResults.filter(r => !r.rewards || r.rewards.length === 0);
-        if (missingValidators.length > 0 && missingValidators.length < validators.length) {
-          console.log(`[Combined Chart] Retrying ${missingValidators.length} validators that didn't return data...`);
-          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
-          
-          // Retry one at a time with delays
-          for (let i = 0; i < missingValidators.length; i++) {
-            const m = missingValidators[i];
-            const validator = validators.find(v => v.voteAccount === m.voteAccount);
-            if (validator) {
-              console.log(`[Combined Chart] Retry attempt for ${validator.name}...`);
-              const retryResult = await fetchValidatorRewards(validator, i * 500);
-              const idx = rewardResults.findIndex(r => r.voteAccount === retryResult.voteAccount);
-              if (idx !== -1 && retryResult.rewards && retryResult.rewards.length > 0) {
-                rewardResults[idx] = retryResult;
-                console.log(`[Combined Chart] Retry successful for ${validator.name}`);
-              } else {
-                console.log(`[Combined Chart] Retry failed for ${validator.name}`);
-              }
+            if (rewards && rewards.length > 0) {
+              allRewards[validator.voteAccount] = {};
+              rewards.forEach(r => {
+                allRewards[validator.voteAccount][r.epoch] = r.amount / 1e9;
+                allEpochs.add(r.epoch);
+              });
             }
+          } catch (e) {
+            console.error(`Error fetching rewards for ${validator.name}:`, e);
           }
+          // Small delay between validators to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 100));
         }
-        
-        // Process results
-        rewardResults.forEach(result => {
-          if (result.rewards && result.rewards.length > 0) {
-            allRewards[result.voteAccount] = {};
-            result.rewards.forEach(r => {
-              allRewards[result.voteAccount][r.epoch] = r.amount / 1e9;
-              allEpochs.add(r.epoch);
-            });
-            console.log(`[Combined Chart] Processed ${result.name}: ${Object.keys(allRewards[result.voteAccount]).length} epochs`);
-          } else {
-            console.warn(`[Combined Chart] No rewards data for ${result.name}`);
-          }
-        });
         
         // Sort epochs (fetchInflationRewards already excludes current epoch)
         let sortedEpochs = Array.from(allEpochs).sort((a, b) => a - b);
