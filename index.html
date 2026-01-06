@@ -10062,13 +10062,17 @@
               })
             });
             const data = await response.json();
-            if (data.result && data.result[0] && data.result[0].amount !== undefined) {
-              return { epoch, amount: data.result[0].amount, success: true };
+            // Check if we got a valid response (result array exists)
+            if (data.result !== undefined) {
+              // result[0] can be null (no rewards) or an object with amount
+              const reward = data.result[0];
+              const amount = (reward && reward.amount !== undefined) ? reward.amount : 0;
+              return { epoch, amount, success: true };
             }
-            // No data for this epoch - could be before validator existed or RPC issue
-            return { epoch, amount: 0, success: data.result !== undefined };
+            // RPC error or unexpected response
+            return { epoch, amount: 0, success: false };
           } catch (e) {
-            // Request failed - mark as unsuccessful so we don't overwrite good cached data
+            // Request failed - mark as unsuccessful
             return { epoch, amount: 0, success: false };
           }
         });
@@ -10173,17 +10177,16 @@
                   })
                 });
                 const data = await response.json();
-                if (data.result) {
+                // Check if we got a valid response (result array exists)
+                if (data.result !== undefined) {
                   // Sum up all self-stake rewards for this epoch
                   let totalSelfStakeReward = 0;
-                  let hasData = false;
                   data.result.forEach(r => {
                     if (r && r.amount !== undefined) {
                       totalSelfStakeReward += r.amount;
-                      hasData = true;
                     }
                   });
-                  return { epoch, amount: totalSelfStakeReward, success: hasData || data.result.length === 0 };
+                  return { epoch, amount: totalSelfStakeReward, success: true };
                 }
                 return { epoch, amount: 0, success: false };
               } catch (e) {
