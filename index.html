@@ -22243,22 +22243,48 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const allRewards = {};
         const allEpochs = new Set();
         
-        // Fetch rewards for each validator sequentially to avoid rate limiting
+        // Check if we already have cached data for all validators
+        let allCached = true;
         for (const validator of validators) {
-          try {
-            const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
-            if (rewards && rewards.length > 0) {
+          const cacheKey = `${validator.voteAccount}_total_30`;
+          const cached = totalRewardsCache[cacheKey];
+          if (!cached || !cached.data || cached.data.length < 25) {
+            allCached = false;
+            break;
+          }
+        }
+        
+        if (allCached) {
+          // Use cached data - no new requests needed
+          for (const validator of validators) {
+            const cacheKey = `${validator.voteAccount}_total_30`;
+            const cached = totalRewardsCache[cacheKey];
+            if (cached && cached.data && cached.data.length > 0) {
               allRewards[validator.voteAccount] = {};
-              rewards.forEach(r => {
+              cached.data.forEach(r => {
                 allRewards[validator.voteAccount][r.epoch] = r.amount / 1e9;
                 allEpochs.add(r.epoch);
               });
             }
-          } catch (e) {
-            console.error(`Error fetching rewards for ${validator.name}:`, e);
           }
-          // Delay between validators to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, 200));
+        } else {
+          // Fetch rewards for each validator sequentially to avoid rate limiting
+          for (const validator of validators) {
+            try {
+              const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
+              if (rewards && rewards.length > 0) {
+                allRewards[validator.voteAccount] = {};
+                rewards.forEach(r => {
+                  allRewards[validator.voteAccount][r.epoch] = r.amount / 1e9;
+                  allEpochs.add(r.epoch);
+                });
+              }
+            } catch (e) {
+              console.error(`Error fetching rewards for ${validator.name}:`, e);
+            }
+            // Delay between validators to avoid rate limiting
+            await new Promise(resolve => setTimeout(resolve, 200));
+          }
         }
         
         // Sort epochs (fetchInflationRewards already excludes current epoch)
