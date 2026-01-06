@@ -18334,16 +18334,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // Populate modal
       document.getElementById('redelegateStakeAddress').textContent = shortenAddress(stake.pubkey);
       document.getElementById('redelegateStakeAddressCopyBtn').innerHTML = getCopyButtonHtml(stake.pubkey);
-      
-      // For inactive stakes, clarify that it's not really delegated anymore
-      const isInactive = stake.state === 'inactive';
-      if (isInactive) {
-        document.getElementById('redelegateCurrentValidator').textContent = (currentManageValidator?.name || 'Unknown') + ' (inactive)';
-        document.getElementById('redelegateCurrentValidator').style.color = 'var(--text-dim)';
-      } else {
-        document.getElementById('redelegateCurrentValidator').textContent = currentManageValidator?.name || 'Unknown';
-        document.getElementById('redelegateCurrentValidator').style.color = '#ff9800';
-      }
       document.getElementById('redelegateCurrentVoteAccount').textContent = shortenAddress(currentManageValidator?.voteAccount || '');
       document.getElementById('redelegateStakeAmount').textContent = formatNumber(stakedLamports / 1e9, 4);
       
@@ -18365,6 +18355,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const isActive = stake.state === 'active';
       const isInactive = stake.state === 'inactive';
       const isTransitioning = stake.state === 'activating' || stake.state === 'deactivating';
+      
+      // For inactive stakes, clarify that it's not really delegated anymore
+      if (isInactive) {
+        document.getElementById('redelegateCurrentValidator').textContent = (currentManageValidator?.name || 'Unknown') + ' (inactive)';
+        document.getElementById('redelegateCurrentValidator').style.color = 'var(--text-dim)';
+      } else {
+        document.getElementById('redelegateCurrentValidator').textContent = currentManageValidator?.name || 'Unknown';
+        document.getElementById('redelegateCurrentValidator').style.color = '#ff9800';
+      }
       
       if (!hasStakeAuthority) {
         authorityWarning.style.display = 'flex';
