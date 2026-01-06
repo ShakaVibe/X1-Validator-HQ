@@ -10062,12 +10062,14 @@
               })
             });
             const data = await response.json();
-            if (data.result && data.result[0]) {
-              return { epoch, amount: data.result[0].amount || 0 };
+            if (data.result && data.result[0] && data.result[0].amount !== undefined) {
+              return { epoch, amount: data.result[0].amount, success: true };
             }
-            return { epoch, amount: 0 };
+            // No data for this epoch - could be before validator existed or RPC issue
+            return { epoch, amount: 0, success: data.result !== undefined };
           } catch (e) {
-            return { epoch, amount: 0 };
+            // Request failed - mark as unsuccessful so we don't overwrite good cached data
+            return { epoch, amount: 0, success: false };
           }
         });
 
@@ -10114,10 +10116,12 @@
         // Wait for vote rewards
         const voteRewardsResults = await Promise.all(voteRewardsPromises);
         
-        // Build vote rewards map by epoch
+        // Build vote rewards map by epoch - only store successful results
         const rewardsByEpoch = {};
         voteRewardsResults.forEach(r => {
-          rewardsByEpoch[r.epoch] = r.amount;
+          if (r.success) {
+            rewardsByEpoch[r.epoch] = r.amount;
+          }
         });
 
         // Step 4: Identify self-stake accounts using WITHDRAWER MATCHING
@@ -10172,25 +10176,31 @@
                 if (data.result) {
                   // Sum up all self-stake rewards for this epoch
                   let totalSelfStakeReward = 0;
+                  let hasData = false;
                   data.result.forEach(r => {
-                    if (r && r.amount) totalSelfStakeReward += r.amount;
+                    if (r && r.amount !== undefined) {
+                      totalSelfStakeReward += r.amount;
+                      hasData = true;
+                    }
                   });
-                  return { epoch, amount: totalSelfStakeReward };
+                  return { epoch, amount: totalSelfStakeReward, success: hasData || data.result.length === 0 };
                 }
-                return { epoch, amount: 0 };
+                return { epoch, amount: 0, success: false };
               } catch (e) {
-                return { epoch, amount: 0 };
+                return { epoch, amount: 0, success: false };
               }
             });
 
             const selfStakeResults = await Promise.all(selfStakePromises);
             
-            // Add self-stake rewards to vote rewards
+            // Add self-stake rewards to vote rewards - only for successful fetches
             selfStakeResults.forEach(r => {
-              if (rewardsByEpoch[r.epoch] !== undefined) {
-                rewardsByEpoch[r.epoch] += r.amount;
-              } else {
-                rewardsByEpoch[r.epoch] = r.amount;
+              if (r.success) {
+                if (rewardsByEpoch[r.epoch] !== undefined) {
+                  rewardsByEpoch[r.epoch] += r.amount;
+                } else {
+                  rewardsByEpoch[r.epoch] = r.amount;
+                }
               }
             });
           }
@@ -22239,10 +22249,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (loadingEl) loadingEl.style.display = 'flex';
         
         // Fetch XNT rewards for all validators (vote account + self-stake) in parallel
+        // Add staggered delays to prevent RPC rate limiting
         const allRewards = {};
         const allEpochs = new Set();
         
-        const fetchValidatorRewards = async (validator) => {
+        const fetchValidatorRewards = async (validator, delayMs = 0) => {
+          if (delayMs > 0) {
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+          }
           try {
             const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
             return { voteAccount: validator.voteAccount, name: validator.name, rewards: rewards || [] };
@@ -22252,7 +22266,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
         };
         
-        let rewardResults = await Promise.all(validators.map(fetchValidatorRewards));
+        // Stagger requests by 200ms each to avoid rate limiting
+        let rewardResults = await Promise.all(validators.map((v, i) => fetchValidatorRewards(v, i * 200)));
         
         // Check for validators that didn't return data and retry them
         const missingValidators = rewardResults.filter(r => !r.rewards || r.rewards.length === 0);
