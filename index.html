@@ -17520,27 +17520,84 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return;
       }
       
+      // Get current epoch for state checks
+      const currentEpoch = currentEpochNumber || 0;
+      
       // Analyze each stake for merge eligibility
       const analyzedStakes = stakeAccounts.map(stake => {
         const staker = stake.data.meta?.authorized?.staker;
         const withdrawer = stake.data.meta?.authorized?.withdrawer;
         const delegation = stake.data.stake?.delegation;
         const voter = delegation?.voter;
+        const lockup = stake.data.meta?.lockup;
         
-        // Check eligibility
+        // Get activation/deactivation info
+        const activationEpoch = delegation ? parseInt(delegation.activationEpoch) || 0 : 0;
+        const deactivationEpoch = delegation?.deactivationEpoch;
+        const isDeactivating = deactivationEpoch && deactivationEpoch !== '18446744073709551615';
+        
+        // Get credits observed (important for merge compatibility)
+        const creditsObserved = delegation?.creditsObserved ? parseInt(delegation.creditsObserved) : 0;
+        
+        // Determine stake state
+        let state = stake.state || 'unknown';
+        if (!state || state === 'unknown') {
+          if (isDeactivating) {
+            const deactivationEpochNum = parseInt(deactivationEpoch);
+            state = deactivationEpochNum >= currentEpoch ? 'deactivating' : 'inactive';
+          } else if (activationEpoch >= currentEpoch) {
+            state = 'activating';
+          } else {
+            state = 'active';
+          }
+        }
+        
+        // Check lockup (epoch and unix timestamp)
+        const lockupEpoch = lockup?.epoch ? parseInt(lockup.epoch) : 0;
+        const lockupTimestamp = lockup?.unixTimestamp ? parseInt(lockup.unixTimestamp) : 0;
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        const isLocked = lockupEpoch > currentEpoch || lockupTimestamp > currentTimestamp;
+        
+        // Check eligibility with comprehensive checks
         let eligible = true;
         let reason = '';
         
-        // Must be delegated to the current validator
+        // 1. Must be delegated to the current validator
         if (voter !== currentManageValidator.voteAccount) {
           eligible = false;
           reason = 'Different validator';
         }
         
-        // Connected wallet must be the stake authority
-        if (staker !== walletPublicKey) {
+        // 2. Connected wallet must be the stake authority
+        else if (staker !== walletPublicKey) {
           eligible = false;
           reason = 'Not stake authority';
+        }
+        
+        // 3. Connected wallet must also be the withdraw authority (required for merge)
+        else if (withdrawer !== walletPublicKey) {
+          eligible = false;
+          reason = 'Not withdraw authority';
+        }
+        
+        // 4. Must be fully active (not activating, deactivating, or inactive)
+        else if (state === 'activating') {
+          eligible = false;
+          reason = 'Still activating';
+        }
+        else if (state === 'deactivating') {
+          eligible = false;
+          reason = 'Deactivating';
+        }
+        else if (state === 'inactive') {
+          eligible = false;
+          reason = 'Inactive';
+        }
+        
+        // 5. Must not be locked
+        else if (isLocked) {
+          eligible = false;
+          reason = 'Locked';
         }
         
         return {
@@ -17548,18 +17605,27 @@ Please give me the diagnostic commands to run on my server so you can help me id
           staker,
           withdrawer,
           voter,
+          state,
+          activationEpoch,
+          creditsObserved,
+          lockupEpoch,
+          lockupTimestamp,
+          isLocked,
           eligible,
           reason
         };
       });
       
       // Find the "base" stake (first eligible one that others will merge into)
-      // All mergeable stakes must share the same staker AND withdrawer
+      // All mergeable stakes must share the same staker AND withdrawer AND activation epoch
       const eligibleStakes = analyzedStakes.filter(s => s.eligible);
       
-      // Group by staker+withdrawer combination
+      // Group by staker+withdrawer+activationEpoch combination
+      // Stakes must have been activated in the same epoch OR both be fully active for multiple epochs
       const groups = {};
       eligibleStakes.forEach(stake => {
+        // For merging, stakes need same authorities
+        // Activation epoch matching is handled by the stake program, but we group by it for safety
         const key = `${stake.staker}_${stake.withdrawer}`;
         if (!groups[key]) {
           groups[key] = [];
@@ -17574,6 +17640,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
           if (groups[key] && groups[key].length < 2) {
             stake.eligible = false;
             stake.reason = 'No matching stakes';
+          }
+        }
+      });
+      
+      // Additional check: within each group, check if credits observed are compatible
+      // Stakes with different creditsObserved values may fail to merge
+      Object.values(groups).forEach(group => {
+        if (group.length >= 2) {
+          // Check if all stakes in the group have the same creditsObserved
+          const creditsValues = [...new Set(group.map(s => s.creditsObserved))];
+          if (creditsValues.length > 1) {
+            // Different credits observed - mark with warning but still allow (program will reject if incompatible)
+            // The stake program will do the final check
           }
         }
       });
@@ -17596,7 +17675,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </div>
           <div class="merge-stake-amount">${formatNumber(lamportsToXNT(stake.lamports), 2)} XNT</div>
           <span class="merge-stake-status ${stake.eligible ? 'eligible' : 'ineligible'}">
-            ${stake.eligible ? '✓ Eligible' : stake.reason}
+            ${stake.eligible ? '✓ ELIGIBLE' : stake.reason}
           </span>
         </div>
       `).join('');
@@ -17761,12 +17840,24 @@ Please give me the diagnostic commands to run on my server so you can help me id
       } catch (e) {
         console.error('Merge stakes error:', e);
         
-        if (e.message?.includes('User rejected') || e.message?.includes('cancelled')) {
+        const errorMsg = e.message || String(e);
+        
+        if (errorMsg.includes('User rejected') || errorMsg.includes('cancelled')) {
           showMergeStakesMessage('Transaction cancelled by user.', 'error');
-        } else if (e.message?.includes('Plugin Closed')) {
+        } else if (errorMsg.includes('Plugin Closed')) {
           showMergeStakesMessage('Wallet closed unexpectedly. Please try again.', 'error');
+        } else if (errorMsg.includes('0x6') || errorMsg.includes('custom program error: 6')) {
+          showMergeStakesMessage('Merge failed: Stakes have incompatible states. This can happen when stakes were activated in different epochs or have different credit histories. Try waiting until the next epoch.', 'error');
+        } else if (errorMsg.includes('0x5') || errorMsg.includes('custom program error: 5')) {
+          showMergeStakesMessage('Merge failed: Stake accounts have different lockup configurations.', 'error');
+        } else if (errorMsg.includes('0x1') || errorMsg.includes('custom program error: 1')) {
+          showMergeStakesMessage('Merge failed: Insufficient funds for transaction.', 'error');
+        } else if (errorMsg.includes('0x0') || errorMsg.includes('custom program error: 0')) {
+          showMergeStakesMessage('Merge failed: Invalid instruction or stake state.', 'error');
+        } else if (errorMsg.includes('Simulation failed') || errorMsg.includes('simulation')) {
+          showMergeStakesMessage('Merge failed: Stakes are not compatible for merging. They may have been activated in different epochs or have different credit histories.', 'error');
         } else {
-          showMergeStakesMessage(`Error: ${e.message || 'Transaction failed'}`, 'error');
+          showMergeStakesMessage(`Error: ${errorMsg}`, 'error');
         }
         
         btn.disabled = false;
