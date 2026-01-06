@@ -7803,13 +7803,13 @@
             
             <div class="validator-chart-section" id="combinedChartContainer">
               <div class="chart-toggle-container">
-                <button class="chart-toggle-btn active" onclick="switchCombinedChartType('xnt', this)" data-type="xnt">XNT Rewards</button>
-                <button class="chart-toggle-btn" onclick="switchCombinedChartType('credits', this)" data-type="credits">Epoch Credits</button>
+                <button class="chart-toggle-btn" onclick="switchCombinedChartType('xnt', this)" data-type="xnt">XNT Rewards</button>
+                <button class="chart-toggle-btn active" onclick="switchCombinedChartType('credits', this)" data-type="credits">Epoch Credits</button>
               </div>
               <div class="chart-header">
                 <div>
-                  <div class="chart-title" id="combinedChart-title">Combined XNT Rewards Trend</div>
-                  <div class="chart-subtitle" id="combinedChart-subtitle">XNT earned per completed epoch for all validators</div>
+                  <div class="chart-title" id="combinedChart-title">Epoch Credits Trend</div>
+                  <div class="chart-subtitle" id="combinedChart-subtitle">Credits earned per completed epoch for all validators</div>
                 </div>
               </div>
               <div class="chart-container" style="height: 280px;">
@@ -12243,6 +12243,12 @@
     }
 
     function addToPortfolio(voteAccount) {
+      // Limit to 5 validators max
+      if (myPortfolio.length >= 5) {
+        alert('My Data Center is limited to 5 validators to ensure reliable performance. Please remove a validator before adding a new one.');
+        return;
+      }
+      
       if (!myPortfolio.includes(voteAccount)) {
         myPortfolio.push(voteAccount);
         savePortfolio();
@@ -22240,15 +22246,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         // Fetch XNT rewards for all validators (vote account + self-stake)
         // Use cached data when available to avoid rate limiting
+        // Only fetch 15 epochs to reduce RPC load
+        const numEpochs = 15;
         const allRewards = {};
         const allEpochs = new Set();
         
         // Check if we already have cached data for all validators
         let allCached = true;
         for (const validator of validators) {
-          const cacheKey = `${validator.voteAccount}_total_30`;
+          const cacheKey = `${validator.voteAccount}_total_${numEpochs}`;
           const cached = totalRewardsCache[cacheKey];
-          if (!cached || !cached.data || cached.data.length < 25) {
+          if (!cached || !cached.data || cached.data.length < 10) {
             allCached = false;
             break;
           }
@@ -22257,7 +22265,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (allCached) {
           // Use cached data - no new requests needed
           for (const validator of validators) {
-            const cacheKey = `${validator.voteAccount}_total_30`;
+            const cacheKey = `${validator.voteAccount}_total_${numEpochs}`;
             const cached = totalRewardsCache[cacheKey];
             if (cached && cached.data && cached.data.length > 0) {
               allRewards[validator.voteAccount] = {};
@@ -22271,7 +22279,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // Fetch rewards for each validator sequentially to avoid rate limiting
           for (const validator of validators) {
             try {
-              const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
+              const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, numEpochs);
               if (rewards && rewards.length > 0) {
                 allRewards[validator.voteAccount] = {};
                 rewards.forEach(r => {
@@ -22283,13 +22291,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
               console.error(`Error fetching rewards for ${validator.name}:`, e);
             }
             // Delay between validators to avoid rate limiting
-            await new Promise(resolve => setTimeout(resolve, 200));
+            await new Promise(resolve => setTimeout(resolve, 300));
           }
         }
         
         // Sort epochs (fetchInflationRewards already excludes current epoch)
         let sortedEpochs = Array.from(allEpochs).sort((a, b) => a - b);
-        sortedEpochs = sortedEpochs.slice(-30);
+        sortedEpochs = sortedEpochs.slice(-numEpochs);
         
         // Build datasets
         const datasets = [];
@@ -22753,84 +22761,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
         section.classList.add('expanded');
         button.classList.add('expanded');
         
-        // Initialize combined chart if not already done
+        // Initialize combined chart if not already done - show Epoch Credits by default (no RPC calls needed)
         if (!chartInstances['combinedChart'] && window.combinedChartValidators) {
-          const loadingEl = document.getElementById('combinedChart-loading');
-          const titleEl = document.getElementById('combinedChart-title');
-          const subtitleEl = document.getElementById('combinedChart-subtitle');
+          // Initialize with Epoch Credits (already loaded data, no extra RPC calls)
+          initializeCombinedChart();
           
-          // Show loading
-          if (loadingEl) loadingEl.style.display = 'flex';
-          
-          // Fetch XNT rewards for all validators sequentially to avoid rate limiting
-          const validators = window.combinedChartValidators;
-          const allRewards = {};
-          const allEpochs = new Set();
-          
-          // Check if we already have cached data for all validators
-          let allCached = true;
-          for (const validator of validators) {
-            const cacheKey = `${validator.voteAccount}_total_30`;
-            const cached = totalRewardsCache[cacheKey];
-            if (!cached || !cached.data || cached.data.length < 20) {
-              allCached = false;
-              break;
-            }
-          }
-          
-          if (allCached) {
-            // Use cached data - no new requests needed
-            for (const validator of validators) {
-              const cacheKey = `${validator.voteAccount}_total_30`;
-              const cached = totalRewardsCache[cacheKey];
-              if (cached && cached.data && cached.data.length > 0) {
-                allRewards[validator.voteAccount] = {};
-                cached.data.forEach(r => {
-                  allRewards[validator.voteAccount][r.epoch] = r.amount / 1e9;
-                  allEpochs.add(r.epoch);
-                });
-              }
-            }
-          } else {
-            // Fetch sequentially with delays to avoid rate limiting
-            for (const validator of validators) {
-              try {
-                const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
-                if (rewards && rewards.length > 0) {
-                  allRewards[validator.voteAccount] = {};
-                  rewards.forEach(r => {
-                    allRewards[validator.voteAccount][r.epoch] = r.amount / 1e9;
-                    allEpochs.add(r.epoch);
-                  });
-                }
-              } catch (e) {
-                console.error(`Error fetching rewards for ${validator.name}:`, e);
-              }
-              // Delay between validators to avoid rate limiting
-              await new Promise(resolve => setTimeout(resolve, 300));
-            }
-          }
-          
-          // Sort epochs (fetchInflationRewards already excludes current epoch)
-          let sortedEpochs = Array.from(allEpochs).sort((a, b) => a - b);
-          sortedEpochs = sortedEpochs.slice(-30);
-          
-          // Store for chart initialization
-          window.combinedChartXNTData = {
-            epochs: sortedEpochs,
-            rewards: allRewards,
-            hasData: Object.keys(allRewards).length > 0
-          };
-          
-          // Update title
-          if (titleEl) titleEl.textContent = 'Combined XNT Rewards Trend';
-          if (subtitleEl) subtitleEl.textContent = 'XNT earned per completed epoch for all validators';
-          
-          // Hide loading
-          if (loadingEl) loadingEl.style.display = 'none';
-          
-          // Now initialize with XNT data
-          initializeCombinedChartWithXNT();
+          // Make sure Epoch Credits button is active
+          const creditsBtn = document.querySelector('.chart-toggle-btn[onclick*="credits"]');
+          const xntBtn = document.querySelector('.chart-toggle-btn[onclick*="xnt"]');
+          if (creditsBtn) creditsBtn.classList.add('active');
+          if (xntBtn) xntBtn.classList.remove('active');
         }
       }
     }
