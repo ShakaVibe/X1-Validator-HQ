@@ -22762,57 +22762,54 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // Show loading
           if (loadingEl) loadingEl.style.display = 'flex';
           
-          // Fetch XNT rewards for all validators (vote account + self-stake) in parallel
+          // Fetch XNT rewards for all validators sequentially to avoid rate limiting
           const validators = window.combinedChartValidators;
           const allRewards = {};
           const allEpochs = new Set();
           
-          // Fetch all validators in parallel for better reliability
-          const fetchValidatorRewards = async (validator) => {
-            try {
-              const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
-              return { voteAccount: validator.voteAccount, name: validator.name, rewards: rewards || [] };
-            } catch (e) {
-              console.error(`Error fetching rewards for ${validator.name}:`, e);
-              return { voteAccount: validator.voteAccount, name: validator.name, rewards: [] };
+          // Check if we already have cached data for all validators
+          let allCached = true;
+          for (const validator of validators) {
+            const cacheKey = `${validator.voteAccount}_total_30`;
+            const cached = totalRewardsCache[cacheKey];
+            if (!cached || !cached.data || cached.data.length < 20) {
+              allCached = false;
+              break;
             }
-          };
-          
-          let rewardResults = await Promise.all(validators.map(fetchValidatorRewards));
-          
-          // Check for validators that didn't return data and retry them
-          const missingValidators = rewardResults.filter(r => !r.rewards || r.rewards.length === 0);
-          if (missingValidators.length > 0 && missingValidators.length < validators.length) {
-            console.log(`Retrying ${missingValidators.length} validators that didn't return data...`);
-            // Small delay before retry
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            const retryResults = await Promise.all(
-              missingValidators.map(m => {
-                const validator = validators.find(v => v.voteAccount === m.voteAccount);
-                return fetchValidatorRewards(validator);
-              })
-            );
-            
-            // Merge retry results
-            retryResults.forEach(retryResult => {
-              const idx = rewardResults.findIndex(r => r.voteAccount === retryResult.voteAccount);
-              if (idx !== -1 && retryResult.rewards && retryResult.rewards.length > 0) {
-                rewardResults[idx] = retryResult;
-              }
-            });
           }
           
-          // Process results
-          rewardResults.forEach(result => {
-            if (result.rewards && result.rewards.length > 0) {
-              allRewards[result.voteAccount] = {};
-              result.rewards.forEach(r => {
-                allRewards[result.voteAccount][r.epoch] = r.amount / 1e9;
-                allEpochs.add(r.epoch);
-              });
+          if (allCached) {
+            // Use cached data - no new requests needed
+            for (const validator of validators) {
+              const cacheKey = `${validator.voteAccount}_total_30`;
+              const cached = totalRewardsCache[cacheKey];
+              if (cached && cached.data && cached.data.length > 0) {
+                allRewards[validator.voteAccount] = {};
+                cached.data.forEach(r => {
+                  allRewards[validator.voteAccount][r.epoch] = r.amount / 1e9;
+                  allEpochs.add(r.epoch);
+                });
+              }
             }
-          });
+          } else {
+            // Fetch sequentially with delays to avoid rate limiting
+            for (const validator of validators) {
+              try {
+                const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
+                if (rewards && rewards.length > 0) {
+                  allRewards[validator.voteAccount] = {};
+                  rewards.forEach(r => {
+                    allRewards[validator.voteAccount][r.epoch] = r.amount / 1e9;
+                    allEpochs.add(r.epoch);
+                  });
+                }
+              } catch (e) {
+                console.error(`Error fetching rewards for ${validator.name}:`, e);
+              }
+              // Delay between validators to avoid rate limiting
+              await new Promise(resolve => setTimeout(resolve, 300));
+            }
+          }
           
           // Sort epochs (fetchInflationRewards already excludes current epoch)
           let sortedEpochs = Array.from(allEpochs).sort((a, b) => a - b);
