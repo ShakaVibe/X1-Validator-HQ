@@ -20351,21 +20351,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
     let userHasWithdrawAuthority = false;
 
     function initiateWithdraw() {
-      console.log('initiateWithdraw called');
-      console.log('currentManageValidator:', currentManageValidator);
-      console.log('walletPublicKey:', walletPublicKey);
-      
-      if (!currentManageValidator) {
-        console.log('No currentManageValidator - returning');
-        return;
-      }
+      if (!currentManageValidator) return;
       if (!walletPublicKey) {
-        console.log('No wallet connected - showing wallet required');
         showWalletRequired('withdraw XNT');
         return;
       }
-      
-      console.log('Showing withdraw modal...');
       
       // Populate modal with validator info
       document.getElementById('withdrawSourceName').textContent = currentManageValidator.name;
