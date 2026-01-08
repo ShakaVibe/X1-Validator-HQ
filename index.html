@@ -9028,7 +9028,7 @@
         
         return (
           <div 
-            className={`rounded-2xl p-5 flex flex-col border-2 ${borderColor} ${cardGlow}`} 
+            className={`rounded-2xl p-5 flex flex-col border-2 ${borderColor} ${cardGlow} overflow-hidden`} 
             style={{height: '100%', backgroundColor: '#0d0d0d', backgroundImage: cardTopGlow}}
           >
             {/* Header */}
@@ -9093,8 +9093,8 @@
             </div>
             
             {/* Burn Section - Redesigned */}
-            <div className="bg-gradient-to-r from-orange-500/15 via-orange-600/10 to-orange-500/15 border border-orange-500/30 rounded-xl p-4">
-              <div className="flex">
+            <div className="bg-gradient-to-r from-orange-500/15 via-orange-600/10 to-orange-500/15 border border-orange-500/30 rounded-xl p-4 overflow-hidden">
+              <div className="flex overflow-hidden">
                 {/* Left: Total Burned */}
                 <div className="flex-[3]">
                   <div className="flex items-center gap-2 text-xs text-orange-400/90 uppercase font-semibold mb-2">🔥 Total Burned</div>
