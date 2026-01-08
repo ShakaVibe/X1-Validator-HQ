@@ -8958,6 +8958,35 @@
         return creatures;
       };
       
+      // Twitter-specific version - stops at squid (no turtle or smaller) to prevent overflow
+      const getBurnCreaturesTwitter = (burnAmount, tokenName) => {
+        const TOKEN_SUPPLIES = { 'PTGC': 333333333333, 'UFO': 999999999051 };
+        const totalSupply = TOKEN_SUPPLIES[tokenName] || 333333333333;
+        
+        const t = {
+          POSEIDON: totalSupply * 0.10,
+          WHALE: totalSupply * 0.01,
+          SHARK: totalSupply * 0.001,
+          DOLPHIN: totalSupply * 0.0001,
+          SQUID: totalSupply * 0.00001
+        };
+        
+        let remaining = burnAmount;
+        const poseidons = Math.floor(remaining / t.POSEIDON); remaining = remaining % t.POSEIDON;
+        const whales = Math.floor(remaining / t.WHALE); remaining = remaining % t.WHALE;
+        const sharks = Math.floor(remaining / t.SHARK); remaining = remaining % t.SHARK;
+        const dolphins = Math.floor(remaining / t.DOLPHIN); remaining = remaining % t.DOLPHIN;
+        const squids = Math.floor(remaining / t.SQUID);
+        
+        const creatures = [];
+        if (poseidons > 0) creatures.push({ emoji: '🔱', count: poseidons });
+        if (whales > 0) creatures.push({ emoji: '🐋', count: whales });
+        if (sharks > 0) creatures.push({ emoji: '🦈', count: sharks });
+        if (dolphins > 0) creatures.push({ emoji: '🐬', count: dolphins });
+        if (squids > 0) creatures.push({ emoji: '🦑', count: squids });
+        return creatures;
+      };
+      
       const get24hBurnCreature = (burn24h, tokenName) => {
         const TOKEN_SUPPLIES = { 'PTGC': 333333333333, 'UFO': 999999999051 };
         const totalSupply = TOKEN_SUPPLIES[tokenName] || 333333333333;
@@ -8991,9 +9020,8 @@
         const change = data?.priceData?.change || 0;
         const plsRatio = data?.plsPrice > 0 ? (price / data.plsPrice).toFixed(2) : '—';
         const priceFormatted = formatPriceTwitter(price);
-        const creatures = getBurnCreatures(data?.burnData?.total || 0, tokenName);
-        const burn24hCreature = get24hBurnCreature(data?.burnData?.burn24h || 0, tokenName);
-        const burn24hCreatures = getBurnCreatures(data?.burnData?.burn24h || 0, tokenName);
+        const creatures = getBurnCreaturesTwitter(data?.burnData?.total || 0, tokenName); // Use Twitter version (stops at squid)
+        const burn24hCreature = get24hBurnCreature(data?.burnData?.burn24h || 0, tokenName); // Single emoji, can be any
         const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         
         // Format USD without decimals, no abbreviation
