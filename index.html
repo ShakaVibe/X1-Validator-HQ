@@ -12533,11 +12533,11 @@
             if (data && data.locations && Object.keys(data.locations).length > 100) {
               geoData = data;
               console.log('Geo data loaded from:', url, '- Locations:', Object.keys(data.locations).length);
-              if (data.generated) {
-                console.log('Geo data generated at:', data.generated);
+              if (data.lastUpdated) {
+                console.log('Geo data last updated:', data.lastUpdated);
               }
-              if (data.totalValidators) {
-                console.log('Total validators in geo data:', data.totalValidators);
+              if (data.totalNodes) {
+                console.log('Total nodes in geo data:', data.totalNodes);
               }
               return geoData;
             }
@@ -12721,8 +12721,8 @@
             
             // Add timestamp info if available
             let timestampHtml = '';
-            if (staticData.generated) {
-              const genDate = new Date(staticData.generated);
+            if (staticData.lastUpdated) {
+              const genDate = new Date(staticData.lastUpdated);
               const now = new Date();
               const ageMs = now - genDate;
               const ageHours = Math.floor(ageMs / (1000 * 60 * 60));
