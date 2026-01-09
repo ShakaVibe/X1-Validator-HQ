@@ -9131,7 +9131,7 @@
                   </div>
                   <div className="flex items-center gap-3 mt-2">
                     <span className="text-3xl">🔥</span>
-                    {creatures.map((c, i) => (
+                    {creatures.filter(c => !['🐢','🦀','🦐','🐚'].includes(c.emoji)).map((c, i) => (
                       <span key={i} className="flex items-center gap-1">
                         <span className="text-3xl">{c.emoji}</span>
                         <span className="text-white/80 text-lg font-bold">x{c.count}</span>
