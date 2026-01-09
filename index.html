@@ -1192,150 +1192,6 @@
     .score-orange { color: #ff9800; }
     .score-bad { color: var(--danger); }
 
-    /* Validator Preview Card - Lightweight lookup results */
-    .validator-preview {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .validator-preview:hover {
-      border-color: var(--accent-blue);
-      background: var(--bg-card-hover);
-    }
-
-    .validator-preview-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .validator-preview-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--bg-secondary);
-      border: 2px solid var(--border);
-      object-fit: cover;
-      flex-shrink: 0;
-    }
-
-    .validator-preview-logo-placeholder {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--accent-gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--bg-primary);
-      flex-shrink: 0;
-    }
-
-    .validator-preview-details {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .validator-preview-name {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .validator-preview-address {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      font-family: 'JetBrains Mono', monospace;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .validator-preview-actions {
-      display: flex;
-      gap: 0.5rem;
-      flex-shrink: 0;
-    }
-
-    .validator-preview-btn {
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid var(--border);
-      font-family: 'Space Grotesk', sans-serif;
-    }
-
-    .validator-preview-btn.details-btn {
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-    }
-
-    .validator-preview-btn.details-btn:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--accent-blue);
-    }
-
-    .validator-preview-btn.add-btn {
-      background: var(--accent-gradient);
-      color: var(--bg-primary);
-      border: none;
-    }
-
-    .validator-preview-btn.add-btn:hover {
-      opacity: 0.9;
-      transform: translateY(-1px);
-    }
-
-    .validator-preview-btn.added-btn {
-      background: transparent;
-      color: var(--success);
-      border-color: var(--success);
-      cursor: default;
-    }
-
-    .validator-preview-btn.added-btn:hover {
-      background: transparent;
-      transform: none;
-    }
-
-    /* Full validator detail view (shown when Details is clicked) */
-    .validator-detail-expanded {
-      margin-top: -0.75rem;
-      margin-bottom: 0.75rem;
-      padding: 1rem;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-top: none;
-      border-radius: 0 0 12px 12px;
-    }
-
-    .validator-detail-loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 2rem;
-      color: var(--text-secondary);
-    }
-
     /* Expandable Chart Section */
     .validator-expand-btn {
       width: 100%;
@@ -2687,8 +2543,6 @@
       justify-content: center;
       align-items: center;
       padding: 1rem;
-      overflow-y: auto;
-      overscroll-behavior: contain;
     }
 
     .modal {
@@ -3785,7 +3639,6 @@
       padding: 1.25rem 1.5rem;
       overflow-y: auto;
       flex: 1;
-      overscroll-behavior: contain;
     }
 
     .manage-section {
@@ -7546,7 +7399,7 @@
     <div class="header-links">
       <a href="https://x1.xyz/" target="_blank">X1 Website</a>
       <a href="https://docs.x1.xyz/validating/create-a-read-only-node" target="_blank">Launch My Validator</a>
-      <a href="https://github.com/ShakaVibe/X1-Validator-HQ" target="_blank">GitHub</a>
+      <a href="https://github.com/ShakaVibe/X1-Validator-Dashboard" target="_blank">GitHub</a>
       
       <!-- Network Toggle -->
       <div class="network-toggle-container">
@@ -7803,13 +7656,13 @@
             
             <div class="validator-chart-section" id="combinedChartContainer">
               <div class="chart-toggle-container">
-                <button class="chart-toggle-btn" onclick="switchCombinedChartType('xnt', this)" data-type="xnt">XNT Rewards</button>
-                <button class="chart-toggle-btn active" onclick="switchCombinedChartType('credits', this)" data-type="credits">Epoch Credits</button>
+                <button class="chart-toggle-btn active" onclick="switchCombinedChartType('xnt', this)" data-type="xnt">XNT Rewards</button>
+                <button class="chart-toggle-btn" onclick="switchCombinedChartType('credits', this)" data-type="credits">Epoch Credits</button>
               </div>
               <div class="chart-header">
                 <div>
-                  <div class="chart-title" id="combinedChart-title">Epoch Credits Trend</div>
-                  <div class="chart-subtitle" id="combinedChart-subtitle">Credits earned per completed epoch for all validators</div>
+                  <div class="chart-title" id="combinedChart-title">Combined XNT Rewards Trend</div>
+                  <div class="chart-subtitle" id="combinedChart-subtitle">XNT earned per completed epoch for all validators</div>
                 </div>
               </div>
               <div class="chart-container" style="height: 280px;">
@@ -12017,111 +11870,6 @@
       `;
     }
 
-    // Lightweight validator preview for search results (no RPC calls needed)
-    function renderValidatorPreview(validator) {
-      const isInPortfolio = myPortfolio.includes(validator.votePubkey);
-      const firstLetter = validator.name.charAt(0).toUpperCase();
-      
-      const logoHtml = validator.iconUrl 
-        ? `<img class="validator-preview-logo" src="${validator.iconUrl}" alt="${validator.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-           <div class="validator-preview-logo-placeholder" style="display:none;">${firstLetter}</div>`
-        : `<div class="validator-preview-logo-placeholder">${firstLetter}</div>`;
-
-      const addBtnHtml = isInPortfolio
-        ? `<button class="validator-preview-btn added-btn" disabled>✓ Added</button>`
-        : `<button class="validator-preview-btn add-btn" onclick="event.stopPropagation(); addToPortfolioFromPreview('${validator.votePubkey}', this)">+ Add</button>`;
-
-      return `
-        <div class="validator-preview" id="preview-${validator.votePubkey}">
-          <div class="validator-preview-info">
-            ${logoHtml}
-            <div class="validator-preview-details">
-              <div class="validator-preview-name">${validator.name}</div>
-              <div class="validator-preview-address">${validator.votePubkey}</div>
-            </div>
-          </div>
-          <div class="validator-preview-actions">
-            <button class="validator-preview-btn details-btn" onclick="showValidatorDetails('${validator.votePubkey}')">Details</button>
-            ${addBtnHtml}
-          </div>
-        </div>
-        <div class="validator-detail-expanded" id="details-${validator.votePubkey}" style="display: none;"></div>
-      `;
-    }
-
-    // Add to portfolio from preview card (updates button state)
-    function addToPortfolioFromPreview(voteAccount, btnElement) {
-      if (!myPortfolio.includes(voteAccount)) {
-        myPortfolio.push(voteAccount);
-        savePortfolio();
-        
-        // Update button to show "Added"
-        btnElement.className = 'validator-preview-btn added-btn';
-        btnElement.disabled = true;
-        btnElement.textContent = '✓ Added';
-      }
-    }
-
-    // Show full validator details (loads data on demand)
-    async function showValidatorDetails(voteAccount) {
-      const detailsContainer = document.getElementById('details-' + voteAccount);
-      const previewCard = document.getElementById('preview-' + voteAccount);
-      
-      // Toggle visibility
-      if (detailsContainer.style.display === 'block') {
-        detailsContainer.style.display = 'none';
-        detailsContainer.innerHTML = ''; // Clear to avoid duplicate IDs
-        previewCard.style.borderRadius = '12px';
-        return;
-      }
-      
-      // Close any other open details panels first to avoid duplicate IDs
-      document.querySelectorAll('.validator-detail-expanded').forEach(el => {
-        if (el.id !== 'details-' + voteAccount) {
-          el.style.display = 'none';
-          el.innerHTML = '';
-          const otherPreview = document.getElementById('preview-' + el.id.replace('details-', ''));
-          if (otherPreview) otherPreview.style.borderRadius = '12px';
-        }
-      });
-      
-      // Show loading state
-      detailsContainer.innerHTML = `
-        <div class="validator-detail-loading">
-          <div class="loading-spinner-small"></div>
-          <span>Loading validator details...</span>
-        </div>
-      `;
-      detailsContainer.style.display = 'block';
-      previewCard.style.borderRadius = '12px 12px 0 0';
-      
-      try {
-        // Fetch full validator info (this makes the RPC calls)
-        const validator = await getValidatorInfo(voteAccount);
-        
-        if (validator) {
-          // Render the full card inside the details container
-          detailsContainer.innerHTML = renderValidatorCard(validator, true, false);
-          
-          // Fetch last epoch rewards for the card
-          fetchLastEpochForCards([validator]);
-        } else {
-          detailsContainer.innerHTML = `
-            <div class="validator-detail-loading">
-              <span>Could not load validator details</span>
-            </div>
-          `;
-        }
-      } catch (err) {
-        console.error('Error loading validator details:', err);
-        detailsContainer.innerHTML = `
-          <div class="validator-detail-loading">
-            <span>Error loading details. Please try again.</span>
-          </div>
-        `;
-      }
-    }
-
     // Search functionality
     function handleSearchInput() {
       const input = document.getElementById('searchInput').value.trim();
@@ -12162,60 +11910,42 @@
       loading.style.display = 'flex';
 
       try {
-        let matches = [];
+        let validators = [];
 
         // Check if it's a vote account address (44 characters)
         if (input.length >= 43 && input.length <= 44) {
-          // Direct lookup - find in allValidators first (no RPC call)
-          const validator = allValidators.find(v => v.votePubkey === input);
+          const validator = await getValidatorInfo(input);
           if (validator) {
-            matches.push(validator);
-          } else {
-            // Not in cache, try RPC lookup and show full details directly
-            const fullValidator = await getValidatorInfo(input);
-            if (fullValidator) {
-              // For direct address lookup, show full card immediately
-              document.getElementById('validatorResults').innerHTML = renderValidatorCard(fullValidator, true, false);
-              document.getElementById('resultCount').textContent = '1';
-              document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
-              fetchLastEpochForCards([fullValidator]);
-              loading.style.display = 'none';
-              results.style.display = 'block';
-              return;
-            }
+            validators.push(validator);
           }
         } else {
-          // Search by name - use local data only (NO RPC calls!)
+          // Search by name
           const searchLower = input.toLowerCase();
-          matches = allValidators.filter(v => 
+          const matches = allValidators.filter(v => 
             v.name.toLowerCase().includes(searchLower) ||
             v.votePubkey.toLowerCase().includes(searchLower) ||
             v.nodePubkey.toLowerCase().includes(searchLower)
-          ).slice(0, 30); // Limit to 30 results
+          ).slice(0, 20); // Limit to 20 results
+
+          for (const match of matches) {
+            const validator = await getValidatorInfo(match.votePubkey);
+            if (validator) {
+              validators.push(validator);
+            }
+          }
         }
         
-        if (matches.length === 0) {
+        if (validators.length === 0) {
           throw new Error('No validators found');
         }
 
-        // For single exact match on address, show full card
-        if (matches.length === 1 && input.length >= 43) {
-          const fullValidator = await getValidatorInfo(matches[0].votePubkey);
-          if (fullValidator) {
-            document.getElementById('validatorResults').innerHTML = renderValidatorCard(fullValidator, true, false);
-            document.getElementById('resultCount').textContent = '1';
-            document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
-            fetchLastEpochForCards([fullValidator]);
-            loading.style.display = 'none';
-            results.style.display = 'block';
-            return;
-          }
-        }
-
-        // Render lightweight preview cards (NO RPC calls - instant!)
-        document.getElementById('validatorResults').innerHTML = matches.map(v => renderValidatorPreview(v)).join('');
-        document.getElementById('resultCount').textContent = matches.length;
+        // Render results
+        document.getElementById('validatorResults').innerHTML = validators.map(v => renderValidatorCard(v, true, false)).join('');
+        document.getElementById('resultCount').textContent = validators.length;
         document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+        
+        // Fetch last epoch rewards for each card
+        fetchLastEpochForCards(validators);
         
         loading.style.display = 'none';
         results.style.display = 'block';
@@ -12243,12 +11973,6 @@
     }
 
     function addToPortfolio(voteAccount) {
-      // Limit to 5 validators max
-      if (myPortfolio.length >= 5) {
-        alert('My Data Center is limited to 5 validators to ensure reliable performance. Please remove a validator before adding a new one.');
-        return;
-      }
-      
       if (!myPortfolio.includes(voteAccount)) {
         myPortfolio.push(voteAccount);
         savePortfolio();
@@ -12515,7 +12239,8 @@
     // Geolocation - loads from local JSON file (auto-updated hourly by GitHub Actions)
     const GEO_DATA_URLS = [
       'validator-locations.json',
-      './validator-locations.json'
+      './validator-locations.json',
+      '/X1-Validator-Dashboard/validator-locations.json'
     ];
     const GEO_CACHE_KEY = 'x1GeoCache';
     const GEO_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours
@@ -12532,12 +12257,6 @@
             if (data && data.locations && Object.keys(data.locations).length > 100) {
               geoData = data;
               console.log('Geo data loaded from:', url, '- Locations:', Object.keys(data.locations).length);
-              if (data.lastUpdated) {
-                console.log('Geo data last updated:', data.lastUpdated);
-              }
-              if (data.totalNodes) {
-                console.log('Total nodes in geo data:', data.totalNodes);
-              }
               return geoData;
             }
           }
@@ -13331,23 +13050,6 @@
         console.warn('Could not fetch last epoch rewards for comparison:', e);
       }
 
-      // Try to get location data
-      try {
-        if (geoData && geoData.locations && validator.nodePubkey) {
-          // Find the IP for this validator from cluster nodes
-          const nodes = await rpcCall('getClusterNodes').catch(() => []);
-          const node = nodes.find(n => n.pubkey === validator.nodePubkey);
-          if (node && node.gossip) {
-            const ip = node.gossip.split(':')[0];
-            if (ip && geoData.locations[ip]) {
-              validator.location = geoData.locations[ip];
-            }
-          }
-        }
-      } catch (e) {
-        console.warn('Could not fetch location for comparison:', e);
-      }
-
       // Use cached performance score if available, otherwise calculate
       if (validator.performanceScore === undefined) {
         validator.performanceScore = calculatePerformanceScore(validator);
@@ -13544,13 +13246,14 @@
           label: 'First Seen', 
           getValue: v => {
             // Show the first epoch we have data for
-            // RPC only returns last 64 epochs, so if we have full history, validator existed before that
+            // RPC only returns last 64 epochs, so if first epoch is 64+ ago, show "64+ epochs"
             if (v.epochCreditsHistory && v.epochCreditsHistory.length > 0) {
               const firstEpoch = v.epochCreditsHistory[0][0];
+              const currentEpoch = v.epochCreditsHistory[v.epochCreditsHistory.length - 1][0];
+              const epochsAgo = currentEpoch - firstEpoch;
               
               if (v.epochCreditsHistory.length >= 64) {
-                // Validator has been around longer than RPC history - they existed before this epoch
-                return 'Pre-Epoch ' + firstEpoch;
+                return 'Epoch ' + firstEpoch + '+';
               } else {
                 return 'Epoch ' + firstEpoch;
               }
@@ -13572,226 +13275,6 @@
             if (v.epochCreditsHistory.length >= 10) return 'var(--warning)';
             return 'var(--text-dim)';
           }
-        },
-        { 
-          label: 'Skip Rate (Current)', 
-          getValue: v => {
-            const rate = v.skipRate;
-            return rate !== null && rate !== undefined ? rate.toFixed(2) + '%' : 'N/A';
-          },
-          getRaw: v => v.skipRate ?? 999,
-          higherIsBetter: false,
-          getColor: v => {
-            const rate = v.skipRate;
-            if (rate === null || rate === undefined) return 'var(--text-dim)';
-            if (rate <= 0.5) return 'var(--success)';
-            if (rate <= 1) return 'var(--warning)';
-            return 'var(--danger)';
-          }
-        },
-        { 
-          label: 'Uptime %', 
-          getValue: v => {
-            // Calculate uptime from skip rate (inverse)
-            const skipRate = v.skipRateHistory?.avgSkipRate ?? v.skipRate;
-            if (skipRate === null || skipRate === undefined) return 'N/A';
-            const uptime = 100 - skipRate;
-            return uptime.toFixed(2) + '%';
-          },
-          getRaw: v => {
-            const skipRate = v.skipRateHistory?.avgSkipRate ?? v.skipRate;
-            if (skipRate === null || skipRate === undefined) return 0;
-            return 100 - skipRate;
-          },
-          higherIsBetter: true,
-          getColor: v => {
-            const skipRate = v.skipRateHistory?.avgSkipRate ?? v.skipRate;
-            if (skipRate === null || skipRate === undefined) return 'var(--text-dim)';
-            const uptime = 100 - skipRate;
-            if (uptime >= 99.5) return 'var(--success)';
-            if (uptime >= 99) return 'var(--warning)';
-            return 'var(--danger)';
-          }
-        },
-        { 
-          label: 'Delinquent History', 
-          getValue: v => {
-            // Check delinquency status - if we have history, count delinquent epochs
-            // For now, just show current status since we don't track historical delinquency
-            if (v.delinquent || v.isDelinquent) return 'Currently Delinquent';
-            return 'None';
-          },
-          getRaw: v => (v.delinquent || v.isDelinquent) ? 1 : 0,
-          higherIsBetter: false,
-          getColor: v => (v.delinquent || v.isDelinquent) ? 'var(--danger)' : 'var(--success)'
-        },
-        { 
-          label: 'Stake Rank', 
-          getValue: v => {
-            if (v.rank && v.totalValidators) {
-              return '#' + v.rank + ' of ' + v.totalValidators;
-            }
-            // Try to calculate from allValidators
-            const idx = allValidators.findIndex(av => av.votePubkey === v.votePubkey || av.votePubkey === v.voteAccount);
-            if (idx >= 0) {
-              return '#' + (idx + 1) + ' of ' + allValidators.length;
-            }
-            return 'N/A';
-          },
-          getRaw: v => {
-            if (v.rank) return v.rank;
-            const idx = allValidators.findIndex(av => av.votePubkey === v.votePubkey || av.votePubkey === v.voteAccount);
-            return idx >= 0 ? idx + 1 : 9999;
-          },
-          higherIsBetter: false, // Lower rank is better
-          getColor: v => {
-            let rank = v.rank;
-            if (!rank) {
-              const idx = allValidators.findIndex(av => av.votePubkey === v.votePubkey || av.votePubkey === v.voteAccount);
-              rank = idx >= 0 ? idx + 1 : 9999;
-            }
-            if (rank <= 50) return 'var(--success)';
-            if (rank <= 200) return 'var(--accent-cyan)';
-            if (rank <= 500) return 'var(--warning)';
-            return 'var(--text-secondary)';
-          }
-        },
-        { 
-          label: 'APY Estimate', 
-          getValue: v => {
-            // Calculate estimated APY based on commission and network average
-            // Base APY is roughly 5-8% on X1, adjusted by commission
-            const baseAPY = 6.5; // Approximate network average
-            const commission = v.commission || 0;
-            const delegatorAPY = baseAPY * (1 - commission / 100);
-            return delegatorAPY.toFixed(2) + '%';
-          },
-          getRaw: v => {
-            const baseAPY = 6.5;
-            const commission = v.commission || 0;
-            return baseAPY * (1 - commission / 100);
-          },
-          higherIsBetter: true,
-          getColor: v => {
-            const baseAPY = 6.5;
-            const commission = v.commission || 0;
-            const apy = baseAPY * (1 - commission / 100);
-            if (apy >= 6) return 'var(--success)';
-            if (apy >= 5) return 'var(--warning)';
-            return 'var(--danger)';
-          }
-        },
-        { 
-          label: '7-Day Earnings', 
-          getValue: v => {
-            // Sum last 7 epochs from epochCreditsHistory converted to XNT
-            if (v.epochCreditsHistory && v.epochCreditsHistory.length >= 7) {
-              let total = 0;
-              const recentEpochs = v.epochCreditsHistory.slice(-8, -1); // Last 7 complete epochs
-              recentEpochs.forEach(entry => {
-                if (entry.length >= 3) {
-                  total += (entry[1] - entry[2]); // credits earned
-                }
-              });
-              // Very rough conversion - credits to XNT (this is approximate)
-              // A better implementation would use actual reward data
-              if (v.lastEpochReward && recentEpochs.length > 0) {
-                const avgCreditsPerEpoch = total / recentEpochs.length;
-                const lastCredits = recentEpochs[recentEpochs.length - 1];
-                const lastCreditsEarned = lastCredits ? (lastCredits[1] - lastCredits[2]) : avgCreditsPerEpoch;
-                if (lastCreditsEarned > 0) {
-                  const xntPerCredit = v.lastEpochReward / lastCreditsEarned;
-                  const estimatedXNT = total * xntPerCredit;
-                  return formatNumber(estimatedXNT, 2) + ' XNT';
-                }
-              }
-              return formatCompact(total) + ' credits';
-            }
-            return 'N/A';
-          },
-          getRaw: v => {
-            if (v.epochCreditsHistory && v.epochCreditsHistory.length >= 7) {
-              let total = 0;
-              const recentEpochs = v.epochCreditsHistory.slice(-8, -1);
-              recentEpochs.forEach(entry => {
-                if (entry.length >= 3) {
-                  total += (entry[1] - entry[2]);
-                }
-              });
-              return total;
-            }
-            return 0;
-          },
-          higherIsBetter: true,
-          getColor: () => 'var(--success)'
-        },
-        { 
-          label: 'Avg Epoch Earnings', 
-          getValue: v => {
-            if (v.epochCreditsHistory && v.epochCreditsHistory.length > 1) {
-              let total = 0;
-              let count = 0;
-              // Skip current epoch (last entry), use previous epochs
-              const epochs = v.epochCreditsHistory.slice(0, -1);
-              epochs.forEach(entry => {
-                if (entry.length >= 3) {
-                  total += (entry[1] - entry[2]);
-                  count++;
-                }
-              });
-              if (count > 0) {
-                const avgCredits = total / count;
-                // If we have lastEpochReward, try to convert to XNT
-                if (v.lastEpochReward) {
-                  const lastCredits = epochs[epochs.length - 1];
-                  const lastCreditsEarned = lastCredits ? (lastCredits[1] - lastCredits[2]) : avgCredits;
-                  if (lastCreditsEarned > 0) {
-                    const xntPerCredit = v.lastEpochReward / lastCreditsEarned;
-                    const avgXNT = avgCredits * xntPerCredit;
-                    return formatNumber(avgXNT, 2) + ' XNT';
-                  }
-                }
-                return formatCompact(avgCredits) + ' credits';
-              }
-            }
-            return 'N/A';
-          },
-          getRaw: v => {
-            if (v.epochCreditsHistory && v.epochCreditsHistory.length > 1) {
-              let total = 0;
-              let count = 0;
-              const epochs = v.epochCreditsHistory.slice(0, -1);
-              epochs.forEach(entry => {
-                if (entry.length >= 3) {
-                  total += (entry[1] - entry[2]);
-                  count++;
-                }
-              });
-              return count > 0 ? total / count : 0;
-            }
-            return 0;
-          },
-          higherIsBetter: true,
-          getColor: () => 'var(--accent-cyan)'
-        },
-        { 
-          label: 'Location', 
-          getValue: v => {
-            // Try to find location from geoData using nodePubkey
-            if (geoData && geoData.locations) {
-              // Need to find IP for this validator - check if we have it cached
-              // This requires cluster nodes data which may not be available in compare context
-              // For now, return a placeholder or check if validator has location stored
-              if (v.location) {
-                const flag = countryFlags[v.location.countryCode] || '🌍';
-                return flag + ' ' + (v.location.city || v.location.country || 'Unknown');
-              }
-            }
-            return '🌍 Unknown';
-          },
-          getRaw: v => v.location?.country || '',
-          higherIsBetter: null,
-          getColor: () => 'var(--text-primary)'
         }
       ];
 
@@ -13854,18 +13337,6 @@
 
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById(tab + 'Tab').classList.add('active');
-
-      // Clear lookup results when switching away to avoid duplicate element IDs
-      if (tab !== 'lookup') {
-        const validatorResults = document.getElementById('validatorResults');
-        if (validatorResults) {
-          validatorResults.innerHTML = '';
-        }
-        const resultsSection = document.getElementById('resultsSection');
-        if (resultsSection) {
-          resultsSection.style.display = 'none';
-        }
-      }
 
       if (tab === 'portfolio') {
         loadPortfolio();
@@ -15411,7 +14882,7 @@
         const initial = v.name ? v.name.charAt(0).toUpperCase() : 'V';
         let logoHtml;
         if (v.iconUrl) {
-          logoHtml = `<img src="${v.iconUrl}" alt="${initial}" onerror="this.style.display='none';this.parentElement.textContent='${initial}';">`;
+          logoHtml = `<img src="${v.iconUrl}" alt="${initial}" onerror="this.style.display='none';if(this.parentElement)this.parentElement.textContent='${initial}';">`;
         } else {
           logoHtml = initial;
         }
@@ -15520,7 +14991,7 @@
       const logoEl = document.getElementById('manageValidatorLogo');
       const firstLetter = name.charAt(0).toUpperCase();
       if (iconUrl) {
-        logoEl.innerHTML = `<img src="${iconUrl}" alt="${name}" style="width:100%;height:100%;border-radius:10px;" onerror="this.parentElement.textContent='${firstLetter}'">`;
+        logoEl.innerHTML = `<img src="${iconUrl}" alt="${name}" style="width:100%;height:100%;border-radius:10px;" onerror="this.style.display='none';if(this.parentElement)this.parentElement.textContent='${firstLetter}'">`;
       } else {
         logoEl.textContent = firstLetter;
       }
@@ -15536,9 +15007,6 @@
       
       // Update wallet status display
       updateManageWalletDisplay();
-      
-      // Prevent background scrolling
-      document.body.style.overflow = 'hidden';
       
       // Show modal
       document.getElementById('manageValidatorModal').style.display = 'flex';
@@ -15634,9 +15102,6 @@
       document.getElementById('manageValidatorModal').style.display = 'none';
       currentManageValidator = null;
       stakeAccounts = [];
-      
-      // Restore background scrolling
-      document.body.style.overflow = '';
     }
 
     // Performance Explainer Modal functions
@@ -17531,84 +16996,27 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return;
       }
       
-      // Get current epoch for state checks
-      const currentEpoch = currentEpochNumber || 0;
-      
       // Analyze each stake for merge eligibility
       const analyzedStakes = stakeAccounts.map(stake => {
         const staker = stake.data.meta?.authorized?.staker;
         const withdrawer = stake.data.meta?.authorized?.withdrawer;
         const delegation = stake.data.stake?.delegation;
         const voter = delegation?.voter;
-        const lockup = stake.data.meta?.lockup;
         
-        // Get activation/deactivation info
-        const activationEpoch = delegation ? parseInt(delegation.activationEpoch) || 0 : 0;
-        const deactivationEpoch = delegation?.deactivationEpoch;
-        const isDeactivating = deactivationEpoch && deactivationEpoch !== '18446744073709551615';
-        
-        // Get credits observed (important for merge compatibility)
-        const creditsObserved = delegation?.creditsObserved ? parseInt(delegation.creditsObserved) : 0;
-        
-        // Determine stake state
-        let state = stake.state || 'unknown';
-        if (!state || state === 'unknown') {
-          if (isDeactivating) {
-            const deactivationEpochNum = parseInt(deactivationEpoch);
-            state = deactivationEpochNum >= currentEpoch ? 'deactivating' : 'inactive';
-          } else if (activationEpoch >= currentEpoch) {
-            state = 'activating';
-          } else {
-            state = 'active';
-          }
-        }
-        
-        // Check lockup (epoch and unix timestamp)
-        const lockupEpoch = lockup?.epoch ? parseInt(lockup.epoch) : 0;
-        const lockupTimestamp = lockup?.unixTimestamp ? parseInt(lockup.unixTimestamp) : 0;
-        const currentTimestamp = Math.floor(Date.now() / 1000);
-        const isLocked = lockupEpoch > currentEpoch || lockupTimestamp > currentTimestamp;
-        
-        // Check eligibility with comprehensive checks
+        // Check eligibility
         let eligible = true;
         let reason = '';
         
-        // 1. Must be delegated to the current validator
+        // Must be delegated to the current validator
         if (voter !== currentManageValidator.voteAccount) {
           eligible = false;
           reason = 'Different validator';
         }
         
-        // 2. Connected wallet must be the stake authority
-        else if (staker !== walletPublicKey) {
+        // Connected wallet must be the stake authority
+        if (staker !== walletPublicKey) {
           eligible = false;
           reason = 'Not stake authority';
-        }
-        
-        // 3. Connected wallet must also be the withdraw authority (required for merge)
-        else if (withdrawer !== walletPublicKey) {
-          eligible = false;
-          reason = 'Not withdraw authority';
-        }
-        
-        // 4. Must be fully active (not activating, deactivating, or inactive)
-        else if (state === 'activating') {
-          eligible = false;
-          reason = 'Still activating';
-        }
-        else if (state === 'deactivating') {
-          eligible = false;
-          reason = 'Deactivating';
-        }
-        else if (state === 'inactive') {
-          eligible = false;
-          reason = 'Inactive';
-        }
-        
-        // 5. Must not be locked
-        else if (isLocked) {
-          eligible = false;
-          reason = 'Locked';
         }
         
         return {
@@ -17616,27 +17024,18 @@ Please give me the diagnostic commands to run on my server so you can help me id
           staker,
           withdrawer,
           voter,
-          state,
-          activationEpoch,
-          creditsObserved,
-          lockupEpoch,
-          lockupTimestamp,
-          isLocked,
           eligible,
           reason
         };
       });
       
       // Find the "base" stake (first eligible one that others will merge into)
-      // All mergeable stakes must share the same staker AND withdrawer AND activation epoch
+      // All mergeable stakes must share the same staker AND withdrawer
       const eligibleStakes = analyzedStakes.filter(s => s.eligible);
       
-      // Group by staker+withdrawer+activationEpoch combination
-      // Stakes must have been activated in the same epoch OR both be fully active for multiple epochs
+      // Group by staker+withdrawer combination
       const groups = {};
       eligibleStakes.forEach(stake => {
-        // For merging, stakes need same authorities
-        // Activation epoch matching is handled by the stake program, but we group by it for safety
         const key = `${stake.staker}_${stake.withdrawer}`;
         if (!groups[key]) {
           groups[key] = [];
@@ -17651,19 +17050,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
           if (groups[key] && groups[key].length < 2) {
             stake.eligible = false;
             stake.reason = 'No matching stakes';
-          }
-        }
-      });
-      
-      // Additional check: within each group, check if credits observed are compatible
-      // Stakes with different creditsObserved values may fail to merge
-      Object.values(groups).forEach(group => {
-        if (group.length >= 2) {
-          // Check if all stakes in the group have the same creditsObserved
-          const creditsValues = [...new Set(group.map(s => s.creditsObserved))];
-          if (creditsValues.length > 1) {
-            // Different credits observed - mark with warning but still allow (program will reject if incompatible)
-            // The stake program will do the final check
           }
         }
       });
@@ -17686,7 +17072,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </div>
           <div class="merge-stake-amount">${formatNumber(lamportsToXNT(stake.lamports), 2)} XNT</div>
           <span class="merge-stake-status ${stake.eligible ? 'eligible' : 'ineligible'}">
-            ${stake.eligible ? '✓ ELIGIBLE' : stake.reason}
+            ${stake.eligible ? '✓ Eligible' : stake.reason}
           </span>
         </div>
       `).join('');
@@ -17851,24 +17237,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
       } catch (e) {
         console.error('Merge stakes error:', e);
         
-        const errorMsg = e.message || String(e);
-        
-        if (errorMsg.includes('User rejected') || errorMsg.includes('cancelled')) {
+        if (e.message?.includes('User rejected') || e.message?.includes('cancelled')) {
           showMergeStakesMessage('Transaction cancelled by user.', 'error');
-        } else if (errorMsg.includes('Plugin Closed')) {
+        } else if (e.message?.includes('Plugin Closed')) {
           showMergeStakesMessage('Wallet closed unexpectedly. Please try again.', 'error');
-        } else if (errorMsg.includes('0x6') || errorMsg.includes('custom program error: 6')) {
-          showMergeStakesMessage('Merge failed: Stakes have incompatible states. This can happen when stakes were activated in different epochs or have different credit histories. Try waiting until the next epoch.', 'error');
-        } else if (errorMsg.includes('0x5') || errorMsg.includes('custom program error: 5')) {
-          showMergeStakesMessage('Merge failed: Stake accounts have different lockup configurations.', 'error');
-        } else if (errorMsg.includes('0x1') || errorMsg.includes('custom program error: 1')) {
-          showMergeStakesMessage('Merge failed: Insufficient funds for transaction.', 'error');
-        } else if (errorMsg.includes('0x0') || errorMsg.includes('custom program error: 0')) {
-          showMergeStakesMessage('Merge failed: Invalid instruction or stake state.', 'error');
-        } else if (errorMsg.includes('Simulation failed') || errorMsg.includes('simulation')) {
-          showMergeStakesMessage('Merge failed: Stakes are not compatible for merging. They may have been activated in different epochs or have different credit histories.', 'error');
         } else {
-          showMergeStakesMessage(`Error: ${errorMsg}`, 'error');
+          showMergeStakesMessage(`Error: ${e.message || 'Transaction failed'}`, 'error');
         }
         
         btn.disabled = false;
@@ -18345,6 +17719,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // Populate modal
       document.getElementById('redelegateStakeAddress').textContent = shortenAddress(stake.pubkey);
       document.getElementById('redelegateStakeAddressCopyBtn').innerHTML = getCopyButtonHtml(stake.pubkey);
+      document.getElementById('redelegateCurrentValidator').textContent = currentManageValidator?.name || 'Unknown';
       document.getElementById('redelegateCurrentVoteAccount').textContent = shortenAddress(currentManageValidator?.voteAccount || '');
       document.getElementById('redelegateStakeAmount').textContent = formatNumber(stakedLamports / 1e9, 4);
       
@@ -18366,15 +17741,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const isActive = stake.state === 'active';
       const isInactive = stake.state === 'inactive';
       const isTransitioning = stake.state === 'activating' || stake.state === 'deactivating';
-      
-      // For inactive stakes, clarify that it's not really delegated anymore
-      if (isInactive) {
-        document.getElementById('redelegateCurrentValidator').textContent = (currentManageValidator?.name || 'Unknown') + ' (inactive)';
-        document.getElementById('redelegateCurrentValidator').style.color = 'var(--text-dim)';
-      } else {
-        document.getElementById('redelegateCurrentValidator').textContent = currentManageValidator?.name || 'Unknown';
-        document.getElementById('redelegateCurrentValidator').style.color = '#ff9800';
-      }
       
       if (!hasStakeAuthority) {
         authorityWarning.style.display = 'flex';
@@ -18470,20 +17836,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
 
     async function loadValidatorsForRedelegate() {
-      // Check if stake is inactive - if so, allow selecting any validator including the "current" one
-      // because an inactive stake isn't really delegated to anyone anymore
-      const isInactive = redelegateStakeData?.state === 'inactive';
-      const currentVoteAccount = currentManageValidator?.voteAccount;
-      
       // Use existing allValidators if available and has data
       if (allValidators && allValidators.length > 0) {
         allValidatorsForRedelegate = allValidators
-          .filter(v => {
-            if (!v.votePubkey) return false; // Must have valid votePubkey
-            // Only exclude current validator if stake is NOT inactive
-            if (!isInactive && v.votePubkey === currentVoteAccount) return false;
-            return true;
-          })
+          .filter(v => v.votePubkey && v.votePubkey !== currentManageValidator?.voteAccount) // Exclude current validator and invalid entries
           .map(v => ({
             voteAccount: v.votePubkey, // Note: allValidators uses votePubkey
             nodePubkey: v.nodePubkey,
@@ -18533,12 +17889,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               name: identities[v.nodePubkey] || identities[v.votePubkey] || shortenAddress(v.votePubkey),
               isDelinquent: true
             }))
-          ].filter(v => {
-            if (!v.voteAccount) return false;
-            // Only exclude current validator if stake is NOT inactive
-            if (!isInactive && v.voteAccount === currentVoteAccount) return false;
-            return true;
-          });
+          ].filter(v => v.voteAccount && v.voteAccount !== currentManageValidator?.voteAccount);
         }
       } catch (e) {
         console.error('Error loading validators for redelegate:', e);
@@ -20376,7 +19727,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       document.getElementById('withdrawMessage').style.display = 'none';
       document.getElementById('withdrawConfirmBtn').disabled = true;
       document.getElementById('withdrawConfirmBtn').textContent = 'Withdraw XNT';
-      document.getElementById('withdrawConfirmBtn').onclick = confirmWithdrawXnt;
+      document.getElementById('withdrawConfirmBtn').onclick = confirmWithdraw;
       document.getElementById('withdrawXntCancelBtn').textContent = 'Cancel';
       document.getElementById('withdrawAuthorityWarning').style.display = 'none';
       
@@ -22249,60 +21600,57 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Show loading
         if (loadingEl) loadingEl.style.display = 'flex';
         
-        // Fetch XNT rewards for all validators (vote account + self-stake)
-        // Use cached data when available to avoid rate limiting
-        // Only fetch 15 epochs to reduce RPC load
-        const numEpochs = 15;
+        // Fetch XNT rewards for all validators (vote account + self-stake) in parallel
         const allRewards = {};
         const allEpochs = new Set();
         
-        // Check if we already have cached data for all validators
-        let allCached = true;
-        for (const validator of validators) {
-          const cacheKey = `${validator.voteAccount}_total_${numEpochs}`;
-          const cached = totalRewardsCache[cacheKey];
-          if (!cached || !cached.data || cached.data.length < 10) {
-            allCached = false;
-            break;
+        const fetchValidatorRewards = async (validator) => {
+          try {
+            const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
+            return { voteAccount: validator.voteAccount, name: validator.name, rewards: rewards || [] };
+          } catch (e) {
+            console.error(`Error fetching rewards for ${validator.name}:`, e);
+            return { voteAccount: validator.voteAccount, name: validator.name, rewards: [] };
           }
+        };
+        
+        let rewardResults = await Promise.all(validators.map(fetchValidatorRewards));
+        
+        // Check for validators that didn't return data and retry them
+        const missingValidators = rewardResults.filter(r => !r.rewards || r.rewards.length === 0);
+        if (missingValidators.length > 0 && missingValidators.length < validators.length) {
+          console.log(`Retrying ${missingValidators.length} validators that didn't return data...`);
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          const retryResults = await Promise.all(
+            missingValidators.map(m => {
+              const validator = validators.find(v => v.voteAccount === m.voteAccount);
+              return fetchValidatorRewards(validator);
+            })
+          );
+          
+          retryResults.forEach(retryResult => {
+            const idx = rewardResults.findIndex(r => r.voteAccount === retryResult.voteAccount);
+            if (idx !== -1 && retryResult.rewards && retryResult.rewards.length > 0) {
+              rewardResults[idx] = retryResult;
+            }
+          });
         }
         
-        if (allCached) {
-          // Use cached data - no new requests needed
-          for (const validator of validators) {
-            const cacheKey = `${validator.voteAccount}_total_${numEpochs}`;
-            const cached = totalRewardsCache[cacheKey];
-            if (cached && cached.data && cached.data.length > 0) {
-              allRewards[validator.voteAccount] = {};
-              cached.data.forEach(r => {
-                allRewards[validator.voteAccount][r.epoch] = r.amount / 1e9;
-                allEpochs.add(r.epoch);
-              });
-            }
+        // Process results
+        rewardResults.forEach(result => {
+          if (result.rewards && result.rewards.length > 0) {
+            allRewards[result.voteAccount] = {};
+            result.rewards.forEach(r => {
+              allRewards[result.voteAccount][r.epoch] = r.amount / 1e9;
+              allEpochs.add(r.epoch);
+            });
           }
-        } else {
-          // Fetch rewards for each validator sequentially to avoid rate limiting
-          for (const validator of validators) {
-            try {
-              const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, numEpochs);
-              if (rewards && rewards.length > 0) {
-                allRewards[validator.voteAccount] = {};
-                rewards.forEach(r => {
-                  allRewards[validator.voteAccount][r.epoch] = r.amount / 1e9;
-                  allEpochs.add(r.epoch);
-                });
-              }
-            } catch (e) {
-              console.error(`Error fetching rewards for ${validator.name}:`, e);
-            }
-            // Delay between validators to avoid rate limiting
-            await new Promise(resolve => setTimeout(resolve, 300));
-          }
-        }
+        });
         
         // Sort epochs (fetchInflationRewards already excludes current epoch)
         let sortedEpochs = Array.from(allEpochs).sort((a, b) => a - b);
-        sortedEpochs = sortedEpochs.slice(-numEpochs);
+        sortedEpochs = sortedEpochs.slice(-30);
         
         // Build datasets
         const datasets = [];
@@ -22766,16 +22114,87 @@ Please give me the diagnostic commands to run on my server so you can help me id
         section.classList.add('expanded');
         button.classList.add('expanded');
         
-        // Initialize combined chart if not already done - show Epoch Credits by default (no RPC calls needed)
+        // Initialize combined chart if not already done
         if (!chartInstances['combinedChart'] && window.combinedChartValidators) {
-          // Initialize with Epoch Credits (already loaded data, no extra RPC calls)
-          initializeCombinedChart();
+          const loadingEl = document.getElementById('combinedChart-loading');
+          const titleEl = document.getElementById('combinedChart-title');
+          const subtitleEl = document.getElementById('combinedChart-subtitle');
           
-          // Make sure Epoch Credits button is active
-          const creditsBtn = document.querySelector('.chart-toggle-btn[onclick*="credits"]');
-          const xntBtn = document.querySelector('.chart-toggle-btn[onclick*="xnt"]');
-          if (creditsBtn) creditsBtn.classList.add('active');
-          if (xntBtn) xntBtn.classList.remove('active');
+          // Show loading
+          if (loadingEl) loadingEl.style.display = 'flex';
+          
+          // Fetch XNT rewards for all validators (vote account + self-stake) in parallel
+          const validators = window.combinedChartValidators;
+          const allRewards = {};
+          const allEpochs = new Set();
+          
+          // Fetch all validators in parallel for better reliability
+          const fetchValidatorRewards = async (validator) => {
+            try {
+              const rewards = await fetchTotalValidatorRewards(validator.voteAccount, validator.commission, 30);
+              return { voteAccount: validator.voteAccount, name: validator.name, rewards: rewards || [] };
+            } catch (e) {
+              console.error(`Error fetching rewards for ${validator.name}:`, e);
+              return { voteAccount: validator.voteAccount, name: validator.name, rewards: [] };
+            }
+          };
+          
+          let rewardResults = await Promise.all(validators.map(fetchValidatorRewards));
+          
+          // Check for validators that didn't return data and retry them
+          const missingValidators = rewardResults.filter(r => !r.rewards || r.rewards.length === 0);
+          if (missingValidators.length > 0 && missingValidators.length < validators.length) {
+            console.log(`Retrying ${missingValidators.length} validators that didn't return data...`);
+            // Small delay before retry
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            const retryResults = await Promise.all(
+              missingValidators.map(m => {
+                const validator = validators.find(v => v.voteAccount === m.voteAccount);
+                return fetchValidatorRewards(validator);
+              })
+            );
+            
+            // Merge retry results
+            retryResults.forEach(retryResult => {
+              const idx = rewardResults.findIndex(r => r.voteAccount === retryResult.voteAccount);
+              if (idx !== -1 && retryResult.rewards && retryResult.rewards.length > 0) {
+                rewardResults[idx] = retryResult;
+              }
+            });
+          }
+          
+          // Process results
+          rewardResults.forEach(result => {
+            if (result.rewards && result.rewards.length > 0) {
+              allRewards[result.voteAccount] = {};
+              result.rewards.forEach(r => {
+                allRewards[result.voteAccount][r.epoch] = r.amount / 1e9;
+                allEpochs.add(r.epoch);
+              });
+            }
+          });
+          
+          // Sort epochs (fetchInflationRewards already excludes current epoch)
+          let sortedEpochs = Array.from(allEpochs).sort((a, b) => a - b);
+          sortedEpochs = sortedEpochs.slice(-30);
+          
+          // Store for chart initialization
+          window.combinedChartXNTData = {
+            epochs: sortedEpochs,
+            rewards: allRewards,
+            hasData: Object.keys(allRewards).length > 0
+          };
+          
+          // Update title
+          if (titleEl) titleEl.textContent = 'Combined XNT Rewards Trend';
+          if (subtitleEl) subtitleEl.textContent = 'XNT earned per completed epoch for all validators';
+          
+          // Hide loading
+          if (loadingEl) loadingEl.style.display = 'none';
+          
+          // Now initialize with XNT data
+          initializeCombinedChartWithXNT();
         }
       }
     }
@@ -23317,7 +22736,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
           const logoEl = document.getElementById('currentLeaderLogo');
           if (currentLeaderInfo.iconUrl) {
-            logoEl.innerHTML = `<img src="${currentLeaderInfo.iconUrl}" alt="${currentLeaderInfo.name.charAt(0)}" onerror="this.style.display='none';this.parentElement.textContent='${currentLeaderInfo.name.charAt(0).toUpperCase()}';">`;
+            logoEl.innerHTML = `<img src="${currentLeaderInfo.iconUrl}" alt="${currentLeaderInfo.name.charAt(0)}" onerror="this.style.display='none';if(this.parentElement)this.parentElement.textContent='${currentLeaderInfo.name.charAt(0).toUpperCase()}';">`;
           } else {
             logoEl.textContent = currentLeaderInfo.name.charAt(0).toUpperCase();
           }
@@ -23342,7 +22761,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const initial = fullName.charAt(0).toUpperCase();
             let logoHtml;
             if (info && info.iconUrl) {
-              logoHtml = `<div class="leader-next-logo"><img src="${info.iconUrl}" alt="${initial}" onerror="this.style.display='none';this.parentElement.textContent='${initial}';"></div>`;
+              logoHtml = `<div class="leader-next-logo"><img src="${info.iconUrl}" alt="${initial}" onerror="this.style.display='none';if(this.parentElement)this.parentElement.textContent='${initial}';"></div>`;
             } else {
               logoHtml = `<div class="leader-next-logo">${initial}</div>`;
             }
