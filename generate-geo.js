@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const RPC_URL = 'https://x1-testnet.xen.network';
+const RPC_URL = 'https://rpc.mainnet.x1.xyz';
 
 async function rpcCall(method, params = []) {
   const response = await fetch(RPC_URL, {
