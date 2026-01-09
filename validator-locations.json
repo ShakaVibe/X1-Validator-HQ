@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-09T16:51:12.435Z",
-  "totalNodes": 1453,
-  "totalLocations": 1450,
+  "lastUpdated": "2026-01-09T18:51:04.670Z",
+  "totalNodes": 1454,
+  "totalLocations": 1451,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10152,28 +10152,31 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "23.239.108.42": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Ogden",
+      "lat": 41.2632,
+      "lon": -111.993
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 456
+      "count": 457
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 83
+    "FI": {
+      "name": "Finland",
+      "count": 142
     },
     "DE": {
       "name": "Germany",
       "count": 365
     },
-    "PL": {
-      "name": "Poland",
-      "count": 138
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 142
+    "GB": {
+      "name": "United Kingdom",
+      "count": 83
     },
     "CA": {
       "name": "Canada",
@@ -10187,6 +10190,10 @@
       "name": "The Netherlands",
       "count": 30
     },
+    "PL": {
+      "name": "Poland",
+      "count": 138
+    },
     "KE": {
       "name": "Kenya",
       "count": 6
@@ -10195,28 +10202,28 @@
       "name": "Italy",
       "count": 5
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "AT": {
-      "name": "Austria",
+    "SG": {
+      "name": "Singapore",
       "count": 1
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "SG": {
-      "name": "Singapore",
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "AT": {
+      "name": "Austria",
       "count": 1
     }
   }
