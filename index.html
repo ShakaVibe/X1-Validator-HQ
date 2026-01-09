@@ -12514,9 +12514,9 @@
 
     // Geolocation - loads from local JSON file (auto-updated hourly by GitHub Actions)
     const GEO_DATA_URLS = [
+      'https://cdn.jsdelivr.net/gh/Shaka-h/X1-Validator-HQ@main/validator-locations.json',
       'validator-locations.json',
-      './validator-locations.json',
-      '/X1-Validator-Dashboard/validator-locations.json'
+      './validator-locations.json'
     ];
     const GEO_CACHE_KEY = 'x1GeoCache';
     const GEO_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours
@@ -12719,26 +12719,7 @@
             const sortedCountries = Object.entries(staticData.countries)
               .sort((a, b) => b[1].count - a[1].count);
             
-            // Add timestamp info if available
-            let timestampHtml = '';
-            if (staticData.lastUpdated) {
-              const genDate = new Date(staticData.lastUpdated);
-              const now = new Date();
-              const ageMs = now - genDate;
-              const ageHours = Math.floor(ageMs / (1000 * 60 * 60));
-              const ageMinutes = Math.floor((ageMs % (1000 * 60 * 60)) / (1000 * 60));
-              let ageText = '';
-              if (ageHours > 24) {
-                ageText = Math.floor(ageHours / 24) + ' days ago';
-              } else if (ageHours > 0) {
-                ageText = ageHours + 'h ' + ageMinutes + 'm ago';
-              } else {
-                ageText = ageMinutes + ' min ago';
-              }
-              timestampHtml = `<div style="font-size: 0.65rem; color: var(--text-dim); padding: 0.5rem 0; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem;">Updated: ${ageText}</div>`;
-            }
-            
-            const countryListHtml = timestampHtml + sortedCountries.map(([code, data]) => `
+            const countryListHtml = sortedCountries.map(([code, data]) => `
               <div class="country-item">
                 <div class="country-info">
                   <span class="country-flag">${countryFlags[code] || '🌍'}</span>
