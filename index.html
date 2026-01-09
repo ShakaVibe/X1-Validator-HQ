@@ -8984,6 +8984,7 @@
         if (sharks > 0) creatures.push({ emoji: '🦈', count: sharks });
         if (dolphins > 0) creatures.push({ emoji: '🐬', count: dolphins });
         if (squids > 0) creatures.push({ emoji: '🦑', count: squids });
+        // NO TURTLE - intentionally removed for Twitter card space
         return creatures;
       };
       
@@ -9021,6 +9022,7 @@
         const plsRatio = data?.plsPrice > 0 ? (price / data.plsPrice).toFixed(2) : '—';
         const priceFormatted = formatPriceTwitter(price);
         const creatures = getBurnCreaturesTwitter(data?.burnData?.total || 0, tokenName); // Use Twitter version (stops at squid)
+        console.log('TwitterCard creatures for', tokenName, ':', creatures.map(c => c.emoji + 'x' + c.count).join(', '));
         const burn24hCreature = get24hBurnCreature(data?.burnData?.burn24h || 0, tokenName); // Single emoji, can be any
         const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         
