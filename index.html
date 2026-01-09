@@ -12533,6 +12533,12 @@
             if (data && data.locations && Object.keys(data.locations).length > 100) {
               geoData = data;
               console.log('Geo data loaded from:', url, '- Locations:', Object.keys(data.locations).length);
+              if (data.generated) {
+                console.log('Geo data generated at:', data.generated);
+              }
+              if (data.totalValidators) {
+                console.log('Total validators in geo data:', data.totalValidators);
+              }
               return geoData;
             }
           }
@@ -12713,7 +12719,26 @@
             const sortedCountries = Object.entries(staticData.countries)
               .sort((a, b) => b[1].count - a[1].count);
             
-            const countryListHtml = sortedCountries.map(([code, data]) => `
+            // Add timestamp info if available
+            let timestampHtml = '';
+            if (staticData.generated) {
+              const genDate = new Date(staticData.generated);
+              const now = new Date();
+              const ageMs = now - genDate;
+              const ageHours = Math.floor(ageMs / (1000 * 60 * 60));
+              const ageMinutes = Math.floor((ageMs % (1000 * 60 * 60)) / (1000 * 60));
+              let ageText = '';
+              if (ageHours > 24) {
+                ageText = Math.floor(ageHours / 24) + ' days ago';
+              } else if (ageHours > 0) {
+                ageText = ageHours + 'h ' + ageMinutes + 'm ago';
+              } else {
+                ageText = ageMinutes + ' min ago';
+              }
+              timestampHtml = `<div style="font-size: 0.65rem; color: var(--text-dim); padding: 0.5rem 0; border-bottom: 1px solid var(--border); margin-bottom: 0.5rem;">Updated: ${ageText}</div>`;
+            }
+            
+            const countryListHtml = timestampHtml + sortedCountries.map(([code, data]) => `
               <div class="country-item">
                 <div class="country-info">
                   <span class="country-flag">${countryFlags[code] || '🌍'}</span>
