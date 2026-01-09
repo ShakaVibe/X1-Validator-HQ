@@ -20,7 +20,7 @@ async function rpcCall(method, params = []) {
   return data.result;
 }
 
-async function getValidatorIPs() {
+async function getValidatorData() {
   const clusterNodes = await rpcCall('getClusterNodes');
   const voteAccounts = await rpcCall('getVoteAccounts');
   
@@ -35,9 +35,10 @@ async function getValidatorIPs() {
     nodeToVote[v.nodePubkey] = v.votePubkey;
   }
   
-  // Extract unique public IPs
-  const ipSet = new Set();
-  const validators = [];
+  // Track ALL validators and their IPs
+  const allValidators = [];
+  const uniqueIPs = new Set();
+  const ipValidatorCount = {}; // How many validators per IP
   
   for (const node of clusterNodes) {
     if (node.gossip && nodeToVote[node.pubkey]) {
@@ -47,18 +48,23 @@ async function getValidatorIPs() {
           ip.startsWith('192.168.') || ip.startsWith('0.')) {
         continue;
       }
-      if (!ipSet.has(ip)) {
-        ipSet.add(ip);
-        validators.push({
-          nodePubkey: node.pubkey,
-          votePubkey: nodeToVote[node.pubkey],
-          ip: ip
-        });
-      }
+      
+      allValidators.push({
+        nodePubkey: node.pubkey,
+        votePubkey: nodeToVote[node.pubkey],
+        ip: ip
+      });
+      
+      uniqueIPs.add(ip);
+      ipValidatorCount[ip] = (ipValidatorCount[ip] || 0) + 1;
     }
   }
   
-  return validators;
+  return {
+    allValidators,
+    uniqueIPs: Array.from(uniqueIPs),
+    ipValidatorCount
+  };
 }
 
 // Use ip-api.com batch endpoint (free, 100 IPs per batch, 45 requests/min)
@@ -106,16 +112,17 @@ async function batchGeolocate(ips) {
 async function main() {
   console.log('Fetching validators from RPC...');
   
-  let validators;
+  let validatorData;
   try {
-    validators = await getValidatorIPs();
-    console.log(`Found ${validators.length} validators with unique IPs`);
+    validatorData = await getValidatorData();
+    console.log(`Found ${validatorData.allValidators.length} total validators`);
+    console.log(`Found ${validatorData.uniqueIPs.length} unique IPs`);
   } catch (e) {
     console.error('Failed to fetch validators:', e.message);
     process.exit(1);
   }
   
-  if (validators.length === 0) {
+  if (validatorData.allValidators.length === 0) {
     console.error('No validators found!');
     process.exit(1);
   }
@@ -134,8 +141,7 @@ async function main() {
   }
   
   // Find IPs that need geolocation
-  const allIPs = validators.map(v => v.ip);
-  const needGeo = allIPs.filter(ip => !existingLocations[ip] || !existingLocations[ip].lat);
+  const needGeo = validatorData.uniqueIPs.filter(ip => !existingLocations[ip] || !existingLocations[ip].lat);
   
   console.log(`Need to geolocate ${needGeo.length} new IPs`);
   
@@ -149,8 +155,8 @@ async function main() {
   // Merge existing and new locations
   const locations = { ...existingLocations, ...newLocations };
   
-  // Only keep locations for current validators (remove stale entries)
-  const ipSet = new Set(allIPs);
+  // Only keep locations for current IPs (remove stale entries)
+  const ipSet = new Set(validatorData.uniqueIPs);
   const activeLocations = {};
   for (const ip of Object.keys(locations)) {
     if (ipSet.has(ip)) {
@@ -158,25 +164,31 @@ async function main() {
     }
   }
   
-  // Count by country
+  // Count TOTAL VALIDATORS by country (not unique IPs)
   const countries = {};
-  for (const ip of allIPs) {
+  let totalValidatorsCounted = 0;
+  
+  for (const ip of validatorData.uniqueIPs) {
     const loc = activeLocations[ip];
+    const validatorCount = validatorData.ipValidatorCount[ip] || 1;
+    
     if (loc && loc.countryCode) {
       if (!countries[loc.countryCode]) {
         countries[loc.countryCode] = { name: loc.country, count: 0 };
       }
-      countries[loc.countryCode].count++;
+      countries[loc.countryCode].count += validatorCount; // Add ALL validators at this IP
+      totalValidatorsCounted += validatorCount;
     }
   }
   
-  console.log(`Total locations: ${Object.keys(activeLocations).length}`);
+  console.log(`Total locations (unique IPs): ${Object.keys(activeLocations).length}`);
+  console.log(`Total validators counted: ${totalValidatorsCounted}`);
   console.log(`Countries: ${Object.keys(countries).length}`);
   
   // Build output
   const output = {
     lastUpdated: new Date().toISOString(),
-    totalNodes: validators.length,
+    totalNodes: validatorData.allValidators.length,
     totalLocations: Object.keys(activeLocations).length,
     locations: activeLocations,
     countries: countries
