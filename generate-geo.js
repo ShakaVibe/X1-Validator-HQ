@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const RPC_URL = 'https://x1-testnet-rpc.surge.sh';
+const RPC_URL = 'https://x1-testnet.xen.network';
 
 async function rpcCall(method, params = []) {
   const response = await fetch(RPC_URL, {
@@ -14,6 +14,9 @@ async function rpcCall(method, params = []) {
     })
   });
   const data = await response.json();
+  if (data.error) {
+    throw new Error(`RPC Error: ${data.error.message}`);
+  }
   return data.result;
 }
 
@@ -32,16 +35,26 @@ async function getValidatorIPs() {
     nodeToVote[v.nodePubkey] = v.votePubkey;
   }
   
-  // Extract IPs
+  // Extract IPs - only public IPs
+  const ipSet = new Set();
   const validators = [];
+  
   for (const node of clusterNodes) {
     if (node.gossip && nodeToVote[node.pubkey]) {
       const ip = node.gossip.split(':')[0];
-      validators.push({
-        nodePubkey: node.pubkey,
-        votePubkey: nodeToVote[node.pubkey],
-        ip: ip
-      });
+      // Skip private IPs
+      if (ip.startsWith('127.') || ip.startsWith('10.') || 
+          ip.startsWith('192.168.') || ip.startsWith('0.')) {
+        continue;
+      }
+      if (!ipSet.has(ip)) {
+        ipSet.add(ip);
+        validators.push({
+          nodePubkey: node.pubkey,
+          votePubkey: nodeToVote[node.pubkey],
+          ip: ip
+        });
+      }
     }
   }
   
@@ -50,17 +63,15 @@ async function getValidatorIPs() {
 
 async function geolocateIP(ip) {
   try {
-    const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,countryCode,region,city,lat,lon,isp`);
+    const response = await fetch(`https://ipwho.is/${ip}`);
     const data = await response.json();
-    if (data.status === 'success') {
+    if (data.success !== false && data.latitude) {
       return {
         country: data.country,
-        countryCode: data.countryCode,
-        region: data.region,
+        countryCode: data.country_code,
         city: data.city,
-        lat: data.lat,
-        lon: data.lon,
-        isp: data.isp
+        lat: data.latitude,
+        lon: data.longitude
       };
     }
   } catch (e) {
@@ -71,76 +82,99 @@ async function geolocateIP(ip) {
 
 async function main() {
   console.log('Fetching validators...');
-  const validators = await getValidatorIPs();
-  console.log(`Found ${validators.length} validators with IPs`);
   
-  // Load existing data
-  let existing = {};
+  let validators;
+  try {
+    validators = await getValidatorIPs();
+    console.log(`Found ${validators.length} validators with unique IPs`);
+  } catch (e) {
+    console.error('Failed to fetch validators:', e.message);
+    process.exit(1);
+  }
+  
+  // Load existing location data to avoid re-geolocating
+  let existingLocations = {};
   try {
     const data = fs.readFileSync('validator-locations.json', 'utf8');
     const parsed = JSON.parse(data);
-    for (const v of parsed) {
-      existing[v.nodePubkey] = v;
+    if (parsed.locations) {
+      existingLocations = parsed.locations;
+      console.log(`Loaded ${Object.keys(existingLocations).length} existing locations`);
     }
-    console.log(`Loaded ${Object.keys(existing).length} existing locations`);
   } catch (e) {
     console.log('No existing data found, starting fresh');
   }
   
-  // Process validators
-  const results = [];
+  // Process validators - geolocate new IPs
+  const locations = {};
+  const countries = {};
   let newCount = 0;
   let apiCalls = 0;
-  const maxApiCalls = 45; // Stay under rate limit (45 per minute for free tier)
+  const maxApiCalls = 40; // Stay under rate limit
   
   for (const v of validators) {
-    // Check if we already have this validator
-    if (existing[v.nodePubkey] && existing[v.nodePubkey].lat) {
-      results.push(existing[v.nodePubkey]);
+    const ip = v.ip;
+    
+    // Check if we already have this IP
+    if (existingLocations[ip] && existingLocations[ip].lat) {
+      locations[ip] = existingLocations[ip];
+      
+      // Count country
+      const cc = existingLocations[ip].countryCode;
+      if (cc) {
+        if (!countries[cc]) {
+          countries[cc] = { name: existingLocations[ip].country, count: 0 };
+        }
+        countries[cc].count++;
+      }
       continue;
     }
     
     // Need to geolocate
     if (apiCalls >= maxApiCalls) {
-      console.log(`Rate limit reached, skipping remaining new validators`);
-      // Keep the validator without location
-      results.push({
-        nodePubkey: v.nodePubkey,
-        votePubkey: v.votePubkey,
-        ip: v.ip
-      });
+      console.log('Rate limit reached, will continue next run');
       continue;
     }
     
-    console.log(`Geolocating ${v.ip}...`);
-    const geo = await geolocateIP(v.ip);
+    console.log(`Geolocating ${ip}...`);
+    const geo = await geolocateIP(ip);
     apiCalls++;
     
     if (geo) {
-      results.push({
-        nodePubkey: v.nodePubkey,
-        votePubkey: v.votePubkey,
-        ip: v.ip,
-        ...geo
-      });
+      locations[ip] = geo;
       newCount++;
-    } else {
-      results.push({
-        nodePubkey: v.nodePubkey,
-        votePubkey: v.votePubkey,
-        ip: v.ip
-      });
+      
+      // Count country
+      const cc = geo.countryCode;
+      if (cc) {
+        if (!countries[cc]) {
+          countries[cc] = { name: geo.country, count: 0 };
+        }
+        countries[cc].count++;
+      }
     }
     
-    // Small delay to avoid rate limiting
-    await new Promise(r => setTimeout(r, 100));
+    // Delay to avoid rate limiting
+    await new Promise(r => setTimeout(r, 250));
   }
   
-  console.log(`Added ${newCount} new locations, total: ${results.length}`);
+  console.log(`Added ${newCount} new locations, total: ${Object.keys(locations).length}`);
+  
+  // Build output in the format the dashboard expects
+  const output = {
+    lastUpdated: new Date().toISOString(),
+    totalNodes: validators.length,
+    totalLocations: Object.keys(locations).length,
+    locations: locations,
+    countries: countries
+  };
   
   // Save results
-  fs.writeFileSync('validator-locations.json', JSON.stringify(results, null, 2));
+  fs.writeFileSync('validator-locations.json', JSON.stringify(output, null, 2));
   console.log('Saved to validator-locations.json');
 }
 
-main().catch(console.error);
+main().catch(err => {
+  console.error('Script failed:', err);
+  process.exit(1);
+});
