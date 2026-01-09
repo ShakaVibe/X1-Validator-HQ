@@ -9021,9 +9021,8 @@
         const change = data?.priceData?.change || 0;
         const plsRatio = data?.plsPrice > 0 ? (price / data.plsPrice).toFixed(2) : '—';
         const priceFormatted = formatPriceTwitter(price);
-        const creatures = getBurnCreaturesTwitter(data?.burnData?.total || 0, tokenName); // Use Twitter version (stops at squid)
-        console.log('TwitterCard creatures for', tokenName, ':', creatures.map(c => c.emoji + 'x' + c.count).join(', '));
-        const burn24hCreature = get24hBurnCreature(data?.burnData?.burn24h || 0, tokenName); // Single emoji, can be any
+        const creatures = getBurnCreaturesTwitter(data?.burnData?.total || 0, tokenName);
+        const burn24hCreature = get24hBurnCreature(data?.burnData?.burn24h || 0, tokenName);
         const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         
         // Format USD without decimals, no abbreviation
@@ -9045,21 +9044,18 @@
         const boxBorder = isGold ? 'border-[#D9CA5D]/30' : 'border-[#7CFC00]/30';
         const boxBg = isGold ? 'bg-gradient-to-b from-[#D9CA5D]/10 to-transparent' : 'bg-gradient-to-b from-[#7CFC00]/10 to-transparent';
         
-        // Card gradient - glow only at top, FULLY OPAQUE base
+        // Card gradient - glow only at top
         const cardBg = isGold 
-          ? 'bg-[#0d0d0d]' 
-          : 'bg-[#0d0d0d]';
+          ? 'bg-gradient-to-b from-[#D9CA5D]/15 via-black/95 to-black/95' 
+          : 'bg-gradient-to-b from-[#7CFC00]/15 via-black/95 to-black/95';
         const cardGlow = isGold 
           ? 'shadow-[0_-20px_60px_rgba(217,202,93,0.3),inset_0_1px_0_rgba(217,202,93,0.3)]' 
           : 'shadow-[0_-20px_60px_rgba(124,252,0,0.3),inset_0_1px_0_rgba(124,252,0,0.3)]';
-        const cardTopGlow = isGold
-          ? 'linear-gradient(180deg, rgba(217,202,93,0.15) 0%, transparent 30%)'
-          : 'linear-gradient(180deg, rgba(124,252,0,0.15) 0%, transparent 30%)';
         
         return (
           <div 
-            className={`rounded-2xl p-5 flex flex-col border-2 ${borderColor} ${cardGlow} overflow-hidden`} 
-            style={{height: '100%', backgroundColor: '#0d0d0d', backgroundImage: cardTopGlow}}
+            className={`rounded-2xl p-5 flex flex-col border-2 ${borderColor} ${cardGlow} ${cardBg} overflow-hidden`} 
+            style={{height: '100%'}}
           >
             {/* Header */}
             <div className="flex items-center gap-4 mb-4">
@@ -9169,85 +9165,74 @@
       
       return (
         <>
-          {/* Normal Modal View - Moved off-screen when in Twitter mode */}
-          <div 
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-auto" 
-            onClick={onClose}
-            style={{ 
-              transform: twitterMode ? 'translateX(-200vw)' : 'translateX(0)',
-              opacity: twitterMode ? 0 : 1
-            }}
-          >
-            <div className="absolute inset-0 bg-black/90 backdrop-blur-md" />
-            <div className="relative z-10 w-full max-w-[920px]" onClick={e => e.stopPropagation()}>
-              {/* Header */}
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-orbitron font-bold text-white">Combined KPI Report</h2>
-                <p className="text-gray-400 text-sm mt-1">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
+          {/* Normal Modal View */}
+          {!twitterMode && (
+            <div 
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-auto" 
+              onClick={onClose}
+            >
+              <div className="absolute inset-0 bg-black/90 backdrop-blur-md" />
+              <div className="relative z-10 w-full max-w-[920px]" onClick={e => e.stopPropagation()}>
+                {/* Header */}
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-orbitron font-bold text-white">Combined KPI Report</h2>
+                  <p className="text-gray-400 text-sm mt-1">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                  
+                  {/* Twitter Button */}
+                  <button
+                    onClick={() => setTwitterMode(true)}
+                    disabled={!bothLoaded}
+                    className={`mt-3 px-4 py-2 ${bothLoaded ? 'bg-[#1DA1F2] hover:bg-[#1a8cd8]' : 'bg-gray-600 cursor-not-allowed'} text-white font-bold rounded-lg transition-all flex items-center gap-2 mx-auto`}
+                  >
+                    <span>📸</span> Twitter Screenshot {!bothLoaded && '(Loading...)'}
+                  </button>
+                </div>
                 
-                {/* Twitter Button */}
-                <button
-                  onClick={() => setTwitterMode(true)}
-                  disabled={!bothLoaded}
-                  className={`mt-3 px-4 py-2 ${bothLoaded ? 'bg-[#1DA1F2] hover:bg-[#1a8cd8]' : 'bg-gray-600 cursor-not-allowed'} text-white font-bold rounded-lg transition-all flex items-center gap-2 mx-auto`}
-                >
-                  <span>📸</span> Twitter Screenshot {!bothLoaded && '(Loading...)'}
-                </button>
-              </div>
-              
-              {/* Both KPI Cards */}
-              <div className="flex gap-4 justify-center">
-                <StandaloneKPICard tokenName="PTGC" plsPrice={plsPrice} onDataLoaded={handleDataLoaded} />
-                <StandaloneKPICard tokenName="UFO" plsPrice={plsPrice} onDataLoaded={handleDataLoaded} />
+                {/* Both KPI Cards */}
+                <div className="flex gap-4 justify-center">
+                  <StandaloneKPICard tokenName="PTGC" plsPrice={plsPrice} onDataLoaded={handleDataLoaded} />
+                  <StandaloneKPICard tokenName="UFO" plsPrice={plsPrice} onDataLoaded={handleDataLoaded} />
+                </div>
               </div>
             </div>
-          </div>
+          )}
           
           {/* Twitter Mode View - 1200x675 optimized for screenshots */}
           {twitterMode && (
             <div 
-              className="fixed inset-0 z-[200]"
-              style={{ backgroundColor: '#000000' }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black"
               onClick={() => setTwitterMode(false)}
             >
-              {/* Extra solid black layer covering entire viewport */}
-              <div className="absolute inset-0" style={{ backgroundColor: '#000000' }} />
-              
-              {/* Centered container */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div 
-                  className="relative overflow-hidden" 
-                  style={{
-                    width: '1200px', 
-                    height: '675px',
-                    backgroundColor: '#0a0a0a'
-                  }}
-                  onClick={e => e.stopPropagation()}
-                >
-                  {/* Solid black base layer */}
-                  <div className="absolute inset-0" style={{ backgroundColor: '#0a0a0a' }} />
-                  
-                  {/* Gradient overlays */}
-                  <div className="absolute inset-0 pointer-events-none" style={{
-                    background: 'radial-gradient(ellipse at 25% 0%, rgba(217,202,93,0.3) 0%, transparent 40%)'
-                  }} />
-                  <div className="absolute inset-0 pointer-events-none" style={{
-                    background: 'radial-gradient(ellipse at 75% 0%, rgba(124,252,0,0.3) 0%, transparent 40%)'
-                  }} />
-                  <div className="absolute inset-0 pointer-events-none" style={{
-                    background: 'radial-gradient(ellipse at 50% 100%, rgba(180,80,20,0.25) 0%, transparent 50%)'
-                  }} />
-                  
-                  {/* Solid background in the gap area between cards */}
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div style={{ width: '20px', height: '100%', backgroundColor: '#0a0a0a' }} />
-                  </div>
-                  
-                  {/* Two cards side by side */}
-                  <div className="relative w-full h-full p-5 grid grid-cols-2 gap-5" style={{ backgroundColor: '#0a0a0a' }}>
-                    <TwitterCard 
-                      data={cardData.PTGC} 
-                      tokenName="PTGC" 
+              <div 
+                className="relative" 
+                style={{
+                  width: '1200px', 
+                  height: '675px',
+                  background: 'radial-gradient(ellipse at 25% 0%, rgba(217,202,93,0.3) 0%, transparent 40%), radial-gradient(ellipse at 75% 0%, rgba(124,252,0,0.3) 0%, transparent 40%), radial-gradient(ellipse at 50% 100%, rgba(180,80,20,0.25) 0%, transparent 50%), linear-gradient(180deg, #0d0d0d 0%, #080808 50%, #0a0805 100%)'
+                }}
+                onClick={e => e.stopPropagation()}
+              >
+                {/* Two cards side by side */}
+                <div className="w-full h-full p-5 grid grid-cols-2 gap-5">
+                  <TwitterCard 
+                    data={cardData.PTGC} 
+                    tokenName="PTGC" 
+                    color="gold"
+                    logo="./06_PTGC_V1_transparent_bg (1).png"
+                  />
+                  <TwitterCard 
+                    data={cardData.UFO} 
+                    tokenName="UFO" 
+                    color="green"
+                    logo="./07_Ufo_transparent.png"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      );
+    }; 
                       color="gold"
                       logo="./06_PTGC_V1_transparent_bg (1).png"
                     />
