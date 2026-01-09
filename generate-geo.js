@@ -35,7 +35,7 @@ async function getValidatorIPs() {
     nodeToVote[v.nodePubkey] = v.votePubkey;
   }
   
-  // Extract IPs - only public IPs
+  // Extract unique public IPs
   const ipSet = new Set();
   const validators = [];
   
@@ -61,27 +61,50 @@ async function getValidatorIPs() {
   return validators;
 }
 
-async function geolocateIP(ip) {
-  try {
-    const response = await fetch(`https://ipwho.is/${ip}`);
-    const data = await response.json();
-    if (data.success !== false && data.latitude) {
-      return {
-        country: data.country,
-        countryCode: data.country_code,
-        city: data.city,
-        lat: data.latitude,
-        lon: data.longitude
-      };
+// Use ip-api.com batch endpoint (free, 100 IPs per batch, 45 requests/min)
+async function batchGeolocate(ips) {
+  const results = {};
+  const batchSize = 100;
+  
+  for (let i = 0; i < ips.length; i += batchSize) {
+    const batch = ips.slice(i, i + batchSize);
+    console.log(`Geolocating batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(ips.length/batchSize)} (${batch.length} IPs)...`);
+    
+    try {
+      const response = await fetch('http://ip-api.com/batch?fields=status,query,country,countryCode,city,lat,lon', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(batch)
+      });
+      
+      const data = await response.json();
+      
+      for (const item of data) {
+        if (item.status === 'success') {
+          results[item.query] = {
+            country: item.country,
+            countryCode: item.countryCode,
+            city: item.city || 'Unknown',
+            lat: item.lat,
+            lon: item.lon
+          };
+        }
+      }
+    } catch (e) {
+      console.error(`Batch failed:`, e.message);
     }
-  } catch (e) {
-    console.error(`Failed to geolocate ${ip}:`, e.message);
+    
+    // Rate limit: 45 requests per minute, so wait 1.5s between batches
+    if (i + batchSize < ips.length) {
+      await new Promise(r => setTimeout(r, 1500));
+    }
   }
-  return null;
+  
+  return results;
 }
 
 async function main() {
-  console.log('Fetching validators...');
+  console.log('Fetching validators from RPC...');
   
   let validators;
   try {
@@ -92,7 +115,12 @@ async function main() {
     process.exit(1);
   }
   
-  // Load existing location data to avoid re-geolocating
+  if (validators.length === 0) {
+    console.error('No validators found!');
+    process.exit(1);
+  }
+  
+  // Load existing location data to preserve between runs
   let existingLocations = {};
   try {
     const data = fs.readFileSync('validator-locations.json', 'utf8');
@@ -105,73 +133,65 @@ async function main() {
     console.log('No existing data found, starting fresh');
   }
   
-  // Process validators - geolocate new IPs
-  const locations = {};
-  const countries = {};
-  let newCount = 0;
-  let apiCalls = 0;
-  const maxApiCalls = 40; // Stay under rate limit
+  // Find IPs that need geolocation
+  const allIPs = validators.map(v => v.ip);
+  const needGeo = allIPs.filter(ip => !existingLocations[ip] || !existingLocations[ip].lat);
   
-  for (const v of validators) {
-    const ip = v.ip;
-    
-    // Check if we already have this IP
-    if (existingLocations[ip] && existingLocations[ip].lat) {
-      locations[ip] = existingLocations[ip];
-      
-      // Count country
-      const cc = existingLocations[ip].countryCode;
-      if (cc) {
-        if (!countries[cc]) {
-          countries[cc] = { name: existingLocations[ip].country, count: 0 };
-        }
-        countries[cc].count++;
-      }
-      continue;
-    }
-    
-    // Need to geolocate
-    if (apiCalls >= maxApiCalls) {
-      console.log('Rate limit reached, will continue next run');
-      continue;
-    }
-    
-    console.log(`Geolocating ${ip}...`);
-    const geo = await geolocateIP(ip);
-    apiCalls++;
-    
-    if (geo) {
-      locations[ip] = geo;
-      newCount++;
-      
-      // Count country
-      const cc = geo.countryCode;
-      if (cc) {
-        if (!countries[cc]) {
-          countries[cc] = { name: geo.country, count: 0 };
-        }
-        countries[cc].count++;
-      }
-    }
-    
-    // Delay to avoid rate limiting
-    await new Promise(r => setTimeout(r, 250));
+  console.log(`Need to geolocate ${needGeo.length} new IPs`);
+  
+  // Geolocate new IPs
+  let newLocations = {};
+  if (needGeo.length > 0) {
+    newLocations = await batchGeolocate(needGeo);
+    console.log(`Got ${Object.keys(newLocations).length} new locations`);
   }
   
-  console.log(`Added ${newCount} new locations, total: ${Object.keys(locations).length}`);
+  // Merge existing and new locations
+  const locations = { ...existingLocations, ...newLocations };
   
-  // Build output in the format the dashboard expects
+  // Only keep locations for current validators (remove stale entries)
+  const ipSet = new Set(allIPs);
+  const activeLocations = {};
+  for (const ip of Object.keys(locations)) {
+    if (ipSet.has(ip)) {
+      activeLocations[ip] = locations[ip];
+    }
+  }
+  
+  // Count by country
+  const countries = {};
+  for (const ip of allIPs) {
+    const loc = activeLocations[ip];
+    if (loc && loc.countryCode) {
+      if (!countries[loc.countryCode]) {
+        countries[loc.countryCode] = { name: loc.country, count: 0 };
+      }
+      countries[loc.countryCode].count++;
+    }
+  }
+  
+  console.log(`Total locations: ${Object.keys(activeLocations).length}`);
+  console.log(`Countries: ${Object.keys(countries).length}`);
+  
+  // Build output
   const output = {
     lastUpdated: new Date().toISOString(),
     totalNodes: validators.length,
-    totalLocations: Object.keys(locations).length,
-    locations: locations,
+    totalLocations: Object.keys(activeLocations).length,
+    locations: activeLocations,
     countries: countries
   };
   
-  // Save results
+  // Save
   fs.writeFileSync('validator-locations.json', JSON.stringify(output, null, 2));
   console.log('Saved to validator-locations.json');
+  
+  // Show top countries
+  const sorted = Object.entries(countries).sort((a, b) => b[1].count - a[1].count);
+  console.log('\nTop countries:');
+  sorted.slice(0, 10).forEach(([code, data]) => {
+    console.log(`  ${code}: ${data.count} (${data.name})`);
+  });
 }
 
 main().catch(err => {
