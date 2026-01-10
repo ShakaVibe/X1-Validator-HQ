@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-10T10:40:39.822Z",
-  "totalNodes": 1466,
-  "totalLocations": 1463,
+  "lastUpdated": "2026-01-10T13:02:46.954Z",
+  "totalNodes": 1464,
+  "totalLocations": 1461,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3390,13 +3390,6 @@
       "city": "Salt Lake City",
       "lat": 40.7687,
       "lon": -111.886
-    },
-    "66.45.226.122": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "152.53.146.111": {
       "country": "Germany",
@@ -10083,13 +10076,6 @@
       "lat": 59.3287,
       "lon": 18.0717
     },
-    "74.50.88.134": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "51.68.206.166": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -10248,7 +10234,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 458
+      "count": 456
     },
     "FI": {
       "name": "Finland",
