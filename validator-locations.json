@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-10T16:44:10.146Z",
+  "lastUpdated": "2026-01-10T18:47:31.388Z",
   "totalNodes": 1464,
-  "totalLocations": 1461,
+  "totalLocations": 1462,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10229,6 +10229,13 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
+    },
+    "157.180.55.185": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -10254,11 +10261,11 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 138
+      "count": 137
     },
     "FI": {
       "name": "Finland",
-      "count": 145
+      "count": 146
     },
     "AL": {
       "name": "Albania",
