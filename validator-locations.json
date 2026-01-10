@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-10T06:48:59.892Z",
-  "totalNodes": 1453,
-  "totalLocations": 1449,
+  "lastUpdated": "2026-01-10T08:44:32.334Z",
+  "totalNodes": 1467,
+  "totalLocations": 1463,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -5449,13 +5449,6 @@
       "lat": 38.7911,
       "lon": -77.5264
     },
-    "198.96.94.230": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "51.91.7.214": {
       "country": "France",
       "countryCode": "FR",
@@ -10145,32 +10138,133 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "65.21.72.165": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "51.81.109.70": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Warrenton",
+      "lat": 38.6877,
+      "lon": -77.8369
+    },
+    "51.81.155.88": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Hillsboro",
+      "lat": 45.526,
+      "lon": -122.9874
+    },
+    "51.79.99.136": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "51.77.65.219": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "135.148.171.70": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Oakton",
+      "lat": 38.719,
+      "lon": -77.7416
+    },
+    "51.79.81.29": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "217.182.196.26": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Saarbrücken",
+      "lat": 49.2405,
+      "lon": 6.98474
+    },
+    "204.13.237.78": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "51.79.72.76": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Québec",
+      "lat": 46.8127,
+      "lon": -71.2226
+    },
+    "141.95.32.184": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
+    },
+    "69.10.55.50": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0749
+    },
+    "65.108.11.228": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "45.90.151.6": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
+    },
+    "45.90.151.3": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 455
+      "count": 459
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 145
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 367
     },
     "GB": {
       "name": "United Kingdom",
       "count": 83
     },
-    "DE": {
-      "name": "Germany",
-      "count": 364
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 138
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 143
-    },
     "CA": {
       "name": "Canada",
-      "count": 60
+      "count": 63
     },
     "FR": {
       "name": "France",
@@ -10178,7 +10272,11 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 30
+      "count": 32
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 138
     },
     "KE": {
       "name": "Kenya",
@@ -10188,28 +10286,28 @@
       "name": "Italy",
       "count": 5
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "AT": {
-      "name": "Austria",
+    "SG": {
+      "name": "Singapore",
       "count": 1
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "SG": {
-      "name": "Singapore",
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "AT": {
+      "name": "Austria",
       "count": 1
     }
   }
