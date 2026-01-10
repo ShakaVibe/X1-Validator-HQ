@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-10T18:47:31.388Z",
+  "lastUpdated": "2026-01-10T20:39:44.246Z",
   "totalNodes": 1464,
   "totalLocations": 1462,
   "locations": {
@@ -3243,13 +3243,6 @@
       "city": "Manassas",
       "lat": 38.7911,
       "lon": -77.5264
-    },
-    "194.50.156.180": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
     },
     "51.222.46.9": {
       "country": "Canada",
@@ -10236,6 +10229,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "157.180.55.184": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -10261,11 +10261,11 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 137
+      "count": 136
     },
     "FI": {
       "name": "Finland",
-      "count": 146
+      "count": 147
     },
     "AL": {
       "name": "Albania",
