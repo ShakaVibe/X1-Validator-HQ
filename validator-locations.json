@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-12T06:57:19.400Z",
+  "lastUpdated": "2026-01-12T08:52:06.241Z",
   "totalNodes": 1466,
   "totalLocations": 1464,
   "locations": {
@@ -2214,13 +2214,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "54.37.245.130": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "67.211.208.130": {
       "country": "United States",
@@ -5638,13 +5631,6 @@
       "lat": 49.405,
       "lon": 11.1617
     },
-    "51.38.60.26": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "65.21.23.227": {
       "country": "Finland",
       "countryCode": "FI",
@@ -6849,13 +6835,6 @@
       "lat": 48.8558,
       "lon": 2.3494
     },
-    "51.77.57.29": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "51.89.173.10": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -6960,13 +6939,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "193.70.80.55": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "204.13.237.122": {
       "country": "United States",
@@ -7968,13 +7940,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "51.77.57.27": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "51.195.190.42": {
       "country": "United Kingdom",
@@ -10250,6 +10215,41 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
+    },
+    "65.108.12.46": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.108.2.180": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.109.81.232": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.108.13.40": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.108.1.178": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -10257,17 +10257,21 @@
       "name": "United States",
       "count": 458
     },
-    "FI": {
-      "name": "Finland",
-      "count": 146
+    "GB": {
+      "name": "United Kingdom",
+      "count": 82
     },
     "DE": {
       "name": "Germany",
       "count": 365
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 83
+    "PL": {
+      "name": "Poland",
+      "count": 134
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 151
     },
     "CA": {
       "name": "Canada",
@@ -10275,15 +10279,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 157
+      "count": 155
     },
     "NL": {
       "name": "The Netherlands",
       "count": 32
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 136
     },
     "KE": {
       "name": "Kenya",
@@ -10293,29 +10293,29 @@
       "name": "Italy",
       "count": 5
     },
-    "SG": {
-      "name": "Singapore",
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
-    "CH": {
-      "name": "Switzerland",
+    "SG": {
+      "name": "Singapore",
       "count": 2
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
     }
   }
 }
