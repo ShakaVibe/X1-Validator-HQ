@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-13T18:51:22.251Z",
-  "totalNodes": 1478,
-  "totalLocations": 1476,
+  "lastUpdated": "2026-01-13T20:43:03.622Z",
+  "totalNodes": 1477,
+  "totalLocations": 1475,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -709,13 +709,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "74.50.78.234": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "57.129.100.72": {
       "country": "Germany",
@@ -10339,55 +10332,47 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 456
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 368
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 62
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 83
+      "count": 455
     },
     "FI": {
       "name": "Finland",
       "count": 157
     },
+    "DE": {
+      "name": "Germany",
+      "count": 368
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 83
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 62
+    },
     "FR": {
       "name": "France",
       "count": 155
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 136
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
-    },
-    "IT": {
-      "name": "Italy",
-      "count": 5
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
     },
     "NL": {
       "name": "The Netherlands",
       "count": 35
     },
-    "SE": {
-      "name": "Sweden",
+    "PL": {
+      "name": "Poland",
+      "count": 136
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
+    "IT": {
+      "name": "Italy",
       "count": 5
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
@@ -10397,9 +10382,17 @@
       "name": "Albania",
       "count": 3
     },
-    "SG": {
-      "name": "Singapore",
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
+    "CH": {
+      "name": "Switzerland",
       "count": 2
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
     }
   }
 }
