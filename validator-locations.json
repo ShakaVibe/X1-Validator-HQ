@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-13T04:55:19.598Z",
+  "lastUpdated": "2026-01-13T06:53:54.330Z",
   "totalNodes": 1478,
   "totalLocations": 1476,
   "locations": {
@@ -1150,13 +1150,6 @@
       "city": "Manassas",
       "lat": 38.7911,
       "lon": -77.5264
-    },
-    "54.36.126.219": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "51.255.91.79": {
       "country": "France",
@@ -2424,13 +2417,6 @@
       "city": "Nuremberg",
       "lat": 49.4423,
       "lon": 11.0191
-    },
-    "51.79.76.88": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "152.53.240.81": {
       "country": "United States",
@@ -3790,13 +3776,6 @@
       "lat": -1.2841,
       "lon": 36.8155
     },
-    "54.36.126.67": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "51.178.79.203": {
       "country": "France",
       "countryCode": "FR",
@@ -5098,13 +5077,6 @@
       "city": "Karlsruhe",
       "lat": 49.0291,
       "lon": 8.35696
-    },
-    "51.77.57.33": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "64.20.36.170": {
       "country": "United States",
@@ -6856,13 +6828,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "54.37.245.126": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "135.125.171.159": {
       "country": "Germany",
       "countryCode": "DE",
@@ -7130,13 +7095,6 @@
       "lon": -77.5264
     },
     "37.187.253.139": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "54.36.126.60": {
       "country": "France",
       "countryCode": "FR",
       "city": "Roubaix",
@@ -10334,6 +10292,48 @@
       "city": "Amsterdam",
       "lat": 52.3676,
       "lon": 4.90414
+    },
+    "65.108.11.164": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "37.27.58.48": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.109.55.108": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.109.96.173": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.108.30.110": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.21.140.98": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -10341,25 +10341,17 @@
       "name": "United States",
       "count": 456
     },
-    "FI": {
-      "name": "Finland",
-      "count": 151
+    "GB": {
+      "name": "United Kingdom",
+      "count": 83
+    },
+    "FR": {
+      "name": "France",
+      "count": 155
     },
     "DE": {
       "name": "Germany",
       "count": 367
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 84
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 63
-    },
-    "FR": {
-      "name": "France",
-      "count": 158
     },
     "NL": {
       "name": "The Netherlands",
@@ -10367,39 +10359,47 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 138
+      "count": 137
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
-    "IT": {
-      "name": "Italy",
-      "count": 5
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 2
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 2
+    "FI": {
+      "name": "Finland",
+      "count": 157
     },
     "AL": {
       "name": "Albania",
       "count": 3
     },
+    "CA": {
+      "name": "Canada",
+      "count": 62
+    },
+    "IT": {
+      "name": "Italy",
+      "count": 5
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
     "SE": {
       "name": "Sweden",
       "count": 5
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "SG": {
+      "name": "Singapore",
+      "count": 2
     }
   }
 }
