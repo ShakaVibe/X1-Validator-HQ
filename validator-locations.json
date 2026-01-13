@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-13T16:53:32.232Z",
+  "lastUpdated": "2026-01-13T18:51:22.251Z",
   "totalNodes": 1478,
   "totalLocations": 1476,
   "locations": {
@@ -2088,13 +2088,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "51.77.57.45": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "198.244.164.79": {
       "country": "United Kingdom",
@@ -10334,6 +10327,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "51.77.85.76": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3847,
+      "lon": 8.0475
     }
   },
   "countries": {
@@ -10343,7 +10343,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 367
+      "count": 368
     },
     "CA": {
       "name": "Canada",
@@ -10367,7 +10367,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 137
+      "count": 136
     },
     "AT": {
       "name": "Austria",
