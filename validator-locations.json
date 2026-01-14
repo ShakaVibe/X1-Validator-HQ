@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-14T04:57:33.428Z",
+  "lastUpdated": "2026-01-14T06:53:41.651Z",
   "totalNodes": 1484,
   "totalLocations": 1482,
   "locations": {
@@ -6534,13 +6534,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "107.181.252.30": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ogden",
-      "lat": 41.2627,
-      "lon": -111.9837
-    },
     "144.217.10.83": {
       "country": "Canada",
       "countryCode": "CA",
@@ -10376,12 +10369,19 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "158.69.52.67": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5075,
+      "lon": -73.5887
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 456
+      "count": 455
     },
     "DE": {
       "name": "Germany",
@@ -10389,7 +10389,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 63
+      "count": 64
     },
     "GB": {
       "name": "United Kingdom",
