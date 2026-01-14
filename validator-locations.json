@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-14T08:52:33.275Z",
+  "lastUpdated": "2026-01-14T10:47:16.037Z",
   "totalNodes": 1485,
   "totalLocations": 1483,
   "locations": {
@@ -352,13 +352,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "51.75.147.49": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "51.210.221.7": {
       "country": "France",
@@ -5049,13 +5042,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "51.77.66.73": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "65.108.71.172": {
       "country": "Finland",
@@ -10383,6 +10369,20 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "54.39.243.127": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "51.222.80.115": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
     }
   },
   "countries": {
@@ -10392,11 +10392,11 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 368
+      "count": 366
     },
     "CA": {
       "name": "Canada",
-      "count": 64
+      "count": 66
     },
     "GB": {
       "name": "United Kingdom",
