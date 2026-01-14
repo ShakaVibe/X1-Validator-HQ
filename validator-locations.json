@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-14T06:53:41.651Z",
-  "totalNodes": 1484,
-  "totalLocations": 1482,
+  "lastUpdated": "2026-01-14T08:52:33.275Z",
+  "totalNodes": 1485,
+  "totalLocations": 1483,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1270,13 +1270,6 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "51.91.119.151": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "192.200.108.158": {
       "country": "United States",
       "countryCode": "US",
@@ -1767,13 +1760,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "213.32.7.65": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "152.53.241.93": {
       "country": "United States",
       "countryCode": "US",
@@ -2242,13 +2228,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "213.32.7.200": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "152.53.53.33": {
       "country": "United States",
@@ -10376,12 +10355,40 @@
       "city": "Montreal",
       "lat": 45.5075,
       "lon": -73.5887
+    },
+    "65.108.65.177": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "37.27.68.141": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "37.27.58.103": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "205.209.109.114": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 455
+      "count": 456
     },
     "DE": {
       "name": "Germany",
@@ -10397,11 +10404,11 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 157
+      "count": 160
     },
     "FR": {
       "name": "France",
-      "count": 158
+      "count": 155
     },
     "KE": {
       "name": "Kenya",
