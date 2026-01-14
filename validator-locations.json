@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-14T18:53:29.300Z",
-  "totalNodes": 1503,
-  "totalLocations": 1483,
+  "lastUpdated": "2026-01-14T20:40:36.773Z",
+  "totalNodes": 1502,
+  "totalLocations": 1482,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -8186,13 +8186,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "69.164.250.110": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Dallas",
-      "lat": 32.7767,
-      "lon": -96.797
-    },
     "135.125.171.101": {
       "country": "Germany",
       "countryCode": "DE",
@@ -10388,7 +10381,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 474
+      "count": 473
     },
     "FI": {
       "name": "Finland",
