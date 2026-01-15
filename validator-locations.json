@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-15T13:10:24.944Z",
-  "totalNodes": 1532,
-  "totalLocations": 1530,
+  "lastUpdated": "2026-01-15T14:46:09.616Z",
+  "totalNodes": 1535,
+  "totalLocations": 1533,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10712,6 +10712,27 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "51.77.66.73": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "51.75.147.49": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "57.129.102.191": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
     }
   },
   "countries": {
@@ -10723,17 +10744,9 @@
       "name": "United Kingdom",
       "count": 87
     },
-    "FR": {
-      "name": "France",
-      "count": 159
-    },
     "DE": {
       "name": "Germany",
-      "count": 378
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 40
+      "count": 381
     },
     "PL": {
       "name": "Poland",
@@ -10743,36 +10756,44 @@
       "name": "Finland",
       "count": 163
     },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
     "CA": {
       "name": "Canada",
       "count": 70
     },
-    "IT": {
-      "name": "Italy",
-      "count": 5
+    "FR": {
+      "name": "France",
+      "count": 159
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
+    "NL": {
+      "name": "The Netherlands",
+      "count": 40
     },
     "KE": {
       "name": "Kenya",
       "count": 6
     },
-    "ES": {
-      "name": "Spain",
-      "count": 2
+    "IT": {
+      "name": "Italy",
+      "count": 5
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
     },
     "CH": {
       "name": "Switzerland",
+      "count": 2
+    },
+    "ES": {
+      "name": "Spain",
       "count": 2
     },
     "SG": {
