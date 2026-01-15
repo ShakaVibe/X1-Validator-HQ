@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-15T14:46:09.616Z",
+  "lastUpdated": "2026-01-15T16:58:58.903Z",
   "totalNodes": 1535,
   "totalLocations": 1533,
   "locations": {
@@ -8389,13 +8389,6 @@
       "lat": 50.7012,
       "lon": 3.21501
     },
-    "205.209.101.34": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "51.210.118.71": {
       "country": "France",
       "countryCode": "FR",
@@ -10733,12 +10726,19 @@
       "city": "Frankfurt am Main",
       "lat": 50.1162,
       "lon": 8.6693
+    },
+    "159.195.44.230": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.405,
+      "lon": 11.1617
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 474
+      "count": 473
     },
     "GB": {
       "name": "United Kingdom",
@@ -10746,7 +10746,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 381
+      "count": 382
     },
     "PL": {
       "name": "Poland",
