@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-15T06:53:43.509Z",
-  "totalNodes": 1527,
-  "totalLocations": 1506,
+  "lastUpdated": "2026-01-15T08:49:55.052Z",
+  "totalNodes": 1530,
+  "totalLocations": 1528,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1003,13 +1003,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "51.77.56.134": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "51.195.190.64": {
       "country": "United Kingdom",
@@ -2418,13 +2411,6 @@
       "lat": -1.2841,
       "lon": 36.8155
     },
-    "149.56.243.43": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5075,
-      "lon": -73.5887
-    },
     "37.187.253.115": {
       "country": "France",
       "countryCode": "FR",
@@ -3355,13 +3341,6 @@
       "city": "Manassas",
       "lat": 38.7475,
       "lon": -77.5317
-    },
-    "51.77.56.132": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "149.50.116.21": {
       "country": "Poland",
@@ -10342,13 +10321,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "205.209.125.46": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "104.37.190.90": {
       "country": "United States",
       "countryCode": "US",
@@ -10544,6 +10516,188 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "65.108.4.184": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "205.209.110.222": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "65.108.11.219": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.108.41.29": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "69.169.101.202": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.205": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.206": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.201": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.200": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.203": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.199": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "173.225.109.203": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "173.225.109.202": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "69.169.101.197": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.194": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "173.225.109.205": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "69.169.101.195": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.204": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "173.225.109.206": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "69.169.101.196": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "173.225.109.204": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "69.169.101.198": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "51.195.89.48": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "64.20.38.166": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "51.195.88.220": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "51.195.89.86": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
     }
   },
   "countries": {
@@ -10557,19 +10711,19 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 374
+      "count": 377
     },
     "PL": {
       "name": "Poland",
-      "count": 137
+      "count": 135
     },
     "FI": {
       "name": "Finland",
-      "count": 160
+      "count": 163
     },
     "CA": {
       "name": "Canada",
-      "count": 71
+      "count": 70
     },
     "FR": {
       "name": "France",
