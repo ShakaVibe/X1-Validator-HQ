@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-15T08:49:55.052Z",
-  "totalNodes": 1530,
-  "totalLocations": 1528,
+  "lastUpdated": "2026-01-15T10:45:49.102Z",
+  "totalNodes": 1531,
+  "totalLocations": 1529,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10698,6 +10698,13 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
+    },
+    "51.195.88.101": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
     }
   },
   "countries": {
@@ -10709,9 +10716,17 @@
       "name": "United Kingdom",
       "count": 87
     },
+    "FR": {
+      "name": "France",
+      "count": 159
+    },
     "DE": {
       "name": "Germany",
-      "count": 377
+      "count": 378
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 40
     },
     "PL": {
       "name": "Poland",
@@ -10721,44 +10736,36 @@
       "name": "Finland",
       "count": 163
     },
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
     "CA": {
       "name": "Canada",
       "count": 70
-    },
-    "FR": {
-      "name": "France",
-      "count": 159
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 40
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
     "AT": {
       "name": "Austria",
       "count": 1
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
+      "count": 2
+    },
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     },
     "SG": {
