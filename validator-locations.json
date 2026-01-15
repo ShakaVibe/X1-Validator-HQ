@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-14T22:43:14.876Z",
-  "totalNodes": 1502,
-  "totalLocations": 1482,
+  "lastUpdated": "2026-01-15T02:29:49.799Z",
+  "totalNodes": 1527,
+  "totalLocations": 1506,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2740,13 +2740,6 @@
       "lat": 38.7911,
       "lon": -77.5264
     },
-    "69.10.51.214": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "162.216.114.194": {
       "country": "United States",
       "countryCode": "US",
@@ -4223,13 +4216,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "57.129.102.191": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "152.53.167.73": {
       "country": "United States",
@@ -10376,6 +10362,188 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "45.136.215.146": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
+    },
+    "51.89.96.110": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "51.89.64.98": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "51.89.96.233": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "51.195.62.198": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "15.235.11.152": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "213.32.7.200": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.89.64.104": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "148.113.152.176": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "51.195.105.122": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "45.90.151.20": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
+    },
+    "51.222.154.7": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "213.32.7.65": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.89.96.109": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "51.89.97.117": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3847,
+      "lon": 8.0475
+    },
+    "141.95.97.25": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "51.195.63.174": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "51.75.61.81": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "51.89.64.61": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "135.125.163.97": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "51.91.119.151": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "45.90.151.22": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
+    },
+    "45.90.151.28": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
+    },
+    "45.90.151.30": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
+    },
+    "144.217.252.170": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "144.217.180.121": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     }
   },
   "countries": {
@@ -10383,65 +10551,65 @@
       "name": "United States",
       "count": 473
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 84
-    },
-    "FR": {
-      "name": "France",
-      "count": 156
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 366
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 35
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 136
-    },
     "FI": {
       "name": "Finland",
       "count": 160
     },
-    "AL": {
-      "name": "Albania",
-      "count": 3
+    "DE": {
+      "name": "Germany",
+      "count": 374
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 87
     },
     "CA": {
       "name": "Canada",
-      "count": 66
+      "count": 71
     },
-    "IT": {
-      "name": "Italy",
-      "count": 5
+    "FR": {
+      "name": "France",
+      "count": 159
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "NL": {
+      "name": "The Netherlands",
+      "count": 40
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
+    "PL": {
+      "name": "Poland",
+      "count": 137
     },
     "KE": {
       "name": "Kenya",
       "count": 6
     },
+    "IT": {
+      "name": "Italy",
+      "count": 5
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 2
+    },
     "ES": {
       "name": "Spain",
       "count": 2
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 2
+    "AT": {
+      "name": "Austria",
+      "count": 1
     }
   }
 }
