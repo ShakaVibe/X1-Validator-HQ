@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-15T10:45:49.102Z",
-  "totalNodes": 1531,
-  "totalLocations": 1529,
+  "lastUpdated": "2026-01-15T13:10:24.944Z",
+  "totalNodes": 1532,
+  "totalLocations": 1530,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10705,12 +10705,19 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
+    },
+    "216.219.91.162": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 473
+      "count": 474
     },
     "GB": {
       "name": "United Kingdom",
