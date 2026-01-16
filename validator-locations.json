@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-16T10:45:30.017Z",
-  "totalNodes": 1541,
-  "totalLocations": 1520,
+  "lastUpdated": "2026-01-16T13:08:53.427Z",
+  "totalNodes": 1542,
+  "totalLocations": 1521,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10642,6 +10642,13 @@
       "city": "Ostrołęka",
       "lat": 53.0721,
       "lon": 21.5723
+    },
+    "152.53.123.126": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Karlsruhe",
+      "lat": 49.0291,
+      "lon": 8.35696
     }
   },
   "countries": {
@@ -10651,7 +10658,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 382
+      "count": 383
     },
     "CA": {
       "name": "Canada",
