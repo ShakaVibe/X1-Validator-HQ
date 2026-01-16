@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-15T22:42:28.267Z",
-  "totalNodes": 1535,
-  "totalLocations": 1533,
+  "lastUpdated": "2026-01-16T02:31:26.629Z",
+  "totalNodes": 1541,
+  "totalLocations": 1539,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10733,12 +10733,54 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "192.99.232.143": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5063,
+      "lon": -73.5794
+    },
+    "149.56.23.176": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5075,
+      "lon": -73.5887
+    },
+    "51.77.56.132": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "51.77.56.134": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "149.56.243.43": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5075,
+      "lon": -73.5887
+    },
+    "74.50.78.234": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 474
+      "count": 475
     },
     "FI": {
       "name": "Finland",
@@ -10754,7 +10796,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 70
+      "count": 73
     },
     "FR": {
       "name": "France",
@@ -10766,7 +10808,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 133
+      "count": 135
     },
     "KE": {
       "name": "Kenya",
