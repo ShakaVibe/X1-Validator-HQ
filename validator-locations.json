@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-16T02:31:26.629Z",
+  "lastUpdated": "2026-01-16T04:55:00.822Z",
   "totalNodes": 1541,
   "totalLocations": 1539,
   "locations": {
@@ -548,13 +548,6 @@
       "city": "Whippany",
       "lat": 40.8207,
       "lon": -74.4231
-    },
-    "213.136.87.51": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
     },
     "65.109.69.212": {
       "country": "Finland",
@@ -10775,6 +10768,13 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "51.79.228.68": {
+      "country": "Singapore",
+      "countryCode": "SG",
+      "city": "Singapore",
+      "lat": 1.27994,
+      "lon": 103.849
     }
   },
   "countries": {
@@ -10800,7 +10800,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 159
+      "count": 158
     },
     "NL": {
       "name": "The Netherlands",
@@ -10820,7 +10820,7 @@
     },
     "SG": {
       "name": "Singapore",
-      "count": 2
+      "count": 3
     },
     "ES": {
       "name": "Spain",
