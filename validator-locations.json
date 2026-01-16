@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-16T08:48:51.276Z",
+  "lastUpdated": "2026-01-16T10:45:30.017Z",
   "totalNodes": 1541,
   "totalLocations": 1520,
   "locations": {
@@ -1325,13 +1325,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "149.50.108.97": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "152.53.179.196": {
       "country": "Germany",
@@ -10642,6 +10635,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "178.213.143.68": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ostrołęka",
+      "lat": 53.0721,
+      "lon": 21.5723
     }
   },
   "countries": {
@@ -10649,65 +10649,65 @@
       "name": "United States",
       "count": 475
     },
-    "FI": {
-      "name": "Finland",
-      "count": 165
-    },
     "DE": {
       "name": "Germany",
       "count": 382
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 86
     },
     "CA": {
       "name": "Canada",
       "count": 73
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 86
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 165
+    },
     "FR": {
       "name": "France",
       "count": 158
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 40
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 135
     },
     "KE": {
       "name": "Kenya",
       "count": 6
     },
+    "PL": {
+      "name": "Poland",
+      "count": 135
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
     "IT": {
       "name": "Italy",
-      "count": 5
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 2
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "SE": {
-      "name": "Sweden",
       "count": 5
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "NL": {
+      "name": "The Netherlands",
+      "count": 40
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     }
   }
 }
