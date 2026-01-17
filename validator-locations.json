@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-17T13:02:32.025Z",
+  "lastUpdated": "2026-01-17T14:38:45.700Z",
   "totalNodes": 1561,
   "totalLocations": 1559,
   "locations": {
@@ -5596,13 +5596,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "57.129.101.120": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "204.13.239.138": {
       "country": "United States",
       "countryCode": "US",
@@ -10915,6 +10908,13 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "135.125.223.221": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
     }
   },
   "countries": {
