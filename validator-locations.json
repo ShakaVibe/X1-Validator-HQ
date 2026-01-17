@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-17T18:46:25.459Z",
-  "totalNodes": 1561,
-  "totalLocations": 1559,
+  "lastUpdated": "2026-01-17T20:38:56.581Z",
+  "totalNodes": 1562,
+  "totalLocations": 1560,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10915,6 +10915,13 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
+    },
+    "152.53.122.191": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Karlsruhe",
+      "lat": 49.0291,
+      "lon": 8.35696
     }
   },
   "countries": {
@@ -10922,21 +10929,25 @@
       "name": "United States",
       "count": 474
     },
-    "DE": {
-      "name": "Germany",
-      "count": 381
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 78
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 87
     },
+    "DE": {
+      "name": "Germany",
+      "count": 382
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 139
+    },
     "FI": {
       "name": "Finland",
       "count": 166
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 78
     },
     "FR": {
       "name": "France",
@@ -10950,37 +10961,33 @@
       "name": "Kenya",
       "count": 6
     },
-    "PL": {
-      "name": "Poland",
-      "count": 139
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
-    },
     "IT": {
       "name": "Italy",
       "count": 5
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
     },
     "SE": {
       "name": "Sweden",
       "count": 5
     },
-    "ES": {
-      "name": "Spain",
-      "count": 2
+    "AL": {
+      "name": "Albania",
+      "count": 3
     },
     "SG": {
       "name": "Singapore",
       "count": 3
     },
-    "AL": {
-      "name": "Albania",
-      "count": 3
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
     }
   }
 }
