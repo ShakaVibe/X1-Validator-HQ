@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-17T02:23:51.510Z",
-  "totalNodes": 1544,
-  "totalLocations": 1523,
+  "lastUpdated": "2026-01-17T04:47:43.767Z",
+  "totalNodes": 1556,
+  "totalLocations": 1554,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -8963,13 +8963,6 @@
       "lat": 38.7911,
       "lon": -77.5264
     },
-    "205.172.58.110": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7126,
-      "lon": -74.0066
-    },
     "37.187.155.159": {
       "country": "France",
       "countryCode": "FR",
@@ -10608,13 +10601,6 @@
       "lat": 1.27994,
       "lon": 103.849
     },
-    "205.209.125.46": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "65.109.94.33": {
       "country": "Finland",
       "countryCode": "FI",
@@ -10663,72 +10649,303 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
+    },
+    "205.209.110.222": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "69.169.101.195": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "173.225.109.203": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "149.56.241.71": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5075,
+      "lon": -73.5887
+    },
+    "173.225.109.204": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "173.225.109.205": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "69.169.101.199": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.200": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.201": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.206": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.203": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.197": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.194": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.205": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "173.225.109.202": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "69.169.101.204": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "173.225.109.206": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "69.169.101.196": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.202": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.198": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "64.20.38.166": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "217.182.203.107": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "51.254.45.70": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "149.56.241.72": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5075,
+      "lon": -73.5887
+    },
+    "149.56.241.70": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5075,
+      "lon": -73.5887
+    },
+    "167.114.208.25": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5063,
+      "lon": -73.5794
+    },
+    "167.114.208.28": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5063,
+      "lon": -73.5794
+    },
+    "51.254.45.72": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.254.45.73": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.254.45.74": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.254.45.97": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "217.182.203.96": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "217.182.203.103": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 475
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 166
+      "count": 474
     },
     "DE": {
       "name": "Germany",
       "count": 383
     },
+    "CA": {
+      "name": "Canada",
+      "count": 78
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 87
     },
-    "CA": {
-      "name": "Canada",
-      "count": 73
+    "FI": {
+      "name": "Finland",
+      "count": 166
     },
     "FR": {
       "name": "France",
-      "count": 158
+      "count": 163
     },
     "NL": {
       "name": "The Netherlands",
       "count": 41
     },
-    "PL": {
-      "name": "Poland",
-      "count": 134
-    },
     "KE": {
       "name": "Kenya",
       "count": 6
     },
+    "PL": {
+      "name": "Poland",
+      "count": 137
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
     "IT": {
       "name": "Italy",
-      "count": 5
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 2
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "SE": {
-      "name": "Sweden",
       "count": 5
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     }
   }
 }
