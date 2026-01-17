@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-17T04:47:43.767Z",
-  "totalNodes": 1556,
-  "totalLocations": 1554,
+  "lastUpdated": "2026-01-17T06:49:17.382Z",
+  "totalNodes": 1561,
+  "totalLocations": 1559,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -940,13 +940,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "135.125.223.221": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "51.178.64.73": {
       "country": "France",
@@ -2669,13 +2662,6 @@
       "city": "Warsaw",
       "lat": 52.1863,
       "lon": 21.159
-    },
-    "152.53.228.23": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Karlsruhe",
-      "lat": 49.0291,
-      "lon": 8.35696
     },
     "107.155.114.146": {
       "country": "France",
@@ -10880,6 +10866,55 @@
       "city": "Wroclaw",
       "lat": 51.098,
       "lon": 17.0321
+    },
+    "37.187.159.10": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "217.182.203.108": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "37.187.134.157": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "217.182.203.106": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "37.187.156.100": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "37.187.157.14": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "37.187.134.113": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -10887,65 +10922,65 @@
       "name": "United States",
       "count": 474
     },
-    "DE": {
-      "name": "Germany",
-      "count": 383
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 78
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 87
     },
-    "FI": {
-      "name": "Finland",
-      "count": 166
-    },
     "FR": {
       "name": "France",
-      "count": 163
+      "count": 168
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 381
     },
     "NL": {
       "name": "The Netherlands",
       "count": 41
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
     "PL": {
       "name": "Poland",
-      "count": 137
+      "count": 139
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "FI": {
+      "name": "Finland",
+      "count": 166
     },
-    "IT": {
-      "name": "Italy",
-      "count": 5
+    "AL": {
+      "name": "Albania",
+      "count": 3
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 2
+    "CA": {
+      "name": "Canada",
+      "count": 78
     },
     "SG": {
       "name": "Singapore",
       "count": 3
     },
-    "AL": {
-      "name": "Albania",
-      "count": 3
+    "IT": {
+      "name": "Italy",
+      "count": 5
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     }
   }
 }
