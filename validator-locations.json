@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-20T16:55:02.642Z",
-  "totalNodes": 1571,
-  "totalLocations": 1569,
+  "lastUpdated": "2026-01-20T19:17:35.606Z",
+  "totalNodes": 1570,
+  "totalLocations": 1568,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2774,13 +2774,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "216.219.91.166": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "51.89.233.129": {
       "country": "United Kingdom",
@@ -10990,7 +10983,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 470
+      "count": 469
     },
     "GB": {
       "name": "United Kingdom",
