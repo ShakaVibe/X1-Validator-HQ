@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-20T19:17:35.606Z",
-  "totalNodes": 1570,
-  "totalLocations": 1568,
+  "lastUpdated": "2026-01-20T20:51:04.336Z",
+  "totalNodes": 1571,
+  "totalLocations": 1569,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10978,20 +10978,35 @@
       "city": "Bricktown",
       "lat": 40.0881,
       "lon": -74.1195
+    },
+    "69.10.55.50": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0749
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 469
+      "count": 470
     },
     "GB": {
       "name": "United Kingdom",
       "count": 86
     },
+    "FR": {
+      "name": "France",
+      "count": 167
+    },
     "DE": {
       "name": "Germany",
       "count": 392
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 42
     },
     "PL": {
       "name": "Poland",
@@ -11001,48 +11016,40 @@
       "name": "Finland",
       "count": 168
     },
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
     "CA": {
       "name": "Canada",
       "count": 78
     },
-    "FR": {
-      "name": "France",
-      "count": 167
+    "SG": {
+      "name": "Singapore",
+      "count": 3
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 42
-    },
-    "KE": {
-      "name": "Kenya",
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
     "AT": {
       "name": "Austria",
       "count": 1
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
+      "count": 2
+    },
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     }
   }
