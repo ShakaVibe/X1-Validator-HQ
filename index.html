@@ -17017,14 +17017,24 @@ Please give me the diagnostic commands to run on my server so you can help me id
         let eligible = true;
         let reason = '';
         
+        // Must be in a mergeable state (active or inactive only)
+        // Activating and deactivating stakes cannot be merged
+        if (stake.state === 'activating') {
+          eligible = false;
+          reason = 'Still activating';
+        } else if (stake.state === 'deactivating') {
+          eligible = false;
+          reason = 'Deactivating';
+        }
+        
         // Must be delegated to the current validator
-        if (voter !== currentManageValidator.voteAccount) {
+        if (eligible && voter !== currentManageValidator.voteAccount) {
           eligible = false;
           reason = 'Different validator';
         }
         
         // Connected wallet must be the stake authority
-        if (staker !== walletPublicKey) {
+        if (eligible && staker !== walletPublicKey) {
           eligible = false;
           reason = 'Not stake authority';
         }
@@ -17040,23 +17050,23 @@ Please give me the diagnostic commands to run on my server so you can help me id
       });
       
       // Find the "base" stake (first eligible one that others will merge into)
-      // All mergeable stakes must share the same staker AND withdrawer
+      // All mergeable stakes must share the same staker AND withdrawer AND state
       const eligibleStakes = analyzedStakes.filter(s => s.eligible);
       
-      // Group by staker+withdrawer combination
+      // Group by staker+withdrawer+state combination (stakes must be in same state to merge)
       const groups = {};
       eligibleStakes.forEach(stake => {
-        const key = `${stake.staker}_${stake.withdrawer}`;
+        const key = `${stake.staker}_${stake.withdrawer}_${stake.state}`;
         if (!groups[key]) {
           groups[key] = [];
         }
         groups[key].push(stake);
       });
       
-      // Mark stakes as mergeable only if they have matching authorities with at least one other stake
+      // Mark stakes as mergeable only if they have matching authorities AND state with at least one other stake
       analyzedStakes.forEach(stake => {
         if (stake.eligible) {
-          const key = `${stake.staker}_${stake.withdrawer}`;
+          const key = `${stake.staker}_${stake.withdrawer}_${stake.state}`;
           if (groups[key] && groups[key].length < 2) {
             stake.eligible = false;
             stake.reason = 'No matching stakes';
