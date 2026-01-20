@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-20T13:15:30.623Z",
+  "lastUpdated": "2026-01-20T14:53:54.147Z",
   "totalNodes": 1570,
   "totalLocations": 1568,
   "locations": {
@@ -8263,13 +8263,6 @@
       "lat": 50.7012,
       "lon": 3.21501
     },
-    "38.58.178.141": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "51.83.239.192": {
       "country": "Poland",
       "countryCode": "PL",
@@ -10978,6 +10971,13 @@
       "city": "Warsaw",
       "lat": 52.2297,
       "lon": 21.0122
+    },
+    "38.190.177.147": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
     }
   },
   "countries": {
@@ -10985,17 +10985,21 @@
       "name": "United States",
       "count": 469
     },
-    "FI": {
-      "name": "Finland",
-      "count": 168
+    "GB": {
+      "name": "United Kingdom",
+      "count": 86
     },
     "DE": {
       "name": "Germany",
       "count": 392
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 86
+    "PL": {
+      "name": "Poland",
+      "count": 140
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 168
     },
     "CA": {
       "name": "Canada",
@@ -11009,10 +11013,6 @@
       "name": "The Netherlands",
       "count": 42
     },
-    "PL": {
-      "name": "Poland",
-      "count": 140
-    },
     "KE": {
       "name": "Kenya",
       "count": 6
@@ -11025,25 +11025,25 @@
       "name": "Sweden",
       "count": 6
     },
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
     "SG": {
       "name": "Singapore",
       "count": 3
     },
-    "ES": {
-      "name": "Spain",
-      "count": 2
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
+    "AT": {
+      "name": "Austria",
+      "count": 1
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "ES": {
+      "name": "Spain",
+      "count": 2
     }
   }
 }
