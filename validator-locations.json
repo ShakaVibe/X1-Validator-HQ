@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-20T14:53:54.147Z",
-  "totalNodes": 1570,
-  "totalLocations": 1568,
+  "lastUpdated": "2026-01-20T16:55:02.642Z",
+  "totalNodes": 1571,
+  "totalLocations": 1569,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10978,12 +10978,19 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
+    },
+    "68.168.213.6": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Bricktown",
+      "lat": 40.0881,
+      "lon": -74.1195
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 469
+      "count": 470
     },
     "GB": {
       "name": "United Kingdom",
