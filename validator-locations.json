@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-21T08:51:41.129Z",
+  "lastUpdated": "2026-01-21T10:51:25.233Z",
   "totalNodes": 1573,
   "totalLocations": 1571,
   "locations": {
@@ -10804,62 +10804,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "5.231.41.239": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.37": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.47": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.220": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.24": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.216": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.86": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.58": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
     "69.169.101.195": {
       "country": "United States",
       "countryCode": "US",
@@ -10999,72 +10943,128 @@
       "city": "Frankfurt am Main",
       "lat": 50.1109,
       "lon": 8.68213
+    },
+    "152.53.186.195": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Karlsruhe",
+      "lat": 49.029,
+      "lon": 8.35695
+    },
+    "152.53.82.94": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Manassas",
+      "lat": 38.7911,
+      "lon": -77.5264
+    },
+    "152.53.184.56": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Karlsruhe",
+      "lat": 49.029,
+      "lon": 8.35695
+    },
+    "152.53.186.49": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Karlsruhe",
+      "lat": 49.029,
+      "lon": 8.35695
+    },
+    "152.53.145.48": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Karlsruhe",
+      "lat": 49.029,
+      "lon": 8.35695
+    },
+    "152.53.147.201": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Karlsruhe",
+      "lat": 49.029,
+      "lon": 8.35695
+    },
+    "152.53.186.145": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Karlsruhe",
+      "lat": 49.029,
+      "lon": 8.35695
+    },
+    "152.53.145.2": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Karlsruhe",
+      "lat": 49.029,
+      "lon": 8.35695
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 469
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 87
-    },
-    "FR": {
-      "name": "France",
-      "count": 166
+      "count": 470
     },
     "DE": {
       "name": "Germany",
-      "count": 396
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 42
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 139
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 168
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
+      "count": 395
     },
     "CA": {
       "name": "Canada",
       "count": 78
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
+    "GB": {
+      "name": "United Kingdom",
+      "count": 87
     },
-    "SE": {
-      "name": "Sweden",
+    "FI": {
+      "name": "Finland",
+      "count": 168
+    },
+    "FR": {
+      "name": "France",
+      "count": 166
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 42
+    },
+    "KE": {
+      "name": "Kenya",
       "count": 6
     },
-    "IT": {
-      "name": "Italy",
-      "count": 5
+    "PL": {
+      "name": "Poland",
+      "count": 139
     },
     "AT": {
       "name": "Austria",
       "count": 1
     },
-    "KE": {
-      "name": "Kenya",
+    "IT": {
+      "name": "Italy",
+      "count": 5
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     }
   }
 }
