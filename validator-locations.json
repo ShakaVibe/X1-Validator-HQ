@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-21T06:57:29.807Z",
-  "totalNodes": 1574,
-  "totalLocations": 1572,
+  "lastUpdated": "2026-01-21T08:51:41.129Z",
+  "totalNodes": 1573,
+  "totalLocations": 1571,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4279,13 +4279,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "149.50.96.13": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "51.210.99.129": {
       "country": "France",
@@ -11031,7 +11024,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 140
+      "count": 139
     },
     "FI": {
       "name": "Finland",
