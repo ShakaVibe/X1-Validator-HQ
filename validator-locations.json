@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-21T02:33:24.733Z",
+  "lastUpdated": "2026-01-21T04:58:47.767Z",
   "totalNodes": 1571,
-  "totalLocations": 1568,
+  "totalLocations": 1550,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10713,146 +10713,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "69.169.101.200": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "173.225.109.204": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Whippany",
-      "lat": 40.8207,
-      "lon": -74.4231
-    },
-    "69.169.101.199": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.169.101.195": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.169.101.201": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.169.101.197": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.169.101.206": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "173.225.109.202": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Whippany",
-      "lat": 40.8207,
-      "lon": -74.4231
-    },
-    "173.225.109.203": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Whippany",
-      "lat": 40.8207,
-      "lon": -74.4231
-    },
-    "69.169.101.203": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "205.209.110.222": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
-    "69.169.101.205": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.169.101.202": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.169.101.198": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.169.101.194": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.169.101.204": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.169.101.196": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "173.225.109.205": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Whippany",
-      "lat": 40.8207,
-      "lon": -74.4231
-    },
-    "173.225.109.206": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Whippany",
-      "lat": 40.8207,
-      "lon": -74.4231
-    },
-    "64.20.38.166": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "65.21.239.102": {
       "country": "Finland",
       "countryCode": "FI",
@@ -10978,28 +10838,38 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0749
+    },
+    "205.209.125.46": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "45.94.82.42": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 471
+      "count": 470
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 86
+    "FI": {
+      "name": "Finland",
+      "count": 168
     },
     "DE": {
       "name": "Germany",
       "count": 392
     },
-    "PL": {
-      "name": "Poland",
-      "count": 140
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 168
+    "GB": {
+      "name": "United Kingdom",
+      "count": 86
     },
     "CA": {
       "name": "Canada",
@@ -11011,7 +10881,11 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 41
+      "count": 42
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 140
     },
     "KE": {
       "name": "Kenya",
@@ -11025,25 +10899,25 @@
       "name": "Sweden",
       "count": 6
     },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
     "SG": {
       "name": "Singapore",
       "count": 3
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "ES": {
+      "name": "Spain",
+      "count": 2
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
     },
-    "ES": {
-      "name": "Spain",
-      "count": 2
+    "AT": {
+      "name": "Austria",
+      "count": 1
     }
   }
 }
