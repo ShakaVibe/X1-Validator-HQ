@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-21T14:53:51.855Z",
-  "totalNodes": 1575,
-  "totalLocations": 1551,
+  "lastUpdated": "2026-01-21T17:33:09.017Z",
+  "totalNodes": 1596,
+  "totalLocations": 1594,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3551,13 +3551,6 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
-    },
-    "45.88.89.61": {
-      "country": "Albania",
-      "countryCode": "AL",
-      "city": "Tirana",
-      "lat": 41.3275,
-      "lon": 19.8187
     },
     "152.53.167.6": {
       "country": "United States",
@@ -9292,13 +9285,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "146.59.47.185": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "152.53.187.200": {
       "country": "Germany",
       "countryCode": "DE",
@@ -10832,13 +10818,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "205.209.125.46": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "152.53.145.48": {
       "country": "Germany",
       "countryCode": "DE",
@@ -10859,71 +10838,393 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
+    },
+    "5.231.41.145": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "69.169.101.200": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "173.225.109.204": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "69.169.101.199": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "151.80.27.66": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6977,
+      "lon": 3.1786
+    },
+    "69.169.101.195": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.201": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.197": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.206": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "173.225.109.202": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "173.225.109.203": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "69.169.101.203": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "205.209.110.222": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "69.169.101.205": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.202": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.198": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.194": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.204": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.169.101.196": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "173.225.109.205": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "173.225.109.206": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "64.20.38.166": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "5.231.41.16": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.15": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.229": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.213": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.84": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.232": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.235": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.13": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.197": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.187": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.157": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.244": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.184": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.128": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.33": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.61": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.189": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.111": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.38": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.212": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.49": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.205": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.162": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.93": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 475
+      "count": 472
     },
     "GB": {
       "name": "United Kingdom",
       "count": 87
     },
-    "DE": {
-      "name": "Germany",
-      "count": 392
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 139
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 168
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 78
-    },
     "FR": {
       "name": "France",
-      "count": 166
+      "count": 167
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 417
     },
     "NL": {
       "name": "The Netherlands",
       "count": 42
     },
-    "KE": {
-      "name": "Kenya",
+    "PL": {
+      "name": "Poland",
+      "count": 138
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 168
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 2
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 78
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
     "AT": {
       "name": "Austria",
       "count": 1
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
+      "count": 2
+    },
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     }
   }
