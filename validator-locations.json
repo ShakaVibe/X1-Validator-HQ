@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-22T14:52:43.510Z",
+  "lastUpdated": "2026-01-22T16:56:00.597Z",
   "totalNodes": 1596,
   "totalLocations": 1594,
   "locations": {
@@ -2810,13 +2810,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "146.59.55.11": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "57.129.101.201": {
       "country": "Germany",
       "countryCode": "DE",
@@ -3047,13 +3040,6 @@
       "city": "Manassas",
       "lat": 38.7911,
       "lon": -77.5264
-    },
-    "51.222.46.9": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "54.36.109.118": {
       "country": "Germany",
@@ -4602,13 +4588,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "198.244.164.218": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "45.94.81.178": {
       "country": "The Netherlands",
       "countryCode": "NL",
@@ -6079,13 +6058,6 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "51.89.6.180": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "149.86.227.5": {
       "country": "Poland",
       "countryCode": "PL",
@@ -7121,13 +7093,6 @@
       "city": "Nuremberg",
       "lat": 49.4423,
       "lon": 11.0191
-    },
-    "51.91.72.115": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "38.129.139.102": {
       "country": "United States",
@@ -11160,6 +11125,41 @@
       "city": "Nuremberg",
       "lat": 49.405,
       "lon": 11.1617
+    },
+    "51.222.47.241": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "146.59.47.185": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "51.79.77.133": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "51.222.240.106": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "51.222.44.75": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
     }
   },
   "countries": {
@@ -11167,65 +11167,65 @@
       "name": "United States",
       "count": 471
     },
-    "FI": {
-      "name": "Finland",
-      "count": 169
-    },
     "DE": {
       "name": "Germany",
       "count": 417
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 87
-    },
     "CA": {
       "name": "Canada",
-      "count": 77
+      "count": 80
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 85
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 169
     },
     "FR": {
       "name": "France",
-      "count": 168
+      "count": 167
     },
     "NL": {
       "name": "The Netherlands",
       "count": 42
     },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "PL": {
       "name": "Poland",
       "count": 138
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "AT": {
+      "name": "Austria",
+      "count": 1
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
     "SE": {
       "name": "Sweden",
       "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
     "AL": {
       "name": "Albania",
       "count": 2
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
     }
   }
 }
