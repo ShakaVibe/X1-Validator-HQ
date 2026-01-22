@@ -10677,10 +10677,11 @@
         const results = await Promise.all(epochPromises);
         const validResults = results.filter(r => r && r.skipRate !== undefined);
         
-        // Calculate average
+        // Calculate average - track how many epochs we actually have data for
         let avgSkipRate = null;
-        if (validResults.length > 0) {
-          avgSkipRate = validResults.reduce((sum, r) => sum + r.skipRate, 0) / validResults.length;
+        const epochCount = validResults.length;
+        if (epochCount > 0) {
+          avgSkipRate = validResults.reduce((sum, r) => sum + r.skipRate, 0) / epochCount;
         }
         
         // Get last completed epoch's skip rate
@@ -10689,6 +10690,8 @@
         const historyData = {
           epochs: validResults,
           avgSkipRate,
+          epochCount, // Track actual number of epochs in the average
+          requestedEpochs: numEpochs, // Track how many we requested
           lastEpochSkipRate: lastEpochData ? lastEpochData.skipRate : null,
           currentEpoch
         };
@@ -10972,7 +10975,8 @@
       
       if (skipHistory && skipHistory.avgSkipRate !== null) {
         skipRate = skipHistory.avgSkipRate;
-        skipSource = '7-epoch avg';
+        const epochCount = skipHistory.epochCount || skipHistory.epochs?.length || '?';
+        skipSource = `${epochCount}-epoch avg`;
       } else if (skipHistory && skipHistory.lastEpochSkipRate !== null) {
         skipRate = skipHistory.lastEpochSkipRate;
         skipSource = 'last epoch';
@@ -11333,8 +11337,9 @@
       }
       
       if (skipHistory && skipHistory.avgSkipRate !== null) {
+        const epochCount = skipHistory.epochCount || skipHistory.epochs?.length || '?';
         breakdown.skipRate.score = getSkipRateScore(skipHistory.avgSkipRate);
-        breakdown.skipRate.details = `${skipHistory.avgSkipRate.toFixed(2)}% (7-epoch avg)`;
+        breakdown.skipRate.details = `${skipHistory.avgSkipRate.toFixed(2)}% (${epochCount}-epoch avg)`;
       } else if (skipHistory && skipHistory.lastEpochSkipRate !== null) {
         breakdown.skipRate.score = getSkipRateScore(skipHistory.lastEpochSkipRate);
         breakdown.skipRate.details = `${skipHistory.lastEpochSkipRate.toFixed(2)}% (last epoch)`;
@@ -11643,10 +11648,11 @@
       let skipRateDisplay, skipLabel, skipColor;
       
       if (avgSkipRate !== null && avgSkipRate !== undefined) {
-        // Show 7-epoch average as main value
+        // Show actual epoch count in the average label
+        const epochCount = skipHistory.epochCount || skipHistory.epochs?.length || '?';
         skipRateDisplay = formatNumber(avgSkipRate, 2) + '%';
         skipColor = getSkipRateColor(avgSkipRate);
-        skipLabel = `7-epoch average`;
+        skipLabel = `${epochCount}-epoch average`;
       } else if (currentSkipRate !== null && currentSkipRate !== undefined) {
         // Fallback to current epoch if no history
         skipRateDisplay = formatNumber(currentSkipRate, 2) + '%';
