@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-22T13:15:14.158Z",
+  "lastUpdated": "2026-01-22T14:52:43.510Z",
   "totalNodes": 1596,
   "totalLocations": 1594,
   "locations": {
@@ -10685,13 +10685,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "152.53.121.145": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Karlsruhe",
-      "lat": 49.0291,
-      "lon": 8.35696
-    },
     "159.195.71.134": {
       "country": "Germany",
       "countryCode": "DE",
@@ -11160,6 +11153,13 @@
       "city": "Manassas",
       "lat": 38.7911,
       "lon": -77.5264
+    },
+    "159.195.46.118": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.405,
+      "lon": 11.1617
     }
   },
   "countries": {
