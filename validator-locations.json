@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-23T14:47:33.408Z",
+  "lastUpdated": "2026-01-23T16:52:24.339Z",
   "totalNodes": 1598,
   "totalLocations": 1596,
   "locations": {
@@ -1599,13 +1599,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.89.155.56": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5122,
-      "lon": -0.0816
-    },
     "152.53.186.20": {
       "country": "Germany",
       "countryCode": "DE",
@@ -2396,13 +2389,6 @@
       "city": "Manassas",
       "lat": 38.7475,
       "lon": -77.5317
-    },
-    "152.53.84.34": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4521,
-      "lon": 11.0767
     },
     "57.129.106.10": {
       "country": "Germany",
@@ -3433,13 +3419,6 @@
       "lat": 50.1162,
       "lon": 8.6693
     },
-    "51.79.96.2": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Québec",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "195.3.221.104": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4314,13 +4293,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "51.79.19.172": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "51.210.214.62": {
       "country": "France",
@@ -11174,6 +11146,34 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
+    },
+    "65.109.49.253": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.125.223.225": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "135.125.223.226": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "45.88.89.61": {
+      "country": "Albania",
+      "countryCode": "AL",
+      "city": "Tirana",
+      "lat": 41.3275,
+      "lon": 19.8187
     }
   },
   "countries": {
@@ -11181,21 +11181,25 @@
       "name": "United States",
       "count": 410
     },
-    "DE": {
-      "name": "Germany",
-      "count": 475
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 81
-    },
     "GB": {
       "name": "United Kingdom",
-      "count": 85
+      "count": 84
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 476
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 140
     },
     "FI": {
       "name": "Finland",
-      "count": 170
+      "count": 171
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 79
     },
     "FR": {
       "name": "France",
@@ -11209,37 +11213,33 @@
       "name": "Kenya",
       "count": 6
     },
-    "PL": {
-      "name": "Poland",
-      "count": 140
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
-    },
     "IT": {
       "name": "Italy",
       "count": 5
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "ES": {
-      "name": "Spain",
-      "count": 2
-    },
     "SG": {
       "name": "Singapore",
       "count": 3
     },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
+    },
     "AL": {
       "name": "Albania",
-      "count": 2
+      "count": 3
     }
   }
 }
