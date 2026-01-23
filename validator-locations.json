@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-23T13:12:05.233Z",
+  "lastUpdated": "2026-01-23T14:47:33.408Z",
   "totalNodes": 1598,
   "totalLocations": 1596,
   "locations": {
@@ -100,13 +100,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "135.125.223.225": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "141.94.102.71": {
       "country": "France",
@@ -1368,13 +1361,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "51.195.190.6": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Blackburn",
-      "lat": 53.75,
-      "lon": -2.48333
-    },
     "51.195.190.209": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -2474,13 +2460,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.89.233.129": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Erith",
-      "lat": 51.487,
-      "lon": 0.1812
-    },
     "51.79.78.13": {
       "country": "Canada",
       "countryCode": "CA",
@@ -3348,13 +3327,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "57.129.101.121": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "146.19.24.218": {
       "country": "Poland",
@@ -4652,13 +4624,6 @@
       "lon": 3.20113
     },
     "66.45.253.162": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "216.158.229.174": {
       "country": "United States",
       "countryCode": "US",
       "city": "Secaucus",
@@ -11174,6 +11139,41 @@
       "city": "Frankfurt am Main",
       "lat": 50.1162,
       "lon": 8.6693
+    },
+    "64.20.54.154": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "135.125.223.224": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "135.125.223.220": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "51.91.25.136": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "144.217.252.202": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     }
   },
   "countries": {
@@ -11181,65 +11181,65 @@
       "name": "United States",
       "count": 410
     },
-    "FI": {
-      "name": "Finland",
-      "count": 170
-    },
     "DE": {
       "name": "Germany",
       "count": 475
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 87
-    },
     "CA": {
       "name": "Canada",
-      "count": 80
+      "count": 81
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 85
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 170
     },
     "FR": {
       "name": "France",
-      "count": 167
+      "count": 168
     },
     "NL": {
       "name": "The Netherlands",
       "count": 42
     },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "PL": {
       "name": "Poland",
       "count": 140
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "AT": {
+      "name": "Austria",
+      "count": 1
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
     "SE": {
       "name": "Sweden",
       "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
     "AL": {
       "name": "Albania",
       "count": 2
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
     }
   }
 }
