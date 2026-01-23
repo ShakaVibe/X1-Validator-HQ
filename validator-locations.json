@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-23T16:52:24.339Z",
-  "totalNodes": 1598,
-  "totalLocations": 1596,
+  "lastUpdated": "2026-01-23T18:54:20.343Z",
+  "totalNodes": 1597,
+  "totalLocations": 1595,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3747,13 +3747,6 @@
       "city": "Nuremberg",
       "lat": 49.4423,
       "lon": 11.0191
-    },
-    "38.147.105.162": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "51.77.56.121": {
       "country": "Poland",
@@ -11179,23 +11172,19 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 410
+      "count": 409
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 84
+    "FI": {
+      "name": "Finland",
+      "count": 171
     },
     "DE": {
       "name": "Germany",
       "count": 476
     },
-    "PL": {
-      "name": "Poland",
-      "count": 140
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 171
+    "GB": {
+      "name": "United Kingdom",
+      "count": 84
     },
     "CA": {
       "name": "Canada",
@@ -11208,6 +11197,10 @@
     "NL": {
       "name": "The Netherlands",
       "count": 42
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 140
     },
     "KE": {
       "name": "Kenya",
@@ -11225,14 +11218,6 @@
       "name": "Singapore",
       "count": 3
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "ES": {
       "name": "Spain",
       "count": 2
@@ -11240,6 +11225,14 @@
     "AL": {
       "name": "Albania",
       "count": 3
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
     }
   }
 }
