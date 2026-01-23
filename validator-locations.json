@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-23T08:49:44.754Z",
-  "totalNodes": 1594,
-  "totalLocations": 1592,
+  "lastUpdated": "2026-01-23T10:47:45.542Z",
+  "totalNodes": 1596,
+  "totalLocations": 1594,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -604,13 +604,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "57.129.100.72": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "144.217.67.151": {
       "country": "Canada",
@@ -1389,13 +1382,6 @@
       "lat": 53.75,
       "lon": -2.48333
     },
-    "51.195.190.20": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Blackburn",
-      "lat": 53.75,
-      "lon": -2.48333
-    },
     "174.138.181.250": {
       "country": "United States",
       "countryCode": "US",
@@ -1724,13 +1710,6 @@
       "city": "Wattrelos",
       "lat": 50.7012,
       "lon": 3.21501
-    },
-    "57.129.100.74": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "149.50.101.138": {
       "country": "Poland",
@@ -2235,13 +2214,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "51.195.176.177": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Erith",
-      "lat": 51.4808,
-      "lon": 0.174675
     },
     "148.251.9.2": {
       "country": "Germany",
@@ -3572,13 +3544,6 @@
       "city": "Ogden",
       "lat": 41.2627,
       "lon": -111.9837
-    },
-    "51.89.235.34": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "198.96.89.222": {
       "country": "United States",
@@ -11146,6 +11111,55 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
+    },
+    "51.195.190.42": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "Blackburn",
+      "lat": 53.75,
+      "lon": -2.48333
+    },
+    "188.117.169.92": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Łaziska Górne",
+      "lat": 50.1441,
+      "lon": 18.8675
+    },
+    "51.89.219.50": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "51.195.190.25": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "Blackburn",
+      "lat": 53.75,
+      "lon": -2.48333
+    },
+    "51.89.192.236": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "57.129.100.76": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
+    },
+    "188.117.169.94": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Łaziska Górne",
+      "lat": 50.1441,
+      "lon": 18.8675
     }
   },
   "countries": {
@@ -11155,62 +11169,62 @@
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 83
-    },
-    "FR": {
-      "name": "France",
-      "count": 168
+      "count": 84
     },
     "DE": {
       "name": "Germany",
-      "count": 476
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 42
+      "count": 475
     },
     "PL": {
       "name": "Poland",
-      "count": 138
+      "count": 140
     },
     "FI": {
       "name": "Finland",
       "count": 170
     },
-    "AL": {
-      "name": "Albania",
-      "count": 2
-    },
     "CA": {
       "name": "Canada",
       "count": 81
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
+    "FR": {
+      "name": "France",
+      "count": 168
     },
-    "SE": {
-      "name": "Sweden",
+    "NL": {
+      "name": "The Netherlands",
+      "count": 42
+    },
+    "KE": {
+      "name": "Kenya",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
     "AT": {
       "name": "Austria",
       "count": 1
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "CH": {
-      "name": "Switzerland",
+    "AL": {
+      "name": "Albania",
       "count": 2
     }
   }
