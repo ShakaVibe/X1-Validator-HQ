@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-23T10:47:45.542Z",
-  "totalNodes": 1596,
-  "totalLocations": 1594,
+  "lastUpdated": "2026-01-23T13:12:05.233Z",
+  "totalNodes": 1598,
+  "totalLocations": 1596,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3335,13 +3335,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "144.217.252.202": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "152.53.80.183": {
       "country": "United States",
       "countryCode": "US",
@@ -4077,13 +4070,6 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "135.125.223.220": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "216.158.232.110": {
       "country": "United States",
       "countryCode": "US",
@@ -4223,13 +4209,6 @@
       "city": "Manassas",
       "lat": 38.7911,
       "lon": -77.5264
-    },
-    "51.91.25.136": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "51.83.223.211": {
       "country": "Poland",
@@ -5967,13 +5946,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "135.125.223.226": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "65.109.94.201": {
       "country": "Finland",
       "countryCode": "FI",
@@ -6372,13 +6344,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "135.125.223.224": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "149.202.69.96": {
       "country": "France",
@@ -11160,40 +11125,89 @@
       "city": "Łaziska Górne",
       "lat": 50.1441,
       "lon": 18.8675
+    },
+    "51.195.190.20": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "Blackburn",
+      "lat": 53.75,
+      "lon": -2.48333
+    },
+    "57.129.100.72": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
+    },
+    "57.129.100.74": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
+    },
+    "51.195.176.177": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "Erith",
+      "lat": 51.4808,
+      "lon": 0.174675
+    },
+    "51.89.235.34": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "163.245.209.143": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "57.129.101.204": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 409
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 84
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 475
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 140
+      "count": 410
     },
     "FI": {
       "name": "Finland",
       "count": 170
     },
+    "DE": {
+      "name": "Germany",
+      "count": 475
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 87
+    },
     "CA": {
       "name": "Canada",
-      "count": 81
+      "count": 80
     },
     "FR": {
       "name": "France",
-      "count": 168
+      "count": 167
     },
     "NL": {
       "name": "The Netherlands",
       "count": 42
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 140
     },
     "KE": {
       "name": "Kenya",
@@ -11211,14 +11225,6 @@
       "name": "Singapore",
       "count": 3
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "ES": {
       "name": "Spain",
       "count": 2
@@ -11226,6 +11232,14 @@
     "AL": {
       "name": "Albania",
       "count": 2
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
     }
   }
 }
