@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-22T22:44:14.338Z",
+  "lastUpdated": "2026-01-23T02:31:38.510Z",
   "totalNodes": 1596,
   "totalLocations": 1594,
   "locations": {
@@ -1571,13 +1571,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "149.202.80.31": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "45.136.212.10": {
       "country": "The Netherlands",
       "countryCode": "NL",
@@ -2193,13 +2186,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "51.89.232.82": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "159.195.33.46": {
       "country": "Germany",
@@ -6520,13 +6506,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.89.194.91": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "205.209.125.138": {
       "country": "United States",
       "countryCode": "US",
@@ -6954,13 +6933,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "51.79.77.234": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "159.195.66.128": {
       "country": "Germany",
       "countryCode": "DE",
@@ -7016,13 +6988,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "198.244.167.80": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "162.250.124.2": {
       "country": "United States",
@@ -11160,6 +11125,41 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
+    },
+    "51.222.46.9": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "51.89.6.180": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "146.59.55.11": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "51.91.72.115": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "198.244.164.218": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
     }
   },
   "countries": {
@@ -11169,7 +11169,7 @@
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 85
+      "count": 84
     },
     "FR": {
       "name": "France",
@@ -11185,7 +11185,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 137
+      "count": 138
     },
     "FI": {
       "name": "Finland",
