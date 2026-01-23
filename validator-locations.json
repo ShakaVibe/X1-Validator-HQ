@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-23T06:55:07.598Z",
-  "totalNodes": 1595,
-  "totalLocations": 1593,
+  "lastUpdated": "2026-01-23T08:49:44.754Z",
+  "totalNodes": 1594,
+  "totalLocations": 1592,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1690,13 +1690,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "57.129.100.76": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "145.239.10.208": {
       "country": "France",
       "countryCode": "FR",
@@ -3125,13 +3118,6 @@
       "lat": 50.121,
       "lon": 8.747
     },
-    "185.170.112.54": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4423,
-      "lon": 11.0191
-    },
     "152.53.164.221": {
       "country": "United States",
       "countryCode": "US",
@@ -3376,13 +3362,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "51.89.219.50": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "144.217.252.202": {
       "country": "Canada",
@@ -5967,13 +5946,6 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "51.195.190.25": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Blackburn",
-      "lat": 53.75,
-      "lon": -2.48333
-    },
     "65.109.112.35": {
       "country": "Finland",
       "countryCode": "FI",
@@ -6204,13 +6176,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "51.89.192.236": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "69.164.250.194": {
       "country": "United States",
@@ -6841,13 +6806,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "51.195.190.42": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Blackburn",
-      "lat": 53.75,
-      "lon": -2.48333
     },
     "216.219.85.114": {
       "country": "United States",
@@ -11153,6 +11111,41 @@
       "city": "Frankfurt am Main",
       "lat": 50.1109,
       "lon": 8.68213
+    },
+    "149.202.80.31": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.89.194.91": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "51.79.77.234": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "198.244.167.80": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "51.89.232.82": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
     }
   },
   "countries": {
@@ -11160,64 +11153,64 @@
       "name": "United States",
       "count": 409
     },
-    "DE": {
-      "name": "Germany",
-      "count": 478
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 80
-    },
     "GB": {
       "name": "United Kingdom",
-      "count": 84
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 170
+      "count": 83
     },
     "FR": {
       "name": "France",
-      "count": 167
+      "count": 168
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 476
     },
     "NL": {
       "name": "The Netherlands",
       "count": 42
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
     "PL": {
       "name": "Poland",
       "count": 138
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "FI": {
+      "name": "Finland",
+      "count": 170
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 2
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 81
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "AT": {
+      "name": "Austria",
+      "count": 1
     },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
-    "AL": {
-      "name": "Albania",
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     }
   }
