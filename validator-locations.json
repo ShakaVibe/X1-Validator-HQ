@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-24T13:04:17.313Z",
-  "totalNodes": 1600,
-  "totalLocations": 1598,
+  "lastUpdated": "2026-01-24T14:39:55.673Z",
+  "totalNodes": 1597,
+  "totalLocations": 1595,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -674,13 +674,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "51.195.190.198": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Blackburn",
-      "lat": 53.75,
-      "lon": -2.48333
     },
     "162.245.189.210": {
       "country": "United States",
@@ -1900,13 +1893,6 @@
       "lat": 50.7012,
       "lon": 3.21501
     },
-    "216.219.85.110": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "66.45.230.54": {
       "country": "United States",
       "countryCode": "US",
@@ -2214,13 +2200,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "51.195.104.145": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "152.53.245.172": {
       "country": "Germany",
@@ -2747,13 +2726,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "51.83.141.86": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "51.83.141.37": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3068,13 +3040,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "51.89.20.231": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "195.3.223.87": {
       "country": "Poland",
@@ -4427,13 +4392,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "51.77.64.149": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "194.147.214.228": {
       "country": "Switzerland",
       "countryCode": "CH",
@@ -5378,13 +5336,6 @@
       "city": "Karlsruhe",
       "lat": 49.0291,
       "lon": 8.35696
-    },
-    "198.244.178.240": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "37.187.158.162": {
       "country": "France",
@@ -6736,13 +6687,6 @@
       "city": "Nuremberg",
       "lat": 49.405,
       "lon": 11.1617
-    },
-    "66.23.236.230": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Paterson",
-      "lat": 40.9117,
-      "lon": -74.1786
     },
     "162.120.17.47": {
       "country": "United States",
@@ -10930,13 +10874,6 @@
       "lat": 53.75,
       "lon": -2.48333
     },
-    "188.117.169.92": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Łaziska Górne",
-      "lat": 50.1441,
-      "lon": 18.8675
-    },
     "51.89.219.50": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -11188,28 +11125,74 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
+    },
+    "54.36.109.118": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3847,
+      "lon": 8.0475
+    },
+    "51.83.143.104": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "51.89.40.145": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "198.244.164.71": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "57.129.101.217": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
+    },
+    "51.222.43.96": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 412
+      "count": 410
     },
     "DE": {
       "name": "Germany",
       "count": 475
     },
-    "CA": {
-      "name": "Canada",
-      "count": 80
-    },
     "GB": {
       "name": "United Kingdom",
-      "count": 85
+      "count": 84
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 138
     },
     "FI": {
       "name": "Finland",
       "count": 171
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 81
     },
     "FR": {
       "name": "France",
@@ -11223,33 +11206,29 @@
       "name": "Kenya",
       "count": 6
     },
-    "PL": {
-      "name": "Poland",
-      "count": 139
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
-    },
     "IT": {
       "name": "Italy",
       "count": 5
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "ES": {
-      "name": "Spain",
-      "count": 2
-    },
     "SG": {
       "name": "Singapore",
       "count": 3
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
     },
     "AL": {
       "name": "Albania",
