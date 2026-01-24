@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-23T22:40:22.494Z",
+  "lastUpdated": "2026-01-24T02:26:33.612Z",
   "totalNodes": 1597,
   "totalLocations": 1595,
   "locations": {
@@ -597,13 +597,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "144.217.67.151": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
     },
     "198.244.230.97": {
       "country": "United Kingdom",
@@ -4574,13 +4567,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "146.59.47.61": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "51.91.7.153": {
       "country": "France",
       "countryCode": "FR",
@@ -4825,13 +4811,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "51.79.19.177": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "45.131.114.146": {
       "country": "The Netherlands",
@@ -5694,13 +5673,6 @@
       "lat": 49.405,
       "lon": 11.1617
     },
-    "146.59.47.53": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "65.108.205.145": {
       "country": "Finland",
       "countryCode": "FI",
@@ -6071,13 +6043,6 @@
       "city": "Nuremberg",
       "lat": 49.405,
       "lon": 11.1617
-    },
-    "51.79.78.165": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Québec",
-      "lat": 46.8127,
-      "lon": -71.2226
     },
     "157.180.0.60": {
       "country": "Finland",
@@ -11167,6 +11132,41 @@
       "city": "Tirana",
       "lat": 41.3275,
       "lon": 19.8187
+    },
+    "51.89.155.56": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5122,
+      "lon": -0.0816
+    },
+    "57.129.101.121": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
+    },
+    "51.89.233.129": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "Erith",
+      "lat": 51.487,
+      "lon": 0.1812
+    },
+    "51.79.19.172": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "51.195.190.6": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "Blackburn",
+      "lat": 53.75,
+      "lon": -2.48333
     }
   },
   "countries": {
@@ -11174,21 +11174,25 @@
       "name": "United States",
       "count": 409
     },
-    "DE": {
-      "name": "Germany",
-      "count": 476
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 79
-    },
     "GB": {
       "name": "United Kingdom",
-      "count": 84
+      "count": 87
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 477
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 138
     },
     "FI": {
       "name": "Finland",
       "count": 171
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 77
     },
     "FR": {
       "name": "France",
@@ -11202,33 +11206,29 @@
       "name": "Kenya",
       "count": 6
     },
-    "PL": {
-      "name": "Poland",
-      "count": 140
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
-    },
     "IT": {
       "name": "Italy",
       "count": 5
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "ES": {
-      "name": "Spain",
-      "count": 2
-    },
     "SG": {
       "name": "Singapore",
       "count": 3
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
     },
     "AL": {
       "name": "Albania",
