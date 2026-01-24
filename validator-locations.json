@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-24T14:39:55.673Z",
-  "totalNodes": 1597,
-  "totalLocations": 1595,
+  "lastUpdated": "2026-01-24T16:44:15.221Z",
+  "totalNodes": 1596,
+  "totalLocations": 1594,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1052,13 +1052,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "192.200.97.114": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Salt Lake City",
-      "lat": 40.7687,
-      "lon": -111.886
     },
     "51.79.17.83": {
       "country": "Canada",
@@ -3265,13 +3258,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "51.83.237.195": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ożarów Mazowiecki",
-      "lat": 52.2143,
-      "lon": 20.8009
-    },
     "51.83.67.30": {
       "country": "France",
       "countryCode": "FR",
@@ -4301,13 +4287,6 @@
       "lat": 51.5081,
       "lon": -0.1278
     },
-    "54.38.192.216": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "45.131.114.130": {
       "country": "The Netherlands",
       "countryCode": "NL",
@@ -4924,13 +4903,6 @@
       "lat": 49.0291,
       "lon": 8.35696
     },
-    "51.222.153.163": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
-    },
     "107.181.252.10": {
       "country": "United States",
       "countryCode": "US",
@@ -5190,13 +5162,6 @@
       "lat": 49.405,
       "lon": 11.1617
     },
-    "51.83.237.124": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ożarów Mazowiecki",
-      "lat": 52.2143,
-      "lon": 20.8009
-    },
     "159.195.66.152": {
       "country": "Germany",
       "countryCode": "DE",
@@ -5371,13 +5336,6 @@
       "city": "Blackburn",
       "lat": 53.75,
       "lon": -2.48333
-    },
-    "54.38.194.74": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "65.108.236.21": {
       "country": "Finland",
@@ -10944,13 +10902,6 @@
       "lat": 51.5081,
       "lon": -0.1278
     },
-    "163.245.209.143": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "57.129.101.204": {
       "country": "Germany",
       "countryCode": "DE",
@@ -11167,24 +11118,66 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
+    },
+    "51.195.104.145": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "51.83.141.86": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "51.77.64.149": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "51.195.190.198": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "Blackburn",
+      "lat": 53.75,
+      "lon": -2.48333
+    },
+    "51.89.20.231": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "198.244.178.240": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 410
+      "count": 408
     },
     "DE": {
       "name": "Germany",
-      "count": 475
+      "count": 477
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 84
+      "count": 87
     },
     "PL": {
       "name": "Poland",
-      "count": 138
+      "count": 135
     },
     "FI": {
       "name": "Finland",
@@ -11192,7 +11185,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 81
+      "count": 80
     },
     "FR": {
       "name": "France",
