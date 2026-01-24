@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-24T20:38:51.999Z",
-  "totalNodes": 1594,
-  "totalLocations": 1592,
+  "lastUpdated": "2026-01-24T22:40:04.630Z",
+  "totalNodes": 1597,
+  "totalLocations": 1595,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2690,13 +2690,6 @@
       "city": "London",
       "lat": 51.5072,
       "lon": -0.127586
-    },
-    "64.71.177.149": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Los Angeles",
-      "lat": 34.0479,
-      "lon": -118.256
     },
     "37.187.253.114": {
       "country": "France",
@@ -11146,24 +11139,60 @@
       "city": "Amsterdam",
       "lat": 52.3676,
       "lon": 4.90414
+    },
+    "216.219.91.162": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "65.19.133.227": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Clatskanie",
+      "lat": 46.1012,
+      "lon": -123.2068
+    },
+    "69.10.55.50": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0749
+    },
+    "65.19.133.226": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Clatskanie",
+      "lat": 46.1012,
+      "lon": -123.2068
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 405
+      "count": 408
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 477
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 80
     },
     "GB": {
       "name": "United Kingdom",
       "count": 87
     },
+    "FI": {
+      "name": "Finland",
+      "count": 171
+    },
     "FR": {
       "name": "France",
       "count": 168
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 477
     },
     "NL": {
       "name": "The Netherlands",
@@ -11173,45 +11202,37 @@
       "name": "Poland",
       "count": 135
     },
-    "FI": {
-      "name": "Finland",
-      "count": 171
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 80
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
-    },
-    "IT": {
-      "name": "Italy",
-      "count": 5
     },
     "AT": {
       "name": "Austria",
       "count": 1
     },
-    "KE": {
-      "name": "Kenya",
+    "IT": {
+      "name": "Italy",
+      "count": 5
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     }
   }
 }
