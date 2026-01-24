@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-24T08:44:56.419Z",
-  "totalNodes": 1598,
-  "totalLocations": 1596,
+  "lastUpdated": "2026-01-24T10:46:35.571Z",
+  "totalNodes": 1600,
+  "totalLocations": 1598,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -5007,13 +5007,6 @@
       "city": "Gravelines",
       "lat": 50.9871,
       "lon": 2.12554
-    },
-    "195.3.223.142": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2297,
-      "lon": 21.0122
     },
     "65.108.76.59": {
       "country": "Finland",
@@ -11174,24 +11167,49 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "149.86.227.122": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "205.209.110.46": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "38.147.104.84": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 410
+      "count": 412
     },
-    "FI": {
-      "name": "Finland",
-      "count": 171
+    "GB": {
+      "name": "United Kingdom",
+      "count": 85
     },
     "DE": {
       "name": "Germany",
       "count": 475
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 85
+    "PL": {
+      "name": "Poland",
+      "count": 139
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 171
     },
     "CA": {
       "name": "Canada",
@@ -11204,10 +11222,6 @@
     "NL": {
       "name": "The Netherlands",
       "count": 42
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 139
     },
     "KE": {
       "name": "Kenya",
@@ -11225,6 +11239,14 @@
       "name": "Singapore",
       "count": 3
     },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
     "ES": {
       "name": "Spain",
       "count": 2
@@ -11232,14 +11254,6 @@
     "AL": {
       "name": "Albania",
       "count": 3
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
     }
   }
 }
