@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-24T18:48:40.557Z",
-  "totalNodes": 1595,
-  "totalLocations": 1593,
+  "lastUpdated": "2026-01-24T20:38:51.999Z",
+  "totalNodes": 1594,
+  "totalLocations": 1592,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -626,13 +626,6 @@
       "lat": 49.405,
       "lon": 11.1617
     },
-    "206.72.200.6": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "51.178.209.184": {
       "country": "France",
       "countryCode": "FR",
@@ -1066,13 +1059,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "64.71.177.146": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Los Angeles",
-      "lat": 34.0479,
-      "lon": -118.256
     },
     "104.37.184.102": {
       "country": "United States",
@@ -11153,12 +11139,19 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
+    },
+    "45.131.114.170": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 407
+      "count": 405
     },
     "GB": {
       "name": "United Kingdom",
@@ -11174,7 +11167,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 42
+      "count": 43
     },
     "PL": {
       "name": "Poland",
