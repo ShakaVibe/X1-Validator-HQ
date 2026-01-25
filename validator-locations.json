@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-25T08:45:13.782Z",
-  "totalNodes": 1596,
-  "totalLocations": 1594,
+  "lastUpdated": "2026-01-25T10:42:36.610Z",
+  "totalNodes": 1598,
+  "totalLocations": 1596,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -198,13 +198,6 @@
       "city": "Amsterdam",
       "lat": 52.3676,
       "lon": 4.90414
-    },
-    "149.50.116.114": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "198.244.164.206": {
       "country": "United Kingdom",
@@ -2243,13 +2236,6 @@
       "lat": 50.1162,
       "lon": 8.6693
     },
-    "174.138.180.250": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Teterboro",
-      "lat": 40.866,
-      "lon": -74.0544
-    },
     "152.53.83.220": {
       "country": "United States",
       "countryCode": "US",
@@ -2354,13 +2340,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "95.216.7.136": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "159.195.20.252": {
       "country": "Germany",
@@ -5420,13 +5399,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "173.225.104.214": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Whippany",
-      "lat": 40.8207,
-      "lon": -74.4231
     },
     "51.77.42.15": {
       "country": "Poland",
@@ -11160,6 +11132,48 @@
       "city": "Ożarów Mazowiecki",
       "lat": 52.2143,
       "lon": 20.8009
+    },
+    "54.38.192.216": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "159.195.44.85": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.405,
+      "lon": 11.1617
+    },
+    "38.58.176.74": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "51.83.237.195": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ożarów Mazowiecki",
+      "lat": 52.2143,
+      "lon": 20.8009
+    },
+    "38.58.176.107": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "54.38.194.74": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
     }
   },
   "countries": {
@@ -11169,7 +11183,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 474
+      "count": 475
     },
     "CA": {
       "name": "Canada",
@@ -11181,7 +11195,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 171
+      "count": 170
     },
     "FR": {
       "name": "France",
@@ -11193,7 +11207,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 136
+      "count": 138
     },
     "KE": {
       "name": "Kenya",
