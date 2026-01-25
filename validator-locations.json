@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-25T05:03:05.967Z",
-  "totalNodes": 1597,
-  "totalLocations": 1595,
+  "lastUpdated": "2026-01-25T06:51:36.029Z",
+  "totalNodes": 1596,
+  "totalLocations": 1594,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -7997,13 +7997,6 @@
       "lat": 49.405,
       "lon": 11.1617
     },
-    "152.53.143.74": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4521,
-      "lon": 11.0767
-    },
     "159.195.34.133": {
       "country": "Germany",
       "countryCode": "DE",
@@ -9097,20 +9090,6 @@
       "lon": 8.07958
     },
     "51.195.88.101": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.77.66.73": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.75.147.49": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Limburg an der Lahn",
@@ -11167,6 +11146,20 @@
       "city": "Clatskanie",
       "lat": 46.1012,
       "lon": -123.2068
+    },
+    "51.222.153.163": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "51.83.237.124": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ożarów Mazowiecki",
+      "lat": 52.2143,
+      "lon": 20.8009
     }
   },
   "countries": {
@@ -11176,7 +11169,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 477
+      "count": 474
     },
     "GB": {
       "name": "United Kingdom",
@@ -11184,7 +11177,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 135
+      "count": 136
     },
     "FI": {
       "name": "Finland",
@@ -11192,7 +11185,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 80
+      "count": 81
     },
     "FR": {
       "name": "France",
