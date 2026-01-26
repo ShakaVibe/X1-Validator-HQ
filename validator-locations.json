@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-26T14:50:52.200Z",
-  "totalNodes": 1594,
-  "totalLocations": 1592,
+  "lastUpdated": "2026-01-26T16:56:21.425Z",
+  "totalNodes": 1617,
+  "totalLocations": 1615,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -6317,13 +6317,6 @@
       "lat": 49.405,
       "lon": 11.1617
     },
-    "152.53.141.182": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4521,
-      "lon": 11.0767
-    },
     "216.158.236.102": {
       "country": "United States",
       "countryCode": "US",
@@ -6493,13 +6486,6 @@
       "lon": 21.069
     },
     "159.195.32.93": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
-    },
-    "152.53.151.225": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Nuremberg",
@@ -7479,13 +7465,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "15.204.231.168": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Reston",
-      "lat": 38.9609,
-      "lon": -77.3429
-    },
     "40.160.58.167": {
       "country": "United States",
       "countryCode": "US",
@@ -7774,13 +7753,6 @@
       "lon": 11.1617
     },
     "159.195.32.225": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
-    },
-    "159.195.29.154": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Nuremberg",
@@ -9852,13 +9824,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "152.53.167.77": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
-    },
     "159.195.46.118": {
       "country": "Germany",
       "countryCode": "DE",
@@ -11146,16 +11111,212 @@
       "city": "Hillsboro",
       "lat": 45.526,
       "lon": -122.9874
+    },
+    "5.231.41.161": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.56": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.153": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.238": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.243": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.252": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.54": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.185": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.172": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.253": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.59": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.174": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.221": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.142": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.87": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.83": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.119": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.233": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.173": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.127": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.215": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.167": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.18": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.190": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.63": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.14": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "185.170.112.54": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4423,
+      "lon": 11.0191
+    },
+    "216.219.85.110": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 404
+      "count": 403
     },
     "DE": {
       "name": "Germany",
-      "count": 474
+      "count": 498
     },
     "GB": {
       "name": "United Kingdom",
