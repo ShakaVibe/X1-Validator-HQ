@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-26T13:13:36.797Z",
-  "totalNodes": 1591,
-  "totalLocations": 1589,
+  "lastUpdated": "2026-01-26T14:50:52.200Z",
+  "totalNodes": 1594,
+  "totalLocations": 1592,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3425,13 +3425,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "159.195.68.234": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
     },
     "188.117.169.93": {
       "country": "Poland",
@@ -11125,16 +11118,44 @@
       "city": "Šiauliai",
       "lat": 55.9349,
       "lon": 23.3137
+    },
+    "51.81.155.192": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Hillsboro",
+      "lat": 45.526,
+      "lon": -122.9874
+    },
+    "192.64.83.158": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "51.79.72.76": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Québec",
+      "lat": 46.8127,
+      "lon": -71.2226
+    },
+    "51.81.245.158": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Hillsboro",
+      "lat": 45.526,
+      "lon": -122.9874
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 401
+      "count": 404
     },
     "DE": {
       "name": "Germany",
-      "count": 475
+      "count": 474
     },
     "GB": {
       "name": "United Kingdom",
@@ -11150,7 +11171,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 80
+      "count": 81
     },
     "FR": {
       "name": "France",
