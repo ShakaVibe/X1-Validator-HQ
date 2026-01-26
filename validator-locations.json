@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-26T05:06:32.254Z",
-  "totalNodes": 1592,
-  "totalLocations": 1590,
+  "lastUpdated": "2026-01-26T06:57:53.494Z",
+  "totalNodes": 1590,
+  "totalLocations": 1588,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2606,13 +2606,6 @@
       "city": "Manassas",
       "lat": 38.7911,
       "lon": -77.5264
-    },
-    "149.50.110.137": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "94.130.203.68": {
       "country": "Germany",
@@ -6632,13 +6625,6 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "152.53.52.94": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7429,
-      "lon": -77.4914
-    },
     "135.181.214.236": {
       "country": "Finland",
       "countryCode": "FI",
@@ -6864,13 +6850,6 @@
       "lon": 24.9347
     },
     "51.81.155.107": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Hillsboro",
-      "lat": 45.526,
-      "lon": -122.9874
-    },
-    "51.81.245.158": {
       "country": "United States",
       "countryCode": "US",
       "city": "Hillsboro",
@@ -11132,32 +11111,31 @@
       "city": "Rüsselsheim am Main",
       "lat": 49.9874,
       "lon": 8.4232
+    },
+    "149.50.101.176": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 404
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 475
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 80
+      "count": 402
     },
     "GB": {
       "name": "United Kingdom",
       "count": 87
     },
-    "FI": {
-      "name": "Finland",
-      "count": 170
-    },
     "FR": {
       "name": "France",
       "count": 168
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 475
     },
     "NL": {
       "name": "The Netherlands",
@@ -11167,37 +11145,45 @@
       "name": "Poland",
       "count": 137
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "FI": {
+      "name": "Finland",
+      "count": 170
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 80
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "AT": {
+      "name": "Austria",
+      "count": 1
     },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     }
   }
 }
