@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-26T10:48:54.752Z",
+  "lastUpdated": "2026-01-26T13:13:36.797Z",
   "totalNodes": 1591,
   "totalLocations": 1589,
   "locations": {
@@ -4510,13 +4510,6 @@
       "city": "Erith",
       "lat": 51.487,
       "lon": 0.1812
-    },
-    "51.89.65.27": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "198.96.93.130": {
       "country": "United States",
@@ -11125,6 +11118,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "93.115.25.137": {
+      "country": "Lithuania",
+      "countryCode": "LT",
+      "city": "Šiauliai",
+      "lat": 55.9349,
+      "lon": 23.3137
     }
   },
   "countries": {
@@ -11138,7 +11138,7 @@
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 87
+      "count": 86
     },
     "PL": {
       "name": "Poland",
@@ -11187,6 +11187,10 @@
     "ES": {
       "name": "Spain",
       "count": 2
+    },
+    "LT": {
+      "name": "Lithuania",
+      "count": 1
     },
     "AL": {
       "name": "Albania",
