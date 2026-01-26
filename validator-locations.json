@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-26T16:56:21.425Z",
+  "lastUpdated": "2026-01-26T18:56:43.310Z",
   "totalNodes": 1617,
   "totalLocations": 1615,
   "locations": {
@@ -3103,13 +3103,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "205.209.105.122": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "65.109.34.253": {
       "country": "Finland",
@@ -11112,20 +11105,6 @@
       "lat": 45.526,
       "lon": -122.9874
     },
-    "5.231.41.161": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.56": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
     "5.231.41.153": {
       "country": "Germany",
       "countryCode": "DE",
@@ -11134,13 +11113,6 @@
       "lon": 8.68213
     },
     "5.231.41.238": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.243": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Frankfurt am Main",
@@ -11307,6 +11279,34 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "173.225.110.26": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Whippany",
+      "lat": 40.8207,
+      "lon": -74.4231
+    },
+    "152.53.141.182": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4521,
+      "lon": 11.0767
+    },
+    "152.53.151.225": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.405,
+      "lon": 11.1617
+    },
+    "159.195.29.154": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.405,
+      "lon": 11.1617
     }
   },
   "countries": {
@@ -11314,13 +11314,21 @@
       "name": "United States",
       "count": 403
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 86
+    },
+    "FR": {
+      "name": "France",
+      "count": 168
+    },
     "DE": {
       "name": "Germany",
       "count": 498
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 86
+    "NL": {
+      "name": "The Netherlands",
+      "count": 43
     },
     "PL": {
       "name": "Poland",
@@ -11330,53 +11338,45 @@
       "name": "Finland",
       "count": 171
     },
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
     "CA": {
       "name": "Canada",
       "count": 81
     },
-    "FR": {
-      "name": "France",
-      "count": 168
+    "SG": {
+      "name": "Singapore",
+      "count": 3
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 43
-    },
-    "KE": {
-      "name": "Kenya",
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
     "AT": {
       "name": "Austria",
       "count": 1
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
     "LT": {
       "name": "Lithuania",
       "count": 1
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
     }
   }
 }
