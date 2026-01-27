@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-27T05:00:03.170Z",
-  "totalNodes": 1617,
-  "totalLocations": 1615,
+  "lastUpdated": "2026-01-27T06:56:33.813Z",
+  "totalNodes": 1618,
+  "totalLocations": 1616,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -11056,20 +11056,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "95.216.7.136": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "93.115.25.137": {
-      "country": "Lithuania",
-      "countryCode": "LT",
-      "city": "Šiauliai",
-      "lat": 55.9349,
-      "lon": 23.3137
-    },
     "51.81.155.192": {
       "country": "United States",
       "countryCode": "US",
@@ -11280,43 +11266,64 @@
       "lat": 40.8207,
       "lon": -74.4231
     },
-    "5.231.41.161": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
+    "51.89.65.27": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
     },
-    "5.231.41.56": {
+    "152.53.141.182": {
       "country": "Germany",
       "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
+      "city": "Nuremberg",
+      "lat": 49.4521,
+      "lon": 11.0767
     },
-    "5.231.41.242": {
+    "152.53.151.225": {
       "country": "Germany",
       "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
+      "city": "Nuremberg",
+      "lat": 49.405,
+      "lon": 11.1617
     },
-    "5.231.41.243": {
+    "161.129.66.66": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Teterboro",
+      "lat": 40.866,
+      "lon": -74.0544
+    },
+    "159.195.28.93": {
       "country": "Germany",
       "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
+      "city": "Nuremberg",
+      "lat": 49.405,
+      "lon": 11.1617
+    },
+    "159.195.29.154": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.405,
+      "lon": 11.1617
+    },
+    "185.16.39.25": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 403
+      "count": 404
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 86
+      "count": 87
     },
     "FR": {
       "name": "France",
@@ -11332,11 +11339,11 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 138
+      "count": 139
     },
     "FI": {
       "name": "Finland",
-      "count": 171
+      "count": 170
     },
     "AL": {
       "name": "Albania",
@@ -11373,10 +11380,6 @@
     "CH": {
       "name": "Switzerland",
       "count": 2
-    },
-    "LT": {
-      "name": "Lithuania",
-      "count": 1
     }
   }
 }
