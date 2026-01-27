@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-27T13:15:48.073Z",
-  "totalNodes": 1614,
-  "totalLocations": 1612,
+  "lastUpdated": "2026-01-27T14:54:29.593Z",
+  "totalNodes": 1610,
+  "totalLocations": 1608,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3412,13 +3412,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "152.53.167.73": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
-    },
     "51.255.83.61": {
       "country": "France",
       "countryCode": "FR",
@@ -4798,13 +4791,6 @@
       "lat": 49.405,
       "lon": 11.1617
     },
-    "152.53.246.102": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Karlsruhe",
-      "lat": 49.0291,
-      "lon": 8.35696
-    },
     "107.181.252.10": {
       "country": "United States",
       "countryCode": "US",
@@ -4902,13 +4888,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "152.53.244.187": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Karlsruhe",
-      "lat": 49.0291,
-      "lon": 8.35696
     },
     "65.21.237.201": {
       "country": "Finland",
@@ -6827,13 +6806,6 @@
       "city": "Hillsboro",
       "lat": 45.526,
       "lon": -122.9874
-    },
-    "65.109.54.241": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "51.91.30.36": {
       "country": "France",
@@ -11291,23 +11263,27 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 402
+      "count": 401
     },
     "DE": {
       "name": "Germany",
-      "count": 496
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 79
+      "count": 494
     },
     "GB": {
       "name": "United Kingdom",
       "count": 87
     },
+    "PL": {
+      "name": "Poland",
+      "count": 139
+    },
     "FI": {
       "name": "Finland",
-      "count": 172
+      "count": 171
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 79
     },
     "FR": {
       "name": "France",
@@ -11317,37 +11293,33 @@
       "name": "The Netherlands",
       "count": 43
     },
-    "PL": {
-      "name": "Poland",
-      "count": 139
-    },
     "KE": {
       "name": "Kenya",
       "count": 6
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "ES": {
-      "name": "Spain",
-      "count": 2
-    },
     "SG": {
       "name": "Singapore",
       "count": 3
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
     },
     "AL": {
       "name": "Albania",
