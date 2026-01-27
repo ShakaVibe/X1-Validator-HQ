@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-27T08:52:46.235Z",
-  "totalNodes": 1618,
-  "totalLocations": 1616,
+  "lastUpdated": "2026-01-27T10:51:23.866Z",
+  "totalNodes": 1616,
+  "totalLocations": 1614,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -562,13 +562,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "152.53.82.47": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
     },
     "45.136.212.26": {
       "country": "The Netherlands",
@@ -8291,13 +8284,6 @@
       "lat": 49.2405,
       "lon": 6.98474
     },
-    "204.13.237.78": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "141.95.32.184": {
       "country": "Germany",
       "countryCode": "DE",
@@ -10804,13 +10790,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "149.86.227.122": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "205.209.110.46": {
       "country": "United States",
       "countryCode": "US",
@@ -11314,32 +11293,39 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "195.3.223.220": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 404
+      "count": 402
     },
-    "FI": {
-      "name": "Finland",
-      "count": 172
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 87
+    "DE": {
+      "name": "Germany",
+      "count": 498
     },
     "CA": {
       "name": "Canada",
       "count": 79
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 87
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 172
+    },
     "FR": {
       "name": "France",
       "count": 168
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 498
     },
     "NL": {
       "name": "The Netherlands",
@@ -11353,33 +11339,33 @@
       "name": "Kenya",
       "count": 6
     },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
     "IT": {
       "name": "Italy",
       "count": 5
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 2
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     }
   }
 }
