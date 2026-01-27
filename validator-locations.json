@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-27T18:59:31.076Z",
+  "lastUpdated": "2026-01-27T20:42:50.337Z",
   "totalNodes": 1610,
   "totalLocations": 1608,
   "locations": {
@@ -11161,13 +11161,6 @@
       "lat": 49.4423,
       "lon": 11.0191
     },
-    "216.219.85.110": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "173.225.110.26": {
       "country": "United States",
       "countryCode": "US",
@@ -11258,20 +11251,35 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
+    },
+    "135.181.208.157": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 401
+      "count": 400
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 87
+    },
+    "FR": {
+      "name": "France",
+      "count": 168
     },
     "DE": {
       "name": "Germany",
       "count": 494
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 87
+    "NL": {
+      "name": "The Netherlands",
+      "count": 43
     },
     "PL": {
       "name": "Poland",
@@ -11279,51 +11287,43 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 171
+      "count": 172
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     },
     "CA": {
       "name": "Canada",
       "count": 79
     },
-    "FR": {
-      "name": "France",
-      "count": 168
+    "SG": {
+      "name": "Singapore",
+      "count": 3
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 43
-    },
-    "KE": {
-      "name": "Kenya",
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
     "AT": {
       "name": "Austria",
       "count": 1
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "AL": {
-      "name": "Albania",
-      "count": 3
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     }
   }
 }
