@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-27T10:51:23.866Z",
-  "totalNodes": 1616,
-  "totalLocations": 1614,
+  "lastUpdated": "2026-01-27T13:15:48.073Z",
+  "totalNodes": 1614,
+  "totalLocations": 1612,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2158,13 +2158,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "152.53.245.172": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Karlsruhe",
-      "lat": 49.0291,
-      "lon": 8.35696
     },
     "195.3.223.207": {
       "country": "Poland",
@@ -5812,13 +5805,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "152.53.254.108": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Karlsruhe",
-      "lat": 49.0291,
-      "lon": 8.35696
     },
     "45.94.81.226": {
       "country": "The Netherlands",
@@ -11309,7 +11295,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 498
+      "count": 496
     },
     "CA": {
       "name": "Canada",
