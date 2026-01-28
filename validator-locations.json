@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-28T13:16:07.314Z",
-  "totalNodes": 1670,
-  "totalLocations": 1668,
+  "lastUpdated": "2026-01-28T14:53:56.187Z",
+  "totalNodes": 1668,
+  "totalLocations": 1666,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -765,13 +765,6 @@
       "city": "Dallas",
       "lat": 32.7767,
       "lon": -96.797
-    },
-    "149.50.108.124": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "5.9.28.205": {
       "country": "Germany",
@@ -4406,13 +4399,6 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "152.53.82.193": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
-    },
     "157.180.1.199": {
       "country": "Finland",
       "countryCode": "FI",
@@ -5519,13 +5505,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "152.53.164.137": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
-    },
     "205.209.101.54": {
       "country": "United States",
       "countryCode": "US",
@@ -5989,13 +5968,6 @@
       "lon": 11.0191
     },
     "216.219.91.58": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
-    "74.50.72.26": {
       "country": "United States",
       "countryCode": "US",
       "city": "Englewood Cliffs",
@@ -11678,20 +11650,42 @@
       "city": "Solihull",
       "lat": 52.4118,
       "lon": -1.77761
+    },
+    "23.239.108.38": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Ogden",
+      "lat": 41.2632,
+      "lon": -111.993
+    },
+    "45.131.114.66": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 443
+      "count": 441
     },
-    "FI": {
-      "name": "Finland",
-      "count": 175
+    "DE": {
+      "name": "Germany",
+      "count": 507
     },
     "GB": {
       "name": "United Kingdom",
       "count": 88
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 138
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 175
     },
     "CA": {
       "name": "Canada",
@@ -11701,17 +11695,9 @@
       "name": "France",
       "count": 168
     },
-    "DE": {
-      "name": "Germany",
-      "count": 507
-    },
     "NL": {
       "name": "The Netherlands",
-      "count": 43
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 139
+      "count": 44
     },
     "KE": {
       "name": "Kenya",
@@ -11729,6 +11715,14 @@
       "name": "Singapore",
       "count": 3
     },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
     "ES": {
       "name": "Spain",
       "count": 2
@@ -11736,14 +11730,6 @@
     "AL": {
       "name": "Albania",
       "count": 3
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
     }
   }
 }
