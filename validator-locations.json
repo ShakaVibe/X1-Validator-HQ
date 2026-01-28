@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-28T02:34:35.587Z",
-  "totalNodes": 1610,
-  "totalLocations": 1608,
+  "lastUpdated": "2026-01-28T04:58:18.555Z",
+  "totalNodes": 1676,
+  "totalLocations": 1674,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -11258,16 +11258,478 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "116.202.36.227": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "163.245.211.31": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "178.63.72.114": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "38.92.24.154": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "95.217.85.162": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "95.216.33.56": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "5.231.41.90": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.254": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.75": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.46": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.70": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.179": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.251": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.37": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.41": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.247": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.27": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.218": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.116": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.151": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.64": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.34": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "95.217.107.30": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "163.245.211.3": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.41": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.19": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.20": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.33": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.9": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.46": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.11": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.6": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.39": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.27": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.42": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.28": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.44": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.43": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.21": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.25": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.18": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.8": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.29": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.15": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.24": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.12": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.45": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.32": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.14": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.22": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.35": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.30": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.17": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.4": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.26": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.16": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.36": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.38": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.23": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.37": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.5": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.34": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.10": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.40": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.13": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.7": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 400
+      "count": 445
     },
     "DE": {
       "name": "Germany",
-      "count": 494
+      "count": 512
     },
     "CA": {
       "name": "Canada",
@@ -11279,7 +11741,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 172
+      "count": 175
     },
     "FR": {
       "name": "France",
