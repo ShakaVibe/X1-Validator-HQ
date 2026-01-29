@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-29T05:15:18.453Z",
+  "lastUpdated": "2026-01-29T07:09:37.698Z",
   "totalNodes": 1726,
   "totalLocations": 1723,
   "locations": {
@@ -11070,13 +11070,6 @@
       "lat": 51.5081,
       "lon": -0.1278
     },
-    "152.53.141.182": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4521,
-      "lon": 11.0767
-    },
     "152.53.151.225": {
       "country": "Germany",
       "countryCode": "DE",
@@ -11090,20 +11083,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "159.195.28.93": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
-    },
-    "159.195.29.154": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
     },
     "185.16.39.25": {
       "country": "Poland",
@@ -12063,6 +12042,27 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "5.231.41.161": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.242": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.41.243": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
     }
   },
   "countries": {
@@ -12070,25 +12070,25 @@
       "name": "United States",
       "count": 472
     },
-    "DE": {
-      "name": "Germany",
-      "count": 525
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 79
+    "FI": {
+      "name": "Finland",
+      "count": 175
     },
     "GB": {
       "name": "United Kingdom",
       "count": 88
     },
-    "FI": {
-      "name": "Finland",
-      "count": 175
+    "CA": {
+      "name": "Canada",
+      "count": 79
     },
     "FR": {
       "name": "France",
       "count": 173
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 525
     },
     "NL": {
       "name": "The Netherlands",
@@ -12102,33 +12102,33 @@
       "name": "Kenya",
       "count": 6
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
-    },
     "IT": {
       "name": "Italy",
       "count": 5
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "ES": {
-      "name": "Spain",
-      "count": 2
-    },
     "SG": {
       "name": "Singapore",
       "count": 3
     },
+    "ES": {
+      "name": "Spain",
+      "count": 2
+    },
     "AL": {
       "name": "Albania",
       "count": 3
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "AT": {
+      "name": "Austria",
+      "count": 1
     }
   }
 }
