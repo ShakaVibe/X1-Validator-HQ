@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-29T07:09:37.698Z",
+  "lastUpdated": "2026-01-29T09:02:04.773Z",
   "totalNodes": 1726,
   "totalLocations": 1723,
   "locations": {
@@ -12043,26 +12043,26 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "5.231.41.161": {
+    "152.53.141.182": {
       "country": "Germany",
       "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
+      "city": "Nuremberg",
+      "lat": 49.4521,
+      "lon": 11.0767
     },
-    "5.231.41.242": {
+    "159.195.29.154": {
       "country": "Germany",
       "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
+      "city": "Nuremberg",
+      "lat": 49.405,
+      "lon": 11.1617
     },
-    "5.231.41.243": {
+    "159.195.28.93": {
       "country": "Germany",
       "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
+      "city": "Nuremberg",
+      "lat": 49.405,
+      "lon": 11.1617
     }
   },
   "countries": {
@@ -12070,25 +12070,25 @@
       "name": "United States",
       "count": 472
     },
-    "FI": {
-      "name": "Finland",
-      "count": 175
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 88
+    "DE": {
+      "name": "Germany",
+      "count": 525
     },
     "CA": {
       "name": "Canada",
       "count": 79
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 88
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 175
+    },
     "FR": {
       "name": "France",
       "count": 173
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 525
     },
     "NL": {
       "name": "The Netherlands",
@@ -12102,33 +12102,33 @@
       "name": "Kenya",
       "count": 6
     },
+    "AT": {
+      "name": "Austria",
+      "count": 1
+    },
     "IT": {
       "name": "Italy",
       "count": 5
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 2
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
     },
-    "AT": {
-      "name": "Austria",
-      "count": 1
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 2
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     }
   }
 }
