@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-30T14:58:21.874Z",
-  "totalNodes": 1668,
-  "totalLocations": 1666,
+  "lastUpdated": "2026-01-30T17:03:08.105Z",
+  "totalNodes": 1663,
+  "totalLocations": 1661,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -968,13 +968,6 @@
       "city": "Frankfurt am Main",
       "lat": 50.1162,
       "lon": 8.6693
-    },
-    "152.53.49.121": {
-      "country": "Austria",
-      "countryCode": "AT",
-      "city": "Vienna",
-      "lat": 48.2081,
-      "lon": 16.3713
     },
     "198.244.167.93": {
       "country": "United Kingdom",
@@ -2326,13 +2319,6 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
-    },
-    "159.195.67.38": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
     },
     "198.96.91.242": {
       "country": "United States",
@@ -3930,13 +3916,6 @@
       "lat": 49.405,
       "lon": 11.1617
     },
-    "152.53.178.5": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Karlsruhe",
-      "lat": 49.0291,
-      "lon": 8.35696
-    },
     "149.50.101.181": {
       "country": "Poland",
       "countryCode": "PL",
@@ -5316,13 +5295,6 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "159.195.67.242": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
-    },
     "217.182.136.221": {
       "country": "France",
       "countryCode": "FR",
@@ -5896,13 +5868,6 @@
       "city": "Los Angeles",
       "lat": 34.0479,
       "lon": -118.256
-    },
-    "159.195.67.88": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
     },
     "79.187.183.2": {
       "country": "Poland",
@@ -11671,25 +11636,9 @@
       "name": "United States",
       "count": 440
     },
-    "DE": {
-      "name": "Germany",
-      "count": 494
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 88
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 140
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 180
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 81
     },
     "FR": {
       "name": "France",
@@ -11699,37 +11648,49 @@
       "name": "The Netherlands",
       "count": 45
     },
-    "KE": {
-      "name": "Kenya",
+    "PL": {
+      "name": "Poland",
+      "count": 140
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 490
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 180
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 81
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
-    "AT": {
-      "name": "Austria",
-      "count": 1
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "AL": {
-      "name": "Albania",
-      "count": 3
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     }
   }
 }
