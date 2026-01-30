@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-30T09:00:50.242Z",
-  "totalNodes": 1686,
-  "totalLocations": 1684,
+  "lastUpdated": "2026-01-30T10:57:44.353Z",
+  "totalNodes": 1682,
+  "totalLocations": 1679,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -598,13 +598,6 @@
       "lat": 48.5734,
       "lon": 7.75211
     },
-    "152.53.83.91": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
-    },
     "65.108.140.232": {
       "country": "Finland",
       "countryCode": "FI",
@@ -1066,13 +1059,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "205.209.113.190": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "66.45.225.90": {
       "country": "United States",
@@ -3727,13 +3713,6 @@
       "lat": 45.5029,
       "lon": -73.5723
     },
-    "152.53.167.0": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
-    },
     "37.187.157.212": {
       "country": "France",
       "countryCode": "FR",
@@ -4076,13 +4055,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "162.245.185.42": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Los Angeles",
-      "lat": 34.0522,
-      "lon": -118.244
     },
     "209.159.158.214": {
       "country": "United States",
@@ -4678,13 +4650,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "152.53.240.29": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
     },
     "216.158.237.222": {
       "country": "United States",
@@ -10552,13 +10517,6 @@
       "lat": 50.1109,
       "lon": 8.68213
     },
-    "5.231.41.253": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
     "5.231.41.59": {
       "country": "Germany",
       "countryCode": "DE",
@@ -10622,20 +10580,6 @@
       "lat": 50.1109,
       "lon": 8.68213
     },
-    "5.231.41.127": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.215": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
     "5.231.41.167": {
       "country": "Germany",
       "countryCode": "DE",
@@ -10658,13 +10602,6 @@
       "lon": 8.68213
     },
     "5.231.41.63": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
-    "5.231.41.14": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Frankfurt am Main",
@@ -11790,6 +11727,34 @@
       "city": "Ostrołęka",
       "lat": 53.0721,
       "lon": 21.5723
+    },
+    "152.53.167.141": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Manassas",
+      "lat": 38.7911,
+      "lon": -77.5264
+    },
+    "152.53.82.94": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Manassas",
+      "lat": 38.7911,
+      "lon": -77.5264
+    },
+    "152.53.82.34": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Manassas",
+      "lat": 38.7911,
+      "lon": -77.5264
+    },
+    "152.53.82.166": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Manassas",
+      "lat": 38.7911,
+      "lon": -77.5264
     }
   },
   "countries": {
@@ -11799,7 +11764,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 506
+      "count": 502
     },
     "GB": {
       "name": "United Kingdom",
