@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-01-31T14:46:07.150Z",
-  "totalNodes": 1749,
-  "totalLocations": 1747,
+  "lastUpdated": "2026-01-31T16:50:06.305Z",
+  "totalNodes": 1748,
+  "totalLocations": 1746,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4622,13 +4622,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "159.195.66.207": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
     },
     "159.195.66.152": {
       "country": "Germany",
@@ -12238,9 +12231,21 @@
       "name": "United States",
       "count": 495
     },
+    "DE": {
+      "name": "Germany",
+      "count": 537
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 79
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 85
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 180
     },
     "FR": {
       "name": "France",
@@ -12254,45 +12259,33 @@
       "name": "Poland",
       "count": 135
     },
-    "DE": {
-      "name": "Germany",
-      "count": 538
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 180
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 79
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "KE": {
-      "name": "Kenya",
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 3
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     }
   }
 }
