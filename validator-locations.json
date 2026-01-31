@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-01-31T18:52:54.880Z",
+  "lastUpdated": "2026-01-31T20:44:17.047Z",
   "totalNodes": 1748,
   "totalLocations": 1746,
   "locations": {
@@ -2606,13 +2606,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "178.213.143.95": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
     },
     "45.136.212.178": {
       "country": "The Netherlands",
@@ -12224,6 +12217,13 @@
       "city": "Frankfurt am Main",
       "lat": 50.1109,
       "lon": 8.68213
+    },
+    "46.170.40.92": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1863,
+      "lon": 21.159
     }
   },
   "countries": {
