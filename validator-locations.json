@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-01T03:30:56.834Z",
+  "lastUpdated": "2026-02-01T05:40:08.956Z",
   "totalNodes": 1813,
   "totalLocations": 1811,
   "locations": {
@@ -8249,13 +8249,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "51.79.228.68": {
-      "country": "Singapore",
-      "countryCode": "SG",
-      "city": "Singapore",
-      "lat": 1.27994,
-      "lon": 103.849
-    },
     "65.109.94.33": {
       "country": "Finland",
       "countryCode": "FI",
@@ -10895,13 +10888,6 @@
       "lat": 52.2297,
       "lon": 21.0122
     },
-    "45.131.114.74": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
     "45.143.199.17": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -12673,12 +12659,26 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "46.170.40.92": {
+    "149.50.108.142": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
-      "lat": 52.1863,
-      "lon": 21.159
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "178.213.143.95": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ostrołęka",
+      "lat": 53.0721,
+      "lon": 21.5723
+    },
+    "54.39.106.84": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     }
   },
   "countries": {
@@ -12686,33 +12686,33 @@
       "name": "United States",
       "count": 538
     },
-    "DE": {
-      "name": "Germany",
-      "count": 559
+    "FI": {
+      "name": "Finland",
+      "count": 180
     },
     "GB": {
       "name": "United Kingdom",
       "count": 85
     },
-    "PL": {
-      "name": "Poland",
-      "count": 135
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 180
-    },
     "CA": {
       "name": "Canada",
-      "count": 79
+      "count": 80
     },
     "FR": {
       "name": "France",
       "count": 165
     },
+    "DE": {
+      "name": "Germany",
+      "count": 559
+    },
     "NL": {
       "name": "The Netherlands",
-      "count": 45
+      "count": 44
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 136
     },
     "KE": {
       "name": "Kenya",
@@ -12728,10 +12728,6 @@
     },
     "SG": {
       "name": "Singapore",
-      "count": 3
-    },
-    "CH": {
-      "name": "Switzerland",
       "count": 2
     },
     "ES": {
@@ -12741,6 +12737,10 @@
     "AL": {
       "name": "Albania",
       "count": 3
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     }
   }
 }
