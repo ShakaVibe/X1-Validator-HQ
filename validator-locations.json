@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-01T16:51:35.716Z",
-  "totalNodes": 1813,
-  "totalLocations": 1811,
+  "lastUpdated": "2026-02-01T18:56:19.207Z",
+  "totalNodes": 1812,
+  "totalLocations": 1810,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1381,13 +1381,6 @@
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "104.250.145.202": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Pleasant View",
-      "lat": 41.3072,
-      "lon": -111.992
     },
     "162.250.123.238": {
       "country": "United States",
@@ -12684,7 +12677,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 537
+      "count": 536
     },
     "FI": {
       "name": "Finland",
