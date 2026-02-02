@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-02T05:43:30.216Z",
+  "lastUpdated": "2026-02-02T07:31:16.640Z",
   "totalNodes": 1840,
   "totalLocations": 1838,
   "locations": {
@@ -1248,13 +1248,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "51.195.190.209": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Blackburn",
-      "lat": 53.75,
-      "lon": -2.48333
     },
     "174.138.181.250": {
       "country": "United States",
@@ -12868,6 +12861,13 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "167.114.208.95": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5063,
+      "lon": -73.5794
     }
   },
   "countries": {
@@ -12881,11 +12881,11 @@
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 85
+      "count": 84
     },
     "CA": {
       "name": "Canada",
-      "count": 80
+      "count": 81
     },
     "FR": {
       "name": "France",
