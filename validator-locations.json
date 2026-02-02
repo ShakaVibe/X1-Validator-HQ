@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-02T09:05:53.733Z",
-  "totalNodes": 1840,
-  "totalLocations": 1838,
+  "lastUpdated": "2026-02-02T11:09:04.603Z",
+  "totalNodes": 1839,
+  "totalLocations": 1837,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2235,13 +2235,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "66.45.242.110": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "69.10.52.82": {
       "country": "United States",
@@ -8319,13 +8312,6 @@
       "lat": 51.098,
       "lon": 17.0321
     },
-    "37.187.159.10": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "217.182.203.108": {
       "country": "Poland",
       "countryCode": "PL",
@@ -12868,12 +12854,19 @@
       "city": "Roubaix",
       "lat": 50.6977,
       "lon": 3.1786
+    },
+    "151.80.21.130": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6977,
+      "lon": 3.1786
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 546
+      "count": 545
     },
     "GB": {
       "name": "United Kingdom",
