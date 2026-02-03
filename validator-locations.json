@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-03T17:15:29.924Z",
-  "totalNodes": 1854,
-  "totalLocations": 1852,
+  "lastUpdated": "2026-02-03T19:16:04.278Z",
+  "totalNodes": 1853,
+  "totalLocations": 1851,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2215,13 +2215,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "195.3.221.44": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1783,
-      "lon": 21.0602
-    },
     "204.13.234.238": {
       "country": "United States",
       "countryCode": "US",
@@ -3593,13 +3586,6 @@
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "157.250.200.138": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "66.45.226.238": {
       "country": "United States",
@@ -5792,13 +5778,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "216.158.235.162": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Paterson",
-      "lat": 40.9117,
-      "lon": -74.1786
-    },
     "74.50.65.194": {
       "country": "United States",
       "countryCode": "US",
@@ -7457,13 +7436,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "205.209.125.94": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "51.91.27.206": {
       "country": "France",
@@ -10559,13 +10531,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "45.143.199.17": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Solihull",
-      "lat": 52.4118,
-      "lon": -1.77761
-    },
     "54.36.174.76": {
       "country": "Poland",
       "countryCode": "PL",
@@ -12966,20 +12931,56 @@
       "city": "Nuremberg",
       "lat": 49.4543,
       "lon": 11.0746
+    },
+    "151.80.21.145": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6977,
+      "lon": 3.1786
+    },
+    "37.187.159.10": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "151.80.20.185": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6977,
+      "lon": 3.1786
+    },
+    "78.47.196.31": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 568
+      "count": 565
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
+    "DE": {
+      "name": "Germany",
+      "count": 571
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 81
     },
     "FR": {
       "name": "France",
-      "count": 168
+      "count": 171
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 180
     },
     "NL": {
       "name": "The Netherlands",
@@ -12987,47 +12988,39 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 140
+      "count": 139
     },
-    "DE": {
-      "name": "Germany",
-      "count": 570
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 180
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 81
-    },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 75
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "KE": {
-      "name": "Kenya",
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SG": {
       "name": "Singapore",
       "count": 2
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     }
   }
 }
