@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-04T03:11:51.480Z",
+  "lastUpdated": "2026-02-04T05:28:06.048Z",
   "totalNodes": 1854,
   "totalLocations": 1852,
   "locations": {
@@ -1375,13 +1375,6 @@
       "lat": 51.5072,
       "lon": -0.127586
     },
-    "151.80.21.17": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6977,
-      "lon": 3.1786
-    },
     "51.79.76.26": {
       "country": "Canada",
       "countryCode": "CA",
@@ -2508,13 +2501,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "37.187.156.112": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "149.50.101.55": {
       "country": "Poland",
@@ -6708,13 +6694,6 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
-    },
-    "37.187.251.144": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "51.77.117.186": {
       "country": "United Kingdom",
@@ -12966,6 +12945,27 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
+    },
+    "51.222.25.146": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3147,
+      "lon": -73.8785
+    },
+    "158.69.198.244": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5075,
+      "lon": -73.5887
+    },
+    "51.222.25.157": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3147,
+      "lon": -73.8785
     }
   },
   "countries": {
@@ -12991,11 +12991,11 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 81
+      "count": 84
     },
     "FR": {
       "name": "France",
-      "count": 171
+      "count": 168
     },
     "NL": {
       "name": "The Netherlands",
