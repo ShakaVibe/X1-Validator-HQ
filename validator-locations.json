@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-04T07:13:33.532Z",
-  "totalNodes": 1854,
-  "totalLocations": 1852,
+  "lastUpdated": "2026-02-04T09:03:26.051Z",
+  "totalNodes": 1857,
+  "totalLocations": 1855,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -12966,6 +12966,27 @@
       "city": "Beauharnois",
       "lat": 45.3147,
       "lon": -73.8785
+    },
+    "46.225.93.67": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4543,
+      "lon": 11.0746
+    },
+    "46.225.73.74": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4543,
+      "lon": 11.0746
+    },
+    "46.225.92.160": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4543,
+      "lon": 11.0746
     }
   },
   "countries": {
@@ -12991,7 +13012,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 571
+      "count": 574
     },
     "FI": {
       "name": "Finland",
