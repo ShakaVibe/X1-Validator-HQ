@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-04T09:03:26.051Z",
-  "totalNodes": 1857,
-  "totalLocations": 1855,
+  "lastUpdated": "2026-02-04T11:03:55.664Z",
+  "totalNodes": 1856,
+  "totalLocations": 1854,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -8634,13 +8634,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "38.147.105.34": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "51.222.46.9": {
       "country": "Canada",
       "countryCode": "CA",
@@ -12862,13 +12855,6 @@
       "lat": 45.5075,
       "lon": -73.5887
     },
-    "54.36.100.89": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
     "54.36.102.56": {
       "country": "France",
       "countryCode": "FR",
@@ -12897,13 +12883,6 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "46.225.61.222": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4543,
-      "lon": 11.0746
-    },
     "151.80.21.145": {
       "country": "France",
       "countryCode": "FR",
@@ -12924,13 +12903,6 @@
       "city": "Roubaix",
       "lat": 50.6977,
       "lon": 3.1786
-    },
-    "78.47.196.31": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
     },
     "69.11.224.18": {
       "country": "United States",
@@ -12967,40 +12939,69 @@
       "lat": 45.3147,
       "lon": -73.8785
     },
-    "46.225.93.67": {
+    "46.224.44.3": {
       "country": "Germany",
       "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4543,
-      "lon": 11.0746
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     },
-    "46.225.73.74": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4543,
-      "lon": 11.0746
+    "51.77.245.159": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     },
-    "46.225.92.160": {
+    "46.224.34.44": {
       "country": "Germany",
       "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4543,
-      "lon": 11.0746
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "46.224.44.2": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "46.224.43.215": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "46.224.32.104": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 565
+      "count": 564
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
+    "DE": {
+      "name": "Germany",
+      "count": 574
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 84
     },
     "FR": {
       "name": "France",
       "count": 168
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 180
     },
     "NL": {
       "name": "The Netherlands",
@@ -13010,45 +13011,37 @@
       "name": "Poland",
       "count": 139
     },
-    "DE": {
-      "name": "Germany",
-      "count": 574
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 180
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 3
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 84
-    },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "KE": {
-      "name": "Kenya",
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SG": {
       "name": "Singapore",
       "count": 2
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 3
     }
   }
 }
