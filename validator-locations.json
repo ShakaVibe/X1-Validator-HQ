@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-05T05:34:29.688Z",
-  "totalNodes": 1869,
-  "totalLocations": 1867,
+  "lastUpdated": "2026-02-05T07:29:43.060Z",
+  "totalNodes": 1872,
+  "totalLocations": 1870,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3068,13 +3068,6 @@
       "city": "Nuremberg",
       "lat": 49.405,
       "lon": 11.1617
-    },
-    "69.164.250.154": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Dallas",
-      "lat": 32.7767,
-      "lon": -96.797
     },
     "65.108.205.235": {
       "country": "Finland",
@@ -12897,13 +12890,6 @@
       "lat": 45.5075,
       "lon": -73.5887
     },
-    "51.222.25.157": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3147,
-      "lon": -73.8785
-    },
     "46.224.44.3": {
       "country": "Germany",
       "countryCode": "DE",
@@ -13071,56 +13057,91 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "57.131.33.245": {
+      "country": "Italy",
+      "countryCode": "IT",
+      "city": "Milan",
+      "lat": 45.5002,
+      "lon": 9.18347
+    },
+    "57.131.40.242": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.77.244.209": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "79.137.76.187": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "79.137.78.190": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 564
+      "count": 563
     },
     "DE": {
       "name": "Germany",
       "count": 577
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
+    "CA": {
+      "name": "Canada",
+      "count": 88
     },
-    "PL": {
-      "name": "Poland",
-      "count": 141
+    "FR": {
+      "name": "France",
+      "count": 174
     },
     "FI": {
       "name": "Finland",
       "count": 181
     },
-    "CA": {
-      "name": "Canada",
-      "count": 89
-    },
-    "FR": {
-      "name": "France",
-      "count": 170
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 45
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 141
     },
     "KE": {
       "name": "Kenya",
       "count": 6
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
+    },
     "IT": {
       "name": "Italy",
-      "count": 6
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
+      "count": 7
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
