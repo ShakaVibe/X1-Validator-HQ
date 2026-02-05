@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-05T03:13:25.273Z",
+  "lastUpdated": "2026-02-05T05:34:29.688Z",
   "totalNodes": 1869,
   "totalLocations": 1867,
   "locations": {
@@ -3817,13 +3817,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "23.239.106.22": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ogden",
-      "lat": 41.2632,
-      "lon": -111.993
     },
     "149.86.227.35": {
       "country": "Poland",
@@ -13071,20 +13064,35 @@
       "city": "Montreal",
       "lat": 45.5901,
       "lon": -73.5558
+    },
+    "51.255.79.223": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 565
+      "count": 564
     },
-    "FI": {
-      "name": "Finland",
-      "count": 181
+    "DE": {
+      "name": "Germany",
+      "count": 577
     },
     "GB": {
       "name": "United Kingdom",
       "count": 76
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 141
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 181
     },
     "CA": {
       "name": "Canada",
@@ -13092,19 +13100,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 169
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 577
+      "count": 170
     },
     "NL": {
       "name": "The Netherlands",
       "count": 45
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 141
     },
     "KE": {
       "name": "Kenya",
@@ -13118,20 +13118,20 @@
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 2
     },
-    "AL": {
-      "name": "Albania",
+    "SG": {
+      "name": "Singapore",
       "count": 2
     },
-    "CH": {
-      "name": "Switzerland",
+    "AL": {
+      "name": "Albania",
       "count": 2
     }
   }
