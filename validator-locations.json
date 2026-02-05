@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-04T22:48:29.996Z",
-  "totalNodes": 1868,
-  "totalLocations": 1866,
+  "lastUpdated": "2026-02-05T03:13:25.273Z",
+  "totalNodes": 1869,
+  "totalLocations": 1867,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -13064,6 +13064,13 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
+    },
+    "162.250.189.222": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5901,
+      "lon": -73.5558
     }
   },
   "countries": {
@@ -13081,7 +13088,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 88
+      "count": 89
     },
     "FR": {
       "name": "France",
