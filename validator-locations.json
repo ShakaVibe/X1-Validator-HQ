@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-06T05:32:33.836Z",
+  "lastUpdated": "2026-02-06T07:15:43.991Z",
   "totalNodes": 1924,
   "totalLocations": 1922,
   "locations": {
@@ -13009,13 +13009,6 @@
       "lat": 45.5002,
       "lon": 9.18347
     },
-    "135.125.205.0": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1169,
-      "lon": 8.6837
-    },
     "38.147.105.34": {
       "country": "United States",
       "countryCode": "US",
@@ -13456,6 +13449,13 @@
       "city": "Wattrelos",
       "lat": 50.7012,
       "lon": 3.21501
+    },
+    "51.91.168.27": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Paris",
+      "lat": 48.8566,
+      "lon": 2.35222
     }
   },
   "countries": {
@@ -13477,11 +13477,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 179
+      "count": 180
     },
     "DE": {
       "name": "Germany",
-      "count": 590
+      "count": 589
     },
     "NL": {
       "name": "The Netherlands",
