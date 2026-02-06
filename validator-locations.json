@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-06T09:04:13.596Z",
+  "lastUpdated": "2026-02-06T11:03:38.688Z",
   "totalNodes": 1926,
   "totalLocations": 1924,
   "locations": {
@@ -13457,19 +13457,19 @@
       "lat": 48.8566,
       "lon": 2.35222
     },
-    "46.62.220.42": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
+    "46.224.36.191": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     },
-    "77.42.83.17": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
+    "46.224.43.228": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -13479,7 +13479,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 186
+      "count": 184
     },
     "GB": {
       "name": "United Kingdom",
@@ -13495,7 +13495,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 589
+      "count": 591
     },
     "NL": {
       "name": "The Netherlands",
