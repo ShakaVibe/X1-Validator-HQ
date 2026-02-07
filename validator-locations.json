@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-07T16:52:51.414Z",
-  "totalNodes": 1945,
-  "totalLocations": 1943,
+  "lastUpdated": "2026-02-07T18:56:39.470Z",
+  "totalNodes": 1944,
+  "totalLocations": 1942,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -12932,13 +12932,6 @@
       "lat": 50.1162,
       "lon": 8.6693
     },
-    "38.58.176.48": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "158.69.197.168": {
       "country": "Canada",
       "countryCode": "CA",
@@ -13608,7 +13601,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 593
+      "count": 592
     },
     "GB": {
       "name": "United Kingdom",
