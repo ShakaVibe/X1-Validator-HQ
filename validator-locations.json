@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-07T14:47:36.380Z",
-  "totalNodes": 1946,
-  "totalLocations": 1944,
+  "lastUpdated": "2026-02-07T16:52:51.414Z",
+  "totalNodes": 1945,
+  "totalLocations": 1943,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -13562,13 +13562,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "46.4.74.149": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "51.68.7.174": {
       "country": "Spain",
       "countryCode": "ES",
@@ -13635,7 +13628,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 593
+      "count": 592
     },
     "FI": {
       "name": "Finland",
