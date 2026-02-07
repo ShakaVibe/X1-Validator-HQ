@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-07T20:47:22.767Z",
-  "totalNodes": 1944,
-  "totalLocations": 1942,
+  "lastUpdated": "2026-02-07T22:49:20.989Z",
+  "totalNodes": 1945,
+  "totalLocations": 1943,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -13596,6 +13596,13 @@
       "city": "Roubaix",
       "lat": 50.6927,
       "lon": 3.17785
+    },
+    "88.198.18.138": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -13603,13 +13610,25 @@
       "name": "United States",
       "count": 592
     },
+    "FI": {
+      "name": "Finland",
+      "count": 185
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 75
     },
+    "CA": {
+      "name": "Canada",
+      "count": 94
+    },
     "FR": {
       "name": "France",
       "count": 186
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 593
     },
     "NL": {
       "name": "The Netherlands",
@@ -13619,44 +13638,32 @@
       "name": "Poland",
       "count": 146
     },
-    "DE": {
-      "name": "Germany",
-      "count": 592
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 185
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 2
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 94
-    },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "KE": {
-      "name": "Kenya",
+    "SE": {
+      "name": "Sweden",
       "count": 6
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 3
     },
-    "CH": {
-      "name": "Switzerland",
+    "AL": {
+      "name": "Albania",
       "count": 2
     },
-    "SG": {
-      "name": "Singapore",
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     },
     "PT": {
