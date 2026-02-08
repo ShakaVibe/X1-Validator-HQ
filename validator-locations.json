@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-08T13:15:07.159Z",
-  "totalNodes": 1966,
-  "totalLocations": 1964,
+  "lastUpdated": "2026-02-08T14:49:54.437Z",
+  "totalNodes": 1965,
+  "totalLocations": 1963,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3573,13 +3573,6 @@
       "lat": 45.5029,
       "lon": -73.5723
     },
-    "64.20.36.170": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "65.108.71.172": {
       "country": "Finland",
       "countryCode": "FI",
@@ -5049,13 +5042,6 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
-    },
-    "65.109.94.30": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "37.59.57.53": {
       "country": "France",
@@ -13750,16 +13736,23 @@
       "city": "Paris",
       "lat": 48.8566,
       "lon": 2.35222
+    },
+    "91.98.34.97": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 590
+      "count": 589
     },
     "DE": {
       "name": "Germany",
-      "count": 595
+      "count": 596
     },
     "CA": {
       "name": "Canada",
@@ -13771,7 +13764,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 185
+      "count": 184
     },
     "NL": {
       "name": "The Netherlands",
