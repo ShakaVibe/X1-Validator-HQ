@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-08T20:47:25.204Z",
-  "totalNodes": 1966,
-  "totalLocations": 1964,
+  "lastUpdated": "2026-02-08T22:51:48.055Z",
+  "totalNodes": 1967,
+  "totalLocations": 1965,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -13750,32 +13750,23 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "69.10.55.50": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0749
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 590
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 596
+      "count": 591
     },
     "GB": {
       "name": "United Kingdom",
       "count": 76
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 150
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 184
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 97
     },
     "FR": {
       "name": "France",
@@ -13785,32 +13776,48 @@
       "name": "The Netherlands",
       "count": 45
     },
-    "KE": {
-      "name": "Kenya",
+    "PL": {
+      "name": "Poland",
+      "count": 150
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 596
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 184
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 2
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 97
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 5
     },
-    "SG": {
-      "name": "Singapore",
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     },
-    "AL": {
-      "name": "Albania",
+    "SG": {
+      "name": "Singapore",
       "count": 2
     },
     "PT": {
