@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-09T03:23:48.184Z",
+  "lastUpdated": "2026-02-09T05:48:55.594Z",
   "totalNodes": 1967,
   "totalLocations": 1965,
   "locations": {
@@ -12883,13 +12883,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "51.195.45.82": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "57.129.114.53": {
       "country": "Germany",
       "countryCode": "DE",
@@ -12924,13 +12917,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "135.125.239.102": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "57.131.33.80": {
       "country": "Italy",
@@ -13757,6 +13743,20 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0749
+    },
+    "54.36.100.89": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Gravelines",
+      "lat": 50.9871,
+      "lon": 2.12554
+    },
+    "51.222.25.157": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3147,
+      "lon": -73.8785
     }
   },
   "countries": {
@@ -13766,47 +13766,47 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 596
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 97
-    },
-    "FR": {
-      "name": "France",
-      "count": 196
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 184
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 45
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 150
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+      "count": 594
     },
     "GB": {
       "name": "United Kingdom",
       "count": 76
     },
+    "PL": {
+      "name": "Poland",
+      "count": 150
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 184
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 98
+    },
+    "FR": {
+      "name": "France",
+      "count": 197
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 45
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SE": {
       "name": "Sweden",
       "count": 6
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
