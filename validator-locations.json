@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-10T03:31:57.881Z",
-  "totalNodes": 1979,
-  "totalLocations": 1977,
+  "lastUpdated": "2026-02-10T05:53:30.717Z",
+  "totalNodes": 1978,
+  "totalLocations": 1976,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -7122,13 +7122,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.79.228.60": {
-      "country": "Singapore",
-      "countryCode": "SG",
-      "city": "Singapore",
-      "lat": 1.27994,
-      "lon": 103.849
-    },
     "51.91.6.61": {
       "country": "France",
       "countryCode": "FR",
@@ -13898,7 +13891,7 @@
     },
     "SG": {
       "name": "Singapore",
-      "count": 2
+      "count": 1
     },
     "AL": {
       "name": "Albania",
