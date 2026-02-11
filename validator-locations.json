@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-11T11:12:36.203Z",
-  "totalNodes": 2002,
-  "totalLocations": 2000,
+  "lastUpdated": "2026-02-11T13:52:29.896Z",
+  "totalNodes": 2003,
+  "totalLocations": 2001,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14002,16 +14002,27 @@
       "city": "Helsinki",
       "lat": 60.1699,
       "lon": 24.9384
+    },
+    "51.81.155.107": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Hillsboro",
+      "lat": 45.526,
+      "lon": -122.9874
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 604
+      "count": 605
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
+    "DE": {
+      "name": "Germany",
+      "count": 648
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 103
     },
     "FR": {
       "name": "France",
@@ -14025,45 +14036,41 @@
       "name": "Poland",
       "count": 155
     },
-    "DE": {
-      "name": "Germany",
-      "count": 648
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
     },
     "FI": {
       "name": "Finland",
       "count": 140
     },
-    "AL": {
-      "name": "Albania",
-      "count": 2
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 103
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "KE": {
-      "name": "Kenya",
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 5
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SG": {
       "name": "Singapore",
       "count": 1
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 2
     },
     "PT": {
       "name": "Portugal",
