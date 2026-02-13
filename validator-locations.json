@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-13T13:38:36.197Z",
+  "lastUpdated": "2026-02-13T15:05:37.369Z",
   "totalNodes": 2005,
   "totalLocations": 2003,
   "locations": {
@@ -13968,13 +13968,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "91.98.159.204": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "91.98.152.122": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14023,6 +14016,13 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "49.13.218.231": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -14033,6 +14033,18 @@
     "DE": {
       "name": "Germany",
       "count": 649
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 155
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 138
     },
     "CA": {
       "name": "Canada",
@@ -14046,33 +14058,21 @@
       "name": "The Netherlands",
       "count": 44
     },
-    "PL": {
-      "name": "Poland",
-      "count": 155
-    },
     "KE": {
       "name": "Kenya",
       "count": 6
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 138
     },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SE": {
       "name": "Sweden",
       "count": 6
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
