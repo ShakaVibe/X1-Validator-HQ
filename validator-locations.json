@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-14T03:10:19.948Z",
-  "totalNodes": 2004,
-  "totalLocations": 2002,
+  "lastUpdated": "2026-02-14T05:16:43.356Z",
+  "totalNodes": 2011,
+  "totalLocations": 2009,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14016,6 +14016,55 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "116.202.229.214": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "51.83.66.88": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.91.17.21": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "213.32.26.121": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.91.13.232": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.91.6.182": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.83.66.64": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -14025,7 +14074,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 649
+      "count": 650
     },
     "GB": {
       "name": "United Kingdom",
@@ -14045,7 +14094,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 203
+      "count": 209
     },
     "NL": {
       "name": "The Netherlands",
