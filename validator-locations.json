@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-15T10:49:39.094Z",
-  "totalNodes": 2008,
-  "totalLocations": 2006,
+  "lastUpdated": "2026-02-15T13:16:03.015Z",
+  "totalNodes": 2006,
+  "totalLocations": 2004,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2544,13 +2544,6 @@
       "lat": 49.0291,
       "lon": 8.35696
     },
-    "102.210.25.131": {
-      "country": "Kenya",
-      "countryCode": "KE",
-      "city": "Nairobi",
-      "lat": -1.2841,
-      "lon": 36.8155
-    },
     "51.178.79.203": {
       "country": "France",
       "countryCode": "FR",
@@ -2900,13 +2893,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "102.210.25.129": {
-      "country": "Kenya",
-      "countryCode": "KE",
-      "city": "Nairobi",
-      "lat": -1.2841,
-      "lon": 36.8155
     },
     "205.209.119.154": {
       "country": "United States",
@@ -5028,13 +5014,6 @@
       "city": "Paterson",
       "lat": 40.9117,
       "lon": -74.1786
-    },
-    "204.13.236.70": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "67.217.54.22": {
       "country": "United States",
@@ -14044,12 +14023,19 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "51.75.54.214": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 604
+      "count": 603
     },
     "FI": {
       "name": "Finland",
@@ -14077,11 +14063,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 153
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+      "count": 154
     },
     "IT": {
       "name": "Italy",
@@ -14102,6 +14084,10 @@
     "AL": {
       "name": "Albania",
       "count": 2
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 4
     },
     "CH": {
       "name": "Switzerland",
