@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-15T16:52:33.771Z",
+  "lastUpdated": "2026-02-15T18:57:18.411Z",
   "totalNodes": 2006,
-  "totalLocations": 2004,
+  "totalLocations": 2003,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14023,19 +14023,12 @@
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "45.136.212.10": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 603
+      "count": 604
     },
     "FI": {
       "name": "Finland",
@@ -14059,7 +14052,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 44
+      "count": 43
     },
     "PL": {
       "name": "Poland",
