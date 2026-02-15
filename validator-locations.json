@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-15T13:16:03.015Z",
+  "lastUpdated": "2026-02-15T14:49:27.572Z",
   "totalNodes": 2006,
-  "totalLocations": 2004,
+  "totalLocations": 2003,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1185,13 +1185,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "45.136.212.10": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "37.120.191.20": {
       "country": "Germany",
@@ -14035,15 +14028,11 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 603
+      "count": 604
     },
-    "FI": {
-      "name": "Finland",
-      "count": 138
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
+    "DE": {
+      "name": "Germany",
+      "count": 650
     },
     "CA": {
       "name": "Canada",
@@ -14053,44 +14042,48 @@
       "name": "France",
       "count": 209
     },
-    "DE": {
-      "name": "Germany",
-      "count": 650
-    },
     "NL": {
       "name": "The Netherlands",
-      "count": 44
+      "count": 43
     },
     "PL": {
       "name": "Poland",
       "count": 154
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 138
+    },
     "IT": {
       "name": "Italy",
       "count": 7
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
-    },
     "ES": {
       "name": "Spain",
       "count": 5
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 2
     },
     "KE": {
       "name": "Kenya",
       "count": 4
     },
-    "CH": {
-      "name": "Switzerland",
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
+    "AL": {
+      "name": "Albania",
       "count": 2
     },
     "PT": {
