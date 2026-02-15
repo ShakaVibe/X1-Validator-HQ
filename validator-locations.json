@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-14T22:45:59.372Z",
+  "lastUpdated": "2026-02-15T03:24:21.597Z",
   "totalNodes": 2009,
   "totalLocations": 2006,
   "locations": {
@@ -5252,13 +5252,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "216.219.85.114": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "51.83.237.192": {
       "country": "Poland",
@@ -14044,6 +14037,13 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "163.245.210.91": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
@@ -14051,13 +14051,21 @@
       "name": "United States",
       "count": 604
     },
-    "FI": {
-      "name": "Finland",
-      "count": 138
+    "DE": {
+      "name": "Germany",
+      "count": 650
     },
     "GB": {
       "name": "United Kingdom",
       "count": 76
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 154
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 138
     },
     "CA": {
       "name": "Canada",
@@ -14067,17 +14075,9 @@
       "name": "France",
       "count": 209
     },
-    "DE": {
-      "name": "Germany",
-      "count": 650
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 44
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 154
     },
     "KE": {
       "name": "Kenya",
@@ -14091,20 +14091,20 @@
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 5
     },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
     "AL": {
       "name": "Albania",
-      "count": 2
-    },
-    "CH": {
-      "name": "Switzerland",
       "count": 2
     },
     "PT": {
