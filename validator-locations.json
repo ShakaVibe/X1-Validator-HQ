@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-16T11:10:07.826Z",
-  "totalNodes": 2016,
-  "totalLocations": 2012,
+  "lastUpdated": "2026-02-16T13:42:04.103Z",
+  "totalNodes": 2015,
+  "totalLocations": 2011,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3251,13 +3251,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "216.158.235.214": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Paterson",
-      "lat": 40.9117,
-      "lon": -74.1786
-    },
     "149.86.227.119": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3943,13 +3936,6 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
-    },
-    "178.213.143.89": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
     },
     "185.189.46.30": {
       "country": "Sweden",
@@ -12568,13 +12554,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "46.224.133.247": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "91.99.220.21": {
       "country": "Germany",
       "countryCode": "DE",
@@ -12889,13 +12868,6 @@
       "city": "Paris",
       "lat": 48.8566,
       "lon": 2.35222
-    },
-    "46.224.36.191": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "46.224.43.228": {
       "country": "Germany",
@@ -14086,16 +14058,53 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "158.69.52.28": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
+    },
+    "91.98.159.204": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "168.119.158.227": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 605
+      "count": 604
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 649
     },
     "GB": {
       "name": "United Kingdom",
       "count": 76
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 152
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 138
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 114
     },
     "FR": {
       "name": "France",
@@ -14105,48 +14114,32 @@
       "name": "The Netherlands",
       "count": 43
     },
-    "PL": {
-      "name": "Poland",
-      "count": 153
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 649
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 138
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 2
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 113
+    "IT": {
+      "name": "Italy",
+      "count": 7
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "IT": {
-      "name": "Italy",
-      "count": 7
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 4
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 5
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 4
     },
     "SG": {
       "name": "Singapore",
+      "count": 2
+    },
+    "AL": {
+      "name": "Albania",
       "count": 2
     },
     "PT": {
