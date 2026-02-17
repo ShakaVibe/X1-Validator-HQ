@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-17T17:29:12.773Z",
-  "totalNodes": 2009,
-  "totalLocations": 2007,
+  "lastUpdated": "2026-02-17T19:25:51.949Z",
+  "totalNodes": 2007,
+  "totalLocations": 2005,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -9,13 +9,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "38.58.179.60": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -3950,13 +3943,6 @@
       "city": "Ogden",
       "lat": 41.2627,
       "lon": -111.9837
-    },
-    "38.46.223.6": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "173.214.163.74": {
       "country": "United States",
@@ -12316,13 +12302,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.32.104": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "51.222.27.175": {
       "country": "Canada",
       "countryCode": "CA",
@@ -14045,7 +14024,14 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.133.247": {
+    "162.55.166.40": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "91.99.220.21": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -14056,15 +14042,27 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 600
+      "count": 598
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 138
     },
     "GB": {
       "name": "United Kingdom",
       "count": 76
     },
+    "CA": {
+      "name": "Canada",
+      "count": 114
+    },
     "FR": {
       "name": "France",
       "count": 209
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 649
     },
     "NL": {
       "name": "The Netherlands",
@@ -14074,45 +14072,33 @@
       "name": "Poland",
       "count": 151
     },
-    "DE": {
-      "name": "Germany",
-      "count": 649
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 138
-    },
-    "AL": {
-      "name": "Albania",
-      "count": 2
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 114
+    "IT": {
+      "name": "Italy",
+      "count": 7
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "IT": {
-      "name": "Italy",
-      "count": 7
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 4
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "ES": {
       "name": "Spain",
       "count": 5
     },
+    "AL": {
+      "name": "Albania",
+      "count": 2
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 4
+    },
     "CH": {
       "name": "Switzerland",
       "count": 2
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
     },
     "PT": {
       "name": "Portugal",
