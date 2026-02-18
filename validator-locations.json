@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-17T22:53:49.019Z",
-  "totalNodes": 2007,
-  "totalLocations": 2005,
+  "lastUpdated": "2026-02-18T03:19:58.816Z",
+  "totalNodes": 2025,
+  "totalLocations": 2023,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2249,13 +2249,6 @@
       "city": "Karlsruhe",
       "lat": 49.029,
       "lon": 8.35695
-    },
-    "57.129.102.211": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "152.53.151.152": {
       "country": "Germany",
@@ -5093,13 +5086,6 @@
       "lon": -74.0743
     },
     "5.196.78.109": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.255.66.41": {
       "country": "France",
       "countryCode": "FR",
       "city": "Roubaix",
@@ -14037,6 +14023,146 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "54.39.129.199": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.16.155": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "142.44.212.165": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "142.44.212.146": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.104.24": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.104.86": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.104.21": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.104.5": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.103.110": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.104.137": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.104.51": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.104.27": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "144.217.79.138": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "144.217.78.68": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "51.79.18.91": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "54.39.104.134": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.103.109": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.104.40": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.103.127": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.104.28": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     }
   },
   "countries": {
@@ -14044,61 +14170,61 @@
       "name": "United States",
       "count": 598
     },
+    "DE": {
+      "name": "Germany",
+      "count": 648
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 76
-    },
-    "FR": {
-      "name": "France",
-      "count": 209
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 43
     },
     "PL": {
       "name": "Poland",
       "count": 151
     },
-    "DE": {
-      "name": "Germany",
-      "count": 649
-    },
     "FI": {
       "name": "Finland",
       "count": 138
     },
-    "AL": {
-      "name": "Albania",
-      "count": 2
-    },
     "CA": {
       "name": "Canada",
-      "count": 114
+      "count": 134
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
+    "FR": {
+      "name": "France",
+      "count": 208
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 43
     },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 4
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 5
+    "SE": {
+      "name": "Sweden",
+      "count": 6
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
     },
+    "ES": {
+      "name": "Spain",
+      "count": 5
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 4
+    },
     "SG": {
       "name": "Singapore",
       "count": 1
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 2
     },
     "PT": {
       "name": "Portugal",
