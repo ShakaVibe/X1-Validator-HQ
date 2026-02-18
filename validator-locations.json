@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-18T21:00:13.600Z",
-  "totalNodes": 2024,
-  "totalLocations": 2022,
+  "lastUpdated": "2026-02-18T22:56:14.294Z",
+  "totalNodes": 2034,
+  "totalLocations": 2032,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14156,6 +14156,76 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
+    },
+    "158.69.118.114": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
+    },
+    "149.56.240.82": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
+    },
+    "149.56.240.2": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
+    },
+    "192.99.232.19": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5063,
+      "lon": -73.5794
+    },
+    "149.56.26.13": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
+    },
+    "149.56.240.60": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
+    },
+    "144.217.67.161": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "149.56.240.87": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
+    },
+    "149.56.240.7": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
+    },
+    "149.56.240.19": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
     }
   },
   "countries": {
@@ -14167,21 +14237,9 @@
       "name": "Germany",
       "count": 648
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 150
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 138
-    },
     "CA": {
       "name": "Canada",
-      "count": 134
+      "count": 144
     },
     "FR": {
       "name": "France",
@@ -14191,17 +14249,29 @@
       "name": "The Netherlands",
       "count": 43
     },
+    "PL": {
+      "name": "Poland",
+      "count": 150
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 138
+    },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
     "CH": {
       "name": "Switzerland",
       "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
