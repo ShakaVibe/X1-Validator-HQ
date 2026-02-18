@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-18T05:40:45.763Z",
-  "totalNodes": 2026,
-  "totalLocations": 2024,
+  "lastUpdated": "2026-02-18T07:30:42.281Z",
+  "totalNodes": 2025,
+  "totalLocations": 2023,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3313,13 +3313,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "146.19.24.168": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1957,
-      "lon": 20.9921
     },
     "178.63.18.179": {
       "country": "Germany",
@@ -14181,18 +14174,6 @@
       "name": "Germany",
       "count": 648
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 151
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 138
-    },
     "CA": {
       "name": "Canada",
       "count": 134
@@ -14205,17 +14186,29 @@
       "name": "The Netherlands",
       "count": 43
     },
+    "PL": {
+      "name": "Poland",
+      "count": 150
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 138
+    },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
     "CH": {
       "name": "Switzerland",
       "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
