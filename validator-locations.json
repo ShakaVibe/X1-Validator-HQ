@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-18T03:19:58.816Z",
-  "totalNodes": 2025,
-  "totalLocations": 2023,
+  "lastUpdated": "2026-02-18T05:40:45.763Z",
+  "totalNodes": 2026,
+  "totalLocations": 2024,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14163,12 +14163,19 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
+    },
+    "205.209.116.190": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 598
+      "count": 599
     },
     "DE": {
       "name": "Germany",
