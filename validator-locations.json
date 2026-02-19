@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-18T22:56:14.294Z",
-  "totalNodes": 2034,
-  "totalLocations": 2032,
+  "lastUpdated": "2026-02-19T03:18:39.466Z",
+  "totalNodes": 2033,
+  "totalLocations": 2031,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1409,13 +1409,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "144.76.87.234": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "51.79.19.137": {
       "country": "Canada",
@@ -14235,7 +14228,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 648
+      "count": 647
     },
     "CA": {
       "name": "Canada",
