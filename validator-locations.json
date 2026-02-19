@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-19T20:53:34.097Z",
-  "totalNodes": 2032,
-  "totalLocations": 2030,
+  "lastUpdated": "2026-02-19T22:54:58.365Z",
+  "totalNodes": 2042,
+  "totalLocations": 2040,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14212,6 +14212,76 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "54.39.16.225": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "142.44.212.104": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "142.44.212.123": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "144.217.68.163": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "144.217.74.26": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "144.217.68.164": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.50.134": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.49.109": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "144.217.70.223": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "144.217.67.184": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     }
   },
   "countries": {
@@ -14219,25 +14289,13 @@
       "name": "United States",
       "count": 596
     },
-    "FI": {
-      "name": "Finland",
-      "count": 139
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 76
     },
-    "CA": {
-      "name": "Canada",
-      "count": 144
-    },
     "FR": {
       "name": "France",
       "count": 208
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 647
     },
     "NL": {
       "name": "The Netherlands",
@@ -14247,33 +14305,45 @@
       "name": "Poland",
       "count": 150
     },
-    "IT": {
-      "name": "Italy",
-      "count": 7
+    "DE": {
+      "name": "Germany",
+      "count": 647
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 5
+    "FI": {
+      "name": "Finland",
+      "count": 139
     },
     "AL": {
       "name": "Albania",
       "count": 2
     },
+    "CA": {
+      "name": "Canada",
+      "count": 154
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "IT": {
+      "name": "Italy",
+      "count": 7
+    },
     "KE": {
       "name": "Kenya",
       "count": 4
     },
+    "ES": {
+      "name": "Spain",
+      "count": 5
+    },
     "CH": {
       "name": "Switzerland",
       "count": 2
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "PT": {
       "name": "Portugal",
