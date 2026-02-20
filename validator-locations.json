@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-20T09:01:27.007Z",
+  "lastUpdated": "2026-02-20T11:00:15.326Z",
   "totalNodes": 2044,
-  "totalLocations": 2041,
+  "totalLocations": 2042,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14289,6 +14289,13 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0749
+    },
+    "54.39.158.190": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     }
   },
   "countries": {
@@ -14306,11 +14313,11 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 153
+      "count": 154
     },
     "FR": {
       "name": "France",
-      "count": 209
+      "count": 208
     },
     "DE": {
       "name": "Germany",
