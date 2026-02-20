@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-20T15:03:37.329Z",
-  "totalNodes": 2043,
-  "totalLocations": 2041,
+  "lastUpdated": "2026-02-20T17:02:41.594Z",
+  "totalNodes": 2042,
+  "totalLocations": 2040,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3217,13 +3217,6 @@
       "lon": -73.5723
     },
     "37.187.157.212": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.91.220.142": {
       "country": "France",
       "countryCode": "FR",
       "city": "Roubaix",
@@ -14302,7 +14295,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 208
+      "count": 207
     },
     "NL": {
       "name": "The Netherlands",
