@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-20T17:02:41.594Z",
+  "lastUpdated": "2026-02-20T19:08:32.556Z",
   "totalNodes": 2042,
   "totalLocations": 2040,
   "locations": {
@@ -4414,13 +4414,6 @@
       "lon": 24.9347
     },
     "205.209.125.138": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
-    "74.50.77.86": {
       "country": "United States",
       "countryCode": "US",
       "city": "Englewood Cliffs",
@@ -14282,12 +14275,19 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
+    },
+    "5.196.77.69": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 598
+      "count": 597
     },
     "GB": {
       "name": "United Kingdom",
@@ -14295,7 +14295,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 207
+      "count": 208
     },
     "NL": {
       "name": "The Netherlands",
