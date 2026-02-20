@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-19T22:54:58.365Z",
-  "totalNodes": 2042,
-  "totalLocations": 2040,
+  "lastUpdated": "2026-02-20T03:13:53.009Z",
+  "totalNodes": 2044,
+  "totalLocations": 2041,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4441,13 +4441,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "54.39.158.190": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "65.109.112.35": {
       "country": "Finland",
       "countryCode": "FI",
@@ -8857,13 +8850,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "45.88.89.61": {
-      "country": "Albania",
-      "countryCode": "AL",
-      "city": "Tirana",
-      "lat": 41.3275,
-      "lon": 19.8187
     },
     "51.89.155.56": {
       "country": "United Kingdom",
@@ -14282,12 +14268,33 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
+    },
+    "103.167.235.160": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Hamburg",
+      "lat": 53.645,
+      "lon": 10.0782
+    },
+    "205.209.113.190": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "69.10.55.50": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0749
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 596
+      "count": 598
     },
     "GB": {
       "name": "United Kingdom",
@@ -14295,7 +14302,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 208
+      "count": 209
     },
     "NL": {
       "name": "The Netherlands",
@@ -14307,19 +14314,15 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 647
+      "count": 648
     },
     "FI": {
       "name": "Finland",
       "count": 139
     },
-    "AL": {
-      "name": "Albania",
-      "count": 2
-    },
     "CA": {
       "name": "Canada",
-      "count": 154
+      "count": 153
     },
     "SE": {
       "name": "Sweden",
@@ -14336,6 +14339,10 @@
     "ES": {
       "name": "Spain",
       "count": 5
+    },
+    "AL": {
+      "name": "Albania",
+      "count": 1
     },
     "CH": {
       "name": "Switzerland",
