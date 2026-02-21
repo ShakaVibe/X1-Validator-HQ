@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-21T13:13:13.930Z",
-  "totalNodes": 2048,
-  "totalLocations": 2046,
+  "lastUpdated": "2026-02-21T14:47:52.661Z",
+  "totalNodes": 2049,
+  "totalLocations": 2047,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14324,6 +14324,13 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "51.91.220.142": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -14335,13 +14342,21 @@
       "name": "Germany",
       "count": 649
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
+    },
     "CA": {
       "name": "Canada",
       "count": 159
     },
+    "FI": {
+      "name": "Finland",
+      "count": 140
+    },
     "FR": {
       "name": "France",
-      "count": 208
+      "count": 209
     },
     "NL": {
       "name": "The Netherlands",
@@ -14351,25 +14366,17 @@
       "name": "Poland",
       "count": 149
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 140
-    },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SE": {
       "name": "Sweden",
       "count": 6
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
