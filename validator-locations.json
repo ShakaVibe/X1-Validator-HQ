@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-21T14:47:52.661Z",
+  "lastUpdated": "2026-02-21T16:50:24.132Z",
   "totalNodes": 2049,
   "totalLocations": 2047,
   "locations": {
@@ -14318,14 +14318,14 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "74.50.77.86": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "51.91.220.142": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "5.196.77.69": {
       "country": "France",
       "countryCode": "FR",
       "city": "Roubaix",
@@ -14336,11 +14336,11 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 597
+      "count": 596
     },
-    "DE": {
-      "name": "Germany",
-      "count": 649
+    "FI": {
+      "name": "Finland",
+      "count": 140
     },
     "GB": {
       "name": "United Kingdom",
@@ -14350,13 +14350,13 @@
       "name": "Canada",
       "count": 159
     },
-    "FI": {
-      "name": "Finland",
-      "count": 140
-    },
     "FR": {
       "name": "France",
-      "count": 209
+      "count": 210
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 649
     },
     "NL": {
       "name": "The Netherlands",
@@ -14374,9 +14374,9 @@
       "name": "Sweden",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "ES": {
       "name": "Spain",
@@ -14386,9 +14386,9 @@
       "name": "Kenya",
       "count": 4
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "PT": {
       "name": "Portugal",
