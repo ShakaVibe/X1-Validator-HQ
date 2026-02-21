@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-21T18:56:21.023Z",
-  "totalNodes": 2049,
-  "totalLocations": 2047,
+  "lastUpdated": "2026-02-21T20:44:39.217Z",
+  "totalNodes": 2047,
+  "totalLocations": 2045,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2753,13 +2753,6 @@
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "205.209.108.198": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "64.20.40.14": {
       "country": "United States",
@@ -14283,13 +14276,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "37.27.207.233": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "49.13.17.35": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14336,7 +14322,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 596
+      "count": 595
     },
     "DE": {
       "name": "Germany",
@@ -14364,7 +14350,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 140
+      "count": 139
     },
     "IT": {
       "name": "Italy",
