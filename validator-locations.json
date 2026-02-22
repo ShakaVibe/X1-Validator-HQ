@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-22T07:08:27.692Z",
+  "lastUpdated": "2026-02-22T08:51:25.825Z",
   "totalNodes": 2046,
   "totalLocations": 2044,
   "locations": {
@@ -1920,13 +1920,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "67.217.56.34": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "45.94.82.26": {
       "country": "The Netherlands",
@@ -14310,20 +14303,23 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "95.214.55.210": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 594
+      "count": 593
     },
-    "FI": {
-      "name": "Finland",
-      "count": 139
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
+    "DE": {
+      "name": "Germany",
+      "count": 649
     },
     "CA": {
       "name": "Canada",
@@ -14333,29 +14329,33 @@
       "name": "France",
       "count": 210
     },
-    "DE": {
-      "name": "Germany",
-      "count": 649
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 43
     },
     "PL": {
       "name": "Poland",
-      "count": 149
+      "count": 150
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 139
     },
     "IT": {
       "name": "Italy",
       "count": 7
     },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
     "SE": {
       "name": "Sweden",
       "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
     },
     "ES": {
       "name": "Spain",
@@ -14365,9 +14365,9 @@
       "name": "Kenya",
       "count": 4
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "PT": {
       "name": "Portugal",
