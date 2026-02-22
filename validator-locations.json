@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-22T10:47:13.520Z",
+  "lastUpdated": "2026-02-22T13:14:35.748Z",
   "totalNodes": 2043,
   "totalLocations": 2041,
   "locations": {
@@ -14262,13 +14262,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "49.13.9.27": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.13.210.79": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14289,6 +14282,13 @@
       "city": "Warsaw",
       "lat": 52.1783,
       "lon": 21.0602
+    },
+    "49.13.219.235": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -14300,17 +14300,9 @@
       "name": "Germany",
       "count": 649
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
-    },
     "CA": {
       "name": "Canada",
       "count": 159
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 139
     },
     "FR": {
       "name": "France",
@@ -14324,17 +14316,25 @@
       "name": "Poland",
       "count": 150
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 139
+    },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
     "CH": {
       "name": "Switzerland",
       "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
