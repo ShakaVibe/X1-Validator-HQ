@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-23T13:44:43.847Z",
-  "totalNodes": 2042,
-  "totalLocations": 2040,
+  "lastUpdated": "2026-02-23T15:10:41.173Z",
+  "totalNodes": 2041,
+  "totalLocations": 2039,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2102,13 +2102,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "69.10.41.14": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "51.255.83.50": {
       "country": "France",
@@ -14287,11 +14280,11 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 593
+      "count": 592
     },
-    "DE": {
-      "name": "Germany",
-      "count": 648
+    "FI": {
+      "name": "Finland",
+      "count": 139
     },
     "GB": {
       "name": "United Kingdom",
@@ -14301,13 +14294,13 @@
       "name": "Canada",
       "count": 159
     },
-    "FI": {
-      "name": "Finland",
-      "count": 139
-    },
     "FR": {
       "name": "France",
       "count": 210
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 648
     },
     "NL": {
       "name": "The Netherlands",
@@ -14325,9 +14318,9 @@
       "name": "Sweden",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "ES": {
       "name": "Spain",
@@ -14337,9 +14330,9 @@
       "name": "Kenya",
       "count": 4
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "PT": {
       "name": "Portugal",
