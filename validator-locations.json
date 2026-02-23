@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-23T11:10:27.779Z",
-  "totalNodes": 2043,
-  "totalLocations": 2041,
+  "lastUpdated": "2026-02-23T13:44:43.847Z",
+  "totalNodes": 2042,
+  "totalLocations": 2040,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2851,13 +2851,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "193.247.77.230": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
     },
     "64.20.45.118": {
       "country": "United States",
@@ -14296,9 +14289,9 @@
       "name": "United States",
       "count": 593
     },
-    "FI": {
-      "name": "Finland",
-      "count": 139
+    "DE": {
+      "name": "Germany",
+      "count": 648
     },
     "GB": {
       "name": "United Kingdom",
@@ -14308,13 +14301,13 @@
       "name": "Canada",
       "count": 159
     },
+    "FI": {
+      "name": "Finland",
+      "count": 139
+    },
     "FR": {
       "name": "France",
       "count": 210
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 649
     },
     "NL": {
       "name": "The Netherlands",
@@ -14332,9 +14325,9 @@
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
@@ -14344,9 +14337,9 @@
       "name": "Kenya",
       "count": 4
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "PT": {
       "name": "Portugal",
