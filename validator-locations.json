@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-23T05:45:37.884Z",
+  "lastUpdated": "2026-02-23T07:35:10.172Z",
   "totalNodes": 2043,
   "totalLocations": 2041,
   "locations": {
@@ -13058,13 +13058,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.35.121": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "57.129.100.171": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14289,6 +14282,13 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "49.12.101.120": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -14296,13 +14296,25 @@
       "name": "United States",
       "count": 593
     },
+    "FI": {
+      "name": "Finland",
+      "count": 139
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 76
     },
+    "CA": {
+      "name": "Canada",
+      "count": 159
+    },
     "FR": {
       "name": "France",
       "count": 210
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 649
     },
     "NL": {
       "name": "The Netherlands",
@@ -14312,41 +14324,29 @@
       "name": "Poland",
       "count": 150
     },
-    "DE": {
-      "name": "Germany",
-      "count": 649
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 139
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 159
+    "IT": {
+      "name": "Italy",
+      "count": 7
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "IT": {
-      "name": "Italy",
-      "count": 7
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 4
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "ES": {
       "name": "Spain",
       "count": 5
     },
+    "KE": {
+      "name": "Kenya",
+      "count": 4
+    },
     "CH": {
       "name": "Switzerland",
       "count": 2
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
     },
     "PT": {
       "name": "Portugal",
