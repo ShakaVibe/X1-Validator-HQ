@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-24T20:35:28.697Z",
-  "totalNodes": 2062,
-  "totalLocations": 2060,
+  "lastUpdated": "2026-02-24T22:35:19.019Z",
+  "totalNodes": 2061,
+  "totalLocations": 2059,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1570,13 +1570,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "107.181.229.122": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ogden",
-      "lat": 41.2627,
-      "lon": -111.9837
     },
     "149.202.93.77": {
       "country": "France",
@@ -14427,27 +14420,15 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 593
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 144
+      "count": 592
     },
     "GB": {
       "name": "United Kingdom",
       "count": 76
     },
-    "CA": {
-      "name": "Canada",
-      "count": 178
-    },
     "FR": {
       "name": "France",
       "count": 210
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 644
     },
     "NL": {
       "name": "The Netherlands",
@@ -14457,29 +14438,41 @@
       "name": "Poland",
       "count": 150
     },
-    "IT": {
-      "name": "Italy",
-      "count": 7
+    "DE": {
+      "name": "Germany",
+      "count": 644
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 144
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 178
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 5
+    "IT": {
+      "name": "Italy",
+      "count": 7
     },
     "KE": {
       "name": "Kenya",
       "count": 4
     },
+    "ES": {
+      "name": "Spain",
+      "count": 5
+    },
     "CH": {
       "name": "Switzerland",
       "count": 2
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "PT": {
       "name": "Portugal",
