@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-25T16:45:50.089Z",
+  "lastUpdated": "2026-02-25T18:41:55.709Z",
   "totalNodes": 2053,
   "totalLocations": 2051,
   "locations": {
@@ -14178,13 +14178,6 @@
       "lat": 48.8356,
       "lon": 2.23832
     },
-    "135.181.39.175": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "89.167.98.237": {
       "country": "Finland",
       "countryCode": "FI",
@@ -14359,6 +14352,13 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "188.68.36.54": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4423,
+      "lon": 11.0191
     }
   },
   "countries": {
@@ -14366,13 +14366,9 @@
       "name": "United States",
       "count": 587
     },
-    "DE": {
-      "name": "Germany",
-      "count": 640
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 178
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
     },
     "FR": {
       "name": "France",
@@ -14386,33 +14382,37 @@
       "name": "Poland",
       "count": 149
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
+    "DE": {
+      "name": "Germany",
+      "count": 641
     },
     "FI": {
       "name": "Finland",
-      "count": 142
+      "count": 141
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 178
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 5
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "SG": {
       "name": "Singapore",
