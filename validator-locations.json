@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-25T18:41:55.709Z",
-  "totalNodes": 2053,
-  "totalLocations": 2051,
+  "lastUpdated": "2026-02-25T20:35:30.594Z",
+  "totalNodes": 2052,
+  "totalLocations": 2050,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -625,13 +625,6 @@
       "city": "Frankfurt am Main",
       "lat": 50.1162,
       "lon": 8.6693
-    },
-    "66.45.229.42": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "195.3.223.23": {
       "country": "Poland",
@@ -14178,13 +14171,6 @@
       "lat": 48.8356,
       "lon": 2.23832
     },
-    "89.167.98.237": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
-    },
     "74.50.77.86": {
       "country": "United States",
       "countryCode": "US",
@@ -14359,12 +14345,19 @@
       "city": "Nuremberg",
       "lat": 49.4423,
       "lon": 11.0191
+    },
+    "192.145.46.168": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4423,
+      "lon": 11.0191
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 587
+      "count": 586
     },
     "GB": {
       "name": "United Kingdom",
@@ -14384,11 +14377,11 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 641
+      "count": 642
     },
     "FI": {
       "name": "Finland",
-      "count": 141
+      "count": 140
     },
     "CA": {
       "name": "Canada",
