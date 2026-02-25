@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-25T12:37:35.284Z",
+  "lastUpdated": "2026-02-25T14:39:54.093Z",
   "totalNodes": 2052,
   "totalLocations": 2050,
   "locations": {
@@ -14234,13 +14234,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "89.167.106.169": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
-    },
     "149.56.24.8": {
       "country": "Canada",
       "countryCode": "CA",
@@ -14352,6 +14345,13 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "45.136.31.65": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4423,
+      "lon": 11.0191
     }
   },
   "countries": {
@@ -14359,9 +14359,13 @@
       "name": "United States",
       "count": 587
     },
-    "DE": {
-      "name": "Germany",
-      "count": 639
+    "FI": {
+      "name": "Finland",
+      "count": 143
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
     },
     "CA": {
       "name": "Canada",
@@ -14371,6 +14375,10 @@
       "name": "France",
       "count": 211
     },
+    "DE": {
+      "name": "Germany",
+      "count": 640
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 41
@@ -14379,25 +14387,17 @@
       "name": "Poland",
       "count": 149
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 144
-    },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SE": {
       "name": "Sweden",
       "count": 6
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "ES": {
       "name": "Spain",
@@ -14407,9 +14407,9 @@
       "name": "Kenya",
       "count": 4
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "PT": {
       "name": "Portugal",
