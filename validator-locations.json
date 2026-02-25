@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-25T06:43:05.999Z",
+  "lastUpdated": "2026-02-25T08:37:00.940Z",
   "totalNodes": 2052,
   "totalLocations": 2050,
   "locations": {
@@ -14339,14 +14339,14 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "188.245.118.57": {
+    "91.98.34.254": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "91.98.34.254": {
+    "49.13.9.27": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -14363,9 +14363,17 @@
       "name": "Germany",
       "count": 639
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
+    },
     "CA": {
       "name": "Canada",
       "count": 178
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 144
     },
     "FR": {
       "name": "France",
@@ -14379,25 +14387,17 @@
       "name": "Poland",
       "count": 150
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 144
-    },
     "IT": {
       "name": "Italy",
       "count": 7
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SE": {
       "name": "Sweden",
       "count": 6
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
