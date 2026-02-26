@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-26T06:40:49.586Z",
-  "totalNodes": 2031,
-  "totalLocations": 2029,
+  "lastUpdated": "2026-02-26T08:36:56.458Z",
+  "totalNodes": 2030,
+  "totalLocations": 2028,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -12267,13 +12267,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "95.156.230.93": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Hamburg",
-      "lat": 53.6498,
-      "lon": 10.0844
-    },
     "135.125.109.224": {
       "country": "France",
       "countryCode": "FR",
@@ -14003,13 +13996,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "89.167.102.190": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
-    },
     "91.98.152.87": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14185,13 +14171,6 @@
       "lat": 41.2627,
       "lon": -111.9837
     },
-    "91.98.34.97": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "188.245.118.57": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14205,6 +14184,20 @@
       "city": "Montreal",
       "lat": 45.4995,
       "lon": -73.5848
+    },
+    "91.99.93.251": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "51.222.86.242": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3147,
+      "lon": -73.8785
     }
   },
   "countries": {
@@ -14212,9 +14205,9 @@
       "name": "United States",
       "count": 584
     },
-    "FI": {
-      "name": "Finland",
-      "count": 138
+    "DE": {
+      "name": "Germany",
+      "count": 624
     },
     "GB": {
       "name": "United Kingdom",
@@ -14222,15 +14215,15 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 179
+      "count": 180
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 137
     },
     "FR": {
       "name": "France",
       "count": 211
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 625
     },
     "NL": {
       "name": "The Netherlands",
@@ -14248,9 +14241,9 @@
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
@@ -14260,9 +14253,9 @@
       "name": "Kenya",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "PT": {
       "name": "Portugal",
