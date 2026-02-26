@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-26T00:50:30.426Z",
-  "totalNodes": 2051,
-  "totalLocations": 2049,
+  "lastUpdated": "2026-02-26T03:18:52.253Z",
+  "totalNodes": 2050,
+  "totalLocations": 2048,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4673,13 +4673,6 @@
       "lon": 21.5723
     },
     "135.181.7.101": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "95.217.118.31": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
@@ -14366,7 +14359,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 139
+      "count": 138
     },
     "FR": {
       "name": "France",
