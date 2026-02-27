@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-27T12:36:58.306Z",
-  "totalNodes": 2028,
-  "totalLocations": 2026,
+  "lastUpdated": "2026-02-27T14:36:20.803Z",
+  "totalNodes": 2040,
+  "totalLocations": 2038,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4497,13 +4497,6 @@
       "lat": 45.5029,
       "lon": -73.5723
     },
-    "37.59.57.53": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "38.58.182.35": {
       "country": "United States",
       "countryCode": "US",
@@ -8298,13 +8291,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "51.89.194.91": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "51.79.77.234": {
       "country": "Canada",
       "countryCode": "CA",
@@ -8417,13 +8403,6 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "51.91.25.136": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "144.217.252.202": {
       "country": "Canada",
       "countryCode": "CA",
@@ -8472,13 +8451,6 @@
       "city": "Blackburn",
       "lat": 53.75,
       "lon": -2.48333
-    },
-    "144.217.67.151": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
     },
     "146.59.47.61": {
       "country": "Poland",
@@ -8535,13 +8507,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3847,
       "lon": 8.0475
-    },
-    "51.83.143.104": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "198.244.164.71": {
       "country": "United Kingdom",
@@ -12813,13 +12778,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "91.98.151.59": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "91.98.144.85": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14184,6 +14142,132 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "193.70.32.140": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "116.202.25.7": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "213.32.25.212": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "213.32.26.45": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "37.187.157.153": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "37.187.157.30": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.77.65.224": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "51.89.6.157": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "137.74.206.204": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "51.178.65.187": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Strasbourg",
+      "lat": 48.5734,
+      "lon": 7.75211
+    },
+    "51.75.147.219": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
+    },
+    "54.36.109.119": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3847,
+      "lon": 8.0475
+    },
+    "217.182.172.182": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "65.109.35.205": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "217.182.173.95": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "149.56.23.77": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
+    },
+    "164.132.169.218": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "137.74.206.50": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -14191,17 +14275,13 @@
       "name": "United States",
       "count": 583
     },
-    "CA": {
-      "name": "Canada",
-      "count": 179
+    "GB": {
+      "name": "United Kingdom",
+      "count": 76
     },
     "FR": {
       "name": "France",
-      "count": 217
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 621
+      "count": 226
     },
     "NL": {
       "name": "The Netherlands",
@@ -14209,35 +14289,39 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 148
+      "count": 147
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 76
+    "DE": {
+      "name": "Germany",
+      "count": 624
     },
     "FI": {
       "name": "Finland",
-      "count": 135
+      "count": 136
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 179
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "SE": {
-      "name": "Sweden",
+    "KE": {
+      "name": "Kenya",
       "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 5
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "SG": {
       "name": "Singapore",
