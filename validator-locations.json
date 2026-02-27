@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-27T18:36:08.219Z",
-  "totalNodes": 2043,
-  "totalLocations": 2041,
+  "lastUpdated": "2026-02-27T20:34:19.935Z",
+  "totalNodes": 2044,
+  "totalLocations": 2042,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2236,13 +2236,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "159.112.100.34": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ashwaubenon",
-      "lat": 44.4766,
-      "lon": -88.0678
-    },
     "168.119.194.74": {
       "country": "Germany",
       "countryCode": "DE",
@@ -3440,13 +3433,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "159.112.100.52": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ashwaubenon",
-      "lat": 44.4766,
-      "lon": -88.0678
-    },
     "157.180.9.120": {
       "country": "Finland",
       "countryCode": "FI",
@@ -4118,13 +4104,6 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
-    },
-    "159.112.100.50": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ashwaubenon",
-      "lat": 44.4766,
-      "lon": -88.0678
     },
     "64.20.59.18": {
       "country": "United States",
@@ -5120,13 +5099,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "159.112.100.53": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ashwaubenon",
-      "lat": 44.4766,
-      "lon": -88.0678
-    },
     "64.20.34.78": {
       "country": "United States",
       "countryCode": "US",
@@ -5322,13 +5294,6 @@
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "159.112.100.38": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ashwaubenon",
-      "lat": 44.4766,
-      "lon": -88.0678
     },
     "135.125.222.184": {
       "country": "Germany",
@@ -14108,13 +14073,6 @@
       "lat": 50.871,
       "lon": 4.47636
     },
-    "91.98.34.97": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "168.119.158.29": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14289,6 +14247,55 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
+    },
+    "69.129.59.13": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Ashwaubenon",
+      "lat": 44.4766,
+      "lon": -88.0678
+    },
+    "69.129.59.10": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Ashwaubenon",
+      "lat": 44.4766,
+      "lon": -88.0678
+    },
+    "91.98.144.85": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "69.129.59.11": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Ashwaubenon",
+      "lat": 44.4766,
+      "lon": -88.0678
+    },
+    "69.129.59.12": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Ashwaubenon",
+      "lat": 44.4766,
+      "lon": -88.0678
+    },
+    "69.129.59.14": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Ashwaubenon",
+      "lat": 44.4766,
+      "lon": -88.0678
+    },
+    "194.50.156.181": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ostrołęka",
+      "lat": 53.0721,
+      "lon": 21.5723
     }
   },
   "countries": {
@@ -14296,45 +14303,45 @@
       "name": "United States",
       "count": 583
     },
-    "CA": {
-      "name": "Canada",
-      "count": 180
-    },
-    "FR": {
-      "name": "France",
-      "count": 226
-    },
     "DE": {
       "name": "Germany",
       "count": 626
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 40
     },
     "GB": {
       "name": "United Kingdom",
       "count": 76
     },
-    "PL": {
-      "name": "Poland",
-      "count": 147
+    "CA": {
+      "name": "Canada",
+      "count": 180
     },
     "FI": {
       "name": "Finland",
       "count": 136
     },
+    "FR": {
+      "name": "France",
+      "count": 226
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 40
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 148
+    },
     "IT": {
       "name": "Italy",
+      "count": 6
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 6
     },
     "CH": {
       "name": "Switzerland",
       "count": 2
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
     },
     "ES": {
       "name": "Spain",
