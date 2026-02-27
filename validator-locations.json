@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-27T16:36:06.348Z",
-  "totalNodes": 2041,
-  "totalLocations": 2039,
+  "lastUpdated": "2026-02-27T18:36:08.219Z",
+  "totalNodes": 2043,
+  "totalLocations": 2041,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -12771,13 +12771,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "91.98.144.85": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "91.98.147.8": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14275,6 +14268,27 @@
       "city": "Frankfurt am Main",
       "lat": 50.1162,
       "lon": 8.6693
+    },
+    "188.245.118.57": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "141.95.32.206": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
+    },
+    "51.161.116.19": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     }
   },
   "countries": {
@@ -14284,7 +14298,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 179
+      "count": 180
     },
     "FR": {
       "name": "France",
@@ -14292,7 +14306,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 625
+      "count": 626
     },
     "NL": {
       "name": "The Netherlands",
