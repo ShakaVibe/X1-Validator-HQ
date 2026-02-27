@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-02-27T03:16:42.034Z",
+  "lastUpdated": "2026-02-27T04:56:24.201Z",
   "totalNodes": 2029,
   "totalLocations": 2027,
   "locations": {
@@ -8382,20 +8382,6 @@
       "lat": 53.75,
       "lon": -2.48333
     },
-    "57.129.100.72": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "57.129.100.74": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "51.195.176.177": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -8479,13 +8465,6 @@
       "city": "London",
       "lat": 51.5122,
       "lon": -0.0816
-    },
-    "57.129.101.121": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "51.79.19.172": {
       "country": "Canada",
@@ -11714,13 +11693,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "142.44.163.68": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3147,
-      "lon": -73.8785
-    },
     "149.56.241.74": {
       "country": "Canada",
       "countryCode": "CA",
@@ -11743,13 +11715,6 @@
       "lon": 2.12554
     },
     "54.36.102.107": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "51.210.108.51": {
       "country": "France",
       "countryCode": "FR",
       "city": "Gravelines",
@@ -14191,6 +14156,41 @@
       "city": "Frankfurt am Main",
       "lat": 50.1109,
       "lon": 8.68213
+    },
+    "51.255.80.2": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "217.182.194.198": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "149.202.94.178": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "147.135.130.38": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "147.135.130.33": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -14200,15 +14200,15 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 181
+      "count": 180
     },
     "FR": {
       "name": "France",
-      "count": 211
+      "count": 215
     },
     "DE": {
       "name": "Germany",
-      "count": 625
+      "count": 622
     },
     "NL": {
       "name": "The Netherlands",
