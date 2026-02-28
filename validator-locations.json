@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-28T20:33:50.040Z",
-  "totalNodes": 2075,
-  "totalLocations": 2073,
+  "lastUpdated": "2026-02-28T22:33:10.859Z",
+  "totalNodes": 2074,
+  "totalLocations": 2072,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -5805,13 +5805,6 @@
       "city": "Oakton",
       "lat": 38.719,
       "lon": -77.7416
-    },
-    "51.79.81.29": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "217.182.196.26": {
       "country": "Germany",
@@ -12015,13 +12008,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "91.99.125.116": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "209.159.158.146": {
       "country": "United States",
       "countryCode": "US",
@@ -14513,6 +14499,13 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "49.13.218.235": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -14530,7 +14523,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 182
+      "count": 181
     },
     "FR": {
       "name": "France",
