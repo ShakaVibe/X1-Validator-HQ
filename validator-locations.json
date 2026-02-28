@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-02-28T08:34:28.324Z",
-  "totalNodes": 2069,
-  "totalLocations": 2067,
+  "lastUpdated": "2026-02-28T10:33:34.801Z",
+  "totalNodes": 2068,
+  "totalLocations": 2066,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -165,13 +165,6 @@
       "lon": 3.20113
     },
     "45.90.150.227": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
-    "45.136.212.50": {
       "country": "The Netherlands",
       "countryCode": "NL",
       "city": "Amsterdam",
@@ -12225,21 +12218,7 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "91.98.146.169": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "46.224.43.227": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "91.98.151.38": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -14471,6 +14450,20 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "188.245.63.214": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "91.98.147.8": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -14488,7 +14481,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 40
+      "count": 39
     },
     "PL": {
       "name": "Poland",
