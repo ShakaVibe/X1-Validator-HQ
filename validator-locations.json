@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-01T18:35:07.388Z",
+  "lastUpdated": "2026-03-01T20:34:13.147Z",
   "totalNodes": 2081,
   "totalLocations": 2079,
   "locations": {
@@ -1978,13 +1978,6 @@
       "lon": 12.3649
     },
     "66.45.245.42": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.10.40.70": {
       "country": "United States",
       "countryCode": "US",
       "city": "Secaucus",
@@ -14555,20 +14548,19 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "65.108.10.54": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 582
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 135
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 80
+      "count": 581
     },
     "CA": {
       "name": "Canada",
@@ -14586,21 +14578,29 @@
       "name": "The Netherlands",
       "count": 39
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 80
+    },
     "PL": {
       "name": "Poland",
       "count": 146
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 136
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
     "SE": {
       "name": "Sweden",
       "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
     },
     "ES": {
       "name": "Spain",
@@ -14610,9 +14610,9 @@
       "name": "Kenya",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "BE": {
       "name": "Belgium",
