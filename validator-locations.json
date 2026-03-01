@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-01T14:33:14.332Z",
-  "totalNodes": 2080,
-  "totalLocations": 2078,
+  "lastUpdated": "2026-03-01T16:34:24.406Z",
+  "totalNodes": 2081,
+  "totalLocations": 2079,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -12736,13 +12736,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "168.119.153.47": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "95.214.55.210": {
       "country": "Poland",
       "countryCode": "PL",
@@ -14472,13 +14465,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "49.13.218.231": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.13.218.235": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14548,12 +14534,33 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "91.98.152.122": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "91.98.146.169": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "205.209.116.190": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 581
+      "count": 582
     },
     "GB": {
       "name": "United Kingdom",
