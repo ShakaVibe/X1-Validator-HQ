@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-02T04:57:51.730Z",
-  "totalNodes": 2084,
-  "totalLocations": 2082,
+  "lastUpdated": "2026-03-02T06:39:12.185Z",
+  "totalNodes": 2083,
+  "totalLocations": 2081,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -5091,13 +5091,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "51.178.64.92": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "54.37.82.188": {
       "country": "France",
@@ -14583,9 +14576,9 @@
       "name": "United States",
       "count": 584
     },
-    "FI": {
-      "name": "Finland",
-      "count": 136
+    "DE": {
+      "name": "Germany",
+      "count": 654
     },
     "GB": {
       "name": "United Kingdom",
@@ -14595,13 +14588,13 @@
       "name": "Canada",
       "count": 185
     },
+    "FI": {
+      "name": "Finland",
+      "count": 136
+    },
     "FR": {
       "name": "France",
-      "count": 230
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 654
+      "count": 229
     },
     "NL": {
       "name": "The Netherlands",
@@ -14619,9 +14612,9 @@
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
@@ -14631,9 +14624,9 @@
       "name": "Kenya",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "BE": {
       "name": "Belgium",
