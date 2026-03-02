@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-02T08:36:24.437Z",
-  "totalNodes": 2083,
-  "totalLocations": 2081,
+  "lastUpdated": "2026-03-02T10:36:41.368Z",
+  "totalNodes": 2082,
+  "totalLocations": 2079,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3139,13 +3139,6 @@
       "lat": 47.3769,
       "lon": 8.54169
     },
-    "57.129.102.188": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "65.108.10.238": {
       "country": "Finland",
       "countryCode": "FI",
@@ -4314,13 +4307,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "65.21.11.30": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "45.129.183.164": {
       "country": "Germany",
@@ -14472,13 +14458,6 @@
       "lat": 52.2297,
       "lon": 21.0122
     },
-    "51.83.143.57": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "54.39.19.61": {
       "country": "Canada",
       "countryCode": "CA",
@@ -14569,6 +14548,13 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "57.128.241.52": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2372,
+      "lon": 21.0123
     }
   },
   "countries": {
@@ -14576,45 +14562,45 @@
       "name": "United States",
       "count": 584
     },
-    "CA": {
-      "name": "Canada",
-      "count": 185
-    },
-    "FR": {
-      "name": "France",
-      "count": 229
-    },
     "DE": {
       "name": "Germany",
       "count": 654
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 39
     },
     "GB": {
       "name": "United Kingdom",
       "count": 80
     },
-    "PL": {
-      "name": "Poland",
-      "count": 146
+    "CA": {
+      "name": "Canada",
+      "count": 185
     },
     "FI": {
       "name": "Finland",
-      "count": 136
+      "count": 135
+    },
+    "FR": {
+      "name": "France",
+      "count": 229
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 39
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 146
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SE": {
       "name": "Sweden",
       "count": 6
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
