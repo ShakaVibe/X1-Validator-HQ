@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-02T12:37:09.287Z",
-  "totalNodes": 2072,
-  "totalLocations": 2068,
+  "lastUpdated": "2026-03-02T14:37:05.292Z",
+  "totalNodes": 2071,
+  "totalLocations": 2067,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3019,13 +3019,6 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
-    },
-    "159.195.84.232": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4423,
-      "lon": 11.0191
     },
     "51.83.221.35": {
       "country": "Poland",
@@ -14283,13 +14276,6 @@
       "lat": 48.5734,
       "lon": 7.75211
     },
-    "51.178.65.223": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Strasbourg",
-      "lat": 48.5734,
-      "lon": 7.75211
-    },
     "51.89.6.17": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -14478,6 +14464,13 @@
       "city": "Warsaw",
       "lat": 52.2372,
       "lon": 21.0123
+    },
+    "45.142.115.105": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Offenbach",
+      "lat": 50.0956,
+      "lon": 8.77608
     }
   },
   "countries": {
@@ -14499,7 +14492,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 229
+      "count": 228
     },
     "DE": {
       "name": "Germany",
