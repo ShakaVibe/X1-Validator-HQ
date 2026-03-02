@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-02T10:36:41.368Z",
-  "totalNodes": 2082,
-  "totalLocations": 2079,
+  "lastUpdated": "2026-03-02T12:37:09.287Z",
+  "totalNodes": 2072,
+  "totalLocations": 2068,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -163,13 +163,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "45.90.150.227": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "198.244.164.206": {
       "country": "United Kingdom",
@@ -856,13 +849,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "65.108.120.235": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "51.83.66.116": {
       "country": "France",
@@ -5785,20 +5771,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "45.90.151.6": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
-    "45.90.151.3": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
     "157.180.55.185": {
       "country": "Finland",
       "countryCode": "FI",
@@ -5869,13 +5841,6 @@
       "lat": 51.098,
       "lon": 17.0321
     },
-    "45.90.151.14": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
     "51.195.5.176": {
       "country": "Germany",
       "countryCode": "DE",
@@ -5917,13 +5882,6 @@
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "45.90.151.11": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "51.77.85.76": {
       "country": "Germany",
@@ -6030,13 +5988,6 @@
       "lat": 45.5029,
       "lon": -73.5723
     },
-    "45.90.151.20": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
     "51.222.154.7": {
       "country": "Canada",
       "countryCode": "CA",
@@ -6092,27 +6043,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "45.90.151.22": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
-    "45.90.151.28": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
-    "45.90.151.30": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "144.217.252.170": {
       "country": "Canada",
@@ -9095,13 +9025,6 @@
       "city": "Montreal",
       "lat": 45.5063,
       "lon": -73.5794
-    },
-    "135.181.74.60": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "5.231.41.161": {
       "country": "Germany",
@@ -14560,11 +14483,11 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 584
+      "count": 585
     },
-    "DE": {
-      "name": "Germany",
-      "count": 654
+    "FI": {
+      "name": "Finland",
+      "count": 133
     },
     "GB": {
       "name": "United Kingdom",
@@ -14574,17 +14497,17 @@
       "name": "Canada",
       "count": 185
     },
-    "FI": {
-      "name": "Finland",
-      "count": 135
-    },
     "FR": {
       "name": "France",
       "count": 229
     },
+    "DE": {
+      "name": "Germany",
+      "count": 654
+    },
     "NL": {
       "name": "The Netherlands",
-      "count": 39
+      "count": 30
     },
     "PL": {
       "name": "Poland",
@@ -14598,9 +14521,9 @@
       "name": "Sweden",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "ES": {
       "name": "Spain",
@@ -14610,9 +14533,9 @@
       "name": "Kenya",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "BE": {
       "name": "Belgium",
