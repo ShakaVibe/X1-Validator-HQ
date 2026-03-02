@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-02T14:37:05.292Z",
-  "totalNodes": 2071,
-  "totalLocations": 2067,
+  "lastUpdated": "2026-03-02T16:36:45.019Z",
+  "totalNodes": 2072,
+  "totalLocations": 2068,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14451,13 +14451,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "49.13.137.165": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "57.128.241.52": {
       "country": "Poland",
       "countryCode": "PL",
@@ -14471,6 +14464,20 @@
       "city": "Offenbach",
       "lat": 50.0956,
       "lon": 8.77608
+    },
+    "51.178.65.223": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Strasbourg",
+      "lat": 48.5734,
+      "lon": 7.75211
+    },
+    "49.13.218.231": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -14478,9 +14485,9 @@
       "name": "United States",
       "count": 585
     },
-    "FI": {
-      "name": "Finland",
-      "count": 133
+    "DE": {
+      "name": "Germany",
+      "count": 654
     },
     "GB": {
       "name": "United Kingdom",
@@ -14490,13 +14497,13 @@
       "name": "Canada",
       "count": 185
     },
+    "FI": {
+      "name": "Finland",
+      "count": 133
+    },
     "FR": {
       "name": "France",
-      "count": 228
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 654
+      "count": 229
     },
     "NL": {
       "name": "The Netherlands",
@@ -14514,9 +14521,9 @@
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
@@ -14526,9 +14533,9 @@
       "name": "Kenya",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "BE": {
       "name": "Belgium",
