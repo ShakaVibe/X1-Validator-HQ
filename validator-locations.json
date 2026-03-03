@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-03T00:53:28.869Z",
-  "totalNodes": 2070,
-  "totalLocations": 2067,
+  "lastUpdated": "2026-03-03T03:19:28.922Z",
+  "totalNodes": 2069,
+  "totalLocations": 2066,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1493,13 +1493,6 @@
       "city": "Pleasant View",
       "lat": 41.3072,
       "lon": -111.992
-    },
-    "194.180.207.43": {
-      "country": "Italy",
-      "countryCode": "IT",
-      "city": "Milan",
-      "lat": 45.4722,
-      "lon": 9.1922
     },
     "145.239.232.91": {
       "country": "Germany",
@@ -14478,14 +14471,6 @@
       "name": "United States",
       "count": 584
     },
-    "FI": {
-      "name": "Finland",
-      "count": 133
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 80
-    },
     "CA": {
       "name": "Canada",
       "count": 185
@@ -14502,21 +14487,29 @@
       "name": "The Netherlands",
       "count": 30
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 80
+    },
     "PL": {
       "name": "Poland",
       "count": 146
     },
-    "IT": {
-      "name": "Italy",
-      "count": 5
+    "FI": {
+      "name": "Finland",
+      "count": 133
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "IT": {
+      "name": "Italy",
+      "count": 4
     },
     "ES": {
       "name": "Spain",
@@ -14526,9 +14519,9 @@
       "name": "Kenya",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "BE": {
       "name": "Belgium",
