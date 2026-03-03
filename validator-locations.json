@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-03T12:36:55.043Z",
-  "totalNodes": 2031,
-  "totalLocations": 2029,
+  "lastUpdated": "2026-03-03T14:37:21.536Z",
+  "totalNodes": 2028,
+  "totalLocations": 2026,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2005,13 +2005,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "65.109.18.252": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "149.50.101.55": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3846,13 +3839,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "54.39.133.129": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "107.181.236.98": {
       "country": "United States",
       "countryCode": "US",
@@ -4118,13 +4104,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "51.79.20.146": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
     },
     "51.255.81.77": {
       "country": "France",
@@ -12337,41 +12316,6 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "15.204.149.213": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Reston",
-      "lat": 38.9609,
-      "lon": -77.3429
-    },
-    "15.204.149.214": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Reston",
-      "lat": 38.9609,
-      "lon": -77.3429
-    },
-    "15.204.149.212": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Reston",
-      "lat": 38.9609,
-      "lon": -77.3429
-    },
-    "15.204.149.210": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Reston",
-      "lat": 38.9609,
-      "lon": -77.3429
-    },
-    "15.204.149.211": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Reston",
-      "lat": 38.9609,
-      "lon": -77.3429
-    },
     "46.224.35.121": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14205,16 +14149,51 @@
       "city": "Paris",
       "lat": 48.8575,
       "lon": 2.35138
+    },
+    "5.231.240.111": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.240.112": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.240.113": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.240.115": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
+    },
+    "5.231.240.114": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1109,
+      "lon": 8.68213
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 580
+      "count": 575
     },
     "FI": {
       "name": "Finland",
-      "count": 133
+      "count": 132
     },
     "GB": {
       "name": "United Kingdom",
@@ -14222,7 +14201,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 179
+      "count": 177
     },
     "FR": {
       "name": "France",
@@ -14230,7 +14209,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 643
+      "count": 648
     },
     "NL": {
       "name": "The Netherlands",
@@ -14264,12 +14243,12 @@
       "name": "Belgium",
       "count": 4
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "PT": {
       "name": "Portugal",
+      "count": 2
+    },
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     }
   }
