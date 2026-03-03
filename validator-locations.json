@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-03T18:36:51.937Z",
-  "totalNodes": 2028,
-  "totalLocations": 2025,
+  "lastUpdated": "2026-03-03T20:35:02.988Z",
+  "totalNodes": 2027,
+  "totalLocations": 2024,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -10454,13 +10454,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "38.92.24.183": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "57.129.114.53": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14182,43 +14175,35 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 575
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 177
-    },
-    "FR": {
-      "name": "France",
-      "count": 229
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 648
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 30
+      "count": 574
     },
     "GB": {
       "name": "United Kingdom",
       "count": 73
     },
+    "FR": {
+      "name": "France",
+      "count": 229
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 30
+    },
     "PL": {
       "name": "Poland",
       "count": 133
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 648
     },
     "FI": {
       "name": "Finland",
       "count": 132
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "CA": {
+      "name": "Canada",
+      "count": 177
     },
     "SE": {
       "name": "Sweden",
@@ -14228,13 +14213,17 @@
       "name": "Italy",
       "count": 4
     },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "ES": {
       "name": "Spain",
       "count": 6
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "SG": {
       "name": "Singapore",
@@ -14243,6 +14232,10 @@
     "PT": {
       "name": "Portugal",
       "count": 2
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     }
   }
 }
