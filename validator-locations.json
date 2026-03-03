@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-03T10:35:44.150Z",
-  "totalNodes": 2032,
-  "totalLocations": 2030,
+  "lastUpdated": "2026-03-03T12:36:55.043Z",
+  "totalNodes": 2031,
+  "totalLocations": 2029,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -576,13 +576,6 @@
       "city": "Fröndenberg",
       "lat": 51.4728,
       "lon": 7.7583
-    },
-    "51.255.79.31": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "66.23.234.2": {
       "country": "United States",
@@ -4259,13 +4252,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "51.210.156.38": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "51.222.248.49": {
       "country": "Canada",
       "countryCode": "CA",
@@ -5730,13 +5716,6 @@
       "lon": -74.0743
     },
     "51.195.88.220": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.195.89.86": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Limburg an der Lahn",
@@ -12176,13 +12155,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "51.91.220.142": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "49.13.210.79": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14212,6 +14184,27 @@
       "city": "Zaventem",
       "lat": 50.871,
       "lon": 4.47636
+    },
+    "51.222.240.106": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
+    },
+    "51.91.168.70": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Paris",
+      "lat": 48.8566,
+      "lon": 2.35222
+    },
+    "5.135.24.222": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Paris",
+      "lat": 48.8575,
+      "lon": 2.35138
     }
   },
   "countries": {
@@ -14219,25 +14212,25 @@
       "name": "United States",
       "count": 580
     },
-    "DE": {
-      "name": "Germany",
-      "count": 644
+    "FI": {
+      "name": "Finland",
+      "count": 133
     },
     "GB": {
       "name": "United Kingdom",
       "count": 73
     },
-    "FR": {
-      "name": "France",
-      "count": 230
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 133
-    },
     "CA": {
       "name": "Canada",
-      "count": 178
+      "count": 179
+    },
+    "FR": {
+      "name": "France",
+      "count": 229
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 643
     },
     "NL": {
       "name": "The Netherlands",
@@ -14247,17 +14240,17 @@
       "name": "Poland",
       "count": 133
     },
-    "IT": {
-      "name": "Italy",
-      "count": 4
-    },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
+    "IT": {
+      "name": "Italy",
+      "count": 4
     },
     "ES": {
       "name": "Spain",
@@ -14267,13 +14260,13 @@
       "name": "Kenya",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
-    },
     "BE": {
       "name": "Belgium",
       "count": 4
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "PT": {
       "name": "Portugal",
