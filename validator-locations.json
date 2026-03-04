@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-04T04:52:39.232Z",
-  "totalNodes": 2025,
-  "totalLocations": 2022,
+  "lastUpdated": "2026-03-04T06:36:39.681Z",
+  "totalNodes": 2020,
+  "totalLocations": 2017,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -303,13 +303,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "162.19.20.120": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
     },
     "67.217.48.230": {
       "country": "United States",
@@ -633,13 +626,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.83.223.120": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "65.108.205.143": {
       "country": "Finland",
       "countryCode": "FI",
@@ -744,13 +730,6 @@
       "city": "Milan",
       "lat": 45.4722,
       "lon": 9.1922
-    },
-    "51.83.223.212": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "5.9.96.94": {
       "country": "Germany",
@@ -2488,13 +2467,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "51.210.99.129": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
     "198.244.164.173": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -2739,13 +2711,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "51.83.223.211": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "45.136.213.34": {
       "country": "The Netherlands",
@@ -14177,7 +14142,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 229
+      "count": 227
     },
     "DE": {
       "name": "Germany",
@@ -14189,7 +14154,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 133
+      "count": 130
     },
     "SE": {
       "name": "Sweden",
