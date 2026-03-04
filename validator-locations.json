@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-04T08:35:48.071Z",
-  "totalNodes": 2020,
-  "totalLocations": 2017,
+  "lastUpdated": "2026-03-04T10:35:28.112Z",
+  "totalNodes": 2032,
+  "totalLocations": 2029,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2886,13 +2886,6 @@
       "city": "Dallas",
       "lat": 32.7767,
       "lon": -96.797
-    },
-    "45.90.150.228": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "194.147.214.228": {
       "country": "Switzerland",
@@ -13877,13 +13870,6 @@
       "lat": 52.2372,
       "lon": 21.0123
     },
-    "45.142.115.105": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Offenbach",
-      "lat": 50.0956,
-      "lon": 8.77608
-    },
     "51.178.65.223": {
       "country": "France",
       "countryCode": "FR",
@@ -14121,16 +14107,114 @@
       "city": "Amsterdam",
       "lat": 52.3676,
       "lon": 4.90414
+    },
+    "23.169.168.9": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Colorado Springs",
+      "lat": 38.8622,
+      "lon": -104.758
+    },
+    "66.70.176.150": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "54.39.50.127": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "51.89.99.98": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "51.79.80.230": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Québec",
+      "lat": 46.8127,
+      "lon": -71.2226
+    },
+    "23.169.168.6": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Colorado Springs",
+      "lat": 38.8622,
+      "lon": -104.758
+    },
+    "23.169.168.7": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Colorado Springs",
+      "lat": 38.8622,
+      "lon": -104.758
+    },
+    "23.169.168.8": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Colorado Springs",
+      "lat": 38.8622,
+      "lon": -104.758
+    },
+    "23.169.168.2": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Colorado Springs",
+      "lat": 38.8622,
+      "lon": -104.758
+    },
+    "74.63.245.175": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Dallas",
+      "lat": 32.7797,
+      "lon": -96.8022
+    },
+    "23.169.168.1": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Colorado Springs",
+      "lat": 38.8622,
+      "lon": -104.758
+    },
+    "23.169.168.5": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Colorado Springs",
+      "lat": 38.8622,
+      "lon": -104.758
+    },
+    "23.169.168.3": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Colorado Springs",
+      "lat": 38.8622,
+      "lon": -104.758
+    },
+    "23.169.168.4": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Colorado Springs",
+      "lat": 38.8622,
+      "lon": -104.758
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 571
+      "count": 581
     },
     "CA": {
       "name": "Canada",
-      "count": 177
+      "count": 180
     },
     "FR": {
       "name": "France",
@@ -14138,15 +14222,15 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 648
+      "count": 647
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 31
+      "count": 30
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 73
+      "count": 74
     },
     "PL": {
       "name": "Poland",
