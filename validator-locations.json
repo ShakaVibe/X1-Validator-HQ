@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-05T08:36:03.902Z",
-  "totalNodes": 2032,
-  "totalLocations": 2030,
+  "lastUpdated": "2026-03-05T10:35:53.316Z",
+  "totalNodes": 2033,
+  "totalLocations": 2031,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -415,13 +415,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "89.58.15.69": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4423,
-      "lon": 11.0191
     },
     "66.45.235.250": {
       "country": "United States",
@@ -3922,13 +3915,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "162.250.124.2": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "51.89.217.130": {
       "country": "United Kingdom",
@@ -14212,16 +14198,37 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
+    },
+    "157.180.125.71": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "217.182.203.138": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "89.167.87.48": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1699,
+      "lon": 24.9384
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 580
+      "count": 579
     },
     "FI": {
       "name": "Finland",
-      "count": 132
+      "count": 134
     },
     "GB": {
       "name": "United Kingdom",
@@ -14237,11 +14244,11 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 647
+      "count": 646
     },
     "PL": {
       "name": "Poland",
-      "count": 130
+      "count": 131
     },
     "NL": {
       "name": "The Netherlands",
