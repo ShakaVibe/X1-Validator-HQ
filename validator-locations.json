@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-05T10:35:53.316Z",
-  "totalNodes": 2033,
-  "totalLocations": 2031,
+  "lastUpdated": "2026-03-05T12:37:15.764Z",
+  "totalNodes": 2032,
+  "totalLocations": 2030,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2564,13 +2564,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "195.3.221.7": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1783,
-      "lon": 21.0602
     },
     "185.189.46.60": {
       "country": "Sweden",
@@ -14248,7 +14241,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 131
+      "count": 130
     },
     "NL": {
       "name": "The Netherlands",
