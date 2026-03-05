@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-05T18:55:15.417Z",
-  "totalNodes": 2030,
-  "totalLocations": 2028,
+  "lastUpdated": "2026-03-05T20:35:45.889Z",
+  "totalNodes": 2029,
+  "totalLocations": 2027,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1906,13 +1906,6 @@
       "city": "New York",
       "lat": 40.7503,
       "lon": -74.0014
-    },
-    "65.21.22.49": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "149.50.116.21": {
       "country": "Poland",
@@ -4449,13 +4442,6 @@
       "lon": -122.9874
     },
     "51.81.154.139": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Hillsboro",
-      "lat": 45.526,
-      "lon": -122.9874
-    },
-    "51.81.245.192": {
       "country": "United States",
       "countryCode": "US",
       "city": "Hillsboro",
@@ -7303,13 +7289,6 @@
       "city": "Whippany",
       "lat": 40.8207,
       "lon": -74.4231
-    },
-    "45.139.135.57": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Rüsselsheim am Main",
-      "lat": 49.9874,
-      "lon": 8.4232
     },
     "149.50.101.176": {
       "country": "Poland",
@@ -13800,13 +13779,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "162.245.187.106": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "57.128.241.52": {
       "country": "Poland",
       "countryCode": "PL",
@@ -14198,12 +14170,33 @@
       "city": "Helsinki",
       "lat": 60.1699,
       "lon": 24.9384
+    },
+    "5.9.106.211": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "217.216.74.92": {
+      "country": "Singapore",
+      "countryCode": "SG",
+      "city": "Singapore",
+      "lat": 1.35208,
+      "lon": 103.82
+    },
+    "104.204.140.14": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Fechenheim",
+      "lat": 50.121,
+      "lon": 8.747
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 579
+      "count": 577
     },
     "CA": {
       "name": "Canada",
@@ -14215,7 +14208,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 646
+      "count": 647
     },
     "NL": {
       "name": "The Netherlands",
@@ -14231,7 +14224,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 134
+      "count": 133
     },
     "CH": {
       "name": "Switzerland",
@@ -14259,7 +14252,7 @@
     },
     "SG": {
       "name": "Singapore",
-      "count": 1
+      "count": 2
     },
     "PT": {
       "name": "Portugal",
