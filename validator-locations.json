@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-05T03:16:25.466Z",
-  "totalNodes": 2030,
-  "totalLocations": 2028,
+  "lastUpdated": "2026-03-05T04:55:52.275Z",
+  "totalNodes": 2031,
+  "totalLocations": 2029,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14198,56 +14198,59 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "64.20.38.166": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 579
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 180
-    },
-    "FR": {
-      "name": "France",
-      "count": 227
+      "count": 580
     },
     "DE": {
       "name": "Germany",
       "count": 647
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 30
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 74
     },
-    "PL": {
-      "name": "Poland",
-      "count": 130
+    "FR": {
+      "name": "France",
+      "count": 227
     },
     "FI": {
       "name": "Finland",
       "count": 132
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "CA": {
+      "name": "Canada",
+      "count": 180
     },
-    "BE": {
-      "name": "Belgium",
+    "NL": {
+      "name": "The Netherlands",
+      "count": 30
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 130
+    },
+    "IT": {
+      "name": "Italy",
       "count": 4
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "IT": {
-      "name": "Italy",
-      "count": 4
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
@@ -14257,13 +14260,17 @@
       "name": "Kenya",
       "count": 6
     },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
+    },
     "SG": {
       "name": "Singapore",
       "count": 1
     },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     }
   }
 }
