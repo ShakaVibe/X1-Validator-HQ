@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-06T10:35:07.821Z",
-  "totalNodes": 2076,
-  "totalLocations": 2074,
+  "lastUpdated": "2026-03-06T12:36:51.683Z",
+  "totalNodes": 2077,
+  "totalLocations": 2075,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14520,6 +14520,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "149.56.24.27": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
     }
   },
   "countries": {
@@ -14529,7 +14536,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 189
+      "count": 190
     },
     "FR": {
       "name": "France",
