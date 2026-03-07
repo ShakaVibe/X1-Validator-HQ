@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-07T20:33:46.198Z",
-  "totalNodes": 2049,
-  "totalLocations": 2046,
+  "lastUpdated": "2026-03-07T22:33:13.204Z",
+  "totalNodes": 2046,
+  "totalLocations": 2043,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3313,13 +3313,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "74.50.76.62": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "45.136.213.50": {
       "country": "The Netherlands",
@@ -10713,13 +10706,6 @@
       "lat": 50.6927,
       "lon": 3.17785
     },
-    "51.79.98.123": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "51.83.137.151": {
       "country": "Poland",
       "countryCode": "PL",
@@ -14290,13 +14276,6 @@
       "lat": 45.4995,
       "lon": -73.5848
     },
-    "65.109.39.56": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "69.10.55.50": {
       "country": "United States",
       "countryCode": "US",
@@ -14329,43 +14308,35 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 613
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 189
-    },
-    "FR": {
-      "name": "France",
-      "count": 225
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 632
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 30
+      "count": 612
     },
     "GB": {
       "name": "United Kingdom",
       "count": 74
     },
+    "FR": {
+      "name": "France",
+      "count": 225
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 30
+    },
     "PL": {
       "name": "Poland",
       "count": 131
     },
+    "DE": {
+      "name": "Germany",
+      "count": 632
+    },
     "FI": {
       "name": "Finland",
-      "count": 124
+      "count": 123
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "CA": {
+      "name": "Canada",
+      "count": 188
     },
     "SE": {
       "name": "Sweden",
@@ -14375,13 +14346,17 @@
       "name": "Italy",
       "count": 4
     },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "ES": {
       "name": "Spain",
       "count": 6
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "SG": {
       "name": "Singapore",
@@ -14390,6 +14365,10 @@
     "PT": {
       "name": "Portugal",
       "count": 2
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     }
   }
 }
