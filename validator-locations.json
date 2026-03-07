@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-07T16:34:11.205Z",
-  "totalNodes": 2053,
-  "totalLocations": 2050,
+  "lastUpdated": "2026-03-07T18:34:59.488Z",
+  "totalNodes": 2051,
+  "totalLocations": 2048,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -5287,13 +5287,6 @@
       "city": "Saarbrücken",
       "lat": 49.2405,
       "lon": 6.98474
-    },
-    "141.95.32.184": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "65.108.11.228": {
       "country": "Finland",
@@ -14311,13 +14304,6 @@
       "lat": 45.4995,
       "lon": -73.5848
     },
-    "64.20.38.166": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "65.109.39.56": {
       "country": "Finland",
       "countryCode": "FI",
@@ -14357,7 +14343,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 615
+      "count": 614
     },
     "GB": {
       "name": "United Kingdom",
@@ -14377,7 +14363,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 633
+      "count": 632
     },
     "FI": {
       "name": "Finland",
