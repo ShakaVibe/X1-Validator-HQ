@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-07T04:48:34.860Z",
+  "lastUpdated": "2026-03-07T06:35:49.449Z",
   "totalNodes": 2054,
   "totalLocations": 2052,
   "locations": {
@@ -13961,13 +13961,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "217.216.74.92": {
-      "country": "Singapore",
-      "countryCode": "SG",
-      "city": "Singapore",
-      "lat": 1.35208,
-      "lon": 103.82
-    },
     "104.204.140.14": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14366,6 +14359,13 @@
       "city": "Rüsselsheim am Main",
       "lat": 49.9874,
       "lon": 8.4232
+    },
+    "149.50.116.11": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
@@ -14395,7 +14395,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 129
+      "count": 130
     },
     "NL": {
       "name": "The Netherlands",
@@ -14407,7 +14407,7 @@
     },
     "SG": {
       "name": "Singapore",
-      "count": 2
+      "count": 1
     },
     "IT": {
       "name": "Italy",
