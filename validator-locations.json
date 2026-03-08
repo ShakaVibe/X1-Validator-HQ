@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-08T10:33:46.319Z",
+  "lastUpdated": "2026-03-08T12:36:12.382Z",
   "totalNodes": 2041,
   "totalLocations": 2039,
   "locations": {
@@ -6786,13 +6786,6 @@
       "lat": 50.1109,
       "lon": 8.68213
     },
-    "5.231.41.164": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1109,
-      "lon": 8.68213
-    },
     "5.231.41.196": {
       "country": "Germany",
       "countryCode": "DE",
@@ -12260,13 +12253,6 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "51.89.6.157": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "137.74.206.204": {
       "country": "France",
       "countryCode": "FR",
@@ -14275,16 +14261,30 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
+    },
+    "152.53.164.27": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Manassas",
+      "lat": 38.7911,
+      "lon": -77.5264
+    },
+    "152.53.52.151": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Manassas",
+      "lat": 38.7429,
+      "lon": -77.4914
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 611
+      "count": 613
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 74
+      "count": 73
     },
     "FR": {
       "name": "France",
@@ -14300,7 +14300,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 632
+      "count": 631
     },
     "FI": {
       "name": "Finland",
