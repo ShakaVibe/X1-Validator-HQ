@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-08T20:34:02.218Z",
+  "lastUpdated": "2026-03-08T22:33:33.626Z",
   "totalNodes": 2040,
   "totalLocations": 2038,
   "locations": {
@@ -14262,46 +14262,54 @@
       "lat": 38.7911,
       "lon": -77.5264
     },
-    "152.53.52.151": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7429,
-      "lon": -77.4914
+    "51.89.6.157": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 613
+      "count": 612
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 73
+    "CA": {
+      "name": "Canada",
+      "count": 188
     },
     "FR": {
       "name": "France",
       "count": 225
     },
+    "DE": {
+      "name": "Germany",
+      "count": 630
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 29
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 74
     },
     "PL": {
       "name": "Poland",
       "count": 130
     },
-    "DE": {
-      "name": "Germany",
-      "count": 630
-    },
     "FI": {
       "name": "Finland",
       "count": 121
     },
-    "CA": {
-      "name": "Canada",
-      "count": 188
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "SE": {
       "name": "Sweden",
@@ -14311,17 +14319,13 @@
       "name": "Italy",
       "count": 4
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
     "ES": {
       "name": "Spain",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "SG": {
       "name": "Singapore",
@@ -14330,10 +14334,6 @@
     "PT": {
       "name": "Portugal",
       "count": 2
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
     }
   }
 }
