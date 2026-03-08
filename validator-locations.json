@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-08T14:33:33.084Z",
-  "totalNodes": 2041,
-  "totalLocations": 2039,
+  "lastUpdated": "2026-03-08T16:34:27.242Z",
+  "totalNodes": 2040,
+  "totalLocations": 2038,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4895,13 +4895,6 @@
       "city": "Ogden",
       "lat": 41.2632,
       "lon": -111.993
-    },
-    "141.95.34.204": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "198.244.167.87": {
       "country": "United Kingdom",
@@ -14300,7 +14293,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 631
+      "count": 630
     },
     "FI": {
       "name": "Finland",
