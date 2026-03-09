@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-09T06:41:38.085Z",
-  "totalNodes": 2090,
-  "totalLocations": 2088,
+  "lastUpdated": "2026-03-09T08:36:19.955Z",
+  "totalNodes": 2092,
+  "totalLocations": 2090,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14220,13 +14220,6 @@
       "lat": 45.4995,
       "lon": -73.5848
     },
-    "69.10.55.50": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0749
-    },
     "162.245.187.106": {
       "country": "United States",
       "countryCode": "US",
@@ -14618,12 +14611,33 @@
       "city": "Hillsboro",
       "lat": 45.526,
       "lon": -122.9874
+    },
+    "213.32.26.6": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "213.32.27.158": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "149.202.93.77": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 662
+      "count": 661
     },
     "FI": {
       "name": "Finland",
@@ -14643,7 +14657,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 225
+      "count": 228
     },
     "PL": {
       "name": "Poland",
