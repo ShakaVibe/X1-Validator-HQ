@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-09T10:36:59.465Z",
+  "lastUpdated": "2026-03-09T12:37:13.537Z",
   "totalNodes": 2094,
   "totalLocations": 2092,
   "locations": {
@@ -14241,13 +14241,6 @@
       "lat": 38.7911,
       "lon": -77.5264
     },
-    "51.89.6.157": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "23.169.168.80": {
       "country": "United States",
       "countryCode": "US",
@@ -14646,52 +14639,59 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "152.53.52.151": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Manassas",
+      "lat": 38.7429,
+      "lon": -77.4914
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 661
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 121
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 74
-    },
     "DE": {
       "name": "Germany",
       "count": 630
     },
-    "CA": {
-      "name": "Canada",
-      "count": 188
+    "GB": {
+      "name": "United Kingdom",
+      "count": 73
+    },
+    "US": {
+      "name": "United States",
+      "count": 662
     },
     "FR": {
       "name": "France",
       "count": 231
     },
-    "PL": {
-      "name": "Poland",
-      "count": 129
+    "FI": {
+      "name": "Finland",
+      "count": 121
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 188
     },
     "NL": {
       "name": "The Netherlands",
       "count": 29
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "PL": {
+      "name": "Poland",
+      "count": 129
     },
     "IT": {
       "name": "Italy",
       "count": 4
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
@@ -14701,17 +14701,17 @@
       "name": "Kenya",
       "count": 6
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
-    },
     "PT": {
       "name": "Portugal",
       "count": 2
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     }
   }
 }
