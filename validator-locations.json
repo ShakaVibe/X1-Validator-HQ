@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-09T08:36:19.955Z",
-  "totalNodes": 2092,
-  "totalLocations": 2090,
+  "lastUpdated": "2026-03-09T10:36:59.465Z",
+  "totalNodes": 2094,
+  "totalLocations": 2092,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -5728,13 +5728,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "185.16.38.45": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1957,
-      "lon": 20.9921
     },
     "65.109.118.165": {
       "country": "Finland",
@@ -14632,6 +14625,27 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "37.187.157.212": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "37.187.253.106": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "79.137.65.167": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -14657,11 +14671,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 228
+      "count": 231
     },
     "PL": {
       "name": "Poland",
-      "count": 130
+      "count": 129
     },
     "NL": {
       "name": "The Netherlands",
