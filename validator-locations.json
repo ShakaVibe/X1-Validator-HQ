@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-10T06:36:52.037Z",
-  "totalNodes": 2129,
-  "totalLocations": 2126,
+  "lastUpdated": "2026-03-10T08:36:07.185Z",
+  "totalNodes": 2127,
+  "totalLocations": 2124,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14535,27 +14535,6 @@
       "lat": 45.526,
       "lon": -122.9874
     },
-    "213.32.26.6": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "213.32.27.158": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "149.202.93.77": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "37.187.157.212": {
       "country": "France",
       "countryCode": "FR",
@@ -14884,6 +14863,13 @@
       "city": "Colorado Springs",
       "lat": 38.8622,
       "lon": -104.758
+    },
+    "45.136.212.34": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
     }
   },
   "countries": {
@@ -14901,7 +14887,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 231
+      "count": 228
     },
     "GB": {
       "name": "United Kingdom",
@@ -14917,7 +14903,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 29
+      "count": 30
     },
     "KE": {
       "name": "Kenya",
