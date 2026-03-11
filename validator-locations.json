@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-11T10:35:51.171Z",
-  "totalNodes": 1997,
-  "totalLocations": 1995,
+  "lastUpdated": "2026-03-11T12:37:02.629Z",
+  "totalNodes": 1995,
+  "totalLocations": 1993,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3811,13 +3811,6 @@
       "lat": -1.2841,
       "lon": 36.8155
     },
-    "38.129.139.102": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "149.202.69.96": {
       "country": "France",
       "countryCode": "FR",
@@ -5441,13 +5434,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "38.58.182.84": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "65.108.207.160": {
       "country": "Finland",
@@ -13972,7 +13958,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 594
+      "count": 592
     },
     "CA": {
       "name": "Canada",
