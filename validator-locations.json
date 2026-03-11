@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-11T08:35:56.808Z",
-  "totalNodes": 2100,
-  "totalLocations": 2098,
+  "lastUpdated": "2026-03-11T10:35:51.171Z",
+  "totalNodes": 1997,
+  "totalLocations": 1995,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3446,13 +3446,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "85.10.201.181": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
     },
     "64.20.59.18": {
       "country": "United States",
@@ -9075,13 +9068,6 @@
       "lat": 50.6916,
       "lon": 3.20151
     },
-    "168.119.178.139": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "5.231.41.215": {
       "country": "Germany",
       "countryCode": "DE",
@@ -11413,13 +11399,6 @@
       "lat": 45.5029,
       "lon": -73.5723
     },
-    "89.167.118.211": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
-    },
     "195.3.223.207": {
       "country": "Poland",
       "countryCode": "PL",
@@ -11728,13 +11707,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "23.169.168.9": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
     "66.70.176.150": {
       "country": "Canada",
       "countryCode": "CA",
@@ -11763,69 +11735,6 @@
       "lat": 46.8127,
       "lon": -71.2226
     },
-    "23.169.168.6": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.7": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.8": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.2": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "74.63.245.175": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Dallas",
-      "lat": 32.7797,
-      "lon": -96.8022
-    },
-    "23.169.168.1": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.5": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.3": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.4": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
     "51.91.7.153": {
       "country": "France",
       "countryCode": "FR",
@@ -11846,20 +11755,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "157.180.125.71": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "89.167.87.48": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
     },
     "5.9.106.211": {
       "country": "Germany",
@@ -11924,292 +11819,12 @@
       "lat": 45.4995,
       "lon": -73.5848
     },
-    "23.169.168.25": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
     "158.69.119.119": {
       "country": "Canada",
       "countryCode": "CA",
       "city": "Montreal",
       "lat": 45.4995,
       "lon": -73.5848
-    },
-    "23.169.168.28": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.38": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.18": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.47": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.20": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.15": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.49": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.14": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.36": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.16": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.48": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.19": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.10": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.31": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.34": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.11": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.23": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.32": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.35": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.39": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.44": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.46": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.41": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.21": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.27": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.29": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.33": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.12": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.26": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.13": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.30": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.43": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.42": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.45": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.37": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.24": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.22": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.40": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.17": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
     },
     "95.217.7.13": {
       "country": "Finland",
@@ -12245,356 +11860,6 @@
       "city": "Manassas",
       "lat": 38.7911,
       "lon": -77.5264
-    },
-    "23.169.168.80": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.75": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.73": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.71": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.83": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.78": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.59": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.56": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.95": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.51": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.82": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.91": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.60": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.74": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.77": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.52": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.57": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.79": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.54": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.67": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.50": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.62": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.93": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.63": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.87": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.76": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.96": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.97": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.65": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.69": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.81": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.61": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.85": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.53": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.84": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.64": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.89": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.86": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.94": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.68": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.98": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.72": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.55": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.90": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.66": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.70": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.88": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.99": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.58": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.92": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
     },
     "51.81.245.192": {
       "country": "United States",
@@ -12658,244 +11923,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "23.169.168.165": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.159": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.176": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.153": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.133": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.173": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.129": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.107": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.154": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.143": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.136": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.157": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.137": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.130": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.132": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.179": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.170": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.122": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.161": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.108": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.151": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.115": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.169": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.152": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.146": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.144": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.105": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.156": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.177": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.127": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.140": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.128": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.118": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
-    },
-    "23.169.168.125": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Colorado Springs",
-      "lat": 38.8622,
-      "lon": -104.758
     },
     "216.23.80.184": {
       "country": "United States",
@@ -14661,13 +13688,6 @@
       "lat": 33.9246,
       "lon": -80.3408
     },
-    "178.104.36.152": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Gunzenhausen",
-      "lat": 49.1248,
-      "lon": 10.7806
-    },
     "194.180.207.43": {
       "country": "Italy",
       "countryCode": "IT",
@@ -14688,40 +13708,307 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "89.58.15.69": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4423,
+      "lon": 11.0191
+    },
+    "159.195.84.232": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4423,
+      "lon": 11.0191
+    },
+    "194.116.236.76": {
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "city": "Istanbul",
+      "lat": 41.0019,
+      "lon": 28.9645
+    },
+    "45.136.31.65": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4423,
+      "lon": 11.0191
+    },
+    "213.109.160.109": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4423,
+      "lon": 11.0191
+    },
+    "178.213.143.95": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ostrołęka",
+      "lat": 53.0721,
+      "lon": 21.5723
+    },
+    "163.245.211.250": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.181": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.180": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.116": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.120": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.215": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.190": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.187": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.2": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.230": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.201": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.158": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.204": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.209": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.16": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.193": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.157": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.36": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.106": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.84": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.32": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.9": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.11": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.146": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.236": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.249": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.23": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.13": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.141": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.169": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "163.245.211.185": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 697
+      "count": 594
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 74
+    "CA": {
+      "name": "Canada",
+      "count": 183
     },
     "FR": {
       "name": "France",
       "count": 222
     },
+    "DE": {
+      "name": "Germany",
+      "count": 627
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 29
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 74
+    },
     "PL": {
       "name": "Poland",
-      "count": 123
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 626
+      "count": 124
     },
     "FI": {
       "name": "Finland",
-      "count": 114
+      "count": 111
     },
-    "CA": {
-      "name": "Canada",
-      "count": 183
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "SE": {
       "name": "Sweden",
@@ -14731,29 +14018,25 @@
       "name": "Italy",
       "count": 5
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
     "ES": {
       "name": "Spain",
       "count": 6
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "SG": {
       "name": "Singapore",
       "count": 1
     },
+    "TR": {
+      "name": "Türkiye",
+      "count": 1
+    },
     "PT": {
       "name": "Portugal",
       "count": 2
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
     }
   }
 }
