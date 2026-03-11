@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-11T06:37:20.411Z",
-  "totalNodes": 2101,
-  "totalLocations": 2099,
+  "lastUpdated": "2026-03-11T08:35:56.808Z",
+  "totalNodes": 2100,
+  "totalLocations": 2098,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -12897,13 +12897,6 @@
       "lat": 38.8622,
       "lon": -104.758
     },
-    "45.136.212.34": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
     "216.23.80.184": {
       "country": "United States",
       "countryCode": "US",
@@ -14712,7 +14705,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 30
+      "count": 29
     },
     "PL": {
       "name": "Poland",
