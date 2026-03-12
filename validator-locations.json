@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-12T20:35:18.719Z",
-  "totalNodes": 1999,
-  "totalLocations": 1997,
+  "lastUpdated": "2026-03-12T22:33:54.681Z",
+  "totalNodes": 2000,
+  "totalLocations": 1998,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -13758,13 +13758,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "178.213.143.89": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
-    },
     "163.245.211.109": {
       "country": "United States",
       "countryCode": "US",
@@ -13981,28 +13974,26 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "107.181.252.222": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Ogden",
+      "lat": 41.2627,
+      "lon": -111.9837
+    },
+    "194.50.156.181": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ostrołęka",
+      "lat": 53.0721,
+      "lon": 21.5723
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 618
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 183
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 624
-    },
-    "FR": {
-      "name": "France",
-      "count": 220
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 74
+      "count": 619
     },
     "FI": {
       "name": "Finland",
@@ -14012,9 +14003,41 @@
       "name": "Poland",
       "count": 124
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 74
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 183
+    },
+    "FR": {
+      "name": "France",
+      "count": 220
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 624
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 30
+    },
+    "IT": {
+      "name": "Italy",
+      "count": 5
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 6
     },
     "KE": {
       "name": "Kenya",
@@ -14027,22 +14050,6 @@
     "PT": {
       "name": "Portugal",
       "count": 2
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 6
-    },
-    "IT": {
-      "name": "Italy",
-      "count": 5
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
     },
     "CH": {
       "name": "Switzerland",
