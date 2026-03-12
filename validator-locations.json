@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-12T03:18:15.872Z",
-  "totalNodes": 1983,
-  "totalLocations": 1980,
+  "lastUpdated": "2026-03-12T04:57:14.580Z",
+  "totalNodes": 1980,
+  "totalLocations": 1977,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -352,13 +352,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "46.4.33.23": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "173.225.101.150": {
       "country": "United States",
@@ -737,13 +730,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "37.27.239.30": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "66.45.225.90": {
       "country": "United States",
@@ -3579,13 +3565,6 @@
       "city": "Madrid",
       "lat": 40.4153,
       "lon": -3.694
-    },
-    "157.180.0.60": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "216.219.87.238": {
       "country": "United States",
@@ -13856,7 +13835,7 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "194.50.156.181": {
+    "178.213.143.89": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Ostrołęka",
@@ -13887,11 +13866,11 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 625
+      "count": 624
     },
     "FI": {
       "name": "Finland",
-      "count": 101
+      "count": 99
     },
     "CA": {
       "name": "Canada",
