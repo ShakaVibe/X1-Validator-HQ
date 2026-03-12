@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-12T00:46:18.314Z",
+  "lastUpdated": "2026-03-12T03:18:15.872Z",
   "totalNodes": 1983,
   "totalLocations": 1980,
   "locations": {
@@ -13842,13 +13842,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "178.213.143.89": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
-    },
     "185.16.39.58": {
       "country": "Poland",
       "countryCode": "PL",
@@ -13862,6 +13855,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "194.50.156.181": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ostrołęka",
+      "lat": 53.0721,
+      "lon": 21.5723
     }
   },
   "countries": {
@@ -13869,64 +13869,64 @@
       "name": "United States",
       "count": 591
     },
-    "FI": {
-      "name": "Finland",
-      "count": 101
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 125
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 74
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 183
     },
     "FR": {
       "name": "France",
       "count": 222
     },
-    "DE": {
-      "name": "Germany",
-      "count": 625
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 30
     },
-    "IT": {
-      "name": "Italy",
-      "count": 5
+    "PL": {
+      "name": "Poland",
+      "count": 125
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 625
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 101
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 183
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 6
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "IT": {
+      "name": "Italy",
+      "count": 5
     },
     "BE": {
       "name": "Belgium",
       "count": 4
     },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 6
     },
     "CH": {
       "name": "Switzerland",
+      "count": 2
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
+    "PT": {
+      "name": "Portugal",
       "count": 2
     }
   }
