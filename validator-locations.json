@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-11T22:33:55.576Z",
-  "totalNodes": 1990,
-  "totalLocations": 1987,
+  "lastUpdated": "2026-03-12T00:46:18.314Z",
+  "totalNodes": 1983,
+  "totalLocations": 1980,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -514,13 +514,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "65.21.140.116": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "57.129.101.202": {
       "country": "Germany",
       "countryCode": "DE",
@@ -618,13 +611,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "213.133.99.203": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
     },
     "57.129.101.107": {
       "country": "Germany",
@@ -940,13 +926,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "95.217.225.48": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "37.120.191.20": {
       "country": "Germany",
@@ -1536,13 +1515,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "65.109.144.78": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "161.129.66.90": {
       "country": "United States",
       "countryCode": "US",
@@ -1787,13 +1759,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "135.181.21.148": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "64.71.177.147": {
       "country": "United States",
@@ -2740,13 +2705,6 @@
       "lat": 47.3769,
       "lon": 8.54169
     },
-    "65.108.10.238": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "209.159.158.214": {
       "country": "United States",
       "countryCode": "US",
@@ -2873,13 +2831,6 @@
       "lat": 41.2627,
       "lon": -111.9837
     },
-    "65.21.23.227": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "65.109.82.130": {
       "country": "Finland",
       "countryCode": "FI",
@@ -2900,13 +2851,6 @@
       "city": "Pleasant View",
       "lat": 41.3072,
       "lon": -111.992
-    },
-    "65.109.96.252": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "193.34.212.186": {
       "country": "Poland",
@@ -3852,13 +3796,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "65.108.100.137": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "135.125.171.149": {
       "country": "Germany",
@@ -13911,6 +13848,20 @@
       "city": "Ostrołęka",
       "lat": 53.0721,
       "lon": 21.5723
+    },
+    "185.16.39.58": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
+    },
+    "65.109.58.79": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -13920,11 +13871,11 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 108
+      "count": 101
     },
     "PL": {
       "name": "Poland",
-      "count": 124
+      "count": 125
     },
     "GB": {
       "name": "United Kingdom",
@@ -13940,7 +13891,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 626
+      "count": 625
     },
     "NL": {
       "name": "The Netherlands",
