@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-12T10:35:44.939Z",
+  "lastUpdated": "2026-03-12T12:37:06.049Z",
   "totalNodes": 1977,
   "totalLocations": 1974,
   "locations": {
@@ -8844,13 +8844,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "49.13.210.65": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.13.208.231": {
       "country": "Germany",
       "countryCode": "DE",
@@ -13800,13 +13793,6 @@
       "lat": 52.1783,
       "lon": 21.0602
     },
-    "178.213.143.89": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
-    },
     "168.119.178.139": {
       "country": "Germany",
       "countryCode": "DE",
@@ -13820,12 +13806,42 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "162.55.166.40": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "194.50.156.181": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ostrołęka",
+      "lat": 53.0721,
+      "lon": 21.5723
     }
   },
   "countries": {
     "US": {
       "name": "United States",
       "count": 590
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 183
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 624
+    },
+    "FR": {
+      "name": "France",
+      "count": 222
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 74
     },
     "FI": {
       "name": "Finland",
@@ -13835,41 +13851,9 @@
       "name": "Poland",
       "count": 125
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 74
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 183
-    },
-    "FR": {
-      "name": "France",
-      "count": 222
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 624
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 30
-    },
-    "IT": {
-      "name": "Italy",
-      "count": 5
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 6
     },
     "KE": {
       "name": "Kenya",
@@ -13882,6 +13866,22 @@
     "PT": {
       "name": "Portugal",
       "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 6
+    },
+    "IT": {
+      "name": "Italy",
+      "count": 5
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "CH": {
       "name": "Switzerland",
