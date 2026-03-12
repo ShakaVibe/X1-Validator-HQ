@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-12T12:37:06.049Z",
-  "totalNodes": 1977,
-  "totalLocations": 1974,
+  "lastUpdated": "2026-03-12T14:37:29.444Z",
+  "totalNodes": 1975,
+  "totalLocations": 1972,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1794,13 +1794,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "157.180.2.176": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "45.94.81.210": {
       "country": "The Netherlands",
@@ -7486,13 +7479,6 @@
       "lat": 50.1109,
       "lon": 8.68213
     },
-    "178.213.143.68": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
-    },
     "217.182.203.85": {
       "country": "Poland",
       "countryCode": "PL",
@@ -9796,13 +9782,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "188.245.123.14": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.13.220.254": {
       "country": "Germany",
       "countryCode": "DE",
@@ -11015,13 +10994,6 @@
       "lon": 7.75211
     },
     "49.13.117.183": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "91.98.34.97": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -13814,7 +13786,21 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "194.50.156.181": {
+    "49.13.210.65": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "49.13.213.107": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "178.213.143.89": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Ostrołęka",
@@ -13831,60 +13817,60 @@
       "name": "Canada",
       "count": 183
     },
-    "DE": {
-      "name": "Germany",
-      "count": 624
-    },
     "FR": {
       "name": "France",
       "count": 222
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 74
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 97
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 125
+    "DE": {
+      "name": "Germany",
+      "count": 624
     },
     "NL": {
       "name": "The Netherlands",
       "count": 30
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "GB": {
+      "name": "United Kingdom",
+      "count": 74
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 124
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 96
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "BE": {
       "name": "Belgium",
       "count": 4
     },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
-    },
     "SE": {
       "name": "Sweden",
-      "count": 6
-    },
-    "ES": {
-      "name": "Spain",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
+    "ES": {
+      "name": "Spain",
+      "count": 6
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "SG": {
       "name": "Singapore",
       "count": 1
     },
-    "CH": {
-      "name": "Switzerland",
+    "PT": {
+      "name": "Portugal",
       "count": 2
     }
   }
