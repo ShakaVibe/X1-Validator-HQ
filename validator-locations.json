@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-13T14:36:53.898Z",
-  "totalNodes": 2042,
-  "totalLocations": 2031,
+  "lastUpdated": "2026-03-13T16:35:58.214Z",
+  "totalNodes": 2040,
+  "totalLocations": 2029,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4328,20 +4328,6 @@
       "city": "Karlsruhe",
       "lat": 49.0291,
       "lon": 8.35696
-    },
-    "65.108.129.161": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "65.108.1.43": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "95.216.46.231": {
       "country": "Finland",
@@ -9831,13 +9817,6 @@
       "lat": 40.7687,
       "lon": -111.886
     },
-    "91.99.0.192": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "193.247.77.230": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14206,19 +14185,26 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "88.99.13.164": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "109.122.18.14": {
       "country": "United States",
       "countryCode": "US",
       "city": "Los Angeles",
       "lat": 34.0544,
       "lon": -118.244
+    },
+    "91.98.152.87": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "91.99.93.251": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -14228,7 +14214,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 105
+      "count": 103
     },
     "PL": {
       "name": "Poland",
