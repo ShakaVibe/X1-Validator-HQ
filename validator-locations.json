@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-13T06:37:13.046Z",
+  "lastUpdated": "2026-03-13T08:35:46.616Z",
   "totalNodes": 2012,
   "totalLocations": 2001,
   "locations": {
@@ -9712,13 +9712,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "188.245.123.84": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "149.56.24.8": {
       "country": "Canada",
       "countryCode": "CA",
@@ -9748,13 +9741,6 @@
       "lon": -84.3879
     },
     "49.13.94.94": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "49.13.140.42": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -10089,13 +10075,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "91.98.151.59": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "145.239.2.5": {
       "country": "Germany",
@@ -14009,6 +13988,27 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0749
+    },
+    "188.245.123.14": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "49.13.209.96": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "91.98.34.97": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
