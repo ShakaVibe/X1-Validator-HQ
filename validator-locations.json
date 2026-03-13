@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-13T20:35:08.713Z",
-  "totalNodes": 2034,
-  "totalLocations": 2023,
+  "lastUpdated": "2026-03-13T22:34:04.615Z",
+  "totalNodes": 2035,
+  "totalLocations": 2024,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14157,18 +14157,25 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "88.99.13.164": {
+    "91.99.0.192": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "66.23.239.186": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 647
+      "count": 648
     },
     "CA": {
       "name": "Canada",
