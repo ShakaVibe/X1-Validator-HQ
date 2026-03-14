@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-14T08:35:18.405Z",
-  "totalNodes": 2067,
-  "totalLocations": 2056,
+  "lastUpdated": "2026-03-14T10:34:49.740Z",
+  "totalNodes": 2066,
+  "totalLocations": 2055,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4622,13 +4622,6 @@
       "city": "Wroclaw",
       "lat": 51.098,
       "lon": 17.0321
-    },
-    "51.89.6.105": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "51.83.238.74": {
       "country": "Poland",
@@ -9424,13 +9417,6 @@
       "city": "Warsaw",
       "lat": 52.1783,
       "lon": 21.0602
-    },
-    "49.13.219.235": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "168.119.158.129": {
       "country": "Germany",
@@ -14374,26 +14360,33 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "168.119.155.118": {
+    "204.168.131.72": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1699,
+      "lon": 24.9384
+    },
+    "167.235.233.190": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "188.245.63.189": {
+    "91.99.0.192": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "188.245.54.31": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
+    "204.168.135.188": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1699,
+      "lon": 24.9384
     }
   },
   "countries": {
@@ -14403,7 +14396,7 @@
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 74
+      "count": 73
     },
     "FR": {
       "name": "France",
@@ -14419,11 +14412,11 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 619
+      "count": 617
     },
     "FI": {
       "name": "Finland",
-      "count": 105
+      "count": 107
     },
     "CA": {
       "name": "Canada",
