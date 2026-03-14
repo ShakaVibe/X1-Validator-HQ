@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-14T12:36:22.526Z",
-  "totalNodes": 2066,
-  "totalLocations": 2055,
+  "lastUpdated": "2026-03-14T14:34:20.558Z",
+  "totalNodes": 2065,
+  "totalLocations": 2054,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -8284,13 +8284,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "46.224.34.44": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "57.131.40.233": {
       "country": "France",
       "countryCode": "FR",
@@ -9412,13 +9405,6 @@
       "lon": 12.3649
     },
     "49.13.218.114": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "91.98.41.83": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -13233,13 +13219,6 @@
       "lat": 49.4423,
       "lon": 11.0191
     },
-    "178.213.143.95": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
-    },
     "163.245.211.250": {
       "country": "United States",
       "countryCode": "US",
@@ -13750,13 +13729,6 @@
       "city": "Ogden",
       "lat": 41.2627,
       "lon": -111.9837
-    },
-    "45.94.81.42": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "194.50.156.181": {
       "country": "Poland",
@@ -14387,12 +14359,33 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "46.224.77.125": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "64.20.47.131": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "46.224.105.132": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 678
+      "count": 679
     },
     "CA": {
       "name": "Canada",
@@ -14408,7 +14401,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 31
+      "count": 30
     },
     "GB": {
       "name": "United Kingdom",
@@ -14416,7 +14409,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 125
+      "count": 124
     },
     "FI": {
       "name": "Finland",
