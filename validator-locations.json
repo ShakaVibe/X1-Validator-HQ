@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-14T04:54:49.772Z",
-  "totalNodes": 2068,
-  "totalLocations": 2057,
+  "lastUpdated": "2026-03-14T06:36:36.929Z",
+  "totalNodes": 2067,
+  "totalLocations": 2056,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2340,13 +2340,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "67.217.48.170": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "54.39.132.165": {
       "country": "Canada",
@@ -14406,7 +14399,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 679
+      "count": 678
     },
     "CA": {
       "name": "Canada",
