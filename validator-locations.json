@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-15T14:34:33.300Z",
+  "lastUpdated": "2026-03-15T16:35:00.169Z",
   "totalNodes": 2084,
-  "totalLocations": 2073,
+  "totalLocations": 2072,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3586,13 +3586,6 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
-    },
-    "38.58.182.35": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "51.89.217.130": {
       "country": "United Kingdom",
@@ -10846,13 +10839,6 @@
       "lat": 48.5734,
       "lon": 7.75211
     },
-    "49.13.218.231": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "37.187.28.146": {
       "country": "France",
       "countryCode": "FR",
@@ -14513,6 +14499,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "91.98.152.87": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
