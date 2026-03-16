@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-16T18:40:04.437Z",
-  "totalNodes": 2111,
-  "totalLocations": 2100,
+  "lastUpdated": "2026-03-16T20:35:48.373Z",
+  "totalNodes": 2112,
+  "totalLocations": 2101,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3488,13 +3488,6 @@
       "city": "Madrid",
       "lat": 40.4153,
       "lon": -3.694
-    },
-    "216.219.87.238": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "45.94.81.226": {
       "country": "The Netherlands",
@@ -14702,12 +14695,26 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "102.210.25.185": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
+    },
+    "217.182.201.116": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 728
+      "count": 727
     },
     "FI": {
       "name": "Finland",
@@ -14715,7 +14722,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 125
+      "count": 126
     },
     "GB": {
       "name": "United Kingdom",
@@ -14737,6 +14744,10 @@
       "name": "The Netherlands",
       "count": 29
     },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
     "IT": {
       "name": "Italy",
       "count": 5
@@ -14751,10 +14762,6 @@
     },
     "ES": {
       "name": "Spain",
-      "count": 6
-    },
-    "KE": {
-      "name": "Kenya",
       "count": 6
     },
     "BE": {
