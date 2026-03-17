@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-17T14:42:40.379Z",
-  "totalNodes": 2110,
-  "totalLocations": 2099,
+  "lastUpdated": "2026-03-17T16:43:59.125Z",
+  "totalNodes": 2109,
+  "totalLocations": 2098,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1045,13 +1045,6 @@
       "city": "Salt Lake City",
       "lat": 40.7687,
       "lon": -111.886
-    },
-    "38.58.177.102": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "198.244.164.79": {
       "country": "United Kingdom",
@@ -14700,7 +14693,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 755
+      "count": 754
     },
     "CA": {
       "name": "Canada",
