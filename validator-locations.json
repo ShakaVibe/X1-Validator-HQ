@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-17T12:37:47.170Z",
-  "totalNodes": 2111,
-  "totalLocations": 2100,
+  "lastUpdated": "2026-03-17T14:42:40.379Z",
+  "totalNodes": 2110,
+  "totalLocations": 2099,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -956,13 +956,6 @@
       "lon": -74.0743
     },
     "198.96.93.138": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "104.37.187.158": {
       "country": "United States",
       "countryCode": "US",
       "city": "Secaucus",
@@ -14707,7 +14700,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 756
+      "count": 755
     },
     "CA": {
       "name": "Canada",
