@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-18T12:37:43.988Z",
-  "totalNodes": 2154,
-  "totalLocations": 2141,
+  "lastUpdated": "2026-03-18T14:48:12.127Z",
+  "totalNodes": 2153,
+  "totalLocations": 2140,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1437,13 +1437,6 @@
       "city": "Amsterdam",
       "lat": 52.3676,
       "lon": 4.90414
-    },
-    "178.213.143.94": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
     },
     "51.255.91.53": {
       "country": "France",
@@ -6533,13 +6526,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "69.164.251.138": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Dallas",
-      "lat": 32.7767,
-      "lon": -96.797
     },
     "149.50.116.114": {
       "country": "Poland",
@@ -14989,12 +14975,19 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "194.50.156.182": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ostrołęka",
+      "lat": 53.0721,
+      "lon": 21.5723
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 789
+      "count": 788
     },
     "CA": {
       "name": "Canada",
