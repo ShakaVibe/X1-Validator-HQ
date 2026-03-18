@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-18T20:35:30.463Z",
-  "totalNodes": 2153,
-  "totalLocations": 2140,
+  "lastUpdated": "2026-03-18T22:34:49.737Z",
+  "totalNodes": 2152,
+  "totalLocations": 2139,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14745,13 +14745,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "66.45.240.86": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "163.245.211.101": {
       "country": "United States",
       "countryCode": "US",
@@ -14987,66 +14980,66 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 787
+      "count": 786
     },
     "CA": {
       "name": "Canada",
       "count": 182
     },
-    "FR": {
-      "name": "France",
-      "count": 218
-    },
     "DE": {
       "name": "Germany",
       "count": 600
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 30
+    "FR": {
+      "name": "France",
+      "count": 218
     },
     "GB": {
       "name": "United Kingdom",
       "count": 73
     },
-    "PL": {
-      "name": "Poland",
-      "count": 135
-    },
     "FI": {
       "name": "Finland",
       "count": 95
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "PL": {
+      "name": "Poland",
+      "count": 135
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 30
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "BE": {
       "name": "Belgium",
       "count": 4
     },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
+    },
     "SE": {
       "name": "Sweden",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "ES": {
-      "name": "Spain",
-      "count": 6
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
     "SG": {
       "name": "Singapore",
       "count": 1
     },
-    "PT": {
-      "name": "Portugal",
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     }
   }
