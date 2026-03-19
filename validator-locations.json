@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-19T14:38:07.420Z",
-  "totalNodes": 2147,
-  "totalLocations": 2136,
+  "lastUpdated": "2026-03-19T16:41:12.211Z",
+  "totalNodes": 2149,
+  "totalLocations": 2138,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14906,13 +14906,6 @@
       "lat": 38.9609,
       "lon": -77.3429
     },
-    "194.60.93.164": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9853,
-      "lon": 2.1311
-    },
     "194.60.93.166": {
       "country": "France",
       "countryCode": "FR",
@@ -14954,12 +14947,33 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "194.60.93.155": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Gravelines",
+      "lat": 50.9853,
+      "lon": 2.1311
+    },
+    "38.246.112.24": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "194.60.93.168": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Gravelines",
+      "lat": 50.9853,
+      "lon": 2.1311
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 780
+      "count": 781
     },
     "FI": {
       "name": "Finland",
@@ -14979,7 +14993,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 222
+      "count": 223
     },
     "DE": {
       "name": "Germany",
