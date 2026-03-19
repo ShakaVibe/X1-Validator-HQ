@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-19T10:36:03.029Z",
-  "totalNodes": 2148,
-  "totalLocations": 2137,
+  "lastUpdated": "2026-03-19T12:37:28.726Z",
+  "totalNodes": 2149,
+  "totalLocations": 2138,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14961,12 +14961,19 @@
       "city": "Ostrołęka",
       "lat": 53.0721,
       "lon": 21.5723
+    },
+    "163.245.211.163": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 782
+      "count": 783
     },
     "GB": {
       "name": "United Kingdom",
