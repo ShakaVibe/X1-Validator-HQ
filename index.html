@@ -1921,6 +1921,19 @@
       display: flex;
       align-items: center;
       gap: 1rem;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 0.5rem 0.75rem;
+      margin: -0.5rem -0.75rem;
+      transition: background 0.2s;
+    }
+
+    .leader-current:hover {
+      background: rgba(77, 166, 255, 0.08);
+    }
+
+    .leader-current:hover .leader-name {
+      color: var(--accent-cyan);
     }
 
     .leader-current-header {
@@ -2080,6 +2093,20 @@
       border: 1px solid var(--border);
       white-space: nowrap;
       flex-shrink: 0;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .leader-next-item.clickable {
+      cursor: pointer;
+    }
+
+    .leader-next-item.clickable:hover {
+      border-color: var(--accent-blue);
+      background: rgba(77, 166, 255, 0.08);
+    }
+
+    .leader-next-item.clickable:hover .leader-next-name {
+      color: var(--accent-cyan);
     }
 
     .leader-next-logo {
@@ -7517,7 +7544,7 @@
       
       <!-- Leader Schedule Section -->
       <div class="leader-schedule-section">
-        <div class="leader-current">
+        <div class="leader-current" id="currentLeaderCard">
           <div class="leader-logo" id="currentLeaderLogo">?</div>
           <div class="leader-info">
             <div class="leader-current-header">Current Leader</div>
@@ -22774,6 +22801,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
           if (voteAccount) {
             document.getElementById('currentLeaderVote').textContent = shortenAddress(voteAccount);
             document.getElementById('currentLeaderVote').title = voteAccount;
+            // Make card clickable
+            const card = document.getElementById('currentLeaderCard');
+            card.onclick = () => lookupValidator(voteAccount);
+            card.title = `View ${currentLeaderInfo.name} in Validator Lookup`;
           }
           const logoEl = document.getElementById('currentLeaderLogo');
           if (currentLeaderInfo.iconUrl) {
@@ -22785,10 +22816,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
           document.getElementById('currentLeaderName').textContent = shortenAddress(currentLeader);
           document.getElementById('currentLeaderVote').textContent = '';
           document.getElementById('currentLeaderLogo').textContent = '?';
+          // No vote pubkey available, disable click
+          const card = document.getElementById('currentLeaderCard');
+          card.onclick = null;
+          card.title = '';
         } else {
           document.getElementById('currentLeaderName').textContent = 'Unknown';
           document.getElementById('currentLeaderVote').textContent = '';
           document.getElementById('currentLeaderLogo').textContent = '?';
+          const card = document.getElementById('currentLeaderCard');
+          card.onclick = null;
+          card.title = '';
         }
         
         // Update next leaders display
@@ -22806,8 +22844,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
             } else {
               logoHtml = `<div class="leader-next-logo">${initial}</div>`;
             }
+            const isClickable = info && info.votePubkey;
+            const clickAttr = isClickable ? `onclick="lookupValidator('${info.votePubkey}')"` : '';
+            const clickClass = isClickable ? ' clickable' : '';
+            const titleAttr = isClickable ? `title="View ${fullName} in Validator Lookup"` : `title="${fullName}"`;
             return `
-              <div class="leader-next-item" title="${fullName}">
+              <div class="leader-next-item${clickClass}" ${clickAttr} ${titleAttr}>
                 ${logoHtml}
                 <span class="leader-next-name">${name}</span>
               </div>
