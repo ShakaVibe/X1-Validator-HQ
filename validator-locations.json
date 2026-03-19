@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-19T00:55:03.512Z",
-  "totalNodes": 2151,
-  "totalLocations": 2138,
+  "lastUpdated": "2026-03-19T03:23:36.582Z",
+  "totalNodes": 2147,
+  "totalLocations": 2136,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14626,13 +14626,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "15.204.149.214": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Reston",
-      "lat": 38.9609,
-      "lon": -77.3429
-    },
     "31.59.137.165": {
       "country": "Poland",
       "countryCode": "PL",
@@ -14660,13 +14653,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "15.204.149.213": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Reston",
-      "lat": 38.9609,
-      "lon": -77.3429
     },
     "31.59.137.149": {
       "country": "Poland",
@@ -14962,7 +14948,7 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "194.50.156.182": {
+    "178.213.143.94": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Ostrołęka",
@@ -14973,66 +14959,66 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 785
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 182
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 600
-    },
-    "FR": {
-      "name": "France",
-      "count": 218
+      "count": 781
     },
     "GB": {
       "name": "United Kingdom",
       "count": 73
     },
-    "FI": {
-      "name": "Finland",
-      "count": 95
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 135
+    "FR": {
+      "name": "France",
+      "count": 218
     },
     "NL": {
       "name": "The Netherlands",
       "count": 30
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "PL": {
+      "name": "Poland",
+      "count": 135
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "DE": {
+      "name": "Germany",
+      "count": 600
     },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
+    "FI": {
+      "name": "Finland",
+      "count": 95
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 182
     },
     "SE": {
       "name": "Sweden",
-      "count": 6
-    },
-    "ES": {
-      "name": "Spain",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 6
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
     "SG": {
       "name": "Singapore",
       "count": 1
     },
-    "CH": {
-      "name": "Switzerland",
+    "PT": {
+      "name": "Portugal",
       "count": 2
     }
   }
