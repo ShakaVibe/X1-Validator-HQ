@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-19T06:40:00.968Z",
-  "totalNodes": 2147,
-  "totalLocations": 2136,
+  "lastUpdated": "2026-03-19T08:36:06.982Z",
+  "totalNodes": 2149,
+  "totalLocations": 2138,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14689,20 +14689,6 @@
       "lat": 52.1863,
       "lon": 21.159
     },
-    "31.59.137.47": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
-    "31.59.137.52": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "31.59.137.147": {
       "country": "Poland",
       "countryCode": "PL",
@@ -14934,13 +14920,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "31.59.137.57": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "78.46.212.35": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14954,28 +14933,47 @@
       "city": "Ostrołęka",
       "lat": 53.0721,
       "lon": 21.5723
+    },
+    "194.60.93.165": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Gravelines",
+      "lat": 50.9853,
+      "lon": 2.1311
+    },
+    "15.204.149.214": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Reston",
+      "lat": 38.9609,
+      "lon": -77.3429
+    },
+    "194.60.93.164": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Gravelines",
+      "lat": 50.9853,
+      "lon": 2.1311
+    },
+    "194.60.93.166": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Gravelines",
+      "lat": 50.9853,
+      "lon": 2.1311
+    },
+    "15.204.149.213": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Reston",
+      "lat": 38.9609,
+      "lon": -77.3429
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 781
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 182
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 600
-    },
-    "FR": {
-      "name": "France",
-      "count": 218
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 73
+      "count": 783
     },
     "FI": {
       "name": "Finland",
@@ -14983,7 +14981,23 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 135
+      "count": 132
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 73
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 182
+    },
+    "FR": {
+      "name": "France",
+      "count": 221
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 600
     },
     "NL": {
       "name": "The Netherlands",
@@ -14993,6 +15007,22 @@
       "name": "Kenya",
       "count": 7
     },
+    "IT": {
+      "name": "Italy",
+      "count": 5
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 6
+    },
     "BE": {
       "name": "Belgium",
       "count": 4
@@ -15000,22 +15030,6 @@
     "PT": {
       "name": "Portugal",
       "count": 2
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 6
-    },
-    "IT": {
-      "name": "Italy",
-      "count": 5
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
     },
     "CH": {
       "name": "Switzerland",
