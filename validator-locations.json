@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-18T22:34:49.737Z",
-  "totalNodes": 2152,
-  "totalLocations": 2139,
+  "lastUpdated": "2026-03-19T00:55:03.512Z",
+  "totalNodes": 2151,
+  "totalLocations": 2138,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -422,13 +422,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "162.245.189.210": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "38.190.178.20": {
       "country": "United States",
@@ -8424,13 +8417,6 @@
       "lat": 45.3147,
       "lon": -73.8785
     },
-    "168.119.153.14": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "57.129.101.118": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14955,13 +14941,6 @@
       "lat": 52.352,
       "lon": 4.9392
     },
-    "178.213.143.94": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
-    },
     "31.59.137.98": {
       "country": "Poland",
       "countryCode": "PL",
@@ -14975,12 +14954,26 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
+    },
+    "78.46.212.35": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "194.50.156.182": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ostrołęka",
+      "lat": 53.0721,
+      "lon": 21.5723
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 786
+      "count": 785
     },
     "CA": {
       "name": "Canada",
