@@ -870,6 +870,71 @@
       animation: spin 1s linear infinite;
     }
 
+    /* Leaderboard loading panel */
+    .leaderboard-loading-panel {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      gap: 0.75rem;
+    }
+
+    .leaderboard-loading-spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent-cyan);
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+      margin-bottom: 0.5rem;
+    }
+
+    .leaderboard-loading-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .leaderboard-loading-status {
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 1.2em;
+    }
+
+    .leaderboard-loading-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .leaderboard-loading-step {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      transition: color 0.3s;
+    }
+
+    .leaderboard-loading-step.done {
+      color: var(--success);
+    }
+
+    .leaderboard-loading-step.active {
+      color: var(--text-primary);
+    }
+
+    .lb-step-icon {
+      font-size: 0.9rem;
+      width: 1.2em;
+      text-align: center;
+    }
+
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
@@ -7734,8 +7799,28 @@
         <button class="leaderboard-cat-btn" onclick="switchLeaderboard('newest')">🆕 Newest Validators</button>
       </div>
 
-      <div class="loading" id="leaderboardLoading" style="display: none;">
-        <div class="spinner"></div>
+      <div class="leaderboard-loading-panel" id="leaderboardLoading" style="display: none;">
+        <div class="leaderboard-loading-spinner"></div>
+        <div class="leaderboard-loading-title">Building Leaderboard</div>
+        <div class="leaderboard-loading-status" id="leaderboardLoadingStatus">Fetching validators...</div>
+        <div class="leaderboard-loading-steps">
+          <div class="leaderboard-loading-step" id="lbStep1">
+            <span class="lb-step-icon">⏳</span>
+            <span>Loading validator list</span>
+          </div>
+          <div class="leaderboard-loading-step" id="lbStep2">
+            <span class="lb-step-icon">⏳</span>
+            <span>Fetching credits history</span>
+          </div>
+          <div class="leaderboard-loading-step" id="lbStep3">
+            <span class="lb-step-icon">⏳</span>
+            <span>Fetching skip rate history</span>
+          </div>
+          <div class="leaderboard-loading-step" id="lbStep4">
+            <span class="lb-step-icon">⏳</span>
+            <span>Calculating scores</span>
+          </div>
+        </div>
       </div>
 
       <div class="leaderboard-container" id="leaderboardContainer">
@@ -11540,6 +11625,128 @@
       }
     }
     
+    // Fetch historical skip rates for ALL validators in bulk (7 RPC calls instead of N*7)
+    // Populates skipRateHistoryCache for every validator before leaderboard scoring
+    async function fetchAllHistoricalSkipRatesBulk(numEpochs = 7) {
+      try {
+        const epochInfo = await rpcCall('getEpochInfo');
+        const currentEpoch = epochInfo.epoch;
+        const slotsPerEpoch = epochInfo.slotsInEpoch;
+        const firstSlotOfCurrentEpoch = epochInfo.absoluteSlot - epochInfo.slotIndex;
+
+        // Fetch all validators' block production for each past epoch in parallel
+        const epochPromises = [];
+        for (let i = 1; i <= numEpochs; i++) {
+          const epochNum = currentEpoch - i;
+          if (epochNum < 0) continue;
+          const firstSlot = firstSlotOfCurrentEpoch - (i * slotsPerEpoch);
+          const lastSlot = firstSlot + slotsPerEpoch - 1;
+
+          epochPromises.push(
+            fetch(RPC_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                jsonrpc: '2.0', id: 1,
+                method: 'getBlockProduction',
+                params: [{ range: { firstSlot, lastSlot } }]
+              })
+            })
+            .then(r => r.json())
+            .then(data => ({
+              epoch: epochNum,
+              byIdentity: data.result?.value?.byIdentity || {}
+            }))
+            .catch(() => ({ epoch: epochNum, byIdentity: {} }))
+          );
+        }
+
+        const epochResults = await Promise.all(epochPromises);
+
+        // Now build skipRateHistoryCache for every validator
+        allValidators.forEach(v => {
+          const nodePubkey = v.nodePubkey;
+          // Skip if already recently cached
+          const existing = skipRateHistoryCache[nodePubkey];
+          if (existing && existing.timestamp > Date.now() - 300000) return;
+
+          const validResults = [];
+          for (const { epoch, byIdentity } of epochResults) {
+            const production = byIdentity[nodePubkey];
+            if (production && production.length >= 2 && production[0] > 0) {
+              const skipRate = ((production[0] - production[1]) / production[0]) * 100;
+              validResults.push({ epoch, skipRate, leaderSlots: production[0], blocksProduced: production[1] });
+            }
+          }
+
+          const avgSkipRate = validResults.length > 0
+            ? validResults.reduce((sum, r) => sum + r.skipRate, 0) / validResults.length
+            : null;
+
+          const lastEpochData = validResults.find(r => r.epoch === currentEpoch - 1);
+
+          skipRateHistoryCache[nodePubkey] = {
+            timestamp: Date.now(),
+            data: {
+              epochs: validResults,
+              avgSkipRate,
+              epochCount: validResults.length,
+              requestedEpochs: numEpochs,
+              lastEpochSkipRate: lastEpochData ? lastEpochData.skipRate : null,
+              currentEpoch
+            }
+          };
+        });
+
+      } catch (e) {
+        console.error('Error in bulk historical skip rate fetch:', e);
+      }
+    }
+
+    // Fetch extended epoch credits for ALL validators in one batched RPC call
+    // Returns { votePubkey: [[epoch, credits, prevCredits], ...], ... }
+    async function fetchAllExtendedEpochCreditsBatch() {
+      try {
+        const batchSize = 100; // chunk to avoid RPC node limits
+        const results = {};
+
+        for (let i = 0; i < allValidators.length; i += batchSize) {
+          const chunk = allValidators.slice(i, i + batchSize);
+          const batchRequest = chunk.map((v, idx) => ({
+            jsonrpc: '2.0',
+            id: idx,
+            method: 'getAccountInfo',
+            params: [v.votePubkey, { encoding: 'jsonParsed' }]
+          }));
+
+          const response = await fetch(RPC_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(batchRequest)
+          });
+
+          const batchData = await response.json();
+
+          if (Array.isArray(batchData)) {
+            batchData.forEach((res, idx) => {
+              const validator = chunk[idx];
+              try {
+                const epochCredits = res?.result?.value?.data?.parsed?.info?.epochCredits;
+                if (epochCredits && Array.isArray(epochCredits)) {
+                  results[validator.votePubkey] = epochCredits.map(e => [e.epoch, e.credits, e.previousCredits]);
+                }
+              } catch (e) { /* skip malformed */ }
+            });
+          }
+        }
+
+        return results;
+      } catch (e) {
+        console.error('Error in batch epoch credits fetch:', e);
+        return {};
+      }
+    }
+
     // Generate performance tooltip HTML
     function getPerformanceTooltipHtml(validator) {
       const breakdown = calculatePerformanceBreakdown(validator);
@@ -12676,39 +12883,71 @@
     async function loadLeaderboard() {
       const loading = document.getElementById('leaderboardLoading');
       const container = document.getElementById('leaderboardContainer');
-      
+
+      const setStep = (stepNum, status) => {
+        // Mark all previous steps done, current step active, future steps pending
+        for (let i = 1; i <= 4; i++) {
+          const el = document.getElementById(`lbStep${i}`);
+          const icon = el.querySelector('.lb-step-icon');
+          if (i < stepNum) {
+            el.className = 'leaderboard-loading-step done';
+            icon.textContent = '✅';
+          } else if (i === stepNum) {
+            el.className = 'leaderboard-loading-step active';
+            icon.textContent = '⏳';
+          } else {
+            el.className = 'leaderboard-loading-step';
+            icon.textContent = '⏳';
+          }
+        }
+        if (status) {
+          document.getElementById('leaderboardLoadingStatus').textContent = status;
+        }
+      };
+
+      loading.style.display = 'flex';
+      container.style.display = 'none';
+
+      // Step 1 - validator list
+      setStep(1, 'Fetching validators...');
       if (!allValidators || allValidators.length === 0) {
-        loading.style.display = 'flex';
-        container.style.display = 'none';
         await loadNetworkStats();
       }
-      
-      // Make sure skip rates are loaded
       if (!allValidators[0] || allValidators[0].skipRate === undefined) {
-        loading.style.display = 'flex';
-        container.style.display = 'none';
         await fetchAllSkipRates();
       }
-      
-      loading.style.display = 'none';
-      container.style.display = 'block';
-      
-      // Calculate performance scores - use cached validator info if available for consistency
+      setStep(2, `Fetching credits history for ${allValidators.length} validators...`);
+
+      // Step 2 - batch fetch full epoch credits for every validator
+      const extendedCreditsMap = await fetchAllExtendedEpochCreditsBatch();
+
+      // Merge extended credits back into allValidators so scoring uses full history
+      allValidators.forEach(v => {
+        if (extendedCreditsMap[v.votePubkey]) {
+          v.epochCredits = extendedCreditsMap[v.votePubkey];
+        }
+      });
+
+      setStep(3, 'Fetching skip rate history...');
+
+      // Step 3 - bulk historical skip rates (7 epochs, 7 RPC calls in parallel)
+      await fetchAllHistoricalSkipRatesBulk(7);
+
+      setStep(4, 'Calculating scores...');
+
+      // Step 4 - score every validator using the same full data the lookup card uses
       leaderboardData = allValidators.map(v => {
-        // Check if we have cached detailed info for this validator
+        // If already individually cached, use that (it's at least as good)
         const cached = validatorInfoCache[v.votePubkey];
-        
         if (cached && cached.performanceScore !== undefined) {
-          // Use cached performance score directly for consistency with validator card
           return {
             ...v,
             ...cached,
-            activatedStake: v.activatedStake, // Keep lamports for leaderboard display
+            activatedStake: v.activatedStake,
             performanceScore: cached.performanceScore
           };
         }
-        
-        // No cache - use allValidators data but check for skip rate history cache
+
         const skipHistoryFromCache = skipRateHistoryCache[v.nodePubkey];
         const validatorData = {
           ...v,
@@ -12716,15 +12955,24 @@
           isDelinquent: v.delinquent,
           skipRateHistory: skipHistoryFromCache ? skipHistoryFromCache.data : null
         };
-        
-        const score = calculatePerformanceScore(validatorData);
-        
+
         return {
           ...validatorData,
-          performanceScore: score
+          performanceScore: calculatePerformanceScore(validatorData)
         };
       });
-      
+
+      // Mark all done
+      setStep(5, 'Done!');
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById(`lbStep${i}`);
+        el.className = 'leaderboard-loading-step done';
+        el.querySelector('.lb-step-icon').textContent = '✅';
+      }
+
+      loading.style.display = 'none';
+      container.style.display = 'block';
+
       renderLeaderboard(currentLeaderboard);
     }
     
