@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-20T08:35:52.144Z",
-  "totalNodes": 2149,
-  "totalLocations": 2138,
+  "lastUpdated": "2026-03-20T10:35:31.574Z",
+  "totalNodes": 2148,
+  "totalLocations": 2137,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -8452,13 +8452,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "51.178.79.59": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
     "51.81.155.107": {
       "country": "United States",
       "countryCode": "US",
@@ -13240,13 +13233,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "31.59.137.93": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "91.98.151.59": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14968,12 +14954,19 @@
       "city": "Gravelines",
       "lat": 50.9853,
       "lon": 2.1311
+    },
+    "109.122.18.57": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Los Angeles",
+      "lat": 34.0544,
+      "lon": -118.244
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 778
+      "count": 779
     },
     "CA": {
       "name": "Canada",
@@ -14985,7 +14978,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 227
+      "count": 226
     },
     "GB": {
       "name": "United Kingdom",
@@ -14997,7 +14990,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 131
+      "count": 130
     },
     "NL": {
       "name": "The Netherlands",
