@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-20T00:52:15.761Z",
-  "totalNodes": 2148,
-  "totalLocations": 2137,
+  "lastUpdated": "2026-03-20T03:17:18.799Z",
+  "totalNodes": 2147,
+  "totalLocations": 2136,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14640,13 +14640,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "31.59.137.96": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "163.245.211.101": {
       "country": "United States",
       "countryCode": "US",
@@ -14920,13 +14913,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "194.60.93.155": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9853,
-      "lon": 2.1311
-    },
     "38.246.112.24": {
       "country": "United States",
       "countryCode": "US",
@@ -14961,6 +14947,13 @@
       "city": "Ostrołęka",
       "lat": 53.0721,
       "lon": 21.5723
+    },
+    "194.60.93.164": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Gravelines",
+      "lat": 50.9853,
+      "lon": 2.1311
     }
   },
   "countries": {
@@ -14968,64 +14961,64 @@
       "name": "United States",
       "count": 779
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 73
-    },
-    "FR": {
-      "name": "France",
-      "count": 224
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 30
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 132
+    "CA": {
+      "name": "Canada",
+      "count": 182
     },
     "DE": {
       "name": "Germany",
       "count": 600
     },
+    "FR": {
+      "name": "France",
+      "count": 224
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 73
+    },
     "FI": {
       "name": "Finland",
       "count": 95
     },
-    "CA": {
-      "name": "Canada",
-      "count": 182
+    "PL": {
+      "name": "Poland",
+      "count": 131
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 30
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
+    },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
     },
     "SE": {
       "name": "Sweden",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 6
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
     "SG": {
       "name": "Singapore",
       "count": 1
     },
-    "PT": {
-      "name": "Portugal",
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     }
   }
