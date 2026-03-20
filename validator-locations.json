@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-19T22:34:23.820Z",
-  "totalNodes": 2149,
-  "totalLocations": 2138,
+  "lastUpdated": "2026-03-20T00:52:15.761Z",
+  "totalNodes": 2148,
+  "totalLocations": 2137,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2578,13 +2578,6 @@
       "city": "Los Angeles",
       "lat": 34.0479,
       "lon": -118.256
-    },
-    "65.109.85.251": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "37.187.158.187": {
       "country": "France",
@@ -14962,7 +14955,7 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "194.50.156.182": {
+    "178.213.143.94": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Ostrołęka",
@@ -14997,7 +14990,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 96
+      "count": 95
     },
     "CA": {
       "name": "Canada",
