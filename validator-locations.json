@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-20T20:34:55.199Z",
+  "lastUpdated": "2026-03-20T22:34:10.353Z",
   "totalNodes": 2150,
   "totalLocations": 2138,
   "locations": {
@@ -14843,26 +14843,12 @@
       "lat": 34.0544,
       "lon": -118.244
     },
-    "109.122.18.61": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Los Angeles",
-      "lat": 34.0544,
-      "lon": -118.244
-    },
     "168.119.158.129": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "109.122.18.79": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Los Angeles",
-      "lat": 34.0544,
-      "lon": -118.244
     },
     "91.99.216.94": {
       "country": "Germany",
@@ -14968,12 +14954,26 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
+    },
+    "78.47.161.90": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "88.99.13.164": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 783
+      "count": 781
     },
     "GB": {
       "name": "United Kingdom",
@@ -14993,7 +14993,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 602
+      "count": 604
     },
     "FI": {
       "name": "Finland",
