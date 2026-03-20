@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-20T16:36:20.181Z",
-  "totalNodes": 2151,
-  "totalLocations": 2139,
+  "lastUpdated": "2026-03-20T18:36:59.740Z",
+  "totalNodes": 2150,
+  "totalLocations": 2138,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1619,13 +1619,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "38.246.112.100": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "168.119.194.74": {
       "country": "Germany",
@@ -9355,13 +9348,6 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "54.36.109.119": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3847,
-      "lon": 8.0475
-    },
     "217.182.172.182": {
       "country": "France",
       "countryCode": "FR",
@@ -14975,12 +14961,19 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
+    },
+    "65.109.85.251": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 785
+      "count": 784
     },
     "CA": {
       "name": "Canada",
@@ -14988,7 +14981,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 602
+      "count": 601
     },
     "FR": {
       "name": "France",
@@ -15000,7 +14993,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 95
+      "count": 96
     },
     "PL": {
       "name": "Poland",
