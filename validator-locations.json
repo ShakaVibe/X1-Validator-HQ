@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-23T06:48:37.506Z",
+  "lastUpdated": "2026-03-23T08:38:14.893Z",
   "totalNodes": 2196,
   "totalLocations": 2185,
   "locations": {
@@ -1837,13 +1837,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "5.180.173.253": {
-      "country": "Spain",
-      "countryCode": "ES",
-      "city": "Madrid",
-      "lat": 40.4153,
-      "lon": -3.694
-    },
     "51.83.223.78": {
       "country": "Poland",
       "countryCode": "PL",
@@ -2599,13 +2592,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "204.13.232.18": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "51.91.29.119": {
       "country": "France",
@@ -15297,12 +15283,26 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
+    },
+    "158.69.52.10": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
+    },
+    "151.241.216.142": {
+      "country": "Spain",
+      "countryCode": "ES",
+      "city": "Madrid",
+      "lat": 40.4153,
+      "lon": -3.694
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 791
+      "count": 790
     },
     "FI": {
       "name": "Finland",
@@ -15318,7 +15318,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 185
+      "count": 186
     },
     "FR": {
       "name": "France",
