@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-23T05:04:39.308Z",
-  "totalNodes": 2197,
-  "totalLocations": 2186,
+  "lastUpdated": "2026-03-23T06:48:37.506Z",
+  "totalNodes": 2196,
+  "totalLocations": 2185,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3768,13 +3768,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "51.81.155.184": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Hillsboro",
-      "lat": 45.526,
-      "lon": -122.9874
     },
     "65.108.72.181": {
       "country": "Finland",
@@ -15309,7 +15302,19 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 792
+      "count": 791
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 99
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 123
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 73
     },
     "CA": {
       "name": "Canada",
@@ -15327,48 +15332,36 @@
       "name": "The Netherlands",
       "count": 30
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 73
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 99
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 123
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "ES": {
-      "name": "Spain",
+    "SE": {
+      "name": "Sweden",
       "count": 6
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "SG": {
       "name": "Singapore",
       "count": 1
     },
+    "ES": {
+      "name": "Spain",
+      "count": 6
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
+    },
     "PT": {
       "name": "Portugal",
+      "count": 2
+    },
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     }
   }
