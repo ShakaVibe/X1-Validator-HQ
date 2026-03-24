@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-24T03:19:22.183Z",
-  "totalNodes": 2241,
-  "totalLocations": 2230,
+  "lastUpdated": "2026-03-24T05:02:12.285Z",
+  "totalNodes": 2242,
+  "totalLocations": 2231,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14780,13 +14780,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.78.132": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.12.32.120": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15543,20 +15536,6 @@
       "lat": 40.7128,
       "lon": -74.006
     },
-    "46.224.7.228": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "128.140.113.163": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "135.181.108.214": {
       "country": "Finland",
       "countryCode": "FI",
@@ -15571,33 +15550,12 @@
       "lat": 60.1699,
       "lon": 24.9384
     },
-    "138.199.161.235": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "204.168.185.97": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
-    },
     "204.168.189.149": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
       "lat": 60.1699,
       "lon": 24.9384
-    },
-    "167.235.229.179": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "89.167.26.254": {
       "country": "Finland",
@@ -15612,12 +15570,61 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "46.224.36.191": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "46.224.169.177": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "46.224.164.196": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "46.224.164.194": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "64.20.38.166": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "46.224.162.100": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "46.224.130.202": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 785
+      "count": 786
     },
     "GB": {
       "name": "United Kingdom",
@@ -15637,11 +15644,11 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 651
+      "count": 652
     },
     "FI": {
       "name": "Finland",
-      "count": 144
+      "count": 143
     },
     "CA": {
       "name": "Canada",
