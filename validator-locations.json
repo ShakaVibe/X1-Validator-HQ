@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-24T16:42:08.653Z",
-  "totalNodes": 2247,
-  "totalLocations": 2236,
+  "lastUpdated": "2026-03-24T18:41:01.870Z",
+  "totalNodes": 2248,
+  "totalLocations": 2237,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -15654,48 +15654,47 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "64.20.38.166": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 783
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 187
-    },
-    "FR": {
-      "name": "France",
-      "count": 218
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 657
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 30
+      "count": 784
     },
     "GB": {
       "name": "United Kingdom",
       "count": 73
     },
-    "FI": {
-      "name": "Finland",
-      "count": 145
+    "FR": {
+      "name": "France",
+      "count": 218
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 30
     },
     "PL": {
       "name": "Poland",
       "count": 121
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "DE": {
+      "name": "Germany",
+      "count": 657
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "FI": {
+      "name": "Finland",
+      "count": 145
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 187
     },
     "SE": {
       "name": "Sweden",
@@ -15705,13 +15704,21 @@
       "name": "Italy",
       "count": 5
     },
-    "ES": {
-      "name": "Spain",
-      "count": 6
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "KE": {
       "name": "Kenya",
       "count": 7
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 6
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
     },
     "SG": {
       "name": "Singapore",
