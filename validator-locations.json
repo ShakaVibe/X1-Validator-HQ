@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-24T06:43:04.098Z",
+  "lastUpdated": "2026-03-24T08:37:20.292Z",
   "totalNodes": 2241,
   "totalLocations": 2230,
   "locations": {
@@ -15592,13 +15592,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "188.245.194.99": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "204.168.181.55": {
       "country": "Finland",
       "countryCode": "FI",
@@ -15612,6 +15605,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "46.224.163.16": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
