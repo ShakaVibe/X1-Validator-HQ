@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-24T12:37:48.658Z",
+  "lastUpdated": "2026-03-24T14:43:20.421Z",
   "totalNodes": 2247,
   "totalLocations": 2236,
   "locations": {
@@ -3733,13 +3733,6 @@
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "192.154.103.26": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Los Angeles",
-      "lat": 34.0549,
-      "lon": -118.243
     },
     "162.250.126.66": {
       "country": "United States",
@@ -7793,13 +7786,6 @@
       "city": "Roubaix",
       "lat": 50.6977,
       "lon": 3.1786
-    },
-    "69.11.224.18": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Appleton",
-      "lat": 44.2682,
-      "lon": -88.4265
     },
     "51.89.153.192": {
       "country": "United Kingdom",
@@ -15536,13 +15522,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "46.224.36.191": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "46.224.164.196": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15599,20 +15578,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "89.167.64.180": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "204.168.204.179": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
-    },
     "91.99.12.149": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15654,71 +15619,106 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "46.224.174.179": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "65.108.202.46": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "138.201.186.114": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "69.11.226.130": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Appleton",
+      "lat": 44.3456,
+      "lon": -88.4343
+    },
+    "46.224.175.2": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 784
+      "count": 783
     },
     "CA": {
       "name": "Canada",
       "count": 187
     },
+    "DE": {
+      "name": "Germany",
+      "count": 657
+    },
     "FR": {
       "name": "France",
       "count": 218
     },
-    "DE": {
-      "name": "Germany",
-      "count": 655
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 30
+    "FI": {
+      "name": "Finland",
+      "count": 145
     },
     "GB": {
       "name": "United Kingdom",
       "count": 73
     },
-    "FI": {
-      "name": "Finland",
-      "count": 146
-    },
     "PL": {
       "name": "Poland",
       "count": 121
     },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
+    "NL": {
+      "name": "The Netherlands",
+      "count": 30
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "BE": {
       "name": "Belgium",
       "count": 4
     },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
+    },
     "SE": {
       "name": "Sweden",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
-    "ES": {
-      "name": "Spain",
-      "count": 6
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
     "SG": {
       "name": "Singapore",
       "count": 1
     },
-    "PT": {
-      "name": "Portugal",
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     }
   }
