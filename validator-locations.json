@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-26T22:34:21.611Z",
+  "lastUpdated": "2026-03-27T00:58:02.990Z",
   "totalNodes": 2274,
   "totalLocations": 2263,
   "locations": {
@@ -14654,13 +14654,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "168.119.48.66": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.13.142.25": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14683,13 +14676,6 @@
       "lon": 12.3649
     },
     "49.13.62.168": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "49.12.7.75": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -15725,13 +15711,6 @@
       "lat": 60.1699,
       "lon": 24.9384
     },
-    "204.168.195.30": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
-    },
     "46.224.161.114": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15823,13 +15802,6 @@
       "lat": 60.1699,
       "lon": 24.9384
     },
-    "95.217.191.116": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "204.168.219.98": {
       "country": "Finland",
       "countryCode": "FI",
@@ -15837,12 +15809,40 @@
       "lat": 60.1699,
       "lon": 24.9384
     },
-    "46.224.164.113": {
+    "46.224.165.79": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "204.168.204.86": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1699,
+      "lon": 24.9384
+    },
+    "46.224.165.16": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "204.168.206.51": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1699,
+      "lon": 24.9384
+    },
+    "204.168.219.192": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1699,
+      "lon": 24.9384
     }
   },
   "countries": {
@@ -15850,64 +15850,64 @@
       "name": "United States",
       "count": 786
     },
-    "CA": {
-      "name": "Canada",
-      "count": 186
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 671
+    "GB": {
+      "name": "United Kingdom",
+      "count": 73
     },
     "FR": {
       "name": "France",
       "count": 218
     },
-    "FI": {
-      "name": "Finland",
-      "count": 157
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 73
+    "NL": {
+      "name": "The Netherlands",
+      "count": 30
     },
     "PL": {
       "name": "Poland",
       "count": 120
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 30
+    "DE": {
+      "name": "Germany",
+      "count": 670
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "FI": {
+      "name": "Finland",
+      "count": 158
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
+    "CA": {
+      "name": "Canada",
+      "count": 186
     },
     "SE": {
       "name": "Sweden",
-      "count": 6
-    },
-    "ES": {
-      "name": "Spain",
       "count": 6
     },
     "IT": {
       "name": "Italy",
       "count": 5
     },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 6
+    },
+    "CH": {
+      "name": "Switzerland",
+      "count": 2
+    },
     "SG": {
       "name": "Singapore",
       "count": 1
     },
-    "CH": {
-      "name": "Switzerland",
+    "PT": {
+      "name": "Portugal",
       "count": 2
     }
   }
