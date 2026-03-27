@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-27T05:05:27.660Z",
-  "totalNodes": 2274,
-  "totalLocations": 2263,
+  "lastUpdated": "2026-03-27T06:47:25.564Z",
+  "totalNodes": 2273,
+  "totalLocations": 2262,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4167,13 +4167,6 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
-    },
-    "54.36.168.138": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
     },
     "38.58.181.27": {
       "country": "United States",
@@ -15864,7 +15857,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 120
+      "count": 119
     },
     "DE": {
       "name": "Germany",
