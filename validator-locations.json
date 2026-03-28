@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-28T03:20:47.142Z",
-  "totalNodes": 2248,
-  "totalLocations": 2237,
+  "lastUpdated": "2026-03-28T05:01:52.526Z",
+  "totalNodes": 2250,
+  "totalLocations": 2239,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -15606,13 +15606,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "49.13.213.107": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "162.55.164.200": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15655,12 +15648,33 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "77.42.42.99": {
+    "188.245.193.186": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "77.42.86.176": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "5.231.240.118": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Bad Soden am Taunus",
+      "lat": 50.1592,
+      "lon": 8.48173
+    },
+    "5.231.240.116": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Bad Soden am Taunus",
+      "lat": 50.1592,
+      "lon": 8.48173
     }
   },
   "countries": {
@@ -15668,29 +15682,29 @@
       "name": "United States",
       "count": 785
     },
-    "FI": {
-      "name": "Finland",
-      "count": 157
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 119
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 68
-    },
     "CA": {
       "name": "Canada",
       "count": 185
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 665
     },
     "FR": {
       "name": "France",
       "count": 208
     },
-    "DE": {
-      "name": "Germany",
-      "count": 663
+    "FI": {
+      "name": "Finland",
+      "count": 157
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 68
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 119
     },
     "NL": {
       "name": "The Netherlands",
@@ -15700,22 +15714,6 @@
       "name": "Kenya",
       "count": 7
     },
-    "IT": {
-      "name": "Italy",
-      "count": 5
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 6
-    },
     "BE": {
       "name": "Belgium",
       "count": 4
@@ -15723,6 +15721,22 @@
     "PT": {
       "name": "Portugal",
       "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 6
+    },
+    "IT": {
+      "name": "Italy",
+      "count": 5
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "CH": {
       "name": "Switzerland",
