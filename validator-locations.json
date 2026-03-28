@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-28T08:35:48.126Z",
-  "totalNodes": 2298,
-  "totalLocations": 2287,
+  "lastUpdated": "2026-03-28T10:34:52.677Z",
+  "totalNodes": 2297,
+  "totalLocations": 2286,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -6505,13 +6505,6 @@
       "city": "Warsaw",
       "lat": 52.1783,
       "lon": 21.0602
-    },
-    "195.3.223.220": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2297,
-      "lon": 21.0122
     },
     "135.181.208.157": {
       "country": "Finland",
@@ -15627,13 +15620,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "188.245.193.186": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "5.231.240.118": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15991,21 +15977,28 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "138.199.171.17": {
+    "91.99.13.191": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "138.199.163.79": {
+    "95.217.191.116": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "138.199.164.241": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "138.199.161.235": {
+    "91.99.9.57": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -16020,11 +16013,11 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 155
+      "count": 156
     },
     "PL": {
       "name": "Poland",
-      "count": 119
+      "count": 118
     },
     "GB": {
       "name": "United Kingdom",
@@ -16040,7 +16033,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 713
+      "count": 712
     },
     "NL": {
       "name": "The Netherlands",
