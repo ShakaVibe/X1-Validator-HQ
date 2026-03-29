@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-03-29T05:06:15.558Z",
-  "totalNodes": 2289,
-  "totalLocations": 2278,
+  "lastUpdated": "2026-03-29T06:45:06.203Z",
+  "totalNodes": 2290,
+  "totalLocations": 2279,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -12162,13 +12162,6 @@
       "lat": 33.9246,
       "lon": -80.3408
     },
-    "194.180.207.43": {
-      "country": "Italy",
-      "countryCode": "IT",
-      "city": "Milan",
-      "lat": 45.4722,
-      "lon": 9.1922
-    },
     "89.58.15.69": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15403,13 +15396,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "162.55.38.222": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.12.185.51": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15432,13 +15418,6 @@
       "lon": 12.3649
     },
     "162.55.173.43": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "49.12.72.210": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -15948,12 +15927,52 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "91.99.11.226": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "91.99.176.84": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "5.231.240.119": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Bad Soden am Taunus",
+      "lat": 50.1592,
+      "lon": 8.48173
+    },
+    "5.231.240.117": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Bad Soden am Taunus",
+      "lat": 50.1592,
+      "lon": 8.48173
     }
   },
   "countries": {
     "US": {
       "name": "United States",
       "count": 785
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 157
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 118
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 68
     },
     "CA": {
       "name": "Canada",
@@ -15965,54 +15984,42 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 710
+      "count": 712
     },
     "NL": {
       "name": "The Netherlands",
       "count": 30
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 68
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 157
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 118
-    },
-    "CH": {
-      "name": "Switzerland",
-      "count": 2
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
     "IT": {
       "name": "Italy",
-      "count": 5
+      "count": 4
     },
     "ES": {
       "name": "Spain",
       "count": 6
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "PT": {
       "name": "Portugal",
+      "count": 2
+    },
+    "CH": {
+      "name": "Switzerland",
       "count": 2
     }
   }
