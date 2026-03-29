@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-28T22:34:15.616Z",
+  "lastUpdated": "2026-03-29T01:01:03.983Z",
   "totalNodes": 2291,
   "totalLocations": 2279,
   "locations": {
@@ -13184,13 +13184,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.34.242": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "46.224.77.125": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15242,13 +15235,6 @@
       "lat": 60.1699,
       "lon": 24.9384
     },
-    "46.224.164.29": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "204.168.174.179": {
       "country": "Finland",
       "countryCode": "FI",
@@ -15935,26 +15921,40 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "91.99.93.150": {
+    "138.201.159.41": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "89.167.73.36": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
+    "91.99.191.142": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     },
-    "89.167.52.37": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
+    "91.99.92.127": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "91.99.93.198": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "91.99.185.166": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -15962,64 +15962,64 @@
       "name": "United States",
       "count": 786
     },
-    "FI": {
-      "name": "Finland",
-      "count": 159
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 118
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 68
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 182
     },
     "FR": {
       "name": "France",
       "count": 207
     },
-    "DE": {
-      "name": "Germany",
-      "count": 708
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 30
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "PL": {
+      "name": "Poland",
+      "count": 118
     },
-    "IT": {
-      "name": "Italy",
-      "count": 5
+    "DE": {
+      "name": "Germany",
+      "count": 710
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 157
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 182
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 6
+    "IT": {
+      "name": "Italy",
+      "count": 5
     },
     "BE": {
       "name": "Belgium",
       "count": 4
     },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 6
     },
     "CH": {
       "name": "Switzerland",
+      "count": 2
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
+    "PT": {
+      "name": "Portugal",
       "count": 2
     }
   }
