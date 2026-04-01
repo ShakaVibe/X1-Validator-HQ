@@ -10470,20 +10470,23 @@
           }
         });
 
-        // Determine the latest validator version from GitHub tags (authoritative source)
+        // Determine the latest validator version from GitHub releases (authoritative source)
+        // Using /releases instead of /tags to avoid picking up upstream anza-xyz/agave tags
+        // which are higher version numbers but not actual X1 releases
         try {
-          const ghResp = await fetch('https://api.github.com/repos/x1-labs/tachyon/tags?per_page=10');
+          const ghResp = await fetch('https://api.github.com/repos/x1-labs/tachyon/releases?per_page=10');
           if (ghResp.ok) {
-            const tags = await ghResp.json();
-            const versions = tags
-              .map(t => t.name.replace(/^v/, ''))
+            const releases = await ghResp.json();
+            const versions = releases
+              .filter(r => !r.prerelease && !r.draft)
+              .map(r => r.tag_name.replace(/^v/, ''))
               .filter(v => /^\d+\.\d+\.\d+$/.test(v));
             if (versions.length > 0) {
               window.latestValidatorVersion = versions.sort(compareVersions).pop();
             }
           }
         } catch (e) {
-          console.warn('Could not fetch latest version from GitHub, falling back to cluster peers:', e);
+          console.warn('Could not fetch latest version from GitHub releases, falling back to cluster peers:', e);
         }
 
         // Fallback: derive from cluster peers if GitHub fetch failed
