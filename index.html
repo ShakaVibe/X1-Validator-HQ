@@ -10489,6 +10489,13 @@
           console.warn('Could not fetch latest version from GitHub releases, falling back to cluster peers:', e);
         }
 
+        // Minimum known version floor — update this whenever a new release ships
+        // so the site never treats an older version as "current" even if GitHub lags
+        const MINIMUM_KNOWN_VERSION = '2.2.20';
+        if (!window.latestValidatorVersion || compareVersions(window.latestValidatorVersion, MINIMUM_KNOWN_VERSION) < 0) {
+          window.latestValidatorVersion = MINIMUM_KNOWN_VERSION;
+        }
+
         // Fallback: derive from cluster peers if GitHub fetch failed
         // Use the most common version (mode) among peers, not the highest,
         // to avoid a single rogue node with a bad version string flagging everyone else
