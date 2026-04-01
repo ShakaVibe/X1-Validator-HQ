@@ -10490,11 +10490,17 @@
         }
 
         // Fallback: derive from cluster peers if GitHub fetch failed
+        // Use the most common version (mode) among peers, not the highest,
+        // to avoid a single rogue node with a bad version string flagging everyone else
         if (!window.latestValidatorVersion) {
           const allVersions = Object.values(versionMap).filter(v => v);
-          window.latestValidatorVersion = allVersions.length > 0
-            ? allVersions.sort(compareVersions).pop()
-            : null;
+          if (allVersions.length > 0) {
+            const versionCounts = {};
+            allVersions.forEach(v => { versionCounts[v] = (versionCounts[v] || 0) + 1; });
+            // Use the most common version as the baseline "latest"
+            window.latestValidatorVersion = Object.entries(versionCounts)
+              .sort((a, b) => b[1] - a[1])[0][0];
+          }
         }
 
         const currentValidators = voteAccounts.current || [];
