@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-02T16:39:59.649Z",
-  "totalNodes": 2269,
-  "totalLocations": 2258,
+  "lastUpdated": "2026-04-02T18:37:44.824Z",
+  "totalNodes": 2264,
+  "totalLocations": 2253,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4238,33 +4238,12 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.81.155.88": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Hillsboro",
-      "lat": 45.526,
-      "lon": -122.9874
-    },
-    "51.79.99.136": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
-    },
     "51.77.65.219": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "135.148.171.70": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Oakton",
-      "lat": 38.719,
-      "lon": -77.7416
     },
     "217.182.196.26": {
       "country": "Germany",
@@ -6001,13 +5980,6 @@
       "city": "Hillsboro",
       "lat": 45.526,
       "lon": -122.9874
-    },
-    "51.79.72.76": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Québec",
-      "lat": 46.8127,
-      "lon": -71.2226
     },
     "51.81.245.158": {
       "country": "United States",
@@ -9585,13 +9557,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "51.79.81.29": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "54.39.19.61": {
       "country": "Canada",
@@ -15813,11 +15778,11 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 779
+      "count": 777
     },
     "CA": {
       "name": "Canada",
-      "count": 172
+      "count": 169
     },
     "DE": {
       "name": "Germany",
