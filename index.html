@@ -11205,7 +11205,7 @@
       }
       
       // ==========================================
-      // 4. COMMISSION (10%)
+      // 4. COMMISSION (5%)
       // 0% = 100, 10% = 90, 100% = 0
       // ==========================================
       const commission = validator.commission || 0;
@@ -13033,14 +13033,15 @@
           break;
         case 'efficient':
           // Validators with highest credits efficiency (credits per stake)
+          // Use last *completed* epoch (index -2), skipping the current in-progress epoch (index -1)
           sorted = sorted.filter(v => {
               const stakeInXNT = v.activatedStake / 1e9;
-              const credits = v.epochCredits && v.epochCredits.length > 0 ? v.epochCredits[v.epochCredits.length - 1][1] - v.epochCredits[v.epochCredits.length - 1][2] : 0;
+              const credits = v.epochCredits && v.epochCredits.length >= 2 ? v.epochCredits[v.epochCredits.length - 2][1] - v.epochCredits[v.epochCredits.length - 2][2] : 0;
               return credits > 0 && stakeInXNT > 1000 && !v.delinquent;
             })
             .map(v => {
               const stakeInXNT = v.activatedStake / 1e9;
-              const credits = v.epochCredits[v.epochCredits.length - 1][1] - v.epochCredits[v.epochCredits.length - 1][2];
+              const credits = v.epochCredits[v.epochCredits.length - 2][1] - v.epochCredits[v.epochCredits.length - 2][2];
               v.efficiencyRatio = credits / (stakeInXNT / 1000000); // Credits per 1M XNT
               return v;
             })
@@ -13093,8 +13094,8 @@
           break;
       }
       
-      // Take top 20
-      const top20 = sorted.slice(0, 20);
+      // Take top 50
+      const top20 = sorted.slice(0, 50);
       
       const list = document.getElementById('leaderboardList');
       
