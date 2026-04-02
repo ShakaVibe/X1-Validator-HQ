@@ -12208,15 +12208,31 @@
             validators.push(validator);
           }
         } else {
-          // Search by name
+          // Search by name — prioritize name matches over pubkey matches,
+          // and exact/prefix name matches over partial name matches
           const searchLower = input.toLowerCase();
-          const matches = allValidators.filter(v => 
-            v.name.toLowerCase().includes(searchLower) ||
-            v.votePubkey.toLowerCase().includes(searchLower) ||
-            v.nodePubkey.toLowerCase().includes(searchLower)
-          ).slice(0, 20); // Limit to 20 results
 
-          for (const match of matches) {
+          const scored = allValidators
+            .map(v => {
+              const nameLower = v.name.toLowerCase();
+              const voteL   = v.votePubkey.toLowerCase();
+              const nodeL   = v.nodePubkey.toLowerCase();
+
+              let score = 0;
+              if (nameLower === searchLower)               score = 100; // exact name match
+              else if (nameLower.startsWith(searchLower)) score = 80;  // name prefix match
+              else if (nameLower.includes(searchLower))   score = 60;  // partial name match
+              else if (voteL.includes(searchLower) ||
+                       nodeL.includes(searchLower))        score = 20;  // pubkey match only
+
+              return { v, score };
+            })
+            .filter(item => item.score > 0)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 20)
+            .map(item => item.v);
+
+          for (const match of scored) {
             const validator = await getValidatorInfo(match.votePubkey);
             if (validator) {
               validators.push(validator);
