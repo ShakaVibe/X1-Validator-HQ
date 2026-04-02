@@ -12194,6 +12194,11 @@
       loading.style.display = 'flex';
 
       try {
+        // Guard: ensure validator list is loaded before searching by name
+        if (!allValidators || allValidators.length === 0) {
+          await loadNetworkStats();
+        }
+
         let validators = [];
 
         // Check if it's a vote account address (44 characters)
@@ -12237,6 +12242,11 @@
       } catch (err) {
         console.error(err);
         loading.style.display = 'none';
+        // Show a more specific message if validators never loaded
+        const noData = !allValidators || allValidators.length === 0;
+        error.querySelector('p').textContent = noData
+          ? 'Validator data is still loading — please try again in a moment.'
+          : 'No validators found. Try searching by name or check the Vote Account ID.';
         error.style.display = 'block';
       }
     }
