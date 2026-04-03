@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-03T18:36:38.726Z",
-  "totalNodes": 2223,
-  "totalLocations": 2212,
+  "lastUpdated": "2026-04-03T20:35:19.945Z",
+  "totalNodes": 2224,
+  "totalLocations": 2213,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -15486,6 +15486,13 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "195.3.223.207": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
     }
   },
   "countries": {
@@ -15515,7 +15522,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 112
+      "count": 113
     },
     "NL": {
       "name": "The Netherlands",
