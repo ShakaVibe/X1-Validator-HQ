@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-03T14:36:34.461Z",
-  "totalNodes": 2224,
-  "totalLocations": 2213,
+  "lastUpdated": "2026-04-03T16:36:18.345Z",
+  "totalNodes": 2223,
+  "totalLocations": 2212,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -15270,13 +15270,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "147.135.64.205": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Oakton",
-      "lat": 38.8809,
-      "lon": -77.3008
-    },
     "5.75.252.113": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15498,7 +15491,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 767
+      "count": 766
     },
     "CA": {
       "name": "Canada",
