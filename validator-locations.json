@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-03T00:58:20.574Z",
-  "totalNodes": 2259,
-  "totalLocations": 2248,
+  "lastUpdated": "2026-04-03T03:27:55.629Z",
+  "totalNodes": 2264,
+  "totalLocations": 2253,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3538,27 +3538,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.81.155.51": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Hillsboro",
-      "lat": 45.526,
-      "lon": -122.9874
-    },
-    "51.81.154.139": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Hillsboro",
-      "lat": 45.526,
-      "lon": -122.9874
-    },
-    "51.81.154.92": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Hillsboro",
-      "lat": 45.526,
-      "lon": -122.9874
-    },
     "51.91.30.36": {
       "country": "France",
       "countryCode": "FR",
@@ -3901,13 +3880,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "40.160.58.168": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Warrenton",
-      "lat": 38.7135,
-      "lon": -77.7953
     },
     "57.129.100.186": {
       "country": "Germany",
@@ -4357,13 +4329,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "144.217.252.170": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "209.159.156.62": {
       "country": "United States",
       "countryCode": "US",
@@ -4384,13 +4349,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "192.99.232.143": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5063,
-      "lon": -73.5794
     },
     "45.131.114.154": {
       "country": "The Netherlands",
@@ -5940,13 +5898,6 @@
       "lon": 21.0093
     },
     "51.81.155.192": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Hillsboro",
-      "lat": 45.526,
-      "lon": -122.9874
-    },
-    "51.81.245.158": {
       "country": "United States",
       "countryCode": "US",
       "city": "Hillsboro",
@@ -15662,13 +15613,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.167.248": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "128.140.114.237": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15704,28 +15648,7 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "135.181.206.155": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "95.216.137.90": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "168.119.158.129": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "188.34.162.121": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -15738,16 +15661,128 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "188.245.63.225": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "49.13.22.236": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "188.245.117.181": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "65.21.0.121": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "95.216.200.189": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "204.168.235.24": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1699,
+      "lon": 24.9384
+    },
+    "95.217.160.220": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "188.245.48.29": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "69.10.55.50": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0749
+    },
+    "49.13.213.107": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "49.13.13.150": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "49.13.69.132": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "49.13.6.21": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "49.13.19.33": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "188.34.160.72": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "162.245.187.106": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 775
+      "count": 772
     },
     "CA": {
       "name": "Canada",
-      "count": 169
+      "count": 167
     },
     "FR": {
       "name": "France",
@@ -15755,7 +15790,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 715
+      "count": 723
     },
     "NL": {
       "name": "The Netherlands",
@@ -15767,7 +15802,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 166
+      "count": 168
     },
     "PL": {
       "name": "Poland",
