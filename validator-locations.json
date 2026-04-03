@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-03T06:48:41.442Z",
-  "totalNodes": 2236,
-  "totalLocations": 2225,
+  "lastUpdated": "2026-04-03T08:38:20.896Z",
+  "totalNodes": 2235,
+  "totalLocations": 2224,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -7200,13 +7200,6 @@
       "lon": -73.8785
     },
     "51.255.79.223": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.38.141.46": {
       "country": "France",
       "countryCode": "FR",
       "city": "Roubaix",
@@ -15060,13 +15053,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "65.109.132.9": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "51.91.7.153": {
       "country": "France",
       "countryCode": "FR",
@@ -15152,13 +15138,6 @@
       "lon": 12.3649
     },
     "46.224.167.77": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "91.98.94.1": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -15577,6 +15556,20 @@
       "city": "Warsaw",
       "lat": 52.1783,
       "lon": 21.0602
+    },
+    "5.75.241.72": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "188.245.160.167": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -15590,15 +15583,15 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 720
+      "count": 721
     },
     "FR": {
       "name": "France",
-      "count": 186
+      "count": 185
     },
     "FI": {
       "name": "Finland",
-      "count": 169
+      "count": 168
     },
     "GB": {
       "name": "United Kingdom",
