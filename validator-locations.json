@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-03T08:38:20.896Z",
-  "totalNodes": 2235,
-  "totalLocations": 2224,
+  "lastUpdated": "2026-04-03T10:36:18.283Z",
+  "totalNodes": 2232,
+  "totalLocations": 2221,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -93,13 +93,6 @@
       "city": "Wattrelos",
       "lat": 50.7012,
       "lon": 3.21501
-    },
-    "145.239.232.92": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Saarbrücken",
-      "lat": 49.2405,
-      "lon": 6.98474
     },
     "57.129.101.208": {
       "country": "Germany",
@@ -1206,13 +1199,6 @@
       "city": "Warsaw",
       "lat": 52.1783,
       "lon": 21.0602
-    },
-    "145.239.232.11": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Saarbrücken",
-      "lat": 49.2405,
-      "lon": 6.98474
     },
     "51.79.78.23": {
       "country": "Canada",
@@ -3229,13 +3215,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "5.196.78.109": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "51.222.248.49": {
       "country": "Canada",
@@ -14213,13 +14192,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "204.168.187.96": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
-    },
     "46.224.165.249": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14695,13 +14667,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "46.62.255.47": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "89.167.19.96": {
       "country": "Finland",
@@ -15417,13 +15382,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "168.119.158.129": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "188.34.164.76": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15570,6 +15528,27 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "138.199.164.241": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "138.199.166.127": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "138.199.151.167": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -15577,29 +15556,29 @@
       "name": "United States",
       "count": 768
     },
-    "CA": {
-      "name": "Canada",
-      "count": 164
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 721
-    },
-    "FR": {
-      "name": "France",
-      "count": 185
-    },
     "FI": {
       "name": "Finland",
-      "count": 168
+      "count": 166
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 113
     },
     "GB": {
       "name": "United Kingdom",
       "count": 61
     },
-    "PL": {
-      "name": "Poland",
-      "count": 113
+    "CA": {
+      "name": "Canada",
+      "count": 164
+    },
+    "FR": {
+      "name": "France",
+      "count": 184
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 721
     },
     "NL": {
       "name": "The Netherlands",
@@ -15609,6 +15588,18 @@
       "name": "Kenya",
       "count": 7
     },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 5
+    },
     "BE": {
       "name": "Belgium",
       "count": 4
@@ -15616,18 +15607,6 @@
     "PT": {
       "name": "Portugal",
       "count": 2
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 5
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
     }
   }
 }
