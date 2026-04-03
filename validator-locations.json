@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-03T10:36:18.283Z",
-  "totalNodes": 2232,
-  "totalLocations": 2221,
+  "lastUpdated": "2026-04-03T12:37:16.468Z",
+  "totalNodes": 2228,
+  "totalLocations": 2217,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1094,13 +1094,6 @@
       "city": "Pleasant View",
       "lat": 41.3072,
       "lon": -111.992
-    },
-    "145.239.232.91": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Saarbrücken",
-      "lat": 49.2405,
-      "lon": 6.98474
     },
     "74.50.79.234": {
       "country": "United States",
@@ -7150,13 +7143,6 @@
       "lat": 51.5081,
       "lon": -0.1278
     },
-    "51.222.25.146": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3147,
-      "lon": -73.8785
-    },
     "158.69.198.244": {
       "country": "Canada",
       "countryCode": "CA",
@@ -7170,13 +7156,6 @@
       "city": "Montreal",
       "lat": 45.5075,
       "lon": -73.5887
-    },
-    "51.222.159.84": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3147,
-      "lon": -73.8785
     },
     "51.255.79.223": {
       "country": "France",
@@ -7506,13 +7485,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "51.222.25.157": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3147,
-      "lon": -73.8785
     },
     "57.129.101.118": {
       "country": "Germany",
@@ -15382,13 +15354,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "188.34.164.76": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "188.245.63.225": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15515,13 +15480,6 @@
       "lat": 52.1783,
       "lon": 21.0602
     },
-    "5.75.241.72": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "188.245.160.167": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15549,6 +15507,20 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "95.216.154.98": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "138.199.233.66": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -15556,21 +15528,9 @@
       "name": "United States",
       "count": 768
     },
-    "FI": {
-      "name": "Finland",
-      "count": 166
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 113
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 61
-    },
     "CA": {
       "name": "Canada",
-      "count": 164
+      "count": 161
     },
     "FR": {
       "name": "France",
@@ -15578,31 +15538,43 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 721
+      "count": 719
     },
     "NL": {
       "name": "The Netherlands",
       "count": 30
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "GB": {
+      "name": "United Kingdom",
+      "count": 61
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 167
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 113
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "ES": {
       "name": "Spain",
       "count": 5
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "PT": {
       "name": "Portugal",
