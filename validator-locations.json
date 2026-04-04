@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-03T22:34:54.400Z",
-  "totalNodes": 2221,
-  "totalLocations": 2210,
+  "lastUpdated": "2026-04-04T00:53:47.306Z",
+  "totalNodes": 2220,
+  "totalLocations": 2209,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2739,13 +2739,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "51.89.194.84": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "65.109.89.58": {
       "country": "Finland",
@@ -15452,13 +15445,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.175.127": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "95.217.161.18": {
       "country": "Finland",
       "countryCode": "FI",
@@ -15472,6 +15458,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "37.27.82.226": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -15479,41 +15472,41 @@
       "name": "United States",
       "count": 763
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 61
+    "CA": {
+      "name": "Canada",
+      "count": 159
     },
     "FR": {
       "name": "France",
       "count": 184
     },
+    "DE": {
+      "name": "Germany",
+      "count": 716
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 30
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 60
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 170
     },
     "PL": {
       "name": "Poland",
       "count": 113
     },
-    "DE": {
-      "name": "Germany",
-      "count": 717
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 169
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 159
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "SE": {
       "name": "Sweden",
       "count": 6
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
     },
     "KE": {
       "name": "Kenya",
