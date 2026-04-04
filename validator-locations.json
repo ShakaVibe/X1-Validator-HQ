@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-04T12:40:24.681Z",
+  "lastUpdated": "2026-04-04T14:34:46.930Z",
   "totalNodes": 2230,
-  "totalLocations": 2217,
+  "totalLocations": 2219,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14976,13 +14976,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "91.99.83.236": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "46.224.163.69": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15521,6 +15514,27 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "46.225.148.18": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "46.225.153.21": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "91.99.1.50": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -15532,45 +15546,41 @@
       "name": "Canada",
       "count": 158
     },
-    "DE": {
-      "name": "Germany",
-      "count": 725
-    },
     "FR": {
       "name": "France",
       "count": 184
     },
-    "FI": {
-      "name": "Finland",
-      "count": 170
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 60
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 113
+    "DE": {
+      "name": "Germany",
+      "count": 727
     },
     "NL": {
       "name": "The Netherlands",
       "count": 30
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "GB": {
+      "name": "United Kingdom",
+      "count": 60
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 170
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 113
     },
     "BE": {
       "name": "Belgium",
       "count": 4
     },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
-    },
     "SE": {
       "name": "Sweden",
       "count": 6
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "ES": {
       "name": "Spain",
@@ -15579,6 +15589,10 @@
     "SG": {
       "name": "Singapore",
       "count": 1
+    },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
     }
   }
 }
