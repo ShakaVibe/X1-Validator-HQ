@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-05T06:46:28.023Z",
-  "totalNodes": 2316,
-  "totalLocations": 2303,
+  "lastUpdated": "2026-04-05T08:36:09.463Z",
+  "totalNodes": 2318,
+  "totalLocations": 2305,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -15116,13 +15116,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "188.245.63.225": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.13.22.236": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15458,13 +15451,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "46.224.160.37": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "46.225.158.199": {
       "country": "Germany",
@@ -16103,13 +16089,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "188.34.177.157": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "65.109.10.153": {
       "country": "Finland",
       "countryCode": "FI",
@@ -16123,52 +16102,91 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "135.181.98.54": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "78.47.217.234": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "135.181.145.6": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "144.217.73.230": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "104.250.158.147": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Salt Lake City",
+      "lat": 40.7687,
+      "lon": -111.886
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 835
+      "count": 836
     },
     "CA": {
       "name": "Canada",
-      "count": 159
+      "count": 160
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 736
     },
     "FR": {
       "name": "France",
       "count": 184
     },
-    "DE": {
-      "name": "Germany",
-      "count": 738
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 30
+    "FI": {
+      "name": "Finland",
+      "count": 172
     },
     "GB": {
       "name": "United Kingdom",
       "count": 60
     },
-    "FI": {
-      "name": "Finland",
-      "count": 170
-    },
     "PL": {
       "name": "Poland",
       "count": 115
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 30
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "BE": {
       "name": "Belgium",
       "count": 4
     },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
+    },
     "SE": {
       "name": "Sweden",
       "count": 6
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "ES": {
       "name": "Spain",
@@ -16177,10 +16195,6 @@
     "SG": {
       "name": "Singapore",
       "count": 1
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
     }
   }
 }
