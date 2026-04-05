@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-05T12:36:41.312Z",
+  "lastUpdated": "2026-04-05T14:35:15.676Z",
   "totalNodes": 2315,
   "totalLocations": 2302,
   "locations": {
@@ -14836,13 +14836,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "5.75.228.126": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "46.224.139.125": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14996,13 +14989,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "204.168.232.123": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
     },
     "51.222.105.217": {
       "country": "Canada",
@@ -15984,20 +15970,6 @@
       "lat": 40.7687,
       "lon": -111.886
     },
-    "46.225.159.40": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "138.201.91.28": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "95.216.170.29": {
       "country": "Finland",
       "countryCode": "FI",
@@ -16047,13 +16019,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "188.34.189.202": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "65.21.159.247": {
       "country": "Finland",
       "countryCode": "FI",
@@ -16096,21 +16061,56 @@
       "lat": 49.4527,
       "lon": 11.0783
     },
-    "195.201.232.89": {
+    "188.245.191.107": {
       "country": "Germany",
       "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
     },
-    "135.181.145.6": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
+    "49.12.231.229": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
     },
-    "188.245.191.107": {
+    "178.104.73.22": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "178.104.72.189": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "46.224.210.153": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "178.104.17.177": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "46.224.216.172": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "46.224.199.190": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Nuremberg",
@@ -16129,7 +16129,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 736
+      "count": 738
     },
     "FR": {
       "name": "France",
@@ -16137,7 +16137,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 169
+      "count": 167
     },
     "GB": {
       "name": "United Kingdom",
