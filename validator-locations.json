@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-05T03:32:20.839Z",
-  "totalNodes": 2316,
-  "totalLocations": 2303,
+  "lastUpdated": "2026-04-05T05:06:34.705Z",
+  "totalNodes": 2315,
+  "totalLocations": 2302,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -9439,13 +9439,6 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "51.89.99.98": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "51.79.80.230": {
       "country": "Canada",
       "countryCode": "CA",
@@ -14913,13 +14906,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.167.77": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "5.75.254.32": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15389,13 +15375,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.72.188": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "46.224.133.171": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15423,13 +15402,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "185.248.140.246": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Gifhorn",
-      "lat": 52.4791,
-      "lon": 10.544
     },
     "46.224.164.29": {
       "country": "Germany",
@@ -16123,16 +16095,37 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "104.250.158.146": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Salt Lake City",
+      "lat": 40.7687,
+      "lon": -111.886
+    },
+    "46.225.159.40": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "46.224.166.177": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 834
+      "count": 835
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 61
+      "count": 60
     },
     "FR": {
       "name": "France",
@@ -16148,7 +16141,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 738
+      "count": 737
     },
     "FI": {
       "name": "Finland",
