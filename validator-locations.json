@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-05T16:35:17.236Z",
-  "totalNodes": 2326,
-  "totalLocations": 2313,
+  "lastUpdated": "2026-04-05T18:36:09.564Z",
+  "totalNodes": 2325,
+  "totalLocations": 2312,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -18,13 +18,6 @@
       "lon": -0.1278
     },
     "162.250.121.78": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "198.96.93.178": {
       "country": "United States",
       "countryCode": "US",
       "city": "Secaucus",
@@ -15116,13 +15109,6 @@
       "lat": 52.1783,
       "lon": 21.0602
     },
-    "138.199.166.127": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "138.199.151.167": {
       "country": "Germany",
       "countryCode": "DE",
@@ -16193,36 +16179,43 @@
       "city": "New York",
       "lat": 40.7128,
       "lon": -74.006
+    },
+    "159.69.197.76": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 847
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 160
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 738
-    },
-    "FR": {
-      "name": "France",
-      "count": 184
+      "count": 846
     },
     "FI": {
       "name": "Finland",
       "count": 167
     },
+    "PL": {
+      "name": "Poland",
+      "count": 115
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 60
     },
-    "PL": {
-      "name": "Poland",
-      "count": 115
+    "CA": {
+      "name": "Canada",
+      "count": 160
+    },
+    "FR": {
+      "name": "France",
+      "count": 184
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 738
     },
     "NL": {
       "name": "The Netherlands",
@@ -16232,6 +16225,18 @@
       "name": "Kenya",
       "count": 7
     },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 5
+    },
     "BE": {
       "name": "Belgium",
       "count": 4
@@ -16239,18 +16244,6 @@
     "PT": {
       "name": "Portugal",
       "count": 2
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 5
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
     }
   }
 }
