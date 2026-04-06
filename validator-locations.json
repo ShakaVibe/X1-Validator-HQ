@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-06T20:35:31.718Z",
+  "lastUpdated": "2026-04-06T22:35:23.430Z",
   "totalNodes": 2327,
   "totalLocations": 2314,
   "locations": {
@@ -14591,13 +14591,6 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "204.168.211.69": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
-    },
     "46.225.156.183": {
       "country": "Germany",
       "countryCode": "DE",
@@ -16159,13 +16152,6 @@
       "lat": 49.4527,
       "lon": 11.0783
     },
-    "159.69.3.85": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
     "159.69.1.239": {
       "country": "Germany",
       "countryCode": "DE",
@@ -16200,6 +16186,20 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "159.69.13.121": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "159.69.198.131": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
     }
   },
   "countries": {
@@ -16217,7 +16217,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 752
+      "count": 753
     },
     "NL": {
       "name": "The Netherlands",
@@ -16229,7 +16229,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 152
+      "count": 151
     },
     "PL": {
       "name": "Poland",
