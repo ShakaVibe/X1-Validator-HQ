@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-06T01:00:57.294Z",
-  "totalNodes": 2325,
-  "totalLocations": 2312,
+  "lastUpdated": "2026-04-06T03:33:21.746Z",
+  "totalNodes": 2326,
+  "totalLocations": 2313,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14955,13 +14955,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "65.21.0.121": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "95.216.200.189": {
       "country": "Finland",
       "countryCode": "FI",
@@ -14983,21 +14976,7 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "188.245.48.29": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.13.213.107": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "49.13.13.150": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -16186,12 +16165,40 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
+    },
+    "159.69.80.239": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "159.69.86.94": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "23.88.57.37": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "161.129.65.14": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 846
+      "count": 847
     },
     "GB": {
       "name": "United Kingdom",
@@ -16211,11 +16218,11 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 744
+      "count": 745
     },
     "FI": {
       "name": "Finland",
-      "count": 161
+      "count": 160
     },
     "CA": {
       "name": "Canada",
