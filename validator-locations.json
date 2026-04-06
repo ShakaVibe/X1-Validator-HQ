@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-06T18:37:47.327Z",
-  "totalNodes": 2326,
-  "totalLocations": 2313,
+  "lastUpdated": "2026-04-06T20:35:31.718Z",
+  "totalNodes": 2327,
+  "totalLocations": 2314,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -13569,13 +13569,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "204.168.176.208": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
-    },
     "46.224.164.196": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14423,13 +14416,6 @@
       "lat": 50.1592,
       "lon": 8.48173
     },
-    "91.99.182.12": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "91.98.152.122": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14648,13 +14634,6 @@
       "lon": -74.0743
     },
     "88.198.109.179": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "46.224.139.125": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -15627,26 +15606,12 @@
       "lat": 40.6128,
       "lon": -87.4917
     },
-    "46.225.146.243": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "104.250.158.146": {
       "country": "United States",
       "countryCode": "US",
       "city": "Salt Lake City",
       "lat": 40.7687,
       "lon": -111.886
-    },
-    "95.216.170.29": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "46.225.158.122": {
       "country": "Germany",
@@ -16166,13 +16131,6 @@
       "lat": 49.4527,
       "lon": 11.0783
     },
-    "95.216.190.7": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "159.69.19.51": {
       "country": "Germany",
       "countryCode": "DE",
@@ -16193,12 +16151,61 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "159.69.18.176": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "159.69.3.85": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "159.69.1.239": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "159.69.22.66": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "159.69.31.87": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "159.69.19.18": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "198.96.93.178": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 850
+      "count": 851
     },
     "CA": {
       "name": "Canada",
@@ -16210,7 +16217,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 749
+      "count": 752
     },
     "NL": {
       "name": "The Netherlands",
@@ -16222,7 +16229,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 155
+      "count": 152
     },
     "PL": {
       "name": "Poland",
