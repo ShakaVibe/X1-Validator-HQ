@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-07T18:40:26.010Z",
+  "lastUpdated": "2026-04-07T20:36:58.446Z",
   "totalNodes": 2503,
   "totalLocations": 2490,
   "locations": {
@@ -17342,13 +17342,6 @@
       "lat": 49.4527,
       "lon": 11.0783
     },
-    "128.140.50.247": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "128.140.115.120": {
       "country": "Germany",
       "countryCode": "DE",
@@ -17377,26 +17370,12 @@
       "lat": 49.4543,
       "lon": 11.0746
     },
-    "49.13.90.91": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.13.93.220": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "178.104.159.153": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4543,
-      "lon": 11.0746
     },
     "91.98.135.79": {
       "country": "Germany",
@@ -17412,13 +17391,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "135.181.32.94": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "46.224.19.71": {
       "country": "Germany",
       "countryCode": "DE",
@@ -17427,6 +17399,34 @@
       "lon": 11.0783
     },
     "49.13.138.220": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "178.104.152.236": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4543,
+      "lon": 11.0746
+    },
+    "178.104.159.174": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4543,
+      "lon": 11.0746
+    },
+    "46.225.219.66": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "188.245.63.10": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -17449,7 +17449,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 349
+      "count": 350
     },
     "NL": {
       "name": "The Netherlands",
@@ -17461,7 +17461,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 141
+      "count": 140
     },
     "PL": {
       "name": "Poland",
