@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-07T05:05:50.355Z",
+  "lastUpdated": "2026-04-07T06:50:29.233Z",
   "totalNodes": 2426,
   "totalLocations": 2413,
   "locations": {
@@ -13436,13 +13436,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "65.109.237.242": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "95.217.13.124": {
       "country": "Finland",
       "countryCode": "FI",
@@ -13554,13 +13547,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "157.180.127.213": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "51.79.96.29": {
       "country": "Canada",
@@ -13708,13 +13694,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "204.168.191.181": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1699,
-      "lon": 24.9384
     },
     "192.154.103.26": {
       "country": "United States",
@@ -14451,13 +14430,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "162.55.166.40": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "49.12.7.75": {
       "country": "Germany",
       "countryCode": "DE",
@@ -14641,13 +14613,6 @@
       "lon": 12.3649
     },
     "46.224.66.51": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "91.99.210.199": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -16068,13 +16033,6 @@
       "lat": 49.4527,
       "lon": 11.0783
     },
-    "167.235.62.27": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
     "159.69.38.28": {
       "country": "Germany",
       "countryCode": "DE",
@@ -16893,24 +16851,54 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "116.203.54.246": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "116.203.39.79": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "116.203.44.251": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "116.203.47.82": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "116.203.34.252": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "116.203.53.120": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
     }
   },
   "countries": {
     "US": {
       "name": "United States",
       "count": 952
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 149
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 114
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 59
     },
     "CA": {
       "name": "Canada",
@@ -16922,31 +16910,43 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 754
+      "count": 757
     },
     "NL": {
       "name": "The Netherlands",
       "count": 29
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "GB": {
+      "name": "United Kingdom",
+      "count": 59
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 146
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 114
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "ES": {
       "name": "Spain",
       "count": 5
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "SG": {
+      "name": "Singapore",
+      "count": 1
     },
     "PT": {
       "name": "Portugal",
