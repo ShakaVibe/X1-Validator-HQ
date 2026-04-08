@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-08T12:42:48.201Z",
-  "totalNodes": 2503,
-  "totalLocations": 2484,
+  "lastUpdated": "2026-04-08T14:51:23.531Z",
+  "totalNodes": 2502,
+  "totalLocations": 2485,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1682,13 +1682,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "38.147.105.167": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "146.19.24.218": {
       "country": "Poland",
@@ -9796,13 +9789,6 @@
       "lat": 52.1783,
       "lon": 21.0602
     },
-    "91.99.191.142": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "91.99.178.53": {
       "country": "Germany",
       "countryCode": "DE",
@@ -17062,13 +17048,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.100.54": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "46.225.145.41": {
       "country": "Germany",
       "countryCode": "DE",
@@ -17082,13 +17061,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "178.105.9.180": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4543,
-      "lon": 11.0746
     },
     "178.105.1.43": {
       "country": "Germany",
@@ -17390,12 +17362,47 @@
       "city": "Nuremberg",
       "lat": 49.4543,
       "lon": 11.0746
+    },
+    "78.46.223.239": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "78.47.217.234": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "188.34.177.157": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "162.55.43.128": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "162.55.44.77": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1442
+      "count": 1441
     },
     "CA": {
       "name": "Canada",
