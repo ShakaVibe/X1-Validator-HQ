@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-08T20:36:30.751Z",
+  "lastUpdated": "2026-04-08T22:35:42.481Z",
   "totalNodes": 2501,
-  "totalLocations": 2479,
+  "totalLocations": 2482,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -716,13 +716,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "149.50.106.23": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "216.219.87.170": {
       "country": "United States",
@@ -17125,33 +17118,12 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "188.34.160.206": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "162.55.38.222": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "178.105.11.76": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Nuremberg",
       "lat": 49.4543,
       "lon": 11.0746
-    },
-    "128.140.55.67": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "49.13.63.30": {
       "country": "Germany",
@@ -17349,12 +17321,61 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "49.12.244.1": {
+    "168.119.48.66": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "49.12.71.176": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "159.69.114.219": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "167.235.205.186": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "168.119.187.26": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "168.119.63.55": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "195.201.232.89": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "217.182.196.26": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Saarbrücken",
+      "lat": 49.2405,
+      "lon": 6.98474
     }
   },
   "countries": {
@@ -17362,29 +17383,29 @@
       "name": "United States",
       "count": 1441
     },
-    "CA": {
-      "name": "Canada",
-      "count": 159
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 354
-    },
     "FI": {
       "name": "Finland",
       "count": 135
     },
-    "FR": {
-      "name": "France",
-      "count": 186
+    "PL": {
+      "name": "Poland",
+      "count": 113
     },
     "GB": {
       "name": "United Kingdom",
       "count": 59
     },
-    "PL": {
-      "name": "Poland",
-      "count": 114
+    "CA": {
+      "name": "Canada",
+      "count": 159
+    },
+    "FR": {
+      "name": "France",
+      "count": 186
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 355
     },
     "NL": {
       "name": "The Netherlands",
@@ -17394,6 +17415,14 @@
       "name": "Kenya",
       "count": 7
     },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 1
+    },
     "BE": {
       "name": "Belgium",
       "count": 4
@@ -17402,17 +17431,9 @@
       "name": "Portugal",
       "count": 2
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
-    },
     "ES": {
       "name": "Spain",
       "count": 4
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
     }
   }
 }
