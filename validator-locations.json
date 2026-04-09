@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-09T05:05:54.187Z",
-  "totalNodes": 2412,
-  "totalLocations": 2399,
+  "lastUpdated": "2026-04-09T06:52:15.152Z",
+  "totalNodes": 2414,
+  "totalLocations": 2401,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -15781,13 +15781,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "178.105.0.30": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4543,
-      "lon": 11.0746
-    },
     "159.69.123.16": {
       "country": "Germany",
       "countryCode": "DE",
@@ -15838,13 +15831,6 @@
       "lon": 11.0746
     },
     "178.105.4.130": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4543,
-      "lon": 11.0746
-    },
-    "178.105.10.12": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Nuremberg",
@@ -15948,13 +15934,6 @@
       "city": "Saarbrücken",
       "lat": 49.2405,
       "lon": 6.98474
-    },
-    "46.224.45.223": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "49.13.5.160": {
       "country": "Germany",
@@ -16795,12 +16774,59 @@
       "city": "Hillsboro",
       "lat": 45.526,
       "lon": -122.9874
+    },
+    "78.46.223.239": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "78.47.143.31": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "51.75.242.67": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "78.46.212.35": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "51.81.155.180": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Hillsboro",
+      "lat": 45.526,
+      "lon": -122.9874
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1553
+      "count": 1554
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 94
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 112
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 59
     },
     "CA": {
       "name": "Canada",
@@ -16808,7 +16834,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 186
+      "count": 187
     },
     "DE": {
       "name": "Germany",
@@ -16818,33 +16844,21 @@
       "name": "The Netherlands",
       "count": 28
     },
-    "FI": {
-      "name": "Finland",
-      "count": 94
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 59
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 112
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
     "SG": {
       "name": "Singapore",
       "count": 1
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "PT": {
       "name": "Portugal",
