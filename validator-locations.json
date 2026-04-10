@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-10T16:37:31.442Z",
-  "totalNodes": 2403,
-  "totalLocations": 2390,
+  "lastUpdated": "2026-04-10T18:37:13.184Z",
+  "totalNodes": 2405,
+  "totalLocations": 2392,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -16732,12 +16732,38 @@
       "city": "Saarbrücken",
       "lat": 49.2405,
       "lon": 6.98474
+    },
+    "69.10.55.50": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0749
+    },
+    "216.219.91.162": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1550
+      "count": 1552
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 94
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 111
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 59
     },
     "CA": {
       "name": "Canada",
@@ -16755,33 +16781,21 @@
       "name": "The Netherlands",
       "count": 27
     },
-    "FI": {
-      "name": "Finland",
-      "count": 94
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 59
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 111
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "SE": {
       "name": "Sweden",
       "count": 6
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
     "SG": {
       "name": "Singapore",
       "count": 1
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "PT": {
       "name": "Portugal",
