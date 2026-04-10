@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-10T05:13:29.521Z",
-  "totalNodes": 2408,
-  "totalLocations": 2395,
+  "lastUpdated": "2026-04-10T06:59:35.265Z",
+  "totalNodes": 2406,
+  "totalLocations": 2393,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -16530,20 +16530,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.75.242.67": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.81.155.180": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Hillsboro",
-      "lat": 45.526,
-      "lon": -122.9874
-    },
     "78.47.55.154": {
       "country": "Germany",
       "countryCode": "DE",
@@ -16772,7 +16758,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1552
+      "count": 1551
     },
     "GB": {
       "name": "United Kingdom",
@@ -16780,7 +16766,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 185
+      "count": 184
     },
     "NL": {
       "name": "The Netherlands",
