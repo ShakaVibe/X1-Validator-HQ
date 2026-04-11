@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-11T10:35:10.432Z",
-  "totalNodes": 2404,
-  "totalLocations": 2391,
+  "lastUpdated": "2026-04-11T12:36:46.125Z",
+  "totalNodes": 2405,
+  "totalLocations": 2392,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -16739,6 +16739,13 @@
       "city": "Singapore",
       "lat": 1.35208,
       "lon": 103.82
+    },
+    "152.53.245.48": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Karlsruhe",
+      "lat": 49.0291,
+      "lon": 8.35696
     }
   },
   "countries": {
@@ -16768,7 +16775,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 193
+      "count": 194
     },
     "CA": {
       "name": "Canada",
