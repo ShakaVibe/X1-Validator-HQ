@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-12T05:12:18.168Z",
+  "lastUpdated": "2026-04-12T06:51:23.879Z",
   "totalNodes": 2406,
   "totalLocations": 2393,
   "locations": {
@@ -1983,13 +1983,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "216.158.232.110": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "162.220.162.186": {
       "country": "United States",
@@ -16753,12 +16746,19 @@
       "city": "Gifhorn",
       "lat": 52.4791,
       "lon": 10.544
+    },
+    "158.69.54.196": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.4995,
+      "lon": -73.5848
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1552
+      "count": 1551
     },
     "FI": {
       "name": "Finland",
@@ -16774,7 +16774,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 160
+      "count": 161
     },
     "FR": {
       "name": "France",
