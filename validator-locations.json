@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-12T06:51:23.879Z",
-  "totalNodes": 2406,
-  "totalLocations": 2393,
+  "lastUpdated": "2026-04-12T08:36:46.783Z",
+  "totalNodes": 2407,
+  "totalLocations": 2390,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1353,13 +1353,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "38.246.112.28": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "217.182.175.238": {
       "country": "France",
@@ -2761,13 +2754,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "38.246.112.106": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "149.50.110.139": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3033,13 +3019,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "38.246.115.226": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "66.70.177.35": {
       "country": "Canada",
@@ -4034,13 +4013,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3847,
       "lon": 8.0475
-    },
-    "38.147.105.104": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "158.69.52.67": {
       "country": "Canada",
@@ -16753,44 +16725,47 @@
       "city": "Montreal",
       "lat": 45.4995,
       "lon": -73.5848
+    },
+    "38.147.105.167": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1551
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 94
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 111
+      "count": 1552
     },
     "GB": {
       "name": "United Kingdom",
       "count": 59
     },
-    "CA": {
-      "name": "Canada",
-      "count": 161
-    },
     "FR": {
       "name": "France",
       "count": 184
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 195
     },
     "NL": {
       "name": "The Netherlands",
       "count": 27
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "PL": {
+      "name": "Poland",
+      "count": 111
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 94
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 195
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 161
     },
     "SE": {
       "name": "Sweden",
@@ -16804,13 +16779,17 @@
       "name": "Belgium",
       "count": 4
     },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
       "count": 4
+    },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
     }
   }
 }
