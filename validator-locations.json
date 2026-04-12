@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-12T18:36:33.684Z",
-  "totalNodes": 2407,
-  "totalLocations": 2390,
+  "lastUpdated": "2026-04-12T20:35:18.386Z",
+  "totalNodes": 2409,
+  "totalLocations": 2392,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -16732,12 +16732,26 @@
       "city": "Wroclaw",
       "lat": 51.098,
       "lon": 17.0321
+    },
+    "23.159.176.250": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9526,
+      "lon": -75.1652
+    },
+    "37.187.147.14": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1551
+      "count": 1552
     },
     "GB": {
       "name": "United Kingdom",
@@ -16745,7 +16759,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 184
+      "count": 185
     },
     "NL": {
       "name": "The Netherlands",
