@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-12T10:35:34.942Z",
+  "lastUpdated": "2026-04-12T12:36:58.314Z",
   "totalNodes": 2407,
   "totalLocations": 2390,
   "locations": {
@@ -4279,13 +4279,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "68.168.213.6": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Bricktown",
-      "lat": 40.0881,
-      "lon": -74.1195
     },
     "45.94.82.42": {
       "country": "The Netherlands",
@@ -16732,24 +16725,19 @@
       "city": "Imara Daima Estate",
       "lat": -1.32323,
       "lon": 36.8802
+    },
+    "145.239.134.7": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1552
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 93
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 111
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 59
+      "count": 1551
     },
     "CA": {
       "name": "Canada",
@@ -16767,9 +16755,21 @@
       "name": "The Netherlands",
       "count": 27
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "FI": {
+      "name": "Finland",
+      "count": 93
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 59
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 112
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "SE": {
       "name": "Sweden",
@@ -16779,9 +16779,9 @@
       "name": "Singapore",
       "count": 2
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "PT": {
       "name": "Portugal",
