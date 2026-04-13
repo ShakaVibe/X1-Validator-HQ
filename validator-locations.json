@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-13T12:44:35.432Z",
-  "totalNodes": 2404,
-  "totalLocations": 2390,
+  "lastUpdated": "2026-04-13T14:56:32.007Z",
+  "totalNodes": 2403,
+  "totalLocations": 2389,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -3922,13 +3922,6 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
-    },
-    "51.195.190.120": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Blackburn",
-      "lat": 53.75,
-      "lon": -2.48333
     },
     "205.209.110.66": {
       "country": "United States",
@@ -16739,6 +16732,18 @@
       "name": "United States",
       "count": 1547
     },
+    "FI": {
+      "name": "Finland",
+      "count": 93
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 112
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 58
+    },
     "CA": {
       "name": "Canada",
       "count": 161
@@ -16755,21 +16760,9 @@
       "name": "The Netherlands",
       "count": 26
     },
-    "FI": {
-      "name": "Finland",
-      "count": 93
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 59
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 112
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SE": {
       "name": "Sweden",
@@ -16779,9 +16772,9 @@
       "name": "Singapore",
       "count": 2
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "PT": {
       "name": "Portugal",
