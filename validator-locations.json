@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-13T20:39:38.903Z",
-  "totalNodes": 2403,
-  "totalLocations": 2390,
+  "lastUpdated": "2026-04-13T22:36:43.790Z",
+  "totalNodes": 2404,
+  "totalLocations": 2391,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -16677,13 +16677,6 @@
       "lat": 49.0291,
       "lon": 8.35696
     },
-    "185.248.140.246": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Gifhorn",
-      "lat": 52.4791,
-      "lon": 10.544
-    },
     "158.69.54.196": {
       "country": "Canada",
       "countryCode": "CA",
@@ -16732,6 +16725,20 @@
       "city": "Blackburn",
       "lat": 53.75,
       "lon": -2.48333
+    },
+    "37.187.254.106": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "37.187.253.30": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -16745,11 +16752,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 185
+      "count": 187
     },
     "DE": {
       "name": "Germany",
-      "count": 195
+      "count": 194
     },
     "NL": {
       "name": "The Netherlands",
