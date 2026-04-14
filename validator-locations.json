@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-14T08:55:58.266Z",
-  "totalNodes": 2404,
-  "totalLocations": 2391,
+  "lastUpdated": "2026-04-14T10:47:18.824Z",
+  "totalNodes": 2403,
+  "totalLocations": 2390,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -16705,13 +16705,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "107.181.252.10": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ogden",
-      "lat": 41.2627,
-      "lon": -111.9837
-    },
     "51.195.190.120": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -16744,35 +16737,39 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1547
+      "count": 1546
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 59
+    "CA": {
+      "name": "Canada",
+      "count": 161
     },
     "FR": {
       "name": "France",
       "count": 187
     },
+    "DE": {
+      "name": "Germany",
+      "count": 194
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 26
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 112
     },
     "FI": {
       "name": "Finland",
       "count": 93
     },
-    "DE": {
-      "name": "Germany",
-      "count": 194
+    "GB": {
+      "name": "United Kingdom",
+      "count": 59
     },
-    "CA": {
-      "name": "Canada",
-      "count": 161
+    "PL": {
+      "name": "Poland",
+      "count": 112
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "SE": {
       "name": "Sweden",
@@ -16782,21 +16779,17 @@
       "name": "Singapore",
       "count": 2
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
-    },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "ES": {
-      "name": "Spain",
-      "count": 4
-    },
     "PT": {
       "name": "Portugal",
       "count": 2
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 4
     }
   }
 }
