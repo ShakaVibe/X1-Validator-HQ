@@ -2910,6 +2910,304 @@
     }
     
     /* Validator-specific breakdown */
+    /* ── Slot Explorer Tab ── */
+    .se-search-row {
+      display: flex;
+      gap: 0.75rem;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    .se-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+    .se-empty {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--text-dim);
+    }
+    .se-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .se-empty p { font-size: 0.9rem; line-height: 1.6; }
+
+    .se-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .se-card:hover { border-color: rgba(77,166,255,0.3); }
+
+    .se-card-head {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .se-logo {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .se-logo-ph {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem; color: #000;
+      flex-shrink: 0;
+    }
+    .se-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+    .se-addr {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 0.1rem;
+    }
+    .se-remove {
+      margin-left: auto;
+      background: none; border: none;
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 0.25rem 0.4rem;
+      border-radius: 4px;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .se-remove:hover { color: var(--danger); background: rgba(255,82,82,0.1); }
+
+    .se-card-body { padding: 1.1rem 1.25rem; }
+
+    .se-big-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .se-big-stat {
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+    }
+    .se-big-stat-label {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-dim);
+      margin-bottom: 0.3rem;
+    }
+    .se-big-stat-value {
+      font-size: 1.45rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1;
+    }
+    .se-big-stat-sub {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      margin-top: 0.2rem;
+    }
+
+    .se-bar-wrap { margin-bottom: 0.9rem; }
+    .se-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-bottom: 0.35rem;
+    }
+    .se-bar-track {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .se-bar-produced {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #4da6ff, #00d4ff);
+    }
+    .se-bar-skipped {
+      position: absolute; right: 0; top: 0;
+      height: 100%;
+      background: var(--danger);
+      opacity: 0.75;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .se-next-box {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .se-next-cell {
+      flex: 1;
+      background: var(--bg-secondary);
+      border-radius: 10px;
+      padding: 0.7rem 0.85rem;
+    }
+    .se-next-cell-label {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-dim);
+      margin-bottom: 0.25rem;
+    }
+    .se-next-cell-value {
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-cyan);
+    }
+
+    /* Slot timeline */
+    .se-timeline-label {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      margin-bottom: 0.45rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .se-timeline-legend {
+      display: flex; align-items: center; gap: 0.3rem;
+    }
+    .se-pip-demo {
+      width: 9px; height: 9px; border-radius: 2px; display: inline-block;
+    }
+    .se-timeline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+    .se-pip {
+      width: 9px; height: 9px;
+      border-radius: 2px;
+      cursor: default;
+      transition: transform 0.1s;
+    }
+    .se-pip:hover { transform: scale(1.4); }
+    .se-pip.produced  { background: var(--success); }
+    .se-pip.upcoming  { background: transparent; border: 1px solid var(--accent-blue); }
+    .se-pip.current   { background: var(--accent-cyan); box-shadow: 0 0 5px var(--accent-cyan); }
+
+    .se-card-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0.6rem 1.25rem 0.85rem;
+    }
+    .se-refresh-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .se-refresh-btn:hover { border-color: var(--accent-cyan); color: var(--accent-cyan); }
+
+    .se-loading {
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+    .se-error {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--danger);
+      font-size: 0.85rem;
+    }
+
+    /* Comparison table */
+    .se-compare-panel {
+      margin-top: 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .se-compare-head {
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--accent-cyan);
+      background: var(--bg-secondary);
+    }
+    .se-compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+    .se-compare-table th {
+      padding: 0.6rem 1rem;
+      text-align: left;
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+    .se-compare-table td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid rgba(30,48,80,0.5);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .se-compare-table td:first-child { font-family: inherit; font-weight: 600; }
+    .se-compare-table tr:last-child td { border-bottom: none; }
+    .se-compare-table tr:hover td { background: var(--bg-card-hover); }
+
+    /* Autocomplete dropdown */
+    .se-suggestions {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      z-index: 200;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .se-suggestion-item {
+      padding: 0.7rem 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .se-suggestion-item:last-child { border-bottom: none; }
+    .se-suggestion-item:hover { background: var(--bg-card-hover); }
+    .se-suggestion-name { font-weight: 600; font-size: 0.9rem; }
+    .se-suggestion-addr {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
     .perf-breakdown-section {
       background: var(--bg-secondary);
       border-radius: 12px;
@@ -7588,6 +7886,7 @@
       <button class="tab" onclick="switchTab('leaderboard')">🏆 Leaderboards</button>
       <button class="tab" onclick="switchTab('compare')">⚖️ Compare <span id="compareCount"></span></button>
       <button class="tab" onclick="switchTab('calculators')">🔢 Calculators</button>
+      <button class="tab" onclick="switchTab('slotExplorer')">⏱️ Slot Explorer</button>
     </div>
 
     <!-- X1 Network Tab -->
@@ -13719,6 +14018,11 @@
       
       if (tab === 'calculators') {
         initializeCalculators();
+      }
+
+      if (tab === 'slotExplorer') {
+        // Close any open suggestions on tab switch
+        seCloseSuggestions();
       }
     }
 
@@ -23335,8 +23639,379 @@ Please give me the diagnostic commands to run on my server so you can help me id
         updateNetworkTps();
       }, 2000);
     }
+    // ─────────────────────────────────────────────────────────
+    // SLOT EXPLORER
+    // ─────────────────────────────────────────────────────────
+    const SE_SLOT_MS = 420;        // ~420 ms average slot time on X1
+    const seStore    = {};         // nodePubkey → fetched data
+
+    // ── Data fetching ──────────────────────────────────────
+    async function seFetchData(nodePubkey) {
+      // Block production (assigned / produced this epoch)
+      const bp = await fetch(RPC_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0', id: 1,
+          method: 'getBlockProduction',
+          params: [{ identity: nodePubkey }]
+        })
+      }).then(r => r.json());
+
+      let assigned = 0, produced = 0;
+      const byId = bp?.result?.value?.byIdentity?.[nodePubkey];
+      if (byId) [assigned, produced] = byId;
+      const skipped = assigned - produced;
+      const skipPct = assigned > 0 ? (skipped / assigned * 100) : 0;
+
+      // Epoch position + leader schedule (cached)
+      const epochInfo = await rpcCall('getEpochInfo');
+      if (!leaderScheduleCache) await loadLeaderSchedule();
+      const mySlots = (leaderScheduleCache?.[nodePubkey] || []).slice().sort((a, b) => a - b);
+      const si = epochInfo.slotIndex;
+
+      const nextSlot    = mySlots.find(s => s > si) ?? null;
+      const slotsUntil  = nextSlot !== null ? nextSlot - si : null;
+      const msUntil     = slotsUntil !== null ? slotsUntil * SE_SLOT_MS : null;
+
+      return { nodePubkey, assigned, produced, skipped, skipPct,
+               nextSlot, slotsUntil, msUntil,
+               mySlots, slotIndex: si,
+               slotsInEpoch: epochInfo.slotsInEpoch };
+    }
+
+    // ── Helpers ────────────────────────────────────────────
+    function seCountdown(ms) {
+      if (ms === null) return 'None left';
+      const s = Math.round(ms / 1000);
+      if (s < 60)  return `~${s}s`;
+      const m = Math.floor(s / 60), rs = s % 60;
+      if (m < 60)  return `~${m}m ${rs}s`;
+      const h = Math.floor(m / 60), rm = m % 60;
+      return `~${h}h ${rm}m`;
+    }
+
+    function seSkipClass(pct) {
+      if (pct === 0) return 'color:var(--success)';
+      if (pct < 5)   return 'color:var(--warning)';
+      return 'color:var(--danger)';
+    }
+
+    // ── Autocomplete ───────────────────────────────────────
+    function seHandleInput() {
+      const val = document.getElementById('seInput').value.trim();
+      const box = document.getElementById('seSuggestions');
+      if (val.length < 2 || !allValidators) { box.innerHTML = ''; return; }
+
+      const hits = allValidators
+        .filter(v => v.name.toLowerCase().includes(val.toLowerCase()) || v.voteAccount.includes(val))
+        .slice(0, 7);
+
+      if (!hits.length) { box.innerHTML = ''; return; }
+
+      box.innerHTML = `<div class="se-suggestions">` +
+        hits.map(v => `
+          <div class="se-suggestion-item"
+               onclick="sePickSuggestion('${v.nodePubkey}','${v.name.replace(/'/g,"\\'")}','${v.voteAccount}')">
+            <span class="se-suggestion-name">${v.name}</span>
+            <span class="se-suggestion-addr">${v.voteAccount.slice(0,16)}…</span>
+          </div>`).join('') +
+        `</div>`;
+    }
+
+    function sePickSuggestion(nodePubkey, name, voteAccount) {
+      document.getElementById('seInput').value = name;
+      seCloseSuggestions();
+      seAddCardDirect(nodePubkey, name, voteAccount);
+    }
+
+    function seCloseSuggestions() {
+      document.getElementById('seSuggestions').innerHTML = '';
+    }
+
+    // ── Add card via search box ────────────────────────────
+    async function seAddCard() {
+      const val = document.getElementById('seInput').value.trim();
+      if (!val) return;
+      const v = allValidators?.find(x =>
+        x.voteAccount === val || x.nodePubkey === val ||
+        x.name.toLowerCase() === val.toLowerCase()) ||
+        allValidators?.find(x => x.name.toLowerCase().includes(val.toLowerCase()));
+      if (!v) { alert('Validator not found. Try the full Vote Account address.'); return; }
+      seAddCardDirect(v.nodePubkey, v.name, v.voteAccount);
+    }
+
+    async function seAddCardDirect(nodePubkey, name, voteAccount) {
+      if (seStore[nodePubkey]) { seRefresh(nodePubkey); return; }
+
+      // Show grid, hide empty state
+      document.getElementById('seEmpty').style.display = 'none';
+      const grid = document.getElementById('seGrid');
+      grid.style.display = 'grid';
+
+      // Insert skeleton
+      const cardId = 'seCard-' + nodePubkey.slice(0, 8);
+      const vInfo  = allValidators?.find(v => v.nodePubkey === nodePubkey);
+      const logoHtml = vInfo?.iconUrl
+        ? `<img class="se-logo" src="${vInfo.iconUrl}" alt=""
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+           <div class="se-logo-ph" style="display:none">${name.charAt(0).toUpperCase()}</div>`
+        : `<div class="se-logo-ph">${name.charAt(0).toUpperCase()}</div>`;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'se-card';
+      wrap.id = cardId;
+      wrap.innerHTML = `
+        <div class="se-card-head">
+          ${logoHtml}
+          <div>
+            <div class="se-name">${name}</div>
+            <div class="se-addr">${voteAccount.slice(0, 22)}…</div>
+          </div>
+          <button class="se-remove" onclick="seRemove('${nodePubkey}')" title="Remove">✕</button>
+        </div>
+        <div class="se-loading">
+          <div class="loading-spinner-small"></div>
+          Loading slot data…
+        </div>`;
+      grid.appendChild(wrap);
+
+      // Fetch & render
+      try {
+        const d = await seFetchData(nodePubkey);
+        d.name = name; d.voteAccount = voteAccount;
+        seStore[nodePubkey] = d;
+        seRenderCard(nodePubkey);
+        seRenderCompare();
+      } catch(e) {
+        wrap.querySelector('.se-loading').innerHTML =
+          `<span style="color:var(--danger)">Failed to load — ${e.message || 'RPC error'}</span>`;
+      }
+    }
+
+    // ── Render a card ──────────────────────────────────────
+    function seRenderCard(nodePubkey) {
+      const d      = seStore[nodePubkey];
+      const cardId = 'seCard-' + nodePubkey.slice(0, 8);
+      const card   = document.getElementById(cardId);
+      if (!card || !d) return;
+
+      const pct        = d.assigned > 0 ? (d.produced / d.assigned * 100) : 0;
+      const skippedPct = d.assigned > 0 ? (d.skipped  / d.assigned * 100) : 0;
+
+      // Build timeline pips
+      // Show up to 40 past slots + up to 40 upcoming slots from this validator's schedule
+      const past     = d.mySlots.filter(s => s <= d.slotIndex).slice(-40);
+      const upcoming = d.mySlots.filter(s => s >  d.slotIndex).slice(0, 40);
+
+      const pips = [
+        ...past.map(s =>
+          s === d.slotIndex
+            ? `<div class="se-pip current" title="Current slot ${s}"></div>`
+            : `<div class="se-pip produced" title="Slot ${s}"></div>`
+        ),
+        ...upcoming.map((s, i) =>
+          `<div class="se-pip upcoming" title="Upcoming slot ${s} — in ~${seCountdown(i === 0 ? d.msUntil : (d.slotsUntil + (d.mySlots.indexOf(s) - d.mySlots.indexOf(upcoming[0]))) * SE_SLOT_MS)}"></div>`
+        )
+      ].join('');
+
+      const vInfo = allValidators?.find(v => v.nodePubkey === nodePubkey);
+      const logoHtml = vInfo?.iconUrl
+        ? `<img class="se-logo" src="${vInfo.iconUrl}" alt=""
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+           <div class="se-logo-ph" style="display:none">${d.name.charAt(0).toUpperCase()}</div>`
+        : `<div class="se-logo-ph">${d.name.charAt(0).toUpperCase()}</div>`;
+
+      card.innerHTML = `
+        <div class="se-card-head">
+          ${logoHtml}
+          <div>
+            <div class="se-name">${d.name}</div>
+            <div class="se-addr">${d.voteAccount.slice(0, 22)}…</div>
+          </div>
+          <button class="se-remove" onclick="seRemove('${nodePubkey}')" title="Remove">✕</button>
+        </div>
+
+        <div class="se-card-body">
+          <!-- Big 4 stats -->
+          <div class="se-big-stats">
+            <div class="se-big-stat">
+              <div class="se-big-stat-label">Assigned</div>
+              <div class="se-big-stat-value" style="color:var(--accent-blue)">${d.assigned.toLocaleString()}</div>
+              <div class="se-big-stat-sub">this epoch</div>
+            </div>
+            <div class="se-big-stat">
+              <div class="se-big-stat-label">Produced</div>
+              <div class="se-big-stat-value" style="color:var(--success)">${d.produced.toLocaleString()}</div>
+              <div class="se-big-stat-sub">blocks</div>
+            </div>
+            <div class="se-big-stat">
+              <div class="se-big-stat-label">Skipped</div>
+              <div class="se-big-stat-value" style="color:${d.skipped > 0 ? 'var(--danger)' : 'var(--success)'}">${d.skipped.toLocaleString()}</div>
+              <div class="se-big-stat-sub">missed</div>
+            </div>
+            <div class="se-big-stat">
+              <div class="se-big-stat-label">Skip Rate</div>
+              <div class="se-big-stat-value" style="${seSkipClass(d.skipPct)}">${d.assigned > 0 ? d.skipPct.toFixed(2) + '%' : 'N/A'}</div>
+              <div class="se-big-stat-sub">this epoch</div>
+            </div>
+          </div>
+
+          <!-- Production bar -->
+          <div class="se-bar-wrap">
+            <div class="se-bar-labels">
+              <span>Block production</span>
+              <span>${pct.toFixed(1)}% success rate</span>
+            </div>
+            <div class="se-bar-track">
+              <div class="se-bar-produced" style="width:${pct.toFixed(1)}%"></div>
+              ${d.skipped > 0 ? `<div class="se-bar-skipped" style="width:${skippedPct.toFixed(1)}%"></div>` : ''}
+            </div>
+          </div>
+
+          <!-- Next slot info row -->
+          <div class="se-next-box">
+            <div class="se-next-cell">
+              <div class="se-next-cell-label">Next leader slot in</div>
+              <div class="se-next-cell-value">${seCountdown(d.msUntil)}</div>
+            </div>
+            <div class="se-next-cell">
+              <div class="se-next-cell-label">Slot #</div>
+              <div class="se-next-cell-value" style="font-size:0.9rem">${d.nextSlot !== null ? d.nextSlot.toLocaleString() : '—'}</div>
+            </div>
+            <div class="se-next-cell">
+              <div class="se-next-cell-label">Total slots this epoch</div>
+              <div class="se-next-cell-value" style="font-size:0.9rem">${d.mySlots.length.toLocaleString()}</div>
+            </div>
+          </div>
+
+          <!-- Slot timeline -->
+          ${(past.length + upcoming.length) > 0 ? `
+          <div>
+            <div class="se-timeline-label">
+              Slot timeline
+              <span class="se-timeline-legend"><span class="se-pip-demo" style="background:var(--success)"></span> Produced</span>
+              <span class="se-timeline-legend"><span class="se-pip-demo" style="background:var(--accent-cyan)"></span> Current</span>
+              <span class="se-timeline-legend"><span class="se-pip-demo" style="border:1px solid var(--accent-blue);background:transparent"></span> Upcoming</span>
+            </div>
+            <div class="se-timeline">${pips}</div>
+          </div>` : ''}
+        </div>
+
+        <div class="se-card-footer">
+          <button class="se-refresh-btn" onclick="seRefresh('${nodePubkey}')">↻ Refresh</button>
+        </div>
+      `;
+    }
+
+    // ── Refresh a card ─────────────────────────────────────
+    async function seRefresh(nodePubkey) {
+      const d = seStore[nodePubkey];
+      if (!d) return;
+      const card = document.getElementById('seCard-' + nodePubkey.slice(0, 8));
+      if (card) {
+        const btn = card.querySelector('.se-refresh-btn');
+        if (btn) { btn.textContent = '↻ Refreshing…'; btn.disabled = true; }
+      }
+      try {
+        const fresh = await seFetchData(nodePubkey);
+        fresh.name = d.name; fresh.voteAccount = d.voteAccount;
+        seStore[nodePubkey] = fresh;
+        seRenderCard(nodePubkey);
+        seRenderCompare();
+      } catch(e) { /* silently keep old data */ }
+    }
+
+    // ── Remove a card ──────────────────────────────────────
+    function seRemove(nodePubkey) {
+      delete seStore[nodePubkey];
+      const card = document.getElementById('seCard-' + nodePubkey.slice(0, 8));
+      if (card) card.remove();
+      const empty = !Object.keys(seStore).length;
+      document.getElementById('seEmpty').style.display = empty ? 'block' : 'none';
+      document.getElementById('seGrid').style.display  = empty ? 'none'  : 'grid';
+      seRenderCompare();
+    }
+
+    // ── Comparison table ───────────────────────────────────
+    function seRenderCompare() {
+      const keys  = Object.keys(seStore);
+      const panel = document.getElementById('seComparePanel');
+      const tbody = document.getElementById('seCompareBody');
+      if (keys.length < 2) { panel.style.display = 'none'; return; }
+
+      panel.style.display = 'block';
+      tbody.innerHTML = keys.map(k => {
+        const d = seStore[k];
+        return `<tr>
+          <td>${d.name}</td>
+          <td>${d.assigned.toLocaleString()}</td>
+          <td style="color:var(--success)">${d.produced.toLocaleString()}</td>
+          <td style="color:${d.skipped > 0 ? 'var(--danger)' : 'var(--success)'}">${d.skipped.toLocaleString()}</td>
+          <td style="${seSkipClass(d.skipPct)}">${d.assigned > 0 ? d.skipPct.toFixed(2) + '%' : 'N/A'}</td>
+          <td style="color:var(--accent-cyan)">${seCountdown(d.msUntil)}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    // Close suggestions when clicking elsewhere
+    document.addEventListener('click', e => {
+      if (!e.target.closest('#seInput') && !e.target.closest('#seSuggestions')) {
+        seCloseSuggestions();
+      }
+    });
+
     init();
   </script>
+
+  <!-- Slot Explorer Tab -->
+  <div class="tab-content" id="slotExplorerTab">
+    <section class="search-section">
+      <h1>Slot <span>Explorer</span></h1>
+      <p>See assigned, produced &amp; skipped slots for any validator — this epoch</p>
+      <div style="position:relative; max-width:620px; margin:0 auto;">
+        <div class="search-container" style="margin-bottom:0;">
+          <div class="search-input-wrapper">
+            <input
+              type="text"
+              class="search-input"
+              id="seInput"
+              placeholder="Search validator by name or Vote Account ID…"
+              autocomplete="off"
+              oninput="seHandleInput()"
+              onkeydown="if(event.key==='Enter'){seCloseSuggestions();seAddCard();}"
+            >
+          </div>
+          <button class="search-btn" onclick="seCloseSuggestions();seAddCard();">Add</button>
+        </div>
+        <div id="seSuggestions"></div>
+      </div>
+    </section>
+
+    <div id="seEmpty" class="se-empty">
+      <div class="se-empty-icon">⏱️</div>
+      <p>Search for a validator above to see their slot assignment.<br>Add multiple validators to compare them side by side.</p>
+    </div>
+
+    <div id="seGrid" class="se-grid" style="display:none;"></div>
+
+    <div id="seComparePanel" class="se-compare-panel" style="display:none; margin-bottom:2rem;">
+      <div class="se-compare-head">📊 Side-by-Side Comparison</div>
+      <table class="se-compare-table">
+        <thead>
+          <tr>
+            <th>Validator</th>
+            <th>Assigned</th>
+            <th>Produced</th>
+            <th>Skipped</th>
+            <th>Skip Rate</th>
+            <th>Next Slot In</th>
+          </tr>
+        </thead>
+        <tbody id="seCompareBody"></tbody>
+      </table>
+    </div>
+  </div>
 
   <!-- Solana Coming Soon Modal -->
   <div class="solana-modal-overlay" id="solanaModal">
