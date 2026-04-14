@@ -691,6 +691,8 @@
       border-bottom: none;
       padding: 0;
       gap: 0.75rem;
+      position: relative;
+      align-items: center;
     }
 
     .tab {
@@ -7886,8 +7888,10 @@
       <button class="tab" onclick="switchTab('leaderboard')">🏆 Leaderboards</button>
       <button class="tab" onclick="switchTab('compare')">⚖️ Compare <span id="compareCount"></span></button>
       <button class="tab" onclick="switchTab('calculators')">🔢 Calculators</button>
-      <button class="tab" onclick="switchTab('slotExplorer')">⏱️ Slot Explorer</button>
+      <button class="tab" onclick="switchTab('slotExplorer')" id="slotExplorerTab-btn" style="display:none;">⏱️ Slot Explorer</button>
     </div>
+    <!-- Secret dev access dot for Slot Explorer -->
+    <div id="seDevDot" onclick="switchTab('slotExplorer');document.getElementById('slotExplorerTab-btn').style.display='flex';" title="" style="position:absolute;right:1.5rem;width:7px;height:7px;border-radius:50%;background:rgba(77,166,255,0.18);cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='rgba(77,166,255,0.45)'" onmouseout="this.style.background='rgba(77,166,255,0.18)'"></div>
 
     <!-- X1 Network Tab -->
     <div class="tab-content active" id="mapTab">
@@ -23704,7 +23708,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       if (val.length < 2 || !allValidators) { box.innerHTML = ''; return; }
 
       const hits = allValidators
-        .filter(v => v.name.toLowerCase().includes(val.toLowerCase()) || v.voteAccount.includes(val))
+        .filter(v => v.name.toLowerCase().includes(val.toLowerCase()) || (v.votePubkey || '').includes(val))
         .slice(0, 7);
 
       if (!hits.length) { box.innerHTML = ''; return; }
@@ -23712,9 +23716,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
       box.innerHTML = `<div class="se-suggestions">` +
         hits.map(v => `
           <div class="se-suggestion-item"
-               onclick="sePickSuggestion('${v.nodePubkey}','${v.name.replace(/'/g,"\\'")}','${v.voteAccount}')">
+               onclick="sePickSuggestion('${v.nodePubkey}','${v.name.replace(/'/g,"\\'")}','${v.votePubkey}')">
             <span class="se-suggestion-name">${v.name}</span>
-            <span class="se-suggestion-addr">${v.voteAccount.slice(0,16)}…</span>
+            <span class="se-suggestion-addr">${(v.votePubkey||'').slice(0,16)}…</span>
           </div>`).join('') +
         `</div>`;
     }
@@ -23734,11 +23738,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const val = document.getElementById('seInput').value.trim();
       if (!val) return;
       const v = allValidators?.find(x =>
-        x.voteAccount === val || x.nodePubkey === val ||
+        x.votePubkey === val || x.nodePubkey === val ||
         x.name.toLowerCase() === val.toLowerCase()) ||
         allValidators?.find(x => x.name.toLowerCase().includes(val.toLowerCase()));
       if (!v) { alert('Validator not found. Try the full Vote Account address.'); return; }
-      seAddCardDirect(v.nodePubkey, v.name, v.voteAccount);
+      seAddCardDirect(v.nodePubkey, v.name, v.votePubkey);
     }
 
     async function seAddCardDirect(nodePubkey, name, voteAccount) {
