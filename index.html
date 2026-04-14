@@ -1333,6 +1333,151 @@
       display: block;
     }
 
+    /* ── Credits Breakdown Section ── */
+    .validator-credits-section {
+      display: none;
+      margin-top: 1rem;
+      padding: 1.25rem;
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .validator-credits-section.expanded {
+      display: block;
+    }
+
+    .credits-breakdown-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .credits-breakdown-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .credits-breakdown-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.15rem;
+    }
+
+    .credits-breakdown-summary {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .credits-summary-stat {
+      text-align: right;
+    }
+
+    .credits-summary-value {
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent-cyan);
+    }
+
+    .credits-summary-label {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .credits-bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .credits-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .credits-bar-epoch {
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      width: 52px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .credits-bar-track {
+      flex: 1;
+      height: 18px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .credits-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      position: relative;
+    }
+
+    .credits-bar-value {
+      font-size: 0.7rem;
+      font-family: 'JetBrains Mono', monospace;
+      width: 68px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .credits-bar-delta {
+      font-size: 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      width: 52px;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    .credits-avg-line-label {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-align: center;
+      margin-top: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      justify-content: center;
+    }
+
+    .credits-avg-line-label::before,
+    .credits-avg-line-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .credits-breakdown-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 1.5rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .credits-no-data {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+
     .stake-section-loading {
       display: flex;
       flex-direction: column;
@@ -12317,6 +12462,17 @@
               <span>View Earnings Trend</span>
               <span class="arrow">▼</span>
             </button>
+            <button class="validator-expand-btn credits-breakdown-btn" onclick="toggleCreditsBreakdown('${validator.voteAccount}', this)">
+              <span>Credits Breakdown</span>
+              <span class="arrow">▼</span>
+            </button>
+          </div>
+
+          <div class="validator-credits-section" id="credits-${validator.voteAccount}-section">
+            <div class="credits-breakdown-loading">
+              <div class="loading-spinner-small"></div>
+              <span>Loading credits history…</span>
+            </div>
           </div>
 
           <div class="validator-stake-section" id="stake-${validator.voteAccount}-section">
@@ -21980,7 +22136,150 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
 
-    // Toggle chart visibility and initialize
+    // ── Credits Breakdown toggle ────────────────────────────────────────
+    async function toggleCreditsBreakdown(voteAccount, button) {
+      const sectionId = 'credits-' + voteAccount + '-section';
+      const section   = document.getElementById(sectionId);
+      if (!section) return;
+
+      const isExpanded = section.classList.contains('expanded');
+
+      if (isExpanded) {
+        section.classList.remove('expanded');
+        button.classList.remove('expanded');
+        return;
+      }
+
+      section.classList.add('expanded');
+      button.classList.add('expanded');
+
+      // Already rendered — don't re-render
+      if (section.dataset.rendered === '1') return;
+
+      // ── Gather epoch credits history ─────────────────────────────────
+      let history = null;
+
+      // 1. Try validatorInfoCache (richest — uses getAccountInfo extended data)
+      if (window.validatorInfoCache && window.validatorInfoCache[voteAccount]) {
+        history = window.validatorInfoCache[voteAccount].epochCreditsHistory;
+      }
+
+      // 2. Try allValidators raw epochCredits array
+      if (!history || history.length < 2) {
+        const v = (window.allValidators || []).find(x => x.votePubkey === voteAccount);
+        if (v && Array.isArray(v.epochCredits) && v.epochCredits.length > 1) {
+          history = v.epochCredits;
+        }
+      }
+
+      // 3. Fetch live via getVoteAccounts if still nothing
+      if (!history || history.length < 2) {
+        section.innerHTML = `<div class="credits-breakdown-loading"><div class="loading-spinner-small"></div><span>Fetching credits history…</span></div>`;
+        try {
+          const resp = await fetch(RPC_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc:'2.0', id:1, method:'getVoteAccounts', params:[] })
+          });
+          const d = await resp.json();
+          if (d.result) {
+            const all = [...d.result.current, ...d.result.delinquent];
+            const match = all.find(v => v.votePubkey === voteAccount);
+            if (match) history = match.epochCredits;
+          }
+        } catch(e) {
+          section.innerHTML = `<div class="credits-no-data">Failed to load credits data.</div>`;
+          return;
+        }
+      }
+
+      if (!history || history.length < 2) {
+        section.innerHTML = `<div class="credits-no-data">No epoch credits history available yet.</div>`;
+        section.dataset.rendered = '1';
+        return;
+      }
+
+      // ── Parse per-epoch credits ──────────────────────────────────────
+      // history entries: [epoch, cumulativeCredits, previousCredits]
+      // Skip the last entry (current, likely incomplete) — use up to 10 completed epochs
+      const completed = history.slice(0, -1); // drop current epoch
+      const slice     = completed.slice(-10);  // last 10 completed
+
+      const epochs = slice.map(e => ({
+        epoch:   e[0],
+        credits: e[1] - e[2]   // per-epoch credits earned
+      }));
+
+      const values  = epochs.map(e => e.credits);
+      const avg     = values.reduce((a, b) => a + b, 0) / values.length;
+      const best    = Math.max(...values);
+      const last    = values[values.length - 1];
+      const maxVal  = best || 1;
+
+      // ── Build HTML ───────────────────────────────────────────────────
+      function creditColor(v) {
+        const ratio = v / avg;
+        if (ratio >= 0.98) return 'var(--success)';
+        if (ratio >= 0.93) return 'var(--warning)';
+        return 'var(--danger)';
+      }
+
+      function fmtDelta(v) {
+        const diff = v - avg;
+        const sign = diff >= 0 ? '+' : '';
+        const pct  = avg > 0 ? (diff / avg * 100).toFixed(1) : '0.0';
+        return `<span style="color:${creditColor(v)};font-size:0.65rem;">${sign}${pct}%</span>`;
+      }
+
+      const barsHtml = epochs.map(e => {
+        const pct   = (e.credits / maxVal * 100).toFixed(1);
+        const color = creditColor(e.credits);
+        return `
+          <div class="credits-bar-row">
+            <div class="credits-bar-epoch">Ep ${e.epoch}</div>
+            <div class="credits-bar-track">
+              <div class="credits-bar-fill" style="width:${pct}%;background:${color};opacity:0.85;"></div>
+            </div>
+            <div class="credits-bar-value" style="color:${color};">${e.credits.toLocaleString()}</div>
+            <div class="credits-bar-delta">${fmtDelta(e.credits)}</div>
+          </div>`;
+      }).join('');
+
+      section.innerHTML = `
+        <div class="credits-breakdown-header">
+          <div>
+            <div class="credits-breakdown-title">Epoch Credits History</div>
+            <div class="credits-breakdown-subtitle">Per-epoch credits earned (last ${epochs.length} completed epochs)</div>
+          </div>
+          <div class="credits-breakdown-summary">
+            <div class="credits-summary-stat">
+              <div class="credits-summary-value">${last.toLocaleString()}</div>
+              <div class="credits-summary-label">Last</div>
+            </div>
+            <div class="credits-summary-stat">
+              <div class="credits-summary-value">${Math.round(avg).toLocaleString()}</div>
+              <div class="credits-summary-label">Avg</div>
+            </div>
+            <div class="credits-summary-stat">
+              <div class="credits-summary-value">${best.toLocaleString()}</div>
+              <div class="credits-summary-label">Best</div>
+            </div>
+          </div>
+        </div>
+        <div class="credits-bar-chart">
+          ${barsHtml}
+        </div>
+        <div class="credits-avg-line-label">
+          ● avg ${Math.round(avg).toLocaleString()} credits / epoch &nbsp;·&nbsp;
+          <span style="color:var(--success)">●</span> ≥98% avg &nbsp;
+          <span style="color:var(--warning)">●</span> 93–97% &nbsp;
+          <span style="color:var(--danger)">●</span> &lt;93%
+        </div>`;
+
+      section.dataset.rendered = '1';
+    }
+
+        // Toggle chart visibility and initialize
     async function toggleChart(chartId, button) {
       const section = document.getElementById(chartId + '-section');
       const isExpanded = section.classList.contains('expanded');
