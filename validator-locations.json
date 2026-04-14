@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-14T05:12:14.045Z",
-  "totalNodes": 2404,
-  "totalLocations": 2391,
+  "lastUpdated": "2026-04-14T06:59:33.920Z",
+  "totalNodes": 2403,
+  "totalLocations": 2390,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -408,13 +408,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "38.190.178.20": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "66.70.177.36": {
       "country": "Canada",
@@ -16744,59 +16737,59 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1547
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 59
-    },
-    "FR": {
-      "name": "France",
-      "count": 187
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 26
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 112
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 93
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 194
+      "count": 1546
     },
     "CA": {
       "name": "Canada",
       "count": 161
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
+    "DE": {
+      "name": "Germany",
+      "count": 194
+    },
+    "FR": {
+      "name": "France",
+      "count": 187
     },
     "SG": {
       "name": "Singapore",
       "count": 2
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "GB": {
+      "name": "United Kingdom",
+      "count": 59
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 93
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 112
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 26
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "ES": {
-      "name": "Spain",
+    "BE": {
+      "name": "Belgium",
       "count": 4
     },
     "PT": {
       "name": "Portugal",
       "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 4
     }
   }
 }
