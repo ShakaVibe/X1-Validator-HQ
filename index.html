@@ -1333,6 +1333,50 @@
       display: block;
     }
 
+    /* ── Credits Breakdown trigger button (inside stat card) ── */
+    .epoch-credits-card {
+      position: relative;
+      cursor: default;
+    }
+
+    .credits-breakdown-trigger {
+      margin-top: 0.5rem;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.65rem;
+      font-weight: 600;
+      font-family: 'Space Grotesk', sans-serif;
+      background: rgba(0, 212, 255, 0.08);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+      border-radius: 5px;
+      color: var(--accent-cyan);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .credits-breakdown-trigger:hover {
+      background: rgba(0, 212, 255, 0.18);
+      border-color: var(--accent-cyan);
+    }
+
+    .credits-breakdown-trigger.active {
+      background: rgba(0, 212, 255, 0.18);
+      border-color: var(--accent-cyan);
+    }
+
+    .credits-breakdown-arrow {
+      transition: transform 0.3s;
+      display: inline-block;
+    }
+
+    .credits-breakdown-trigger.active .credits-breakdown-arrow {
+      transform: rotate(180deg);
+    }
+
     /* ── Credits Breakdown Section ── */
     .validator-credits-section {
       display: none;
@@ -12422,10 +12466,13 @@
               <div class="stat-subtext" style="color: var(--accent-cyan); font-size: 0.65rem;">Click to manage</div>
             </div>
             
-            <div class="stat-item" title="Epoch credits represent the validator's voting activity. More credits generally means better uptime and participation in consensus.">
+            <div class="stat-item epoch-credits-card" title="Epoch credits represent the validator's voting activity. More credits generally means better uptime and participation in consensus.">
               <div class="stat-label">Epoch<br>Credits</div>
               <div class="stat-value">${formatCompact(validator.epochCredits)}</div>
               <div class="stat-subtext">Cumulative</div>
+              <button class="credits-breakdown-trigger" onclick="event.stopPropagation();toggleCreditsBreakdown('${validator.voteAccount}', this)">
+                Breakdown <span class="credits-breakdown-arrow">▼</span>
+              </button>
             </div>
             
             <div class="stat-item" title="Commission is the percentage of staking rewards the validator keeps. The remaining percentage goes to delegators.">
@@ -12453,6 +12500,13 @@
             </div>
           </div>
 
+          <div class="validator-credits-section" id="credits-${validator.voteAccount}-section">
+            <div class="credits-breakdown-loading">
+              <div class="loading-spinner-small"></div>
+              <span>Loading credits history…</span>
+            </div>
+          </div>
+
           <div class="validator-action-buttons">
             <button class="validator-expand-btn stake-details-btn" onclick="toggleStakeDetails('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}', ${validator.activatedStake}, ${validator.commission}, this)">
               <span>Stake Details</span>
@@ -12462,17 +12516,6 @@
               <span>View Earnings Trend</span>
               <span class="arrow">▼</span>
             </button>
-            <button class="validator-expand-btn credits-breakdown-btn" onclick="toggleCreditsBreakdown('${validator.voteAccount}', this)">
-              <span>Credits Breakdown</span>
-              <span class="arrow">▼</span>
-            </button>
-          </div>
-
-          <div class="validator-credits-section" id="credits-${validator.voteAccount}-section">
-            <div class="credits-breakdown-loading">
-              <div class="loading-spinner-small"></div>
-              <span>Loading credits history…</span>
-            </div>
           </div>
 
           <div class="validator-stake-section" id="stake-${validator.voteAccount}-section">
@@ -22146,12 +22189,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       if (isExpanded) {
         section.classList.remove('expanded');
-        button.classList.remove('expanded');
+        button.classList.remove('active');
         return;
       }
 
       section.classList.add('expanded');
-      button.classList.add('expanded');
+      button.classList.add('active');
 
       // Already rendered — don't re-render
       if (section.dataset.rendered === '1') return;
