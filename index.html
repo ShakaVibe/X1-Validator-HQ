@@ -2932,6 +2932,10 @@
       max-width: 500px;
       overflow: hidden;
       animation: slotModalIn 0.2s ease-out;
+      transition: max-width 0.25s ease;
+    }
+    .slot-modal.wide {
+      max-width: 980px;
     }
     @keyframes slotModalIn {
       from { opacity: 0; transform: translateY(-16px) scale(0.97); }
@@ -2941,7 +2945,7 @@
       display: flex;
       align-items: center;
       gap: 0.85rem;
-      padding: 1.1rem 1.25rem;
+      padding: 1rem 1.25rem;
       background: var(--bg-secondary);
       border-bottom: 1px solid var(--border);
     }
@@ -2956,9 +2960,7 @@
       display: flex; align-items: center; justify-content: center;
       font-weight: 700; font-size: 1rem; color: #000; flex-shrink: 0;
     }
-    .slot-modal-name {
-      font-weight: 700; font-size: 1rem;
-    }
+    .slot-modal-name { font-weight: 700; font-size: 1rem; }
     .slot-modal-addr {
       font-size: 0.7rem; color: var(--text-dim);
       font-family: 'JetBrains Mono', monospace; margin-top: 0.1rem;
@@ -2971,7 +2973,55 @@
       border-radius: 4px; transition: all 0.15s; flex-shrink: 0;
     }
     .slot-modal-close:hover { color: var(--danger); background: rgba(255,82,82,0.1); }
-    .slot-modal-body { padding: 1.1rem 1.25rem; }
+
+    /* Epoch selector pills */
+    .sm-epoch-selector {
+      display: flex;
+      gap: 0.4rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .sm-epoch-pill {
+      flex: 1;
+      padding: 0.4rem 0.75rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .sm-epoch-pill:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .sm-epoch-pill.active {
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-color: transparent;
+      color: #000;
+    }
+
+    /* Both layout — two panels side by side */
+    .sm-both-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .sm-both-wrap > div + div {
+      border-left: 1px solid var(--border);
+    }
+    .sm-panel-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-dim);
+      padding: 0.6rem 1.25rem 0;
+    }
+
+    .slot-modal-body {}
     .slot-modal-loading {
       display: flex; align-items: center; justify-content: center;
       gap: 0.6rem; padding: 2.5rem 1rem;
@@ -2982,9 +3032,10 @@
       color: var(--danger); font-size: 0.85rem;
     }
 
-    /* stat grid inside modal */
+    /* Stat grid inside modal */
     .sm-stats {
-      display: grid; grid-template-columns: repeat(4,1fr); gap: 0.5rem; margin-bottom: 1rem;
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 0.5rem; margin-bottom: 1rem;
     }
     .sm-stat {
       background: var(--bg-secondary); border-radius: 10px;
@@ -2995,7 +3046,7 @@
       letter-spacing: 0.5px; color: var(--text-dim); margin-bottom: 0.3rem;
     }
     .sm-stat-value {
-      font-size: 1.45rem; font-weight: 700;
+      font-size: 1.35rem; font-weight: 700;
       font-family: 'JetBrains Mono', monospace; line-height: 1;
     }
     .sm-stat-sub { font-size: 0.65rem; color: var(--text-dim); margin-top: 0.2rem; }
@@ -3020,14 +3071,14 @@
 
     .sm-next-box { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
     .sm-next-cell {
-      flex: 1; background: var(--bg-secondary); border-radius: 10px; padding: 0.7rem 0.85rem;
+      flex: 1; background: var(--bg-secondary); border-radius: 10px; padding: 0.7rem 0.75rem;
     }
     .sm-next-cell-label {
-      font-size: 0.62rem; text-transform: uppercase;
+      font-size: 0.6rem; text-transform: uppercase;
       letter-spacing: 0.5px; color: var(--text-dim); margin-bottom: 0.25rem;
     }
     .sm-next-cell-value {
-      font-size: 1rem; font-weight: 700;
+      font-size: 0.95rem; font-weight: 700;
       font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan);
     }
 
@@ -3044,12 +3095,14 @@
     }
     .sm-pip:hover { transform: scale(1.5); }
     .sm-pip.produced { background: var(--success); }
+    .sm-pip.skipped  { background: var(--danger); }
     .sm-pip.upcoming { background: transparent; border: 1px solid var(--accent-blue); }
-    .sm-pip.current  { background: var(--accent-cyan); box-shadow: 0 0 5px var(--accent-cyan); }
 
+    .sm-body-inner { padding: 1.1rem 1.25rem; }
     .sm-footer {
       display: flex; justify-content: flex-end; align-items: center;
       padding: 0.6rem 1.25rem 0.85rem; gap: 0.6rem;
+      border-top: 1px solid var(--border);
     }
     .sm-refresh-btn {
       background: none; border: 1px solid var(--border);
@@ -23485,10 +23538,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }, 2000);
     }
     // ─────────────────────────────────────────────────────────
-    // SLOT EXPLORER MODAL
+    // SLOT EXPLORER MODAL  (current + last epoch + both)
     // ─────────────────────────────────────────────────────────
-    const SM_SLOT_MS = 420; // ~420ms average slot time on X1
+    const SM_SLOT_MS = 420;
 
+    let _smNodePubkey    = null;
+    let _smName          = null;
+    let _smVoteAccount   = null;
+    let _smEpochView     = 'current';   // 'current' | 'last' | 'both'
+    let _smCache         = {};          // 'current' | 'last' → data
+
+    // ── Helpers ────────────────────────────────────────────
     function smCountdown(ms) {
       if (ms === null) return 'None left';
       const s = Math.round(ms / 1000);
@@ -23498,65 +23558,102 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const h = Math.floor(m / 60), rm = m % 60;
       return `~${h}h ${rm}m`;
     }
-
     function smSkipStyle(pct) {
       if (pct === 0) return 'color:var(--success)';
       if (pct < 5)   return 'color:var(--warning)';
       return 'color:var(--danger)';
     }
 
-    async function smFetchData(nodePubkey) {
-      const bp = await fetch(RPC_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0', id: 1,
-          method: 'getBlockProduction',
-          params: [{ identity: nodePubkey }]
-        })
-      }).then(r => r.json());
+    // ── Fetch one epoch's data ─────────────────────────────
+    async function smFetchEpoch(nodePubkey, which) {
+      // which: 'current' or 'last'
+      const epochInfo = await rpcCall('getEpochInfo');
+      const slotsPerEpoch          = epochInfo.slotsInEpoch;
+      const firstSlotOfCurrentEpoch = epochInfo.absoluteSlot - epochInfo.slotIndex;
 
-      let assigned = 0, produced = 0;
-      const byId = bp?.result?.value?.byIdentity?.[nodePubkey];
-      if (byId) [assigned, produced] = byId;
+      let assigned = 0, produced = 0, mySlots = [], epochLabel = '';
+
+      if (which === 'current') {
+        // Block production — no range = current epoch
+        const bp = await fetch(RPC_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc:'2.0', id:1,
+            method: 'getBlockProduction', params: [{ identity: nodePubkey }] })
+        }).then(r => r.json());
+        const byId = bp?.result?.value?.byIdentity?.[nodePubkey];
+        if (byId) [assigned, produced] = byId;
+
+        // Leader schedule — cached
+        if (!leaderScheduleCache) await loadLeaderSchedule();
+        mySlots    = (leaderScheduleCache?.[nodePubkey] || []).slice().sort((a,b)=>a-b);
+        epochLabel = `Epoch ${epochInfo.epoch}`;
+
+      } else {
+        // Last epoch range
+        const firstSlot = firstSlotOfCurrentEpoch - slotsPerEpoch;
+        const lastSlot  = firstSlotOfCurrentEpoch - 1;
+
+        const bp = await fetch(RPC_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc:'2.0', id:1,
+            method: 'getBlockProduction',
+            params: [{ identity: nodePubkey, range: { firstSlot, lastSlot } }] })
+        }).then(r => r.json());
+        const byId = bp?.result?.value?.byIdentity?.[nodePubkey];
+        if (byId) [assigned, produced] = byId;
+
+        // Leader schedule for last epoch — pass a slot within that epoch
+        const prevSchedule = await rpcCall('getLeaderSchedule', [lastSlot]);
+        mySlots    = ((prevSchedule || {})[nodePubkey] || []).slice().sort((a,b)=>a-b);
+        epochLabel = `Epoch ${epochInfo.epoch - 1} — Completed`;
+      }
+
       const skipped = assigned - produced;
       const skipPct = assigned > 0 ? (skipped / assigned * 100) : 0;
 
-      const epochInfo = await rpcCall('getEpochInfo');
-      if (!leaderScheduleCache) await loadLeaderSchedule();
-      const mySlots = (leaderScheduleCache?.[nodePubkey] || []).slice().sort((a, b) => a - b);
-      const si = epochInfo.slotIndex;
+      // Next slot (only meaningful for current epoch)
+      const si       = which === 'current' ? epochInfo.slotIndex : slotsPerEpoch; // past end for last
+      const nextSlot = which === 'current' ? (mySlots.find(s => s > si) ?? null) : null;
+      const msUntil  = nextSlot !== null ? (nextSlot - si) * SM_SLOT_MS : null;
 
-      const nextSlot   = mySlots.find(s => s > si) ?? null;
-      const slotsUntil = nextSlot !== null ? nextSlot - si : null;
-      const msUntil    = slotsUntil !== null ? slotsUntil * SM_SLOT_MS : null;
-
-      return { assigned, produced, skipped, skipPct, nextSlot, msUntil, mySlots, slotIndex: si };
+      return { assigned, produced, skipped, skipPct,
+               nextSlot, msUntil, mySlots, slotIndex: si,
+               isCurrent: which === 'current', epochLabel };
     }
 
-    function smRenderBody(d) {
+    // ── Render one panel's inner HTML ──────────────────────
+    function smRenderPanel(d) {
       const pct        = d.assigned > 0 ? (d.produced / d.assigned * 100) : 0;
       const skippedPct = d.assigned > 0 ? (d.skipped  / d.assigned * 100) : 0;
 
-      const past     = d.mySlots.filter(s => s <= d.slotIndex).slice(-40);
-      const upcoming = d.mySlots.filter(s => s >  d.slotIndex).slice(0, 40);
+      // For current: show past 40 + upcoming 40
+      // For last: all slots are "past" — show all up to 80
+      let pastSlots, upcomingSlots;
+      if (d.isCurrent) {
+        pastSlots     = d.mySlots.filter(s => s <= d.slotIndex).slice(-40);
+        upcomingSlots = d.mySlots.filter(s => s >  d.slotIndex).slice(0, 40);
+      } else {
+        pastSlots     = d.mySlots.slice(0, 80);
+        upcomingSlots = [];
+      }
+
       const pips = [
-        ...past.map(s => `<div class="sm-pip produced" title="Slot ${s.toLocaleString()}"></div>`),
-        ...upcoming.map((s, i) => {
-          const ms = i === 0 ? d.msUntil : (s - d.slotIndex) * SM_SLOT_MS;
+        ...pastSlots.map(s => `<div class="sm-pip produced" title="Slot ${s.toLocaleString()}"></div>`),
+        ...upcomingSlots.map((s, i) => {
+          const ms = (s - d.slotIndex) * SM_SLOT_MS;
           return `<div class="sm-pip upcoming" title="Slot ${s.toLocaleString()} — in ${smCountdown(ms)}"></div>`;
         })
       ].join('');
 
-      const hasTimeline = (past.length + upcoming.length) > 0;
+      const hasTimeline = (pastSlots.length + upcomingSlots.length) > 0;
 
       return `
-        <div class="slot-modal-body">
+        <div class="sm-body-inner">
           <div class="sm-stats">
             <div class="sm-stat">
               <div class="sm-stat-label">Assigned</div>
               <div class="sm-stat-value" style="color:var(--accent-blue)">${d.assigned.toLocaleString()}</div>
-              <div class="sm-stat-sub">this epoch</div>
+              <div class="sm-stat-sub">slots</div>
             </div>
             <div class="sm-stat">
               <div class="sm-stat-label">Produced</div>
@@ -23565,12 +23662,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
             </div>
             <div class="sm-stat">
               <div class="sm-stat-label">Skipped</div>
-              <div class="sm-stat-value" style="color:${d.skipped > 0 ? 'var(--danger)' : 'var(--success)'}">${d.skipped.toLocaleString()}</div>
+              <div class="sm-stat-value" style="color:${d.skipped>0?'var(--danger)':'var(--success)'}">${d.skipped.toLocaleString()}</div>
               <div class="sm-stat-sub">missed</div>
             </div>
             <div class="sm-stat">
               <div class="sm-stat-label">Skip Rate</div>
-              <div class="sm-stat-value" style="${smSkipStyle(d.skipPct)}">${d.assigned > 0 ? d.skipPct.toFixed(2) + '%' : 'N/A'}</div>
+              <div class="sm-stat-value" style="${smSkipStyle(d.skipPct)}">${d.assigned>0 ? d.skipPct.toFixed(2)+'%' : 'N/A'}</div>
               <div class="sm-stat-sub">this epoch</div>
             </div>
           </div>
@@ -23578,25 +23675,30 @@ Please give me the diagnostic commands to run on my server so you can help me id
           <div class="sm-bar-wrap">
             <div class="sm-bar-labels">
               <span>Block production</span>
-              <span>${pct.toFixed(1)}% success rate</span>
+              <span>${pct.toFixed(1)}% success</span>
             </div>
             <div class="sm-bar-track">
               <div class="sm-bar-produced" style="width:${pct.toFixed(1)}%"></div>
-              ${d.skipped > 0 ? `<div class="sm-bar-skipped" style="width:${skippedPct.toFixed(1)}%"></div>` : ''}
+              ${d.skipped>0 ? `<div class="sm-bar-skipped" style="width:${skippedPct.toFixed(1)}%"></div>` : ''}
             </div>
           </div>
 
           <div class="sm-next-box">
+            ${d.isCurrent ? `
             <div class="sm-next-cell">
               <div class="sm-next-cell-label">Next leader slot in</div>
               <div class="sm-next-cell-value">${smCountdown(d.msUntil)}</div>
             </div>
             <div class="sm-next-cell">
               <div class="sm-next-cell-label">Slot #</div>
-              <div class="sm-next-cell-value" style="font-size:0.9rem">${d.nextSlot !== null ? d.nextSlot.toLocaleString() : '—'}</div>
-            </div>
+              <div class="sm-next-cell-value" style="font-size:0.9rem">${d.nextSlot!==null ? d.nextSlot.toLocaleString() : '—'}</div>
+            </div>` : `
+            <div class="sm-next-cell" style="flex:2">
+              <div class="sm-next-cell-label">Status</div>
+              <div class="sm-next-cell-value" style="font-size:0.85rem;color:var(--text-secondary)">Epoch completed</div>
+            </div>`}
             <div class="sm-next-cell">
-              <div class="sm-next-cell-label">Total slots this epoch</div>
+              <div class="sm-next-cell-label">Total slots</div>
               <div class="sm-next-cell-value" style="font-size:0.9rem">${d.mySlots.length.toLocaleString()}</div>
             </div>
           </div>
@@ -23606,25 +23708,94 @@ Please give me the diagnostic commands to run on my server so you can help me id
             <div class="sm-timeline-label">
               Slot timeline
               <span class="sm-legend"><span class="sm-pip-demo" style="background:var(--success)"></span> Produced</span>
-              <span class="sm-legend"><span class="sm-pip-demo" style="border:1px solid var(--accent-blue);background:transparent"></span> Upcoming</span>
+              ${d.skipped>0 ? `<span class="sm-legend"><span class="sm-pip-demo" style="background:var(--danger)"></span> Skipped</span>` : ''}
+              ${upcomingSlots.length ? `<span class="sm-legend"><span class="sm-pip-demo" style="border:1px solid var(--accent-blue);background:transparent"></span> Upcoming</span>` : ''}
             </div>
             <div class="sm-timeline">${pips}</div>
           </div>` : ''}
-        </div>
-        <div class="sm-footer">
-          <button class="sm-refresh-btn" id="smRefreshBtn">↻ Refresh</button>
-        </div>
-      `;
+        </div>`;
     }
 
-    let _smCurrentNodePubkey = null;
-    let _smCurrentName = null;
-    let _smCurrentVoteAccount = null;
+    // ── Render full modal body for a given view ────────────
+    function smRenderBody(view) {
+      const cur  = _smCache['current'];
+      const last = _smCache['last'];
+      const box  = document.getElementById('slotModalBox');
 
+      if (view === 'both' && cur && last) {
+        box.classList.add('wide');
+        return `
+          <div class="sm-both-wrap">
+            <div>
+              <div class="sm-panel-label">◀ ${last.epochLabel}</div>
+              ${smRenderPanel(last)}
+            </div>
+            <div>
+              <div class="sm-panel-label">▶ ${cur.epochLabel}</div>
+              ${smRenderPanel(cur)}
+            </div>
+          </div>
+          <div class="sm-footer">
+            <button class="sm-refresh-btn" onclick="smRefreshAll()">↻ Refresh</button>
+          </div>`;
+      } else {
+        box.classList.remove('wide');
+        const d = view === 'last' ? last : cur;
+        if (!d) return `<div class="slot-modal-loading"><div class="loading-spinner-small"></div> Loading…</div>`;
+        return smRenderPanel(d) + `
+          <div class="sm-footer">
+            <button class="sm-refresh-btn" onclick="smRefreshAll()">↻ Refresh</button>
+          </div>`;
+      }
+    }
+
+    // ── Load data and render ───────────────────────────────
+    async function smLoadAndRender(view) {
+      const body = document.getElementById('slotModalBody');
+
+      // Determine what we need to fetch
+      const needCurrent = (view === 'current' || view === 'both') && !_smCache['current'];
+      const needLast    = (view === 'last'    || view === 'both') && !_smCache['last'];
+
+      if (needCurrent || needLast) {
+        body.innerHTML = `<div class="slot-modal-loading"><div class="loading-spinner-small"></div> Loading slot data…</div>`;
+        try {
+          const fetches = [];
+          if (needCurrent) fetches.push(smFetchEpoch(_smNodePubkey, 'current').then(d => { _smCache['current'] = d; }));
+          if (needLast)    fetches.push(smFetchEpoch(_smNodePubkey, 'last').then(d    => { _smCache['last']    = d; }));
+          await Promise.all(fetches);
+        } catch(e) {
+          body.innerHTML = `<div class="slot-modal-error">Failed to load slot data.<br><small>${e.message||'RPC error'}</small></div>`;
+          return;
+        }
+      }
+
+      body.innerHTML = smRenderBody(view);
+    }
+
+    // ── Pill switch ────────────────────────────────────────
+    async function smSwitchEpoch(view) {
+      _smEpochView = view;
+      ['last','current','both'].forEach(v => {
+        document.getElementById('smPill' + v.charAt(0).toUpperCase() + v.slice(1))
+          ?.classList.toggle('active', v === view);
+      });
+      await smLoadAndRender(view);
+    }
+
+    // ── Refresh (clear cache, reload current view) ─────────
+    async function smRefreshAll() {
+      _smCache = {};
+      await smLoadAndRender(_smEpochView);
+    }
+
+    // ── Open modal ─────────────────────────────────────────
     async function openSlotModal(nodePubkey, name, voteAccount) {
-      _smCurrentNodePubkey  = nodePubkey;
-      _smCurrentName        = name;
-      _smCurrentVoteAccount = voteAccount;
+      _smNodePubkey    = nodePubkey;
+      _smName          = name;
+      _smVoteAccount   = voteAccount;
+      _smEpochView     = 'current';
+      _smCache         = {};
 
       // Set header
       const vInfo = allValidators?.find(v => v.nodePubkey === nodePubkey);
@@ -23638,37 +23809,22 @@ Please give me the diagnostic commands to run on my server so you can help me id
       document.getElementById('slotModalName').textContent = name;
       document.getElementById('slotModalAddr').textContent = voteAccount.slice(0, 22) + '…';
 
-      // Show loading
-      document.getElementById('slotModalBody').innerHTML = `
-        <div class="slot-modal-loading">
-          <div class="loading-spinner-small"></div>
-          Loading slot data…
-        </div>`;
+      // Reset pills to Current
+      ['last','current','both'].forEach(v => {
+        document.getElementById('smPill' + v.charAt(0).toUpperCase() + v.slice(1))
+          ?.classList.toggle('active', v === 'current');
+      });
+      document.getElementById('slotModalBox').classList.remove('wide');
+
       document.getElementById('slotModal').classList.add('show');
       document.body.style.overflow = 'hidden';
 
-      await smLoad(nodePubkey);
-    }
-
-    async function smLoad(nodePubkey) {
-      try {
-        const d = await smFetchData(nodePubkey);
-        document.getElementById('slotModalBody').innerHTML = smRenderBody(d);
-        // Wire refresh button
-        const btn = document.getElementById('smRefreshBtn');
-        if (btn) btn.onclick = async () => {
-          btn.textContent = '↻ Refreshing…';
-          btn.disabled = true;
-          await smLoad(nodePubkey);
-        };
-      } catch(e) {
-        document.getElementById('slotModalBody').innerHTML =
-          `<div class="slot-modal-error">Failed to load slot data.<br><small>${e.message || 'RPC error'}</small></div>`;
-      }
+      await smLoadAndRender('current');
     }
 
     function closeSlotModal() {
       document.getElementById('slotModal').classList.remove('show');
+      document.getElementById('slotModalBox').classList.remove('wide');
       document.body.style.overflow = '';
     }
 
@@ -23682,7 +23838,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
   <!-- Slot Explorer Modal -->
   <div class="slot-modal-overlay" id="slotModal" onclick="if(event.target===this)closeSlotModal()">
-    <div class="slot-modal">
+    <div class="slot-modal" id="slotModalBox">
       <div class="slot-modal-head">
         <div id="slotModalLogo"></div>
         <div>
@@ -23690,6 +23846,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
           <div class="slot-modal-addr" id="slotModalAddr"></div>
         </div>
         <button class="slot-modal-close" onclick="closeSlotModal()">✕</button>
+      </div>
+      <div class="sm-epoch-selector">
+        <button class="sm-epoch-pill" id="smPillLast"    onclick="smSwitchEpoch('last')">Last Epoch</button>
+        <button class="sm-epoch-pill active" id="smPillCurrent" onclick="smSwitchEpoch('current')">Current Epoch</button>
+        <button class="sm-epoch-pill" id="smPillBoth"    onclick="smSwitchEpoch('both')">Both</button>
       </div>
       <div id="slotModalBody">
         <div class="slot-modal-loading">
