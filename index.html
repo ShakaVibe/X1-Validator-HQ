@@ -2920,10 +2920,15 @@
       margin: 0 auto;
     }
     .se-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 1.25rem;
       margin-top: 2rem;
+    }
+    .se-card {
+      width: 100%;
+      max-width: 480px;
     }
     .se-empty {
       text-align: center;
@@ -8458,6 +8463,55 @@
         </div>
       </div>
     </div>
+    <!-- Slot Explorer Tab -->
+    <div class="tab-content" id="slotExplorerTab">
+      <section class="search-section">
+        <h1>Slot <span>Explorer</span></h1>
+        <p>See assigned, produced &amp; skipped slots for any validator — this epoch</p>
+        <div style="position:relative; max-width:620px; margin:0 auto;">
+          <div class="search-container" style="margin-bottom:0;">
+            <div class="search-input-wrapper">
+              <input
+                type="text"
+                class="search-input"
+                id="seInput"
+                placeholder="Search validator by name or Vote Account ID…"
+                autocomplete="off"
+                oninput="seHandleInput()"
+                onkeydown="if(event.key==='Enter'){seCloseSuggestions();seAddCard();}"
+              >
+            </div>
+            <button class="search-btn" onclick="seCloseSuggestions();seAddCard();">Add</button>
+          </div>
+          <div id="seSuggestions"></div>
+        </div>
+      </section>
+
+      <div id="seEmpty" class="se-empty">
+        <div class="se-empty-icon">⏱️</div>
+        <p>Search for a validator above to see their slot assignment.<br>Add multiple validators to compare them side by side.</p>
+      </div>
+
+      <div id="seGrid" class="se-grid" style="display:none;"></div>
+
+      <div id="seComparePanel" class="se-compare-panel" style="display:none; margin-bottom:2rem;">
+        <div class="se-compare-head">📊 Side-by-Side Comparison</div>
+        <table class="se-compare-table">
+          <thead>
+            <tr>
+              <th>Validator</th>
+              <th>Assigned</th>
+              <th>Produced</th>
+              <th>Skipped</th>
+              <th>Skip Rate</th>
+              <th>Next Slot In</th>
+            </tr>
+          </thead>
+          <tbody id="seCompareBody"></tbody>
+        </table>
+      </div>
+    </div>
+
   </main>
 
   <!-- Footer Disclaimer -->
@@ -23967,55 +24021,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
     init();
   </script>
-
-  <!-- Slot Explorer Tab -->
-  <div class="tab-content" id="slotExplorerTab">
-    <section class="search-section">
-      <h1>Slot <span>Explorer</span></h1>
-      <p>See assigned, produced &amp; skipped slots for any validator — this epoch</p>
-      <div style="position:relative; max-width:620px; margin:0 auto;">
-        <div class="search-container" style="margin-bottom:0;">
-          <div class="search-input-wrapper">
-            <input
-              type="text"
-              class="search-input"
-              id="seInput"
-              placeholder="Search validator by name or Vote Account ID…"
-              autocomplete="off"
-              oninput="seHandleInput()"
-              onkeydown="if(event.key==='Enter'){seCloseSuggestions();seAddCard();}"
-            >
-          </div>
-          <button class="search-btn" onclick="seCloseSuggestions();seAddCard();">Add</button>
-        </div>
-        <div id="seSuggestions"></div>
-      </div>
-    </section>
-
-    <div id="seEmpty" class="se-empty">
-      <div class="se-empty-icon">⏱️</div>
-      <p>Search for a validator above to see their slot assignment.<br>Add multiple validators to compare them side by side.</p>
-    </div>
-
-    <div id="seGrid" class="se-grid" style="display:none;"></div>
-
-    <div id="seComparePanel" class="se-compare-panel" style="display:none; margin-bottom:2rem;">
-      <div class="se-compare-head">📊 Side-by-Side Comparison</div>
-      <table class="se-compare-table">
-        <thead>
-          <tr>
-            <th>Validator</th>
-            <th>Assigned</th>
-            <th>Produced</th>
-            <th>Skipped</th>
-            <th>Skip Rate</th>
-            <th>Next Slot In</th>
-          </tr>
-        </thead>
-        <tbody id="seCompareBody"></tbody>
-      </table>
-    </div>
-  </div>
 
   <!-- Solana Coming Soon Modal -->
   <div class="solana-modal-overlay" id="solanaModal">
