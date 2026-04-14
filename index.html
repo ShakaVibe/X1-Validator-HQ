@@ -1333,50 +1333,6 @@
       display: block;
     }
 
-    /* ── Credits Breakdown trigger button (inside stat card) ── */
-    .epoch-credits-card {
-      position: relative;
-      cursor: default;
-    }
-
-    .credits-breakdown-trigger {
-      margin-top: 0.5rem;
-      padding: 0.25rem 0.6rem;
-      font-size: 0.65rem;
-      font-weight: 600;
-      font-family: 'Space Grotesk', sans-serif;
-      background: rgba(0, 212, 255, 0.08);
-      border: 1px solid rgba(0, 212, 255, 0.25);
-      border-radius: 5px;
-      color: var(--accent-cyan);
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .credits-breakdown-trigger:hover {
-      background: rgba(0, 212, 255, 0.18);
-      border-color: var(--accent-cyan);
-    }
-
-    .credits-breakdown-trigger.active {
-      background: rgba(0, 212, 255, 0.18);
-      border-color: var(--accent-cyan);
-    }
-
-    .credits-breakdown-arrow {
-      transition: transform 0.3s;
-      display: inline-block;
-    }
-
-    .credits-breakdown-trigger.active .credits-breakdown-arrow {
-      transform: rotate(180deg);
-    }
-
     /* ── Credits Breakdown Section ── */
     .validator-credits-section {
       display: none;
@@ -12470,9 +12426,7 @@
               <div class="stat-label">Epoch<br>Credits</div>
               <div class="stat-value">${formatCompact(validator.epochCredits)}</div>
               <div class="stat-subtext">Cumulative</div>
-              <button class="credits-breakdown-trigger" onclick="event.stopPropagation();toggleCreditsBreakdown('${validator.voteAccount}', this)">
-                Breakdown <span class="credits-breakdown-arrow">▼</span>
-              </button>
+              <div class="stat-subtext credits-breakdown-link" style="color: var(--accent-cyan); font-size: 0.65rem; cursor: pointer;" onclick="event.stopPropagation();toggleCreditsBreakdown('${validator.voteAccount}', this)">Breakdown</div>
             </div>
             
             <div class="stat-item" title="Commission is the percentage of staking rewards the validator keeps. The remaining percentage goes to delegators.">
@@ -22189,25 +22143,50 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       if (isExpanded) {
         section.classList.remove('expanded');
-        button.classList.remove('active');
+        button.textContent = 'Breakdown';
         return;
       }
 
       section.classList.add('expanded');
-      button.classList.add('active');
+      button.textContent = 'Breakdown ▲';
 
       // Already rendered — don't re-render
       if (section.dataset.rendered === '1') return;
 
       // ── Gather epoch credits history ─────────────────────────────────
+      // Always fetch via getAccountInfo — returns the most epochs (up to ~64)
       let history = null;
 
-      // 1. Try validatorInfoCache (richest — uses getAccountInfo extended data)
-      if (window.validatorInfoCache && window.validatorInfoCache[voteAccount]) {
-        history = window.validatorInfoCache[voteAccount].epochCreditsHistory;
+      section.innerHTML = `<div class="credits-breakdown-loading"><div class="loading-spinner-small"></div><span>Fetching credits history…</span></div>`;
+
+      try {
+        const resp = await fetch(RPC_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0', id: 1,
+            method: 'getAccountInfo',
+            params: [voteAccount, { encoding: 'jsonParsed' }]
+          })
+        });
+        const d = await resp.json();
+        if (d.result && d.result.value && d.result.value.data && d.result.value.data.parsed) {
+          const info = d.result.value.data.parsed.info;
+          if (info && info.epochCredits && info.epochCredits.length > 1) {
+            // getAccountInfo format: [{epoch, credits, previousCredits}, ...]
+            history = info.epochCredits.map(e => [e.epoch, e.credits, e.previousCredits]);
+          }
+        }
+      } catch(e) { /* fall through to fallbacks */ }
+
+      // Fallback 1 — validatorInfoCache extended history
+      if (!history || history.length < 2) {
+        if (window.validatorInfoCache && window.validatorInfoCache[voteAccount]) {
+          history = window.validatorInfoCache[voteAccount].epochCreditsHistory;
+        }
       }
 
-      // 2. Try allValidators raw epochCredits array
+      // Fallback 2 — allValidators getVoteAccounts data (fewest epochs)
       if (!history || history.length < 2) {
         const v = (window.allValidators || []).find(x => x.votePubkey === voteAccount);
         if (v && Array.isArray(v.epochCredits) && v.epochCredits.length > 1) {
@@ -22215,25 +22194,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
       }
 
-      // 3. Fetch live via getVoteAccounts if still nothing
       if (!history || history.length < 2) {
-        section.innerHTML = `<div class="credits-breakdown-loading"><div class="loading-spinner-small"></div><span>Fetching credits history…</span></div>`;
-        try {
-          const resp = await fetch(RPC_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ jsonrpc:'2.0', id:1, method:'getVoteAccounts', params:[] })
-          });
-          const d = await resp.json();
-          if (d.result) {
-            const all = [...d.result.current, ...d.result.delinquent];
-            const match = all.find(v => v.votePubkey === voteAccount);
-            if (match) history = match.epochCredits;
-          }
-        } catch(e) {
-          section.innerHTML = `<div class="credits-no-data">Failed to load credits data.</div>`;
-          return;
-        }
+        section.innerHTML = `<div class="credits-no-data">No epoch credits history available yet.</div>`;
+        section.dataset.rendered = '1';
+        return;
       }
 
       if (!history || history.length < 2) {
@@ -22274,12 +22238,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return `<span style="color:${creditColor(v)};font-size:0.65rem;">${sign}${pct}%</span>`;
       }
 
+      const headerRow = `
+        <div class="credits-bar-row credits-col-header">
+          <div class="credits-bar-epoch"></div>
+          <div class="credits-bar-track" style="background:transparent;"></div>
+          <div class="credits-bar-value" style="font-size:0.6rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;">Credits</div>
+          <div class="credits-bar-delta" style="font-size:0.6rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;">vs Avg</div>
+        </div>`;
+
       const barsHtml = epochs.map(e => {
         const pct   = (e.credits / maxVal * 100).toFixed(1);
         const color = creditColor(e.credits);
         return `
           <div class="credits-bar-row">
-            <div class="credits-bar-epoch">Ep ${e.epoch}</div>
+            <div class="credits-bar-epoch" style="color:var(--text-primary);">Ep ${e.epoch}</div>
             <div class="credits-bar-track">
               <div class="credits-bar-fill" style="width:${pct}%;background:${color};opacity:0.85;"></div>
             </div>
@@ -22310,6 +22282,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </div>
         </div>
         <div class="credits-bar-chart">
+          ${headerRow}
           ${barsHtml}
         </div>
         <div class="credits-avg-line-label">
