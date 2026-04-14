@@ -22208,22 +22208,25 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       // ── Parse per-epoch credits ──────────────────────────────────────
       // history entries: [epoch, cumulativeCredits, previousCredits]
-      // Skip the last entry (current, likely incomplete) — use up to 10 completed epochs
-      const completed = history.slice(0, -1); // drop current epoch
-      const slice     = completed.slice(-10);  // last 10 completed
+      const currentRaw = history[history.length - 1];           // in-progress epoch
+      const completed  = history.slice(0, -1);                  // all completed
+      const slice      = completed.slice(-10);                   // last 10 completed
+
+      const currentEpochNum     = currentRaw[0];
+      const currentCredits      = currentRaw[1] - currentRaw[2]; // so-far this epoch
 
       const epochs = slice.map(e => ({
         epoch:   e[0],
-        credits: e[1] - e[2]   // per-epoch credits earned
+        credits: e[1] - e[2]
       }));
 
       const values  = epochs.map(e => e.credits);
       const avg     = values.reduce((a, b) => a + b, 0) / values.length;
       const best    = Math.max(...values);
       const last    = values[values.length - 1];
-      const maxVal  = best || 1;
+      const maxVal  = Math.max(best, currentCredits) || 1;
 
-      // ── Build HTML ───────────────────────────────────────────────────
+      // ── Helpers ──────────────────────────────────────────────────────
       function creditColor(v) {
         const ratio = v / avg;
         if (ratio >= 0.98) return 'var(--success)';
@@ -22238,6 +22241,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return `<span style="color:${creditColor(v)};font-size:0.65rem;">${sign}${pct}%</span>`;
       }
 
+      // ── Current epoch row (in-progress, shown at top) ────────────────
+      const currentPct = (currentCredits / maxVal * 100).toFixed(1);
+      const currentRow = `
+        <div class="credits-bar-row credits-current-row">
+          <div class="credits-bar-epoch" style="color:var(--accent-cyan);font-size:0.68rem;line-height:1.2;">Ep ${currentEpochNum}<br><span style="font-size:0.6rem;color:var(--text-dim);">live</span></div>
+          <div class="credits-bar-track" style="background:rgba(0,212,255,0.06);border:1px dashed rgba(0,212,255,0.25);">
+            <div class="credits-bar-fill" style="width:${currentPct}%;background:var(--accent-cyan);opacity:0.5;"></div>
+          </div>
+          <div class="credits-bar-value" style="color:var(--accent-cyan);">${currentCredits.toLocaleString()}</div>
+          <div class="credits-bar-delta" style="font-size:0.65rem;color:var(--text-dim);">so far</div>
+        </div>
+        <div style="border-top:1px dashed rgba(255,255,255,0.06);margin:0.4rem 0 0.5rem;"></div>`;
+
+      // ── Column header ────────────────────────────────────────────────
       const headerRow = `
         <div class="credits-bar-row credits-col-header">
           <div class="credits-bar-epoch"></div>
@@ -22246,6 +22263,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           <div class="credits-bar-delta" style="font-size:0.6rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.4px;">vs Avg</div>
         </div>`;
 
+      // ── Completed epoch bars ─────────────────────────────────────────
       const barsHtml = epochs.map(e => {
         const pct   = (e.credits / maxVal * 100).toFixed(1);
         const color = creditColor(e.credits);
@@ -22268,6 +22286,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </div>
           <div class="credits-breakdown-summary">
             <div class="credits-summary-stat">
+              <div class="credits-summary-value" style="color:var(--accent-cyan);">${currentCredits.toLocaleString()}</div>
+              <div class="credits-summary-label">Current</div>
+            </div>
+            <div class="credits-summary-stat">
               <div class="credits-summary-value">${last.toLocaleString()}</div>
               <div class="credits-summary-label">Last</div>
             </div>
@@ -22282,6 +22304,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </div>
         </div>
         <div class="credits-bar-chart">
+          ${currentRow}
           ${headerRow}
           ${barsHtml}
         </div>
