@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-15T16:42:28.989Z",
+  "lastUpdated": "2026-04-15T18:45:26.478Z",
   "totalNodes": 2389,
   "totalLocations": 2376,
   "locations": {
@@ -387,13 +387,6 @@
       "city": "Salt Lake City",
       "lat": 40.7687,
       "lon": -111.886
-    },
-    "51.178.209.184": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Strasbourg",
-      "lat": 48.5734,
-      "lon": 7.75211
     },
     "74.50.94.66": {
       "country": "United States",
@@ -16634,6 +16627,13 @@
       "city": "New York",
       "lat": 40.7128,
       "lon": -74.006
+    },
+    "185.191.118.213": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1169,
+      "lon": 8.6837
     }
   },
   "countries": {
@@ -16641,41 +16641,45 @@
       "name": "United States",
       "count": 1539
     },
-    "CA": {
-      "name": "Canada",
-      "count": 161
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 194
-    },
-    "FR": {
-      "name": "France",
-      "count": 186
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
     "FI": {
       "name": "Finland",
       "count": 88
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 111
     },
     "GB": {
       "name": "United Kingdom",
       "count": 58
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "CA": {
+      "name": "Canada",
+      "count": 161
+    },
+    "FR": {
+      "name": "France",
+      "count": 185
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 195
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 111
     },
     "NL": {
       "name": "The Netherlands",
       "count": 26
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
     },
     "BE": {
       "name": "Belgium",
@@ -16684,10 +16688,6 @@
     "PT": {
       "name": "Portugal",
       "count": 2
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
     },
     "ES": {
       "name": "Spain",
