@@ -12366,6 +12366,21 @@
         commission: validator.commission
       };
 
+      // Calculate current-epoch credits vs 98% chain average requirement
+      let credPctHtml = '';
+      const credHistory = validator.epochCreditsHistory || [];
+      if (window.networkAverageCredits && credHistory.length >= 1) {
+        const latestEntry = credHistory[credHistory.length - 1];
+        if (latestEntry && latestEntry.length >= 3) {
+          const epochEarned = latestEntry[1] - latestEntry[2];
+          const pct = (epochEarned / window.networkAverageCredits) * 100;
+          const meetsReq = pct >= 98;
+          const pctColor = meetsReq ? 'var(--success)' : 'var(--danger)';
+          const pctTitle = `${pct.toFixed(2)}% of chain avg — Requirement: ≥98% (${meetsReq ? 'PASSING' : 'FAILING'})`;
+          credPctHtml = `<div style="position:absolute;bottom:0.4rem;right:0.5rem;font-size:0.68rem;font-weight:700;color:${pctColor};line-height:1;" title="${pctTitle}">${pct.toFixed(1)}%</div>`;
+        }
+      }
+
       return `
         <div class="validator-card">
           <div class="validator-header">
@@ -12422,11 +12437,12 @@
               <div class="stat-subtext" style="color: var(--accent-cyan); font-size: 0.65rem;">Click to manage</div>
             </div>
             
-            <div class="stat-item epoch-credits-card" title="Epoch credits represent the validator's voting activity. More credits generally means better uptime and participation in consensus.">
+            <div class="stat-item epoch-credits-card" style="position:relative;" title="Epoch credits represent the validator's voting activity. More credits generally means better uptime and participation in consensus.">
               <div class="stat-label">Epoch<br>Credits</div>
               <div class="stat-value">${formatCompact(validator.epochCredits)}</div>
               <div class="stat-subtext">Cumulative</div>
               <div class="stat-subtext credits-breakdown-link" style="color: var(--accent-cyan); font-size: 0.65rem; cursor: pointer;" onclick="event.stopPropagation();toggleCreditsBreakdown('${validator.voteAccount}', this)">Breakdown</div>
+              ${credPctHtml}
             </div>
             
             <div class="stat-item" title="Commission is the percentage of staking rewards the validator keeps. The remaining percentage goes to delegators.">
