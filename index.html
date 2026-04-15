@@ -10903,6 +10903,7 @@
 
         // Calculate epoch progress
         const epochProgress = (epochInfo.slotIndex / epochInfo.slotsInEpoch) * 100;
+        window.epochProgressRatio = epochInfo.slotIndex / epochInfo.slotsInEpoch;
         const remainingSlots = epochInfo.slotsInEpoch - epochInfo.slotIndex;
         const secondsRemaining = remainingSlots * 0.4; // ~400ms per slot
         
@@ -11923,6 +11924,10 @@
       let count = 0;
       let ratioCount = 0;
       
+      // For full epoch average: use the last COMPLETED epoch (second-to-last entry)
+      let totalFullEpochCredits = 0;
+      let fullEpochCount = 0;
+      
       // Also calculate per-epoch network averages for uptime detection
       const epochCreditsMap = {}; // { epoch: { total: 0, count: 0 } }
       
@@ -11940,6 +11945,18 @@
               const ratio = earned / (stakeInXNT / 1000000); // Credits per 1M XNT
               totalRatio += ratio;
               ratioCount++;
+            }
+          }
+          
+          // Last completed epoch = second-to-last entry
+          if (v.epochCredits.length >= 2) {
+            const lastCompleted = v.epochCredits[v.epochCredits.length - 2];
+            if (lastCompleted && lastCompleted.length >= 3) {
+              const fullEarned = lastCompleted[1] - lastCompleted[2];
+              if (fullEarned > 0) {
+                totalFullEpochCredits += fullEarned;
+                fullEpochCount++;
+              }
             }
           }
           
@@ -11963,6 +11980,7 @@
       
       window.networkAverageCredits = count > 0 ? totalCredits / count : null;
       window.networkAverageCreditsPerStake = ratioCount > 0 ? totalRatio / ratioCount : null;
+      window.networkFullEpochCredits = fullEpochCount > 0 ? totalFullEpochCredits / fullEpochCount : null;
       
       // Calculate per-epoch averages
       window.networkEpochCredits = {};
@@ -12366,17 +12384,20 @@
         commission: validator.commission
       };
 
-      // Calculate current-epoch credits vs 98% chain average requirement
+      // Calculate current-epoch credits vs last full epoch network average (matches competitor display)
       let credPctHtml = '';
       const credHistory = validator.epochCreditsHistory || [];
-      if (window.networkAverageCredits && credHistory.length >= 1) {
+      if (window.networkFullEpochCredits && credHistory.length >= 1) {
         const latestEntry = credHistory[credHistory.length - 1];
         if (latestEntry && latestEntry.length >= 3) {
           const epochEarned = latestEntry[1] - latestEntry[2];
-          const pct = (epochEarned / window.networkAverageCredits) * 100;
-          const meetsReq = pct >= 98;
-          const pctColor = meetsReq ? 'var(--success)' : 'var(--danger)';
-          const pctTitle = `${pct.toFixed(2)}% of chain avg — Requirement: ≥98% (${meetsReq ? 'PASSING' : 'FAILING'})`;
+          const pct = (epochEarned / window.networkFullEpochCredits) * 100;
+          // Color based on pace: are we on track to hit 92% by end of epoch?
+          const epochProg = window.epochProgressRatio || 1;
+          const onPace = epochProg > 0 ? (pct / epochProg) >= 92 : pct >= 92;
+          const pctColor = onPace ? 'var(--success)' : 'var(--danger)';
+          const pace = epochProg > 0 ? (pct / epochProg).toFixed(1) : pct.toFixed(1);
+          const pctTitle = `Credits earned so far this epoch: ${pct.toFixed(2)}% of a full epoch avg\nProjected pace: ${pace}% — Requirement: ≥92% (${onPace ? 'ON TRACK ✓' : 'BEHIND ✗'})`;
           credPctHtml = `<div style="position:absolute;bottom:0.4rem;right:0.5rem;font-size:0.68rem;font-weight:700;color:${pctColor};line-height:1;" title="${pctTitle}">${pct.toFixed(1)}%</div>`;
         }
       }
