@@ -2645,6 +2645,77 @@
       border-radius: 10px;
     }
 
+    /* Credit Pace Badge & Tooltip */
+    .cred-tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      right: 0;
+      width: 230px;
+      background: #0d1a2e;
+      border: 1px solid var(--accent-blue);
+      border-radius: 10px;
+      padding: 0.85rem;
+      z-index: 999;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      font-weight: 400;
+      cursor: default;
+    }
+
+    .cred-tooltip.show {
+      display: block;
+    }
+
+    .cred-tooltip-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.6rem;
+    }
+
+    .cred-tooltip-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.35rem;
+      gap: 0.5rem;
+    }
+
+    .cred-tooltip-label {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+
+    .cred-tooltip-val {
+      font-size: 0.72rem;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      text-align: right;
+    }
+
+    .cred-tooltip-divider {
+      border-top: 1px solid var(--border);
+      margin: 0.5rem 0;
+    }
+
+    .cred-tooltip-status {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin: 0.5rem 0 0.4rem;
+    }
+
+    .cred-tooltip-note {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      line-height: 1.4;
+      border-top: 1px solid var(--border);
+      padding-top: 0.4rem;
+      margin-top: 0.4rem;
+    }
+
     .stat-item.clickable-stat {
       cursor: pointer;
       transition: background 0.2s, transform 0.2s;
@@ -12384,21 +12455,60 @@
         commission: validator.commission
       };
 
-      // Calculate current-epoch credits vs last full epoch network average (matches competitor display)
+      // Credit pace score: how well is validator earning vs network average, adjusted for epoch progress
       let credPctHtml = '';
       const credHistory = validator.epochCreditsHistory || [];
-      if (window.networkFullEpochCredits && credHistory.length >= 1) {
+      if (window.networkFullEpochCredits && window.epochProgressRatio && credHistory.length >= 1) {
         const latestEntry = credHistory[credHistory.length - 1];
         if (latestEntry && latestEntry.length >= 3) {
           const epochEarned = latestEntry[1] - latestEntry[2];
-          const pct = (epochEarned / window.networkFullEpochCredits) * 100;
-          // Color based on pace: are we on track to hit 92% by end of epoch?
-          const epochProg = window.epochProgressRatio || 1;
-          const onPace = epochProg > 0 ? (pct / epochProg) >= 92 : pct >= 92;
-          const pctColor = onPace ? 'var(--success)' : 'var(--danger)';
-          const pace = epochProg > 0 ? (pct / epochProg).toFixed(1) : pct.toFixed(1);
-          const pctTitle = `Credits earned so far this epoch: ${pct.toFixed(2)}% of a full epoch avg\nProjected pace: ${pace}% — Requirement: ≥92% (${onPace ? 'ON TRACK ✓' : 'BEHIND ✗'})`;
-          credPctHtml = `<div style="position:absolute;bottom:0.4rem;right:0.5rem;font-size:0.68rem;font-weight:700;color:${pctColor};line-height:1;" title="${pctTitle}">${pct.toFixed(1)}%</div>`;
+          const expectedSoFar = window.networkFullEpochCredits * window.epochProgressRatio;
+          const paceScore = expectedSoFar > 0 ? (epochEarned / expectedSoFar) * 100 : null;
+
+          if (paceScore !== null) {
+            const onTrack = paceScore >= 92;
+            const pctColor = onTrack ? 'var(--success)' : 'var(--danger)';
+            const statusIcon = onTrack ? '✅' : '⚠️';
+            const statusText = onTrack ? 'ON TRACK' : 'AT RISK';
+            const tooltipId = 'credTip-' + validator.voteAccount.slice(0,8);
+
+            const tooltipHtml = `
+              <div class="cred-tooltip" id="${tooltipId}">
+                <div class="cred-tooltip-title">Credit Pace Score</div>
+                <div class="cred-tooltip-row">
+                  <span class="cred-tooltip-label">Earned this epoch</span>
+                  <span class="cred-tooltip-val">${epochEarned.toLocaleString()}</span>
+                </div>
+                <div class="cred-tooltip-row">
+                  <span class="cred-tooltip-label">Expected at this pace</span>
+                  <span class="cred-tooltip-val">${Math.round(expectedSoFar).toLocaleString()}</span>
+                </div>
+                <div class="cred-tooltip-row">
+                  <span class="cred-tooltip-label">Network avg / epoch</span>
+                  <span class="cred-tooltip-val">${Math.round(window.networkFullEpochCredits).toLocaleString()}</span>
+                </div>
+                <div class="cred-tooltip-divider"></div>
+                <div class="cred-tooltip-row">
+                  <span class="cred-tooltip-label">Pace score</span>
+                  <span class="cred-tooltip-val" style="color:${pctColor};font-weight:700">${paceScore.toFixed(1)}%</span>
+                </div>
+                <div class="cred-tooltip-row">
+                  <span class="cred-tooltip-label">Requirement</span>
+                  <span class="cred-tooltip-val">≥ 92% of avg</span>
+                </div>
+                <div class="cred-tooltip-status" style="color:${pctColor}">${statusIcon} ${statusText}</div>
+                <div class="cred-tooltip-note">Compares your credits earned so far vs where the network average would be at ${(window.epochProgressRatio*100).toFixed(1)}% epoch progress</div>
+              </div>`.replace(/\n\s*/g, '');
+
+            credPctHtml = `
+              <div class="cred-pct-badge" 
+                onmouseenter="document.getElementById('${tooltipId}').classList.add('show')"
+                onmouseleave="document.getElementById('${tooltipId}').classList.remove('show')"
+                style="position:absolute;bottom:0.4rem;right:0.5rem;font-size:0.68rem;font-weight:700;color:${pctColor};line-height:1;cursor:default;">
+                ${paceScore.toFixed(1)}%
+                ${tooltipHtml}
+              </div>`;
+          }
         }
       }
 
