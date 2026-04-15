@@ -11069,11 +11069,8 @@
       let extendedEpochCredits = await fetchExtendedEpochCredits(voteAccount);
       const epochCreditsHistory = extendedEpochCredits || validator.epochCredits || [];
       
-      // Reuse skip rate from allValidators if already bulk-fetched, otherwise fetch individually
-      const cachedValidator = allValidators.find(v => v.nodePubkey === validator.nodePubkey);
-      const skipRate = (cachedValidator && cachedValidator.skipRate !== undefined)
-        ? cachedValidator.skipRate
-        : await fetchSkipRate(validator.nodePubkey);
+      // Fetch skip rate from block production (current epoch)
+      const skipRate = await fetchSkipRate(validator.nodePubkey);
       
       // Fetch historical skip rates (past 7 epochs)
       const skipRateHistory = await fetchHistoricalSkipRates(validator.nodePubkey, 7);
@@ -12835,11 +12832,14 @@
       results.style.display = 'none';
 
       try {
-        // Fetch all validators in parallel instead of sequentially
-        const results = await Promise.all(
-          myPortfolio.map(voteAccount => getValidatorInfo(voteAccount, true))
-        );
-        const validators = results.filter(v => v !== null && v !== undefined);
+        const validators = [];
+        
+        for (const voteAccount of myPortfolio) {
+          const validator = await getValidatorInfo(voteAccount, true);
+          if (validator) {
+            validators.push(validator);
+          }
+        }
 
         if (validators.length === 0) {
           empty.style.display = 'block';
