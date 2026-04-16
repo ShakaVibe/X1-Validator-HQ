@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-16T10:46:19.953Z",
-  "totalNodes": 2390,
-  "totalLocations": 2377,
+  "lastUpdated": "2026-04-16T12:45:43.816Z",
+  "totalNodes": 2389,
+  "totalLocations": 2376,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1668,13 +1668,6 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
-    },
-    "195.3.221.104": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1783,
-      "lon": 21.0602
     },
     "167.235.3.123": {
       "country": "Germany",
@@ -16648,41 +16641,45 @@
       "name": "United States",
       "count": 1540
     },
-    "CA": {
-      "name": "Canada",
-      "count": 161
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 195
-    },
-    "FR": {
-      "name": "France",
-      "count": 185
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
-    },
     "FI": {
       "name": "Finland",
       "count": 88
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 111
     },
     "GB": {
       "name": "United Kingdom",
       "count": 58
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "CA": {
+      "name": "Canada",
+      "count": 161
+    },
+    "FR": {
+      "name": "France",
+      "count": 185
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 195
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 110
     },
     "NL": {
       "name": "The Netherlands",
       "count": 26
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 6
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 3
     },
     "BE": {
       "name": "Belgium",
@@ -16691,10 +16688,6 @@
     "PT": {
       "name": "Portugal",
       "count": 2
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
     },
     "ES": {
       "name": "Spain",
