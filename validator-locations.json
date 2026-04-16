@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-16T16:52:04.745Z",
-  "totalNodes": 2388,
-  "totalLocations": 2375,
+  "lastUpdated": "2026-04-16T18:45:28.147Z",
+  "totalNodes": 2387,
+  "totalLocations": 2374,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -6183,13 +6183,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "142.44.138.229": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "192.64.82.62": {
       "country": "United States",
@@ -16636,7 +16629,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 161
+      "count": 160
     },
     "DE": {
       "name": "Germany",
