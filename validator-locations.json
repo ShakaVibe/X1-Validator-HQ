@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-17T20:36:32.877Z",
+  "lastUpdated": "2026-04-17T22:35:35.710Z",
   "totalNodes": 2391,
   "totalLocations": 2378,
   "locations": {
@@ -14654,13 +14654,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.134.20": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "46.224.160.26": {
       "country": "Germany",
       "countryCode": "DE",
@@ -16648,12 +16641,19 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
+    },
+    "23.175.144.75": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9596,
+      "lon": -75.161
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1539
+      "count": 1540
     },
     "FI": {
       "name": "Finland",
@@ -16673,7 +16673,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 195
+      "count": 194
     },
     "PL": {
       "name": "Poland",
