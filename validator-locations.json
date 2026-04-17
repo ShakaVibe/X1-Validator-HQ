@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-17T05:15:59.894Z",
-  "totalNodes": 2390,
-  "totalLocations": 2377,
+  "lastUpdated": "2026-04-17T07:01:47.540Z",
+  "totalNodes": 2389,
+  "totalLocations": 2376,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2088,13 +2088,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "195.3.222.18": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1783,
-      "lon": 21.0602
     },
     "152.53.170.34": {
       "country": "United States",
@@ -16674,7 +16667,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 111
+      "count": 110
     },
     "BE": {
       "name": "Belgium",
