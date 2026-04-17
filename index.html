@@ -11323,12 +11323,35 @@
         
         const results = await Promise.all(epochPromises);
         const validResults = results.filter(r => r && r.skipRate !== undefined);
-        
-        // Calculate average - track how many epochs we actually have data for
+
+        // Compute both: slot-weighted (authoritative) and simple mean (kept for compat).
+        // Slot-weighted is the industry-standard approach — it treats one skipped slot the
+        // same regardless of which epoch it happened in, so a bad epoch with a small number
+        // of leader slots (e.g. 4/32 = 12.5%) doesn't disproportionately lift the average
+        // the way a simple-mean-of-percentages does. This matches what the Solana CLI and
+        // most other dashboards report.
         let avgSkipRate = null;
+        let simpleAvgSkipRate = null;
         const epochCount = validResults.length;
+        let totalLeaderSlots = 0;
+        let totalSkippedSlots = 0;
         if (epochCount > 0) {
-          avgSkipRate = validResults.reduce((sum, r) => sum + r.skipRate, 0) / epochCount;
+          // Simple mean (legacy)
+          simpleAvgSkipRate = validResults.reduce((sum, r) => sum + r.skipRate, 0) / epochCount;
+
+          // Slot-weighted (authoritative)
+          for (const r of validResults) {
+            if (typeof r.leaderSlots === 'number' && typeof r.blocksProduced === 'number') {
+              totalLeaderSlots  += r.leaderSlots;
+              totalSkippedSlots += (r.leaderSlots - r.blocksProduced);
+            }
+          }
+          if (totalLeaderSlots > 0) {
+            avgSkipRate = (totalSkippedSlots / totalLeaderSlots) * 100;
+          } else {
+            // Defensive fallback if leaderSlots wasn't present on any result
+            avgSkipRate = simpleAvgSkipRate;
+          }
         }
         
         // Get last completed epoch's skip rate
@@ -11336,9 +11359,12 @@
         
         const historyData = {
           epochs: validResults,
-          avgSkipRate,
-          epochCount, // Track actual number of epochs in the average
-          requestedEpochs: numEpochs, // Track how many we requested
+          avgSkipRate,               // Slot-weighted — authoritative, used for display
+          simpleAvgSkipRate,         // Simple mean of per-epoch %'s — legacy/debug only
+          totalLeaderSlots,          // Denominator for slot-weighted
+          totalSkippedSlots,         // Numerator for slot-weighted
+          epochCount,                // Number of epochs actually in the average
+          requestedEpochs: numEpochs,
           lastEpochSkipRate: lastEpochData ? lastEpochData.skipRate : null,
           currentEpoch
         };
@@ -12231,9 +12257,20 @@
             }
           }
 
-          const avgSkipRate = validResults.length > 0
-            ? validResults.reduce((sum, r) => sum + r.skipRate, 0) / validResults.length
-            : null;
+          // Slot-weighted average across all valid epochs (matches fetchHistoricalSkipRates).
+          // Treats one skipped slot equally regardless of which epoch it occurred in — prevents
+          // a small-sample bad epoch from disproportionately lifting the displayed number.
+          let avgSkipRate = null;
+          let simpleAvgSkipRate = null;
+          if (validResults.length > 0) {
+            simpleAvgSkipRate = validResults.reduce((sum, r) => sum + r.skipRate, 0) / validResults.length;
+            let totalLeader = 0, totalSkipped = 0;
+            for (const r of validResults) {
+              totalLeader  += r.leaderSlots;
+              totalSkipped += (r.leaderSlots - r.blocksProduced);
+            }
+            avgSkipRate = totalLeader > 0 ? (totalSkipped / totalLeader) * 100 : simpleAvgSkipRate;
+          }
 
           const lastEpochData = validResults.find(r => r.epoch === currentEpoch - 1);
 
@@ -12242,6 +12279,7 @@
             data: {
               epochs: validResults,
               avgSkipRate,
+              simpleAvgSkipRate,
               epochCount: validResults.length,
               requestedEpochs: numEpochs,
               lastEpochSkipRate: lastEpochData ? lastEpochData.skipRate : null,
@@ -12666,7 +12704,7 @@
               <div class="stat-subtext">Fee rate</div>
             </div>
             
-            <div class="stat-item clickable-stat" onclick="openSlotModal('${validator.nodePubkey}', '${validator.name.replace(/'/g, "\\'")}', '${validator.voteAccount}')" title="Click to view slot assignment details">
+            <div class="stat-item clickable-stat" onclick="openSlotModal('${validator.nodePubkey}', '${validator.name.replace(/'/g, "\\'")}', '${validator.voteAccount}')" title="Skip rate = % of leader slots where no block was produced. When showing a multi-epoch average, we use the slot-weighted method: (total skipped slots across epochs) / (total leader slots across epochs) — the same method the Solana CLI uses. This avoids small-sample epochs dominating the average. Click to view slot-by-slot assignment details.">
               <div class="stat-label">Skip<br>Rate</div>
               <div class="stat-value ${skipColor}">${skipRateDisplay}</div>
               <div class="stat-subtext">${skipLabel}</div>
