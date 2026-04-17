@@ -10993,6 +10993,10 @@
         document.getElementById('epochPercent').textContent = epochProgress.toFixed(1) + '%';
         document.getElementById('epochTimeRemaining').textContent = timeString;
 
+        // Expose identities map globally so fallback paths (e.g., zombie validator
+        // lookup) can reuse published name/icon data without re-fetching.
+        window.validatorIdentities = identities;
+
         // Build all validators list with names
         allValidators = [...currentValidators, ...delinquentValidators].map(v => {
           const identity = identities[v.nodePubkey];
@@ -11052,14 +11056,25 @@
         const voteAccounts = await rpcCall('getVoteAccounts');
         const all = [...voteAccounts.current, ...voteAccounts.delinquent];
         validator = all.find(v => v.votePubkey === voteAccount);
-        if (!validator) return null;
-        
-        validator.delinquent = voteAccounts.delinquent.some(v => v.votePubkey === voteAccount);
-        
-        // Calculate rank
-        all.sort((a, b) => b.activatedStake - a.activatedStake);
-        rank = all.findIndex(v => v.votePubkey === voteAccount) + 1;
-        totalValidators = all.length;
+
+        if (!validator) {
+          // Not in the active validator set — try zombie fallback (stake-drained
+          // delinquent or similar). Returns null if the vote account is actually
+          // closed or invalid, in which case we honor the original "not found".
+          const zombie = await fetchZombieValidator(voteAccount);
+          if (!zombie) return null;
+          validator = zombie;
+          // Zombies sit outside the ranked set; mark as unranked.
+          rank = null;
+          totalValidators = all.length;
+        } else {
+          validator.delinquent = voteAccounts.delinquent.some(v => v.votePubkey === voteAccount);
+
+          // Calculate rank
+          all.sort((a, b) => b.activatedStake - a.activatedStake);
+          rank = all.findIndex(v => v.votePubkey === voteAccount) + 1;
+          totalValidators = all.length;
+        }
       }
 
       // Get balance (rewards)
@@ -11084,6 +11099,7 @@
         rewardsBalance: lamportsToXNT(balance.value),
         commission: validator.commission,
         isDelinquent: validator.delinquent,
+        isZombie: validator.isZombie === true,
         epochCredits: epochCreditsHistory.length > 0 ? epochCreditsHistory[epochCreditsHistory.length - 1][1] : 0,
         epochCreditsHistory: epochCreditsHistory,
         skipRate: skipRate,
@@ -11131,6 +11147,66 @@
         return null;
       } catch (e) {
         console.error('Error fetching extended epoch credits:', e);
+        return null;
+      }
+    }
+
+    // Fallback lookup for validators that have fallen out of getVoteAccounts.
+    // This happens when a validator is delinquent AND its activated stake has
+    // dropped to zero — the RPC hides these by default (keepUnstakedDelinquents
+    // defaults to false). Reconstructs a minimal validator record directly from
+    // the on-chain vote account so the owner can still find it via Lookup and
+    // open the Manage modal. Returns null if the account is closed or not a
+    // vote account. The returned record is flagged with isZombie:true so the
+    // UI can annotate it, and it is NOT added to the global allValidators list
+    // — keeping leaderboards, averages, and the map unaffected.
+    async function fetchZombieValidator(voteAccount) {
+      try {
+        const response = await fetch(RPC_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'getAccountInfo',
+            params: [voteAccount, { encoding: 'jsonParsed' }]
+          })
+        });
+        const data = await response.json();
+        const value = data?.result?.value;
+        if (!value) return null; // Account does not exist (closed)
+
+        // Must be owned by the Vote program to be a valid vote account
+        const VOTE_PROGRAM = 'Vote111111111111111111111111111111111111111';
+        if (value.owner !== VOTE_PROGRAM) return null;
+
+        const parsed = value.data?.parsed;
+        if (!parsed || !parsed.info) return null;
+        const info = parsed.info;
+
+        const nodePubkey = info.nodePubkey || info.node || '';
+        if (!nodePubkey) return null;
+
+        // Prefer published identity (name + icon) if we have it cached
+        const identity = (window.validatorIdentities || {})[nodePubkey] || null;
+
+        return {
+          votePubkey: voteAccount,
+          nodePubkey: nodePubkey,
+          name: identity ? identity.name : nodePubkey.slice(0, 16) + '...',
+          website: identity ? identity.website : '',
+          iconUrl: identity ? identity.iconUrl : '',
+          activatedStake: 0,             // Zombie: no active stake
+          commission: typeof info.commission === 'number' ? info.commission : 0,
+          epochCredits: Array.isArray(info.epochCredits)
+            ? info.epochCredits.map(e => [e.epoch, e.credits, e.previousCredits])
+            : [],
+          delinquent: true,              // Offline by definition
+          version: null,
+          isZombie: true                 // Flag for UI / downstream code
+        };
+      } catch (e) {
+        console.error('fetchZombieValidator failed:', e);
         return null;
       }
     }
@@ -12519,8 +12595,8 @@
               ${logoHtml}
               <div>
                 <div class="validator-name">
-                  ${validator.name}${getTierBadge(validator.rank, validator.totalValidators)}
-                  <span class="validator-rank" title="Stake rank: Position among all validators sorted by total stake">#${validator.rank} of ${validator.totalValidators}</span>
+                  ${validator.name}${validator.isZombie ? '' : getTierBadge(validator.rank, validator.totalValidators)}
+                  <span class="validator-rank" title="${validator.isZombie ? 'This validator is not in the active set — its activated stake has dropped to zero. It is hidden from the main list by default.' : 'Stake rank: Position among all validators sorted by total stake'}">${validator.isZombie ? 'Unranked' : `#${validator.rank} of ${validator.totalValidators}`}</span>
                 </div>
                 <div class="validator-meta">
                   <span class="validator-address">${validator.voteAccount}</span>
@@ -12546,6 +12622,14 @@
               ${actionBtn}
             </div>
           </div>
+          ${validator.isZombie ? `
+          <div style="margin:0.75rem 1rem 0;padding:0.65rem 0.85rem;background:rgba(255,82,82,0.08);border:1px solid rgba(255,82,82,0.3);border-left:3px solid var(--danger);border-radius:6px;display:flex;gap:0.6rem;align-items:flex-start;font-size:0.82rem;line-height:1.4;color:var(--text-secondary);">
+            <span style="color:var(--danger);font-size:1rem;line-height:1;flex-shrink:0;margin-top:0.05rem;">⚠</span>
+            <div>
+              <strong style="color:var(--text-primary);">Outside the active validator set.</strong>
+              This vote account is long-delinquent with zero activated stake, so it&rsquo;s hidden from the main network list by default. On-chain it still exists — commission, identity, and withdraw authority can still be managed if you hold the keys.
+            </div>
+          </div>` : ''}
           
           <div class="stats-grid">
             <div class="stat-item" title="The validator's accumulated rewards that can be withdrawn.">
