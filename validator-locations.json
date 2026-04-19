@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-19T16:36:03.631Z",
-  "totalNodes": 2390,
-  "totalLocations": 2377,
+  "lastUpdated": "2026-04-19T18:36:31.502Z",
+  "totalNodes": 2388,
+  "totalLocations": 2375,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -53,13 +53,6 @@
       "lon": -0.1278
     },
     "65.109.20.72": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "65.109.115.254": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
@@ -2326,13 +2319,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "65.109.156.57": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "157.90.67.217": {
       "country": "Germany",
@@ -16666,7 +16652,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 89
+      "count": 87
     },
     "GB": {
       "name": "United Kingdom",
