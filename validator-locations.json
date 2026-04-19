@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-19T08:38:31.705Z",
-  "totalNodes": 2391,
-  "totalLocations": 2378,
+  "lastUpdated": "2026-04-19T10:35:40.206Z",
+  "totalNodes": 2390,
+  "totalLocations": 2377,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4055,13 +4055,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "45.131.114.162": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "185.189.46.27": {
       "country": "Sweden",
@@ -16685,7 +16678,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 27
+      "count": 26
     },
     "KE": {
       "name": "Kenya",
