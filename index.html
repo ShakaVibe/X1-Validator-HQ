@@ -24238,9 +24238,43 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const nextSlot = which === 'current' ? (mySlots.find(s => s > si) ?? null) : null;
       const msUntil  = nextSlot !== null ? (nextSlot - si) * SM_SLOT_MS : null;
 
+      // ── Per-slot produced/skipped reconciliation ──────────
+      // getBlockProduction only gives aggregate counts; getBlocks gives
+      // us the authoritative list of slots that actually had blocks.
+      // We use producedSet to color each pip accurately (green/red).
+      // null = fetch failed/unavailable → renderer falls back to legacy
+      // behavior (all past pips green) so we never show worse than before.
+      let producedSet = null;
+      const slotsToCheck = which === 'current'
+        ? mySlots.filter(s => s <= si)   // only past slots for in-progress epoch
+        : mySlots;                        // all slots for completed epoch
+      if (slotsToCheck.length > 0) {
+        const qFirst = slotsToCheck[0];
+        const qLast  = slotsToCheck[slotsToCheck.length - 1];
+        try {
+          const blocksResp = await fetch(RPC_URL, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jsonrpc:'2.0', id:1,
+              method: 'getBlocks', params: [qFirst, qLast] })
+          }).then(r => r.json());
+          if (Array.isArray(blocksResp?.result)) {
+            producedSet = new Set(blocksResp.result);
+            // Sanity check: count of mySlots ∩ producedSet should equal
+            // the `produced` figure from getBlockProduction (within 1).
+            const reconciled = slotsToCheck.filter(s => producedSet.has(s)).length;
+            if (Math.abs(reconciled - produced) > 1) {
+              console.warn(`[SlotExplorer] Reconciliation mismatch for ${nodePubkey}: getBlockProduction says ${produced} produced, getBlocks intersection says ${reconciled}`);
+            }
+          }
+        } catch(e) {
+          console.warn('[SlotExplorer] getBlocks failed, falling back to legacy pip coloring', e);
+        }
+      }
+
       return { assigned, produced, skipped, skipPct,
                nextSlot, msUntil, mySlots, slotIndex: si,
-               isCurrent: which === 'current', epochLabel };
+               isCurrent: which === 'current', epochLabel,
+               producedSet };
     }
 
     // ── Render one panel's inner HTML ──────────────────────
@@ -24259,8 +24293,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
         upcomingSlots = [];
       }
 
+      const hasProducedData = d.producedSet != null;
+
       const pips = [
-        ...pastSlots.map(s => `<div class="sm-pip produced" title="Slot ${s.toLocaleString()}"></div>`),
+        ...pastSlots.map(s => {
+          if (!hasProducedData) {
+            // Legacy fallback (getBlocks unavailable): keep old behavior
+            return `<div class="sm-pip produced" title="Slot ${s.toLocaleString()}"></div>`;
+          }
+          const wasProduced = d.producedSet.has(s);
+          const cls   = wasProduced ? 'produced' : 'skipped';
+          const label = wasProduced ? 'Produced' : 'Skipped';
+          return `<div class="sm-pip ${cls}" title="Slot ${s.toLocaleString()} — ${label}"></div>`;
+        }),
         ...upcomingSlots.map((s, i) => {
           const ms = (s - d.slotIndex) * SM_SLOT_MS;
           return `<div class="sm-pip upcoming" title="Slot ${s.toLocaleString()} — in ${smCountdown(ms)}"></div>`;
