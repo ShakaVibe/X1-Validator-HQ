@@ -24245,6 +24245,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // But getBlockProduction's `range` parameter expects ABSOLUTE slots.
       // We translate relative→absolute when building the RPC batch, then
       // store relative slots in producedSet so the renderer doesn't change.
+      // Fallback: if batching fails, producedSet stays null and the renderer
+      // reverts to all-green pips (never worse than legacy behavior).
       let producedSet = null;
       const slotsToCheck = which === 'current'
         ? mySlots.filter(s => s <= si)   // only past slots for in-progress epoch
@@ -24252,7 +24254,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const epochFirstAbsoluteSlot = which === 'current'
         ? firstSlotOfCurrentEpoch
         : (firstSlotOfCurrentEpoch - slotsPerEpoch);
-      console.log(`[SlotExplorer:${which}] mySlots.length=${mySlots.length}, slotsToCheck=${slotsToCheck.length}, assigned=${assigned}, produced=${produced}, skipped=${skipped}, epochFirstAbsoluteSlot=${epochFirstAbsoluteSlot}`);
       if (slotsToCheck.length > 0) {
         const batchBody = slotsToCheck.map((relSlot, i) => {
           const absSlot = relSlot + epochFirstAbsoluteSlot;
@@ -24262,41 +24263,29 @@ Please give me the diagnostic commands to run on my server so you can help me id
             params: [{ identity: nodePubkey, range: { firstSlot: absSlot, lastSlot: absSlot } }]
           };
         });
-        console.log(`[SlotExplorer:${which}] batched getBlockProduction: ${slotsToCheck.length} per-slot requests (absolute slot range: ${slotsToCheck[0] + epochFirstAbsoluteSlot} → ${slotsToCheck[slotsToCheck.length-1] + epochFirstAbsoluteSlot})`);
         try {
           const batchResp = await fetch(RPC_URL, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(batchBody)
           }).then(r => r.json());
-          console.log(`[SlotExplorer:${which}] raw batchResp type:`, Array.isArray(batchResp) ? `array of ${batchResp.length}` : typeof batchResp);
-          if (batchResp?.[0]) console.log(`[SlotExplorer:${which}] raw first response:`, JSON.stringify(batchResp[0], null, 2));
           if (Array.isArray(batchResp)) {
             producedSet = new Set();
-            let errCount = 0, noByIdCount = 0, producedCount = 0, skippedCount = 0;
             for (const resp of batchResp) {
-              if (resp.error) { errCount++; continue; }
+              if (resp.error) continue;
               const relSlot = slotsToCheck[resp.id];
               const byId = resp?.result?.value?.byIdentity?.[nodePubkey];
-              if (!byId) { noByIdCount++; continue; }
-              if (byId[1] === 1) {
+              // byId === [leaderSlots, blocksProduced]. 1 means produced.
+              if (byId && byId[1] === 1) {
                 producedSet.add(relSlot);   // store relative — renderer uses relative
-                producedCount++;
-              } else {
-                skippedCount++;
               }
             }
-            console.log(`[SlotExplorer:${which}] tally: produced=${producedCount}, skipped=${skippedCount}, noByIdentity=${noByIdCount}, errors=${errCount}`);
-            const skippedLeaderSlots = slotsToCheck.filter(s => !producedSet.has(s));
-            console.log(`[SlotExplorer:${which}] reconciliation: ${producedSet.size} of ${slotsToCheck.length} leader slots were produced (aggregate said ${produced})`);
-            console.log(`[SlotExplorer:${which}] skipped leader slots (relative):`, skippedLeaderSlots);
+            // Sanity check: per-slot count should match aggregate (within 1 for race conditions)
             if (Math.abs(producedSet.size - produced) > 1) {
-              console.warn(`[SlotExplorer:${which}] Reconciliation MISMATCH for ${nodePubkey}: aggregate ${produced} vs per-slot ${producedSet.size}`);
+              console.warn(`[SlotExplorer:${which}] Reconciliation mismatch for ${nodePubkey}: aggregate says ${produced} produced, per-slot says ${producedSet.size}`);
             }
-          } else {
-            console.warn(`[SlotExplorer:${which}] batched response was not an array — falling back to legacy pip coloring`, batchResp);
           }
         } catch(e) {
-          console.warn(`[SlotExplorer:${which}] batched getBlockProduction failed, falling back to legacy pip coloring`, e);
+          console.warn('[SlotExplorer] per-slot reconciliation failed, falling back to legacy pip coloring', e);
         }
       }
 
