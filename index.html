@@ -24239,45 +24239,47 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const msUntil  = nextSlot !== null ? (nextSlot - si) * SM_SLOT_MS : null;
 
       // ── Per-slot produced/skipped reconciliation ──────────
-      // getBlockProduction gives aggregate counts only. getBlocks on X1
-      // returns every slot in a range regardless of actual block production
-      // (non-standard behavior), so it can't be used as a skip detector.
-      // Instead we batch one getBlockProduction call PER leader slot using
-      // JSON-RPC batching — all in a single HTTP round-trip. Each per-slot
-      // response is [leaderSlots:1, blocksProduced:0|1] and tells us
-      // definitively whether that specific slot was produced or skipped.
+      // IMPORTANT: getLeaderSchedule returns slot indexes RELATIVE to the
+      // start of the epoch (0..slotsPerEpoch-1). All UI logic (pip display,
+      // slotIndex comparisons, nextSlot math) uses relative indexes.
+      // But getBlockProduction's `range` parameter expects ABSOLUTE slots.
+      // We translate relative→absolute when building the RPC batch, then
+      // store relative slots in producedSet so the renderer doesn't change.
       let producedSet = null;
       const slotsToCheck = which === 'current'
         ? mySlots.filter(s => s <= si)   // only past slots for in-progress epoch
         : mySlots;                        // all slots for completed epoch
-      console.log(`[SlotExplorer:${which}] mySlots.length=${mySlots.length}, slotsToCheck=${slotsToCheck.length}, assigned=${assigned}, produced=${produced}, skipped=${skipped}`);
+      const epochFirstAbsoluteSlot = which === 'current'
+        ? firstSlotOfCurrentEpoch
+        : (firstSlotOfCurrentEpoch - slotsPerEpoch);
+      console.log(`[SlotExplorer:${which}] mySlots.length=${mySlots.length}, slotsToCheck=${slotsToCheck.length}, assigned=${assigned}, produced=${produced}, skipped=${skipped}, epochFirstAbsoluteSlot=${epochFirstAbsoluteSlot}`);
       if (slotsToCheck.length > 0) {
-        const batchBody = slotsToCheck.map((slot, i) => ({
-          jsonrpc: '2.0', id: i,
-          method: 'getBlockProduction',
-          params: [{ identity: nodePubkey, range: { firstSlot: slot, lastSlot: slot } }]
-        }));
-        console.log(`[SlotExplorer:${which}] batched getBlockProduction: ${slotsToCheck.length} per-slot requests in one HTTP call`);
+        const batchBody = slotsToCheck.map((relSlot, i) => {
+          const absSlot = relSlot + epochFirstAbsoluteSlot;
+          return {
+            jsonrpc: '2.0', id: i,
+            method: 'getBlockProduction',
+            params: [{ identity: nodePubkey, range: { firstSlot: absSlot, lastSlot: absSlot } }]
+          };
+        });
+        console.log(`[SlotExplorer:${which}] batched getBlockProduction: ${slotsToCheck.length} per-slot requests (absolute slot range: ${slotsToCheck[0] + epochFirstAbsoluteSlot} → ${slotsToCheck[slotsToCheck.length-1] + epochFirstAbsoluteSlot})`);
         try {
           const batchResp = await fetch(RPC_URL, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(batchBody)
           }).then(r => r.json());
-          // Raw dump: show the exact shape of what X1 is returning
           console.log(`[SlotExplorer:${which}] raw batchResp type:`, Array.isArray(batchResp) ? `array of ${batchResp.length}` : typeof batchResp);
-          console.log(`[SlotExplorer:${which}] raw first response:`, JSON.stringify(batchResp?.[0] || batchResp, null, 2));
-          if (batchResp?.[1]) console.log(`[SlotExplorer:${which}] raw second response:`, JSON.stringify(batchResp[1], null, 2));
+          if (batchResp?.[0]) console.log(`[SlotExplorer:${which}] raw first response:`, JSON.stringify(batchResp[0], null, 2));
           if (Array.isArray(batchResp)) {
             producedSet = new Set();
             let errCount = 0, noByIdCount = 0, producedCount = 0, skippedCount = 0;
             for (const resp of batchResp) {
               if (resp.error) { errCount++; continue; }
-              const slot = slotsToCheck[resp.id];
+              const relSlot = slotsToCheck[resp.id];
               const byId = resp?.result?.value?.byIdentity?.[nodePubkey];
               if (!byId) { noByIdCount++; continue; }
-              // byId === [leaderSlots, blocksProduced]. blocksProduced === 1 means produced.
               if (byId[1] === 1) {
-                producedSet.add(slot);
+                producedSet.add(relSlot);   // store relative — renderer uses relative
                 producedCount++;
               } else {
                 skippedCount++;
@@ -24285,8 +24287,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
             }
             console.log(`[SlotExplorer:${which}] tally: produced=${producedCount}, skipped=${skippedCount}, noByIdentity=${noByIdCount}, errors=${errCount}`);
             const skippedLeaderSlots = slotsToCheck.filter(s => !producedSet.has(s));
-            console.log(`[SlotExplorer:${which}] reconciliation: ${producedSet.size} of ${slotsToCheck.length} leader slots were produced (getBlockProduction aggregate said ${produced})`);
-            console.log(`[SlotExplorer:${which}] skipped leader slots:`, skippedLeaderSlots);
+            console.log(`[SlotExplorer:${which}] reconciliation: ${producedSet.size} of ${slotsToCheck.length} leader slots were produced (aggregate said ${produced})`);
+            console.log(`[SlotExplorer:${which}] skipped leader slots (relative):`, skippedLeaderSlots);
             if (Math.abs(producedSet.size - produced) > 1) {
               console.warn(`[SlotExplorer:${which}] Reconciliation MISMATCH for ${nodePubkey}: aggregate ${produced} vs per-slot ${producedSet.size}`);
             }
