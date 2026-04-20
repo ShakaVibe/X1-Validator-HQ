@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-20T07:07:30.780Z",
-  "totalNodes": 2389,
-  "totalLocations": 2376,
+  "lastUpdated": "2026-04-20T09:05:51.048Z",
+  "totalNodes": 2388,
+  "totalLocations": 2375,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -338,13 +338,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "51.195.63.179": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "135.125.171.152": {
       "country": "Germany",
@@ -16637,25 +16630,25 @@
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 1541
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 110
     },
     "CA": {
       "name": "Canada",
       "count": 160
     },
+    "DE": {
+      "name": "Germany",
+      "count": 193
+    },
     "FR": {
       "name": "France",
       "count": 184
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 194
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 27
     },
     "FI": {
       "name": "Finland",
@@ -16665,33 +16658,33 @@
       "name": "United Kingdom",
       "count": 59
     },
-    "PL": {
-      "name": "Poland",
-      "count": 110
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
+    "US": {
+      "name": "United States",
+      "count": 1541
     },
     "SG": {
       "name": "Singapore",
       "count": 3
     },
+    "ES": {
+      "name": "Spain",
+      "count": 4
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 27
+    },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
+    "BE": {
+      "name": "Belgium",
+      "count": 4
+    },
     "PT": {
       "name": "Portugal",
       "count": 2
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 4
     }
   }
 }
