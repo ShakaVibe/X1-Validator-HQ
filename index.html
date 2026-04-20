@@ -24239,43 +24239,55 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const msUntil  = nextSlot !== null ? (nextSlot - si) * SM_SLOT_MS : null;
 
       // ── Per-slot produced/skipped reconciliation ──────────
-      // getBlockProduction only gives aggregate counts; getBlocks gives
-      // us the authoritative list of slots that actually had blocks.
-      // We use producedSet to color each pip accurately (green/red).
-      // null = fetch failed/unavailable → renderer falls back to legacy
-      // behavior (all past pips green) so we never show worse than before.
+      // getBlockProduction gives aggregate counts only. getBlocks on X1
+      // returns every slot in a range regardless of actual block production
+      // (non-standard behavior), so it can't be used as a skip detector.
+      // Instead we batch one getBlockProduction call PER leader slot using
+      // JSON-RPC batching — all in a single HTTP round-trip. Each per-slot
+      // response is [leaderSlots:1, blocksProduced:0|1] and tells us
+      // definitively whether that specific slot was produced or skipped.
       let producedSet = null;
       const slotsToCheck = which === 'current'
         ? mySlots.filter(s => s <= si)   // only past slots for in-progress epoch
         : mySlots;                        // all slots for completed epoch
       console.log(`[SlotExplorer:${which}] mySlots.length=${mySlots.length}, slotsToCheck=${slotsToCheck.length}, assigned=${assigned}, produced=${produced}, skipped=${skipped}`);
       if (slotsToCheck.length > 0) {
-        const qFirst = slotsToCheck[0];
-        const qLast  = slotsToCheck[slotsToCheck.length - 1];
-        console.log(`[SlotExplorer:${which}] calling getBlocks(${qFirst}, ${qLast}), range=${qLast - qFirst + 1} slots`);
+        const batchBody = slotsToCheck.map((slot, i) => ({
+          jsonrpc: '2.0', id: i,
+          method: 'getBlockProduction',
+          params: [{ identity: nodePubkey, range: { firstSlot: slot, lastSlot: slot } }]
+        }));
+        console.log(`[SlotExplorer:${which}] batched getBlockProduction: ${slotsToCheck.length} per-slot requests in one HTTP call`);
         try {
-          const blocksResp = await fetch(RPC_URL, {
+          const batchResp = await fetch(RPC_URL, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ jsonrpc:'2.0', id:1,
-              method: 'getBlocks', params: [qFirst, qLast] })
+            body: JSON.stringify(batchBody)
           }).then(r => r.json());
-          console.log(`[SlotExplorer:${which}] getBlocks response:`, blocksResp?.error ? `ERROR: ${JSON.stringify(blocksResp.error)}` : `array of ${blocksResp?.result?.length} blocks`);
-          if (Array.isArray(blocksResp?.result)) {
-            producedSet = new Set(blocksResp.result);
-            // Sanity check: count of slotsToCheck ∩ producedSet should equal
-            // the `produced` figure from getBlockProduction (within 1).
-            const reconciled = slotsToCheck.filter(s => producedSet.has(s)).length;
+          if (Array.isArray(batchResp)) {
+            producedSet = new Set();
+            let errCount = 0;
+            for (const resp of batchResp) {
+              if (resp.error) { errCount++; continue; }
+              const slot = slotsToCheck[resp.id];
+              const byId = resp?.result?.value?.byIdentity?.[nodePubkey];
+              // byId === [leaderSlots, blocksProduced]. blocksProduced === 1 means produced.
+              if (byId && byId[1] === 1) {
+                producedSet.add(slot);
+              }
+              // If byId missing OR byId[1] === 0 → slot was skipped (not added to set)
+            }
+            if (errCount > 0) console.warn(`[SlotExplorer:${which}] ${errCount} per-slot requests returned errors`);
             const skippedLeaderSlots = slotsToCheck.filter(s => !producedSet.has(s));
-            console.log(`[SlotExplorer:${which}] reconciliation: ${reconciled} of ${slotsToCheck.length} leader slots were produced (getBlockProduction said ${produced})`);
+            console.log(`[SlotExplorer:${which}] reconciliation: ${producedSet.size} of ${slotsToCheck.length} leader slots were produced (getBlockProduction aggregate said ${produced})`);
             console.log(`[SlotExplorer:${which}] skipped leader slots:`, skippedLeaderSlots);
-            if (Math.abs(reconciled - produced) > 1) {
-              console.warn(`[SlotExplorer:${which}] Reconciliation MISMATCH for ${nodePubkey}: getBlockProduction says ${produced} produced, getBlocks intersection says ${reconciled}`);
+            if (Math.abs(producedSet.size - produced) > 1) {
+              console.warn(`[SlotExplorer:${which}] Reconciliation MISMATCH for ${nodePubkey}: aggregate ${produced} vs per-slot ${producedSet.size}`);
             }
           } else {
-            console.warn(`[SlotExplorer:${which}] getBlocks returned no result array — falling back to legacy pip coloring`);
+            console.warn(`[SlotExplorer:${which}] batched response was not an array — falling back to legacy pip coloring`, batchResp);
           }
         } catch(e) {
-          console.warn(`[SlotExplorer:${which}] getBlocks failed, falling back to legacy pip coloring`, e);
+          console.warn(`[SlotExplorer:${which}] batched getBlockProduction failed, falling back to legacy pip coloring`, e);
         }
       }
 
