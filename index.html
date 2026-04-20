@@ -24248,26 +24248,34 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const slotsToCheck = which === 'current'
         ? mySlots.filter(s => s <= si)   // only past slots for in-progress epoch
         : mySlots;                        // all slots for completed epoch
+      console.log(`[SlotExplorer:${which}] mySlots.length=${mySlots.length}, slotsToCheck=${slotsToCheck.length}, assigned=${assigned}, produced=${produced}, skipped=${skipped}`);
       if (slotsToCheck.length > 0) {
         const qFirst = slotsToCheck[0];
         const qLast  = slotsToCheck[slotsToCheck.length - 1];
+        console.log(`[SlotExplorer:${which}] calling getBlocks(${qFirst}, ${qLast}), range=${qLast - qFirst + 1} slots`);
         try {
           const blocksResp = await fetch(RPC_URL, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ jsonrpc:'2.0', id:1,
               method: 'getBlocks', params: [qFirst, qLast] })
           }).then(r => r.json());
+          console.log(`[SlotExplorer:${which}] getBlocks response:`, blocksResp?.error ? `ERROR: ${JSON.stringify(blocksResp.error)}` : `array of ${blocksResp?.result?.length} blocks`);
           if (Array.isArray(blocksResp?.result)) {
             producedSet = new Set(blocksResp.result);
-            // Sanity check: count of mySlots ∩ producedSet should equal
+            // Sanity check: count of slotsToCheck ∩ producedSet should equal
             // the `produced` figure from getBlockProduction (within 1).
             const reconciled = slotsToCheck.filter(s => producedSet.has(s)).length;
+            const skippedLeaderSlots = slotsToCheck.filter(s => !producedSet.has(s));
+            console.log(`[SlotExplorer:${which}] reconciliation: ${reconciled} of ${slotsToCheck.length} leader slots were produced (getBlockProduction said ${produced})`);
+            console.log(`[SlotExplorer:${which}] skipped leader slots:`, skippedLeaderSlots);
             if (Math.abs(reconciled - produced) > 1) {
-              console.warn(`[SlotExplorer] Reconciliation mismatch for ${nodePubkey}: getBlockProduction says ${produced} produced, getBlocks intersection says ${reconciled}`);
+              console.warn(`[SlotExplorer:${which}] Reconciliation MISMATCH for ${nodePubkey}: getBlockProduction says ${produced} produced, getBlocks intersection says ${reconciled}`);
             }
+          } else {
+            console.warn(`[SlotExplorer:${which}] getBlocks returned no result array — falling back to legacy pip coloring`);
           }
         } catch(e) {
-          console.warn('[SlotExplorer] getBlocks failed, falling back to legacy pip coloring', e);
+          console.warn(`[SlotExplorer:${which}] getBlocks failed, falling back to legacy pip coloring`, e);
         }
       }
 
