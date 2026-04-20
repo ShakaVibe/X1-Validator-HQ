@@ -24263,20 +24263,27 @@ Please give me the diagnostic commands to run on my server so you can help me id
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(batchBody)
           }).then(r => r.json());
+          // Raw dump: show the exact shape of what X1 is returning
+          console.log(`[SlotExplorer:${which}] raw batchResp type:`, Array.isArray(batchResp) ? `array of ${batchResp.length}` : typeof batchResp);
+          console.log(`[SlotExplorer:${which}] raw first response:`, JSON.stringify(batchResp?.[0] || batchResp, null, 2));
+          if (batchResp?.[1]) console.log(`[SlotExplorer:${which}] raw second response:`, JSON.stringify(batchResp[1], null, 2));
           if (Array.isArray(batchResp)) {
             producedSet = new Set();
-            let errCount = 0;
+            let errCount = 0, noByIdCount = 0, producedCount = 0, skippedCount = 0;
             for (const resp of batchResp) {
               if (resp.error) { errCount++; continue; }
               const slot = slotsToCheck[resp.id];
               const byId = resp?.result?.value?.byIdentity?.[nodePubkey];
+              if (!byId) { noByIdCount++; continue; }
               // byId === [leaderSlots, blocksProduced]. blocksProduced === 1 means produced.
-              if (byId && byId[1] === 1) {
+              if (byId[1] === 1) {
                 producedSet.add(slot);
+                producedCount++;
+              } else {
+                skippedCount++;
               }
-              // If byId missing OR byId[1] === 0 → slot was skipped (not added to set)
             }
-            if (errCount > 0) console.warn(`[SlotExplorer:${which}] ${errCount} per-slot requests returned errors`);
+            console.log(`[SlotExplorer:${which}] tally: produced=${producedCount}, skipped=${skippedCount}, noByIdentity=${noByIdCount}, errors=${errCount}`);
             const skippedLeaderSlots = slotsToCheck.filter(s => !producedSet.has(s));
             console.log(`[SlotExplorer:${which}] reconciliation: ${producedSet.size} of ${slotsToCheck.length} leader slots were produced (getBlockProduction aggregate said ${produced})`);
             console.log(`[SlotExplorer:${which}] skipped leader slots:`, skippedLeaderSlots);
