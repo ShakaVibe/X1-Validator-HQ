@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-21T14:54:47.140Z",
-  "totalNodes": 2388,
-  "totalLocations": 2374,
+  "lastUpdated": "2026-04-21T16:41:13.899Z",
+  "totalNodes": 2386,
+  "totalLocations": 2372,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -4000,13 +4000,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "38.190.177.147": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "45.94.82.42": {
       "country": "The Netherlands",
       "countryCode": "NL",
@@ -4020,13 +4013,6 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
-    },
-    "38.246.112.221": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "151.80.27.66": {
       "country": "France",
@@ -13513,13 +13499,6 @@
       "lat": 40.6128,
       "lon": -87.4917
     },
-    "85.149.216.3": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Freeland Park",
-      "lat": 40.6128,
-      "lon": -87.4917
-    },
     "85.149.216.2": {
       "country": "United States",
       "countryCode": "US",
@@ -16620,12 +16599,31 @@
       "city": "Gravelines",
       "lat": 50.9871,
       "lon": 2.12554
+    },
+    "216.23.104.2": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1543
+      "count": 1541
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 86
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 58
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
     "CA": {
       "name": "Canada",
@@ -16639,21 +16637,17 @@
       "name": "Germany",
       "count": 192
     },
+    "PL": {
+      "name": "Poland",
+      "count": 111
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 24
     },
-    "FI": {
-      "name": "Finland",
-      "count": 86
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 58
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 111
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SG": {
       "name": "Singapore",
@@ -16662,14 +16656,6 @@
     "BE": {
       "name": "Belgium",
       "count": 4
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "PT": {
       "name": "Portugal",
