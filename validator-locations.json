@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-21T08:59:09.604Z",
-  "totalNodes": 2387,
-  "totalLocations": 2374,
+  "lastUpdated": "2026-04-21T10:49:36.347Z",
+  "totalNodes": 2388,
+  "totalLocations": 2375,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -14437,13 +14437,6 @@
       "lat": 40.6128,
       "lon": -87.4917
     },
-    "95.216.186.250": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "95.216.189.57": {
       "country": "Finland",
       "countryCode": "FI",
@@ -14655,13 +14648,6 @@
       "lon": 12.3649
     },
     "23.88.127.209": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "78.46.136.63": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -16537,13 +16523,6 @@
       "lat": 45.5029,
       "lon": -73.5723
     },
-    "23.175.144.75": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9596,
-      "lon": -75.161
-    },
     "107.181.240.134": {
       "country": "United States",
       "countryCode": "US",
@@ -16620,6 +16599,34 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
+    },
+    "23.175.144.149": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9596,
+      "lon": -75.161
+    },
+    "23.159.176.36": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9526,
+      "lon": -75.1652
+    },
+    "23.146.144.158": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9598,
+      "lon": -75.1607
+    },
+    "51.161.13.182": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
     }
   },
   "countries": {
@@ -16633,11 +16640,11 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 160
+      "count": 161
     },
     "DE": {
       "name": "Germany",
-      "count": 194
+      "count": 193
     },
     "FR": {
       "name": "France",
@@ -16645,7 +16652,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 87
+      "count": 86
     },
     "GB": {
       "name": "United Kingdom",
@@ -16653,7 +16660,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 1541
+      "count": 1543
     },
     "SG": {
       "name": "Singapore",
