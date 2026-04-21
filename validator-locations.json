@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-21T20:37:41.434Z",
-  "totalNodes": 2386,
-  "totalLocations": 2372,
+  "lastUpdated": "2026-04-21T22:35:41.482Z",
+  "totalNodes": 2385,
+  "totalLocations": 2371,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -1444,13 +1444,6 @@
       "city": "London",
       "lat": 51.5081,
       "lon": -0.1278
-    },
-    "68.168.221.242": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Bricktown",
-      "lat": 40.0881,
-      "lon": -74.1195
     },
     "104.204.140.254": {
       "country": "Germany",
@@ -3495,13 +3488,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "67.217.48.178": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "51.195.104.111": {
       "country": "Germany",
@@ -15809,13 +15795,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "69.10.55.50": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0749
-    },
     "162.19.72.10": {
       "country": "France",
       "countryCode": "FR",
@@ -16606,6 +16585,20 @@
       "city": "Amsterdam",
       "lat": 52.3759,
       "lon": 4.8975
+    },
+    "84.32.64.23": {
+      "country": "Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3759,
+      "lon": 4.8975
+    },
+    "84.32.176.87": {
+      "country": "Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3759,
+      "lon": 4.8975
     }
   },
   "countries": {
@@ -16613,9 +16606,17 @@
       "name": "Sweden",
       "count": 7
     },
+    "FR": {
+      "name": "France",
+      "count": 186
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 111
+    },
     "US": {
       "name": "United States",
-      "count": 1540
+      "count": 1537
     },
     "CA": {
       "name": "Canada",
@@ -16625,25 +16626,17 @@
       "name": "Germany",
       "count": 192
     },
-    "FR": {
-      "name": "France",
-      "count": 186
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 25
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 111
+    "FI": {
+      "name": "Finland",
+      "count": 86
     },
     "GB": {
       "name": "United Kingdom",
       "count": 58
     },
-    "FI": {
-      "name": "Finland",
-      "count": 86
+    "NL": {
+      "name": "The Netherlands",
+      "count": 27
     },
     "KE": {
       "name": "Kenya",
@@ -16653,6 +16646,10 @@
       "name": "Singapore",
       "count": 3
     },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
+    },
     "BE": {
       "name": "Belgium",
       "count": 4
@@ -16660,10 +16657,6 @@
     "ES": {
       "name": "Spain",
       "count": 4
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
     }
   }
 }
