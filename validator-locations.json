@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-21T12:44:11.655Z",
+  "lastUpdated": "2026-04-21T14:54:47.140Z",
   "totalNodes": 2388,
-  "totalLocations": 2375,
+  "totalLocations": 2374,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -2782,13 +2782,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "178.213.143.84": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
-    },
     "135.181.7.101": {
       "country": "Finland",
       "countryCode": "FI",
@@ -3812,13 +3805,6 @@
       "lon": -73.5723
     },
     "141.95.97.25": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.195.63.174": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Limburg an der Lahn",
@@ -16627,6 +16613,13 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
+    },
+    "141.94.138.22": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Gravelines",
+      "lat": 50.9871,
+      "lon": 2.12554
     }
   },
   "countries": {
@@ -16640,11 +16633,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 185
+      "count": 186
     },
     "DE": {
       "name": "Germany",
-      "count": 193
+      "count": 192
     },
     "NL": {
       "name": "The Netherlands",
