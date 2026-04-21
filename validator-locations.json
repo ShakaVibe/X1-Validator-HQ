@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-20T22:36:23.576Z",
-  "totalNodes": 2386,
-  "totalLocations": 2373,
+  "lastUpdated": "2026-04-21T01:04:19.900Z",
+  "totalNodes": 2387,
+  "totalLocations": 2374,
   "locations": {
     "162.246.16.230": {
       "country": "United States",
@@ -1815,13 +1815,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "51.255.91.71": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "54.39.132.165": {
       "country": "Canada",
@@ -16613,28 +16606,26 @@
       "city": "Salt Lake City",
       "lat": 40.7687,
       "lon": -111.886
+    },
+    "37.59.220.251": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Paris",
+      "lat": 48.8575,
+      "lon": 2.35138
+    },
+    "51.178.217.41": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
     }
   },
   "countries": {
-    "SE": {
-      "name": "Sweden",
-      "count": 7
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 111
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 160
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 193
-    },
-    "FR": {
-      "name": "France",
-      "count": 185
+    "US": {
+      "name": "United States",
+      "count": 1541
     },
     "FI": {
       "name": "Finland",
@@ -16644,25 +16635,37 @@
       "name": "United Kingdom",
       "count": 58
     },
-    "US": {
-      "name": "United States",
-      "count": 1541
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 3
+    "CA": {
+      "name": "Canada",
+      "count": 160
     },
-    "ES": {
-      "name": "Spain",
-      "count": 4
+    "FR": {
+      "name": "France",
+      "count": 185
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 194
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 111
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 24
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 24
+    "SG": {
+      "name": "Singapore",
+      "count": 3
     },
     "BE": {
       "name": "Belgium",
@@ -16671,6 +16674,10 @@
     "PT": {
       "name": "Portugal",
       "count": 2
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 4
     }
   }
 }
