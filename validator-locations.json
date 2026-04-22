@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-22T07:02:02.252Z",
-  "totalNodes": 2419,
-  "totalLocations": 2405,
+  "lastUpdated": "2026-04-22T08:57:21.453Z",
+  "totalNodes": 2420,
+  "totalLocations": 2406,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -16837,6 +16837,13 @@
       "city": "Saarbrücken",
       "lat": 49.2432,
       "lon": 7.00368
+    },
+    "51.161.115.12": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5029,
+      "lon": -73.5723
     }
   },
   "countries": {
@@ -16870,7 +16877,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 160
+      "count": 161
     },
     "FI": {
       "name": "Finland",
