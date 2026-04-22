@@ -10461,12 +10461,15 @@
               })
             });
             const data = await response.json();
-            if (data.result && data.result[0]) {
-              return { epoch, amount: data.result[0].amount || 0 };
+            // Distinguish "indexed with real value" vs "not indexed yet by RPC".
+            // A non-null amount (including 0) means the epoch is indexed.
+            if (data.result && data.result[0] && data.result[0].amount != null) {
+              return { epoch, amount: data.result[0].amount, indexed: true };
             }
-            return { epoch, amount: 0 };
+            // null result, missing entry, or null amount = RPC hasn't indexed this epoch yet
+            return { epoch, amount: 0, indexed: false };
           } catch (e) {
-            return { epoch, amount: 0 };
+            return { epoch, amount: 0, indexed: false };
           }
         });
 
@@ -10513,10 +10516,10 @@
         // Wait for vote rewards
         const voteRewardsResults = await Promise.all(voteRewardsPromises);
         
-        // Build vote rewards map by epoch
+        // Build vote rewards map by epoch, preserving indexed status
         const rewardsByEpoch = {};
         voteRewardsResults.forEach(r => {
-          rewardsByEpoch[r.epoch] = r.amount;
+          rewardsByEpoch[r.epoch] = { amount: r.amount, indexed: r.indexed };
         });
 
         // Step 4: Identify self-stake accounts using WITHDRAWER MATCHING
@@ -10587,9 +10590,11 @@
             // Add self-stake rewards to vote rewards
             selfStakeResults.forEach(r => {
               if (rewardsByEpoch[r.epoch] !== undefined) {
-                rewardsByEpoch[r.epoch] += r.amount;
+                rewardsByEpoch[r.epoch].amount += r.amount;
               } else {
-                rewardsByEpoch[r.epoch] = r.amount;
+                // Shouldn't normally happen (vote rewards populated all epochs first),
+                // but handle gracefully
+                rewardsByEpoch[r.epoch] = { amount: r.amount, indexed: true };
               }
             });
           }
@@ -10597,16 +10602,19 @@
 
         // Step 6: Build final rewards array (sorted descending - most recent first)
         const rewards = Object.entries(rewardsByEpoch)
-          .map(([epoch, amount]) => ({
+          .map(([epoch, v]) => ({
             epoch: parseInt(epoch),
-            amount: amount,
+            amount: v.amount,
+            indexed: v.indexed,
             postBalance: 0,
             commission: commission
           }))
           .sort((a, b) => b.epoch - a.epoch);
 
-        // Cache the results (only if we got data)
-        if (rewards.length > 0) {
+        // Cache only if the most recent epoch has real indexed data.
+        // Caching a not-yet-indexed result would poison the cache for 5 minutes
+        // and force users to see stale zeros.
+        if (rewards.length > 0 && rewards[0].indexed) {
           totalRewardsCache[cacheKey] = {
             timestamp: Date.now(),
             data: rewards
@@ -13042,27 +13050,53 @@
     // Fetch last epoch rewards for all portfolio validators
     async function fetchPortfolioLastEpochRewards(validators) {
       try {
-        let totalLastEpochRewards = 0;
-        
-        // Fetch rewards for each validator in parallel
+        // Fetch 3 epochs of rewards for each validator in parallel.
+        // We need the buffer because at an epoch boundary, the most recent
+        // epoch's rewards may not yet be indexed by the RPC node.
         const rewardPromises = validators.map(async (v) => {
           try {
-            const rewards = await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 1);
-            if (rewards && rewards.length > 0) {
-              // Amount is in lamports, convert to XNT
-              return (rewards[0].amount || 0) / 1e9;
-            }
-            return 0;
+            return await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 3);
           } catch (e) {
             console.error(`Error fetching rewards for ${v.voteAccount}:`, e);
-            return 0;
+            return [];
           }
         });
-        
-        const rewardResults = await Promise.all(rewardPromises);
-        totalLastEpochRewards = rewardResults.reduce((sum, r) => sum + r, 0);
-        
-        document.getElementById('portfolioLastEpochRewards').textContent = formatNumber(totalLastEpochRewards, 2);
+
+        const allRewards = await Promise.all(rewardPromises);
+
+        // Find the most recent epoch for which EVERY validator has real indexed data.
+        // This keeps the summed number consistent (we don't mix epoch N-1 data for
+        // one validator with epoch N-2 for another).
+        const epochCandidates = (allRewards[0] || []).map(r => r.epoch); // already sorted desc
+        let chosenEpoch = null;
+        let totalLastEpochRewards = 0;
+
+        for (const epoch of epochCandidates) {
+          const perValidator = allRewards.map(rewards =>
+            rewards.find(r => r.epoch === epoch)
+          );
+          if (perValidator.every(r => r && r.indexed)) {
+            chosenEpoch = epoch;
+            totalLastEpochRewards = perValidator.reduce(
+              (sum, r) => sum + (r.amount || 0) / 1e9, 0
+            );
+            break;
+          }
+        }
+
+        const valueEl = document.getElementById('portfolioLastEpochRewards');
+        const labelEl = valueEl?.parentElement?.querySelector('.portfolio-stat-label');
+
+        if (chosenEpoch !== null) {
+          valueEl.textContent = formatNumber(totalLastEpochRewards, 2);
+          if (labelEl) {
+            labelEl.innerHTML = `Rewards Last Epoch (XNT) <span style="opacity:0.55;font-size:0.85em;font-weight:400;">· Epoch #${chosenEpoch}</span>`;
+          }
+        } else {
+          // No epoch had complete data for all validators - RPC is likely unavailable
+          valueEl.textContent = '-';
+          if (labelEl) labelEl.textContent = 'Rewards Last Epoch (XNT)';
+        }
       } catch (e) {
         console.error('Error fetching portfolio last epoch rewards:', e);
         document.getElementById('portfolioLastEpochRewards').textContent = '-';
@@ -13073,26 +13107,39 @@
     async function fetchLastEpochForCards(validators) {
       for (const v of validators) {
         try {
-          // Fetch 2 epochs to calculate change
-          const rewards = await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 2);
+          // Fetch 3 epochs so we can fall back if the most recent isn't indexed
+          // yet, and still calculate a change % against the prior indexed epoch
+          const rewards = await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 3);
           const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
           const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
-          
+
           if (cardEl && rewards && rewards.length > 0) {
-            const lastEpochAmount = (rewards[0].amount || 0) / 1e9;
-            cardEl.querySelector('.stat-value').textContent = formatNumber(lastEpochAmount, 2);
-            
-            // Calculate change if we have 2 epochs of data
-            if (changeEl && rewards.length >= 2 && rewards[1].amount > 0) {
-              const priorEpochAmount = (rewards[1].amount || 0) / 1e9;
-              const changePercent = ((lastEpochAmount - priorEpochAmount) / priorEpochAmount) * 100;
-              
-              if (changePercent > 0) {
-                changeEl.innerHTML = `<span style="color: var(--success);">↑ ${formatNumber(changePercent, 2)}%</span>`;
-              } else if (changePercent < 0) {
-                changeEl.innerHTML = `<span style="color: var(--danger);">↓ ${formatNumber(Math.abs(changePercent), 2)}%</span>`;
-              } else {
-                changeEl.innerHTML = `<span style="color: var(--text-dim);">→ 0%</span>`;
+            // Use only epochs with real indexed data
+            const indexedRewards = rewards.filter(r => r.indexed);
+
+            if (indexedRewards.length > 0) {
+              const latest = indexedRewards[0];
+              const lastEpochAmount = (latest.amount || 0) / 1e9;
+              cardEl.querySelector('.stat-value').textContent = formatNumber(lastEpochAmount, 2);
+
+              // Update the subtext to show which epoch this is from
+              const subtextEl = cardEl.querySelector('.stat-subtext');
+              if (subtextEl) {
+                subtextEl.innerHTML = `XNT <span style="opacity:0.6;">· Epoch #${latest.epoch}</span>`;
+              }
+
+              // Calculate change vs. the next-most-recent indexed epoch
+              if (changeEl && indexedRewards.length >= 2 && indexedRewards[1].amount > 0) {
+                const priorEpochAmount = (indexedRewards[1].amount || 0) / 1e9;
+                const changePercent = ((lastEpochAmount - priorEpochAmount) / priorEpochAmount) * 100;
+
+                if (changePercent > 0) {
+                  changeEl.innerHTML = `<span style="color: var(--success);">↑ ${formatNumber(changePercent, 2)}%</span>`;
+                } else if (changePercent < 0) {
+                  changeEl.innerHTML = `<span style="color: var(--danger);">↓ ${formatNumber(Math.abs(changePercent), 2)}%</span>`;
+                } else {
+                  changeEl.innerHTML = `<span style="color: var(--text-dim);">→ 0%</span>`;
+                }
               }
             }
           }
@@ -14024,10 +14071,15 @@
 
       // Fetch last epoch rewards
       try {
-        const rewards = await fetchTotalValidatorRewards(votePubkey, validator.commission || 0, 1);
+        // Fetch 3 epochs so we can fall back to the most recent indexed one
+        // if the very latest isn't indexed by the RPC yet
+        const rewards = await fetchTotalValidatorRewards(votePubkey, validator.commission || 0, 3);
         if (rewards && rewards.length > 0) {
-          validator.lastEpochReward = rewards[0].amount / 1e9; // Convert lamports to XNT
-          validator.lastEpochRewardEpoch = rewards[0].epoch;
+          const latestIndexed = rewards.find(r => r.indexed);
+          if (latestIndexed) {
+            validator.lastEpochReward = latestIndexed.amount / 1e9; // Convert lamports to XNT
+            validator.lastEpochRewardEpoch = latestIndexed.epoch;
+          }
         }
       } catch (e) {
         console.warn('Could not fetch last epoch rewards for comparison:', e);
