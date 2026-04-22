@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-22T18:44:08.056Z",
-  "totalNodes": 2422,
-  "totalLocations": 2408,
+  "lastUpdated": "2026-04-22T20:38:57.944Z",
+  "totalNodes": 2421,
+  "totalLocations": 2407,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -6043,13 +6043,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "192.64.82.62": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "69.10.40.70": {
       "country": "United States",
@@ -16861,29 +16854,21 @@
     }
   },
   "countries": {
-    "SE": {
-      "name": "Sweden",
-      "count": 7
+    "DE": {
+      "name": "Germany",
+      "count": 193
     },
-    "FR": {
-      "name": "France",
-      "count": 216
+    "US": {
+      "name": "United States",
+      "count": 1538
     },
     "PL": {
       "name": "Poland",
       "count": 111
     },
-    "US": {
-      "name": "United States",
-      "count": 1539
-    },
     "CA": {
       "name": "Canada",
       "count": 161
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 193
     },
     "FI": {
       "name": "Finland",
@@ -16893,16 +16878,24 @@
       "name": "United Kingdom",
       "count": 59
     },
+    "FR": {
+      "name": "France",
+      "count": 216
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 27
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
     "BE": {
       "name": "Belgium",
+      "count": 7
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
+    "KE": {
+      "name": "Kenya",
       "count": 7
     },
     "SG": {
