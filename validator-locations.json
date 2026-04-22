@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-22T08:57:21.453Z",
-  "totalNodes": 2420,
-  "totalLocations": 2406,
+  "lastUpdated": "2026-04-22T10:48:14.483Z",
+  "totalNodes": 2419,
+  "totalLocations": 2405,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -13898,13 +13898,6 @@
       "lat": 40.7128,
       "lon": -74.006
     },
-    "159.195.146.164": {
-      "country": "Singapore",
-      "countryCode": "SG",
-      "city": "Singapore",
-      "lat": 1.35208,
-      "lon": 103.82
-    },
     "152.53.245.48": {
       "country": "Germany",
       "countryCode": "DE",
@@ -16873,7 +16866,7 @@
     },
     "SG": {
       "name": "Singapore",
-      "count": 3
+      "count": 2
     },
     "CA": {
       "name": "Canada",
