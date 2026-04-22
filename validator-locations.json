@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-22T01:01:15.160Z",
+  "lastUpdated": "2026-04-22T03:33:42.567Z",
   "totalNodes": 2385,
   "totalLocations": 2371,
   "locations": {
@@ -3460,13 +3460,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "51.161.115.12": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "146.59.1.129": {
       "country": "Poland",
@@ -16599,20 +16592,19 @@
       "city": "Amsterdam",
       "lat": 52.3759,
       "lon": 4.8975
+    },
+    "5.135.70.186": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Strasbourg",
+      "lat": 48.5734,
+      "lon": 7.75211
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
     "DE": {
       "name": "Germany",
       "count": 192
-    },
-    "FR": {
-      "name": "France",
-      "count": 186
     },
     "FI": {
       "name": "Finland",
@@ -16622,13 +16614,9 @@
       "name": "United States",
       "count": 1537
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 27
-    },
     "CA": {
       "name": "Canada",
-      "count": 161
+      "count": 160
     },
     "PL": {
       "name": "Poland",
@@ -16638,9 +16626,21 @@
       "name": "United Kingdom",
       "count": 58
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 4
+    "FR": {
+      "name": "France",
+      "count": 187
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 27
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SG": {
       "name": "Singapore",
@@ -16650,9 +16650,9 @@
       "name": "Spain",
       "count": 4
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
+    "BE": {
+      "name": "Belgium",
+      "count": 4
     },
     "PT": {
       "name": "Portugal",
