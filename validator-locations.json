@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-22T10:48:14.483Z",
-  "totalNodes": 2419,
-  "totalLocations": 2405,
+  "lastUpdated": "2026-04-22T12:43:23.264Z",
+  "totalNodes": 2420,
+  "totalLocations": 2406,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -13982,13 +13982,6 @@
       "lat": 52.1783,
       "lon": 21.0602
     },
-    "104.250.159.138": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Salt Lake City",
-      "lat": 40.7687,
-      "lon": -111.886
-    },
     "146.19.24.14": {
       "country": "Poland",
       "countryCode": "PL",
@@ -16837,60 +16830,74 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
+    },
+    "23.175.144.75": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9596,
+      "lon": -75.161
+    },
+    "45.141.224.114": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5072,
+      "lon": -0.127586
     }
   },
   "countries": {
-    "DE": {
-      "name": "Germany",
-      "count": 194
-    },
-    "FR": {
-      "name": "France",
-      "count": 215
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
     "US": {
       "name": "United States",
       "count": 1537
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 27
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 111
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 58
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 2
+    "FR": {
+      "name": "France",
+      "count": 215
     },
     "CA": {
       "name": "Canada",
       "count": 161
     },
+    "DE": {
+      "name": "Germany",
+      "count": 194
+    },
     "FI": {
       "name": "Finland",
       "count": 86
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
+    "PL": {
+      "name": "Poland",
+      "count": 111
     },
-    "PT": {
-      "name": "Portugal",
+    "NL": {
+      "name": "The Netherlands",
+      "count": 27
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 59
+    },
+    "SG": {
+      "name": "Singapore",
       "count": 2
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 7
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 7
+    "PT": {
+      "name": "Portugal",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
