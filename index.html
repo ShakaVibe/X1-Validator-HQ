@@ -10257,6 +10257,102 @@
   <script>
     const RPC_URL = 'https://rpc.mainnet.x1.xyz';
     const REWARDS_API_URL = null; // Set to your API URL when rewards tracker is running
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Global RPC fetch throttle + retry layer
+    //
+    // Problem: this app fires many RPC requests in parallel (5 validators ×
+    // multiple endpoints × multiple epochs = 50+ concurrent calls on load).
+    // The public RPC responds with HTTP 429 (Too Many Requests). When a 429
+    // comes back, the RPC also strips CORS headers, so the browser cancels
+    // the response before JS can see the status — from JS it looks like a
+    // generic "Failed to fetch" error, which cascades and breaks the whole
+    // portfolio load.
+    //
+    // Solution: wrap the global fetch so that any call to RPC_URL is:
+    //   (a) throttled to at most MAX_CONCURRENT in-flight requests, and
+    //   (b) retried with exponential backoff + jitter on 429 or network errors.
+    //
+    // This is applied at the fetch layer, so every RPC call path benefits
+    // (both rpcCall() and the many direct fetch(RPC_URL, ...) sites).
+    // ─────────────────────────────────────────────────────────────────────
+    (function installRpcThrottle() {
+      const MAX_CONCURRENT = 4;   // max simultaneous in-flight RPC requests
+      const MAX_RETRIES    = 4;   // total attempts per request = 1 + MAX_RETRIES
+      const BASE_BACKOFF   = 300; // ms
+      const MAX_BACKOFF    = 5000;
+
+      const originalFetch = window.fetch.bind(window);
+      let active = 0;
+      const waiters = [];
+
+      function acquire() {
+        if (active < MAX_CONCURRENT) {
+          active++;
+          return Promise.resolve();
+        }
+        return new Promise(resolve => waiters.push(resolve));
+      }
+
+      function release() {
+        const next = waiters.shift();
+        if (next) next();           // hand the slot straight to the next waiter
+        else active--;
+      }
+
+      function backoffDelay(attempt) {
+        const base = Math.min(MAX_BACKOFF, BASE_BACKOFF * Math.pow(2, attempt));
+        const jitter = Math.random() * base * 0.3;
+        return base + jitter;
+      }
+
+      function isRpcUrl(url) {
+        if (typeof url === 'string') return url.startsWith(RPC_URL);
+        if (url && typeof url.url === 'string') return url.url.startsWith(RPC_URL);
+        return false;
+      }
+
+      window.fetch = async function throttledFetch(url, options) {
+        if (!isRpcUrl(url)) {
+          return originalFetch(url, options);
+        }
+
+        await acquire();
+        try {
+          let lastErr;
+          for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+            try {
+              const response = await originalFetch(url, options);
+
+              // 429 = rate limited. Back off and retry.
+              if (response.status === 429) {
+                if (attempt < MAX_RETRIES) {
+                  await new Promise(r => setTimeout(r, backoffDelay(attempt)));
+                  continue;
+                }
+                return response; // give up, let caller see the 429
+              }
+
+              // Any other status (including non-2xx) is passed through — the
+              // callers parse JSON and handle errors themselves.
+              return response;
+            } catch (e) {
+              // Network error / CORS block / 429-without-CORS-headers land here.
+              lastErr = e;
+              if (attempt < MAX_RETRIES) {
+                await new Promise(r => setTimeout(r, backoffDelay(attempt)));
+                continue;
+              }
+              throw lastErr;
+            }
+          }
+          throw lastErr || new Error('RPC request failed after retries');
+        } finally {
+          release();
+        }
+      };
+    })();
+
     
     let allValidators = [];
     let validatorInfoCache = {};
