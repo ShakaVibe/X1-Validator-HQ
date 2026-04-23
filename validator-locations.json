@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-23T01:06:37.159Z",
-  "totalNodes": 2421,
-  "totalLocations": 2407,
+  "lastUpdated": "2026-04-23T03:34:06.018Z",
+  "totalNodes": 2422,
+  "totalLocations": 2408,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -13380,13 +13380,6 @@
       "lat": 40.6128,
       "lon": -87.4917
     },
-    "85.149.217.0": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Freeland Park",
-      "lat": 40.6128,
-      "lon": -87.4917
-    },
     "85.149.217.16": {
       "country": "United States",
       "countryCode": "US",
@@ -13836,13 +13829,6 @@
       "lon": 12.3649
     },
     "159.69.123.48": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "159.69.191.109": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -16851,28 +16837,41 @@
       "city": "Philadelphia",
       "lat": 39.9598,
       "lon": -75.1607
+    },
+    "23.175.145.109": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9522,
+      "lon": -75.1647
+    },
+    "85.149.217.22": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Freeland Park",
+      "lat": 40.6128,
+      "lon": -87.4917
+    },
+    "85.149.217.21": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Freeland Park",
+      "lat": 40.6128,
+      "lon": -87.4917
     }
   },
   "countries": {
-    "SE": {
-      "name": "Sweden",
-      "count": 7
-    },
-    "US": {
-      "name": "United States",
-      "count": 1538
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 161
-    },
     "DE": {
       "name": "Germany",
-      "count": 193
+      "count": 192
     },
     "FR": {
       "name": "France",
       "count": 216
+    },
+    "US": {
+      "name": "United States",
+      "count": 1540
     },
     "NL": {
       "name": "The Netherlands",
@@ -16886,17 +16885,29 @@
       "name": "United Kingdom",
       "count": 59
     },
+    "SG": {
+      "name": "Singapore",
+      "count": 2
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 161
+    },
     "FI": {
       "name": "Finland",
       "count": 86
     },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
+    },
     "KE": {
       "name": "Kenya",
       "count": 7
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 2
     },
     "BE": {
       "name": "Belgium",
@@ -16905,10 +16916,6 @@
     "ES": {
       "name": "Spain",
       "count": 4
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
     },
     "IT": {
       "name": "Italy",
