@@ -8033,6 +8033,7 @@
       to   { opacity: 1; transform: translateY(0); }
     }
     .skipmon-feed-logo {
+      position: relative;
       width: 32px; height: 32px; border-radius: 50%;
       background: var(--bg-primary); flex-shrink: 0;
       display: inline-flex; align-items: center; justify-content: center;
@@ -8127,6 +8128,7 @@
       display: flex; align-items: center; gap: 0.65rem; font-weight: 600;
     }
     .skipmon-top-logo {
+      position: relative;
       width: 26px; height: 26px; border-radius: 50%;
       background: var(--bg-primary);
       display: inline-flex; align-items: center; justify-content: center;
@@ -8183,14 +8185,6 @@
       color: var(--text-secondary);
       font-size: 1.1rem;
     }
-    .skipmon-stat-epoch-delta {
-      margin-top: 0.6rem;
-      padding-top: 0.55rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-dim);
-    }
 
     /* Live horizontal timeline */
     .skipmon-timeline-panel {
@@ -8200,7 +8194,7 @@
       padding: 1rem 1.25rem;
       margin-bottom: 1.5rem;
       /* Single source of truth for NOW position on the strip + scale row. */
-      --sm-tl-now-pos: 80%;
+      --sm-tl-now-pos: 85%;
     }
     .skipmon-timeline-head {
       display: flex;
@@ -8380,6 +8374,7 @@
       border-bottom: 1px solid var(--border);
     }
     .skipmon-pv-logo {
+      position: relative;
       width: 44px; height: 44px;
       border-radius: 50%;
       background: var(--bg-primary);
@@ -9415,9 +9410,9 @@
             <div class="skipmon-empty" style="padding: 0.5rem;">Warming up…</div>
           </div>
           <div class="skipmon-timeline-scale">
-            <span>← 80 slots ago</span>
+            <span>← 85 slots ago</span>
             <span class="sm-tl-scale-now">Now</span>
-            <span>20 slots ahead →</span>
+            <span>15 slots ahead →</span>
           </div>
         </div>
 
@@ -9437,7 +9432,7 @@
             <div class="skipmon-stat-value" id="skipmonHourRate">—</div>
             <div class="skipmon-stat-sub" id="skipmonHourSub">fetching…</div>
           </div>
-          <!-- Epoch card: split — This vs Previous — with delta footer -->
+          <!-- Epoch card: split — This vs Previous -->
           <div class="skipmon-stat skipmon-stat-epoch">
             <div class="skipmon-stat-label">Skip Rate · Epoch</div>
             <div class="skipmon-stat-epoch-row">
@@ -9450,7 +9445,6 @@
                 <div class="skipmon-stat-epoch-col-value" id="skipmonPrevRate">—</div>
               </div>
             </div>
-            <div class="skipmon-stat-epoch-delta" id="skipmonEpochDelta">loading…</div>
           </div>
         </div>
 
@@ -25310,24 +25304,29 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
 
       // Returns { style, inner } to apply on a logo wrapper element.
-      // Uses iconUrl when available; falls back to a deterministic identicon
-      // with the validator's initial when it's missing or the image fails to load.
+      //
+      // Strategy: always paint the identicon + initial as the wrapper's
+      // BACKGROUND. When iconUrl is present, the <img> overlays on top —
+      // covering the gradient if it loads, and falling back to reveal it
+      // if the load fails (silent CORS failures, empty responses, or
+      // anything else that doesn't fire a clean `onerror`).
+      // This guarantees the circle never shows up blank.
       function avatarFor(info, seedOverride) {
         const seed = seedOverride || (info && (info.nodePubkey || info.votePubkey || info.name)) || 'x';
         const name = (info && info.name) || seed;
         const initial = esc(name.charAt(0).toUpperCase() || '?');
         const bg = identiconBg(seed);
+
         if (info && info.iconUrl) {
-          // On image-load failure, repaint the wrapper as an identicon with the initial.
-          // NOTE: must NOT call this.remove() before reading this.parentNode — removing
-          // the img first nulls parentNode and the fallback silently crashes.
-          // Setting parentNode.textContent replaces all children (including the img).
+          // Wrapper is pre-painted with the identicon + initial. The <img>
+          // sits over it when it loads successfully; if it fails, onerror
+          // wipes the img (textContent replaces it), revealing the identicon.
           return {
-            style: '',
-            inner: `<img src="${esc(info.iconUrl)}" alt="${initial}" `
-                 + `onerror="this.parentNode.style.background='${bg}';`
-                 +          `this.parentNode.style.color='#fff';`
-                 +          `this.parentNode.textContent='${initial}'">`
+            style: `background:${bg};color:#fff;`,
+            inner: initial
+                 + `<img src="${esc(info.iconUrl)}" alt="${initial}" `
+                 +      `style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" `
+                 +      `onerror="this.remove()">`
           };
         }
         return {
@@ -25612,12 +25611,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
         }
 
-        // ── EPOCH (split: this / prev) + delta footer ────────
+        // ── EPOCH (split: this / prev) ───────────────────────
         const epoch = prodAgg(state.epochProd);
         const prev  = prodAgg(state.prevEpochProd);
         const epEl    = document.getElementById('skipmonEpochRate');
         const prevEl  = document.getElementById('skipmonPrevRate');
-        const deltaEl = document.getElementById('skipmonEpochDelta');
 
         // "This" epoch value
         if (epEl) {
@@ -25638,29 +25636,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
             prevEl.textContent = '—';
           } else {
             prevEl.textContent = prev.rate.toFixed(2) + '%';
-          }
-        }
-
-        // Delta footer
-        if (deltaEl) {
-          // Tooltip explains "percentage points" since it's not universally known
-          deltaEl.title = 'Percentage points: the absolute difference between two percentages. e.g., 17.31% → 2.41% = a 14.90 point drop.';
-          if (!epoch || !prev || epoch.rate === null || prev.rate === null) {
-            deltaEl.textContent = state.prevEpochProd ? '—' : 'loading comparison…';
-            deltaEl.style.color = 'var(--text-dim)';
-          } else {
-            const delta = epoch.rate - prev.rate;
-            const abs = Math.abs(delta);
-            if (abs < 0.05) {
-              deltaEl.innerHTML = '→ flat vs prev epoch';
-              deltaEl.style.color = 'var(--text-dim)';
-            } else if (delta < 0) {
-              deltaEl.innerHTML = `▼ ${abs.toFixed(2)} points · improving vs prev epoch`;
-              deltaEl.style.color = 'var(--success)';
-            } else {
-              deltaEl.innerHTML = `▲ ${abs.toFixed(2)} points · worsening vs prev epoch`;
-              deltaEl.style.color = 'var(--danger)';
-            }
           }
         }
 
@@ -25967,7 +25942,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           return;
         }
 
-        const PAST = 80, FUTURE = 20;
+        const PAST = 85, FUTURE = 15;
         const lastProc = state.lastProcessedSlot;
 
         // Index past slot statuses for O(1) lookup
