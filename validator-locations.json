@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-23T07:04:09.970Z",
+  "lastUpdated": "2026-04-23T09:00:31.139Z",
   "totalNodes": 2422,
   "totalLocations": 2408,
   "locations": {
@@ -12841,20 +12841,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "188.34.185.228": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "168.119.187.26": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "168.119.63.55": {
       "country": "Germany",
       "countryCode": "DE",
@@ -13744,20 +13730,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "46.224.139.240": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "46.224.129.220": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "162.55.35.59": {
       "country": "Germany",
       "countryCode": "DE",
@@ -13822,13 +13794,6 @@
       "lon": 12.3649
     },
     "49.12.72.252": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "159.69.123.48": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -16858,28 +16823,75 @@
       "city": "Freeland Park",
       "lat": 40.6128,
       "lon": -87.4917
+    },
+    "23.175.146.138": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9596,
+      "lon": -75.161
+    },
+    "23.146.144.157": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9598,
+      "lon": -75.1607
+    },
+    "23.146.144.62": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9598,
+      "lon": -75.1607
+    },
+    "23.146.144.123": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9598,
+      "lon": -75.1607
+    },
+    "23.146.144.164": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9598,
+      "lon": -75.1607
     }
   },
   "countries": {
-    "DE": {
-      "name": "Germany",
-      "count": 192
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
+    "US": {
+      "name": "United States",
+      "count": 1545
     },
     "FR": {
       "name": "France",
       "count": 216
     },
-    "US": {
-      "name": "United States",
-      "count": 1540
+    "CA": {
+      "name": "Canada",
+      "count": 161
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 27
+    "DE": {
+      "name": "Germany",
+      "count": 187
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 86
     },
     "PL": {
       "name": "Poland",
       "count": 111
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 27
     },
     "GB": {
       "name": "United Kingdom",
@@ -16889,29 +16901,17 @@
       "name": "Singapore",
       "count": 2
     },
-    "CA": {
-      "name": "Canada",
-      "count": 161
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 86
-    },
-    "SE": {
-      "name": "Sweden",
+    "BE": {
+      "name": "Belgium",
       "count": 7
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 7
+    "PT": {
+      "name": "Portugal",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
