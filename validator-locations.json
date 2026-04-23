@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-23T16:54:34.697Z",
-  "totalNodes": 2422,
-  "totalLocations": 2408,
+  "lastUpdated": "2026-04-23T18:44:23.896Z",
+  "totalNodes": 2421,
+  "totalLocations": 2407,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -3103,13 +3103,6 @@
       "city": "Paterson",
       "lat": 40.9117,
       "lon": -74.1786
-    },
-    "38.246.115.206": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "146.59.1.185": {
       "country": "Poland",
@@ -16861,25 +16854,37 @@
     }
   },
   "countries": {
-    "DE": {
-      "name": "Germany",
-      "count": 187
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
+    "US": {
+      "name": "United States",
+      "count": 1544
     },
     "FR": {
       "name": "France",
       "count": 216
     },
-    "US": {
-      "name": "United States",
-      "count": 1545
+    "CA": {
+      "name": "Canada",
+      "count": 161
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 27
+    "DE": {
+      "name": "Germany",
+      "count": 187
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 86
     },
     "PL": {
       "name": "Poland",
       "count": 111
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 27
     },
     "GB": {
       "name": "United Kingdom",
@@ -16889,29 +16894,17 @@
       "name": "Singapore",
       "count": 2
     },
-    "CA": {
-      "name": "Canada",
-      "count": 161
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 86
-    },
-    "SE": {
-      "name": "Sweden",
+    "BE": {
+      "name": "Belgium",
       "count": 7
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 7
+    "PT": {
+      "name": "Portugal",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
