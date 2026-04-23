@@ -24437,7 +24437,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
       }
 
-      return { assigned, produced, skipped, skipPct,
+      // assigned (from RPC) = leader slots elapsed so far in the queried range.
+      // assignedTotal = full epoch assignment count (from leader schedule).
+      // Skip rate & progress bar still use elapsed `assigned` as denominator.
+      const assignedTotal = mySlots.length;
+
+      return { assigned, assignedTotal, produced, skipped, skipPct,
                nextSlot, msUntil, mySlots, slotIndex: si,
                isCurrent: which === 'current', epochLabel,
                producedSet };
@@ -24485,7 +24490,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           <div class="sm-stats">
             <div class="sm-stat">
               <div class="sm-stat-label">Assigned</div>
-              <div class="sm-stat-value" style="color:var(--accent-blue)">${d.assigned.toLocaleString()}</div>
+              <div class="sm-stat-value" style="color:var(--accent-blue)">${d.assignedTotal.toLocaleString()}</div>
               <div class="sm-stat-sub">slots</div>
             </div>
             <div class="sm-stat">
@@ -24531,8 +24536,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
               <div class="sm-next-cell-value" style="font-size:0.85rem;color:var(--text-secondary)">Epoch completed</div>
             </div>`}
             <div class="sm-next-cell">
-              <div class="sm-next-cell-label">Total slots</div>
-              <div class="sm-next-cell-value" style="font-size:0.9rem">${d.mySlots.length.toLocaleString()}</div>
+              <div class="sm-next-cell-label">Elapsed</div>
+              <div class="sm-next-cell-value" style="font-size:0.9rem">${d.assigned.toLocaleString()} / ${d.assignedTotal.toLocaleString()}</div>
             </div>
           </div>
 
