@@ -7855,16 +7855,42 @@
 
     .skipmon-wrap { padding: 1.5rem 0; }
 
-    .skipmon-header {
-      display: flex; justify-content: space-between; align-items: flex-end;
-      margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+    /* Controls row: Live badge + scope toggle. Title itself uses the standard
+       `.search-section h1/span` pattern so it matches "My Data <Center>" etc. */
+    .skipmon-controls {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap;
     }
-    .skipmon-title {
-      font-size: 1.5rem; font-weight: 700;
-      display: flex; align-items: center; gap: 0.75rem;
+
+    /* Pulse / heartbeat row — network rhythm at a glance */
+    .skipmon-pulse {
+      display: flex; justify-content: center; align-items: center;
+      gap: 1.5rem; margin-bottom: 1.5rem;
+      padding: 0.85rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      flex-wrap: wrap;
     }
-    .skipmon-subtitle {
-      color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.35rem;
+    .skipmon-pulse-item {
+      display: flex; align-items: baseline; gap: 0.55rem;
+      font-size: 0.85rem;
+    }
+    .skipmon-pulse-label {
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.5px;
+    }
+    .skipmon-pulse-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .skipmon-pulse-value.good { color: var(--success); }
+    .skipmon-pulse-value.bad  { color: var(--danger); }
+    .skipmon-pulse-value.dim  { color: var(--text-dim); }
+    .skipmon-pulse-divider {
+      width: 1px; height: 18px; background: var(--border);
     }
 
     .skipmon-live {
@@ -7990,28 +8016,80 @@
     }
     .skipmon-feed-item {
       display: flex; align-items: center; gap: 0.75rem;
-      padding: 0.65rem 0.8rem; background: var(--bg-primary);
-      border-left: 3px solid var(--danger); border-radius: 6px;
-      font-size: 0.85rem;
-      animation: skipmon-slide-in 0.35s ease-out;
-      cursor: pointer; transition: background 0.15s;
+      padding: 0.65rem 0.8rem;
+      background: rgba(255, 82, 82, 0.04);
+      border: 1px solid rgba(255, 82, 82, 0.15);
+      border-radius: 8px;
+      animation: skipmon-gentle-in 0.2s ease-out;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
     }
-    .skipmon-feed-item:hover { background: var(--bg-card-hover); }
-    @keyframes skipmon-slide-in {
-      from { opacity: 0; transform: translateX(-14px); }
-      to   { opacity: 1; transform: translateX(0); }
+    .skipmon-feed-item:hover {
+      background: rgba(255, 82, 82, 0.08);
+      border-color: rgba(255, 82, 82, 0.3);
     }
-    .skipmon-feed-time {
+    @keyframes skipmon-gentle-in {
+      from { opacity: 0; transform: translateY(-3px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .skipmon-feed-logo {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--bg-primary); flex-shrink: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.8rem; color: var(--accent-blue);
+      overflow: hidden;
+    }
+    .skipmon-feed-logo img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .skipmon-feed-body {
+      flex: 1; min-width: 0;
+      display: flex; flex-direction: column; gap: 0.15rem;
+    }
+    .skipmon-feed-top {
+      display: flex; align-items: center; gap: 0.5rem; min-width: 0;
+    }
+    .skipmon-feed-name {
+      font-weight: 600; font-size: 0.88rem; color: var(--text-primary);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      flex: 1; min-width: 0;
+    }
+    .skipmon-feed-badge {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.5px;
+      padding: 0.12rem 0.45rem; border-radius: 3px;
+      background: rgba(255, 82, 82, 0.2); color: var(--danger);
+      text-transform: uppercase; flex-shrink: 0;
+    }
+    .skipmon-feed-meta {
+      font-size: 0.72rem; color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .skipmon-feed-time-right {
       font-family: 'JetBrains Mono', monospace;
       color: var(--text-dim); font-size: 0.75rem; flex-shrink: 0;
     }
-    .skipmon-feed-name {
-      font-weight: 600; flex: 1;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+
+    /* Top skippers expand/collapse control */
+    .skipmon-top-expand {
+      text-align: center;
+      margin-top: 0.85rem;
     }
-    .skipmon-feed-slot {
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-secondary); font-size: 0.75rem; flex-shrink: 0;
+    .skipmon-top-expand-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .skipmon-top-expand-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+      border-color: var(--accent-blue);
     }
 
     .skipmon-empty {
@@ -8823,21 +8901,35 @@
     <!-- Skip Monitor Tab -->
     <div class="tab-content" id="skipmonitorTab">
       <div class="skipmon-wrap">
-        <div class="skipmon-header">
-          <div>
-            <div class="skipmon-title">
-              📡 Skip Monitor
-              <span class="skipmon-live paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
-            </div>
-            <div class="skipmon-subtitle" id="skipmonSubtitle">
-              Real-time leader-slot tracking · Epoch —
-            </div>
-          </div>
+        <section class="search-section">
+          <h1>Skip <span>Monitor</span></h1>
+          <p id="skipmonSubtitle">Real-time leader-slot tracking · Epoch —</p>
+        </section>
+
+        <div class="skipmon-controls">
+          <span class="skipmon-live paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
           <div class="skipmon-scope">
             <button class="skipmon-scope-btn active" id="skipmonScopeNetwork"
                     onclick="setSkipMonitorScope('network')">🌐 Network</button>
             <button class="skipmon-scope-btn" id="skipmonScopePortfolio"
                     onclick="setSkipMonitorScope('portfolio')">🖥️ My Data Center</button>
+          </div>
+        </div>
+
+        <div class="skipmon-pulse">
+          <div class="skipmon-pulse-item">
+            <span class="skipmon-pulse-label">Clean streak</span>
+            <span class="skipmon-pulse-value" id="skipmonStreak">—</span>
+          </div>
+          <div class="skipmon-pulse-divider"></div>
+          <div class="skipmon-pulse-item">
+            <span class="skipmon-pulse-label">Last skip</span>
+            <span class="skipmon-pulse-value" id="skipmonLastSkip">—</span>
+          </div>
+          <div class="skipmon-pulse-divider"></div>
+          <div class="skipmon-pulse-item">
+            <span class="skipmon-pulse-label">Trend · live vs hour</span>
+            <span class="skipmon-pulse-value" id="skipmonTrend">—</span>
           </div>
         </div>
 
@@ -8899,11 +8991,11 @@
 
         <div class="skipmon-panel">
           <div class="skipmon-panel-head">
-            <div class="skipmon-panel-title">Top Skippers (Window)</div>
+            <div class="skipmon-panel-title">Top Skippers · This Epoch</div>
             <div class="skipmon-panel-meta" id="skipmonTopMeta">—</div>
           </div>
           <div id="skipmonTopWrap">
-            <div class="skipmon-empty">No skips yet in window.</div>
+            <div class="skipmon-empty">Loading epoch data…</div>
           </div>
         </div>
       </div>
@@ -24706,7 +24798,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
           feed: [],                // skip events (newest first)
           hourProd: null,          // {byIdentity, firstSlot, lastSlot, ts}
           epochProd: null,         // {byIdentity, ts, epoch}
+          prevEpochProd: null,     // {byIdentity, ts, epoch}
           feedRenderedTopSlot: null, // slot # of the topmost rendered feed item (for incremental render)
+          topExpanded: false,      // top-skippers panel collapsed by default
         };
       }
 
@@ -24771,8 +24865,30 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const byIdentity = (prod && prod.value && prod.value.byIdentity) || {};
           state.epochProd = { byIdentity, ts: Date.now(), epoch: state.epoch };
           renderStats();
+          renderTop();  // top skippers panel is epoch-driven now
         } catch (e) {
           console.warn('[SkipMonitor] epoch poll error:', e && e.message || e);
+        }
+      }
+
+      // One-shot per session / per epoch rollover. Previous-epoch data is immutable,
+      // so we only re-fetch when the epoch number changes.
+      async function pollPrevEpoch() {
+        if (!state || !state.running) return;
+        if (state.prevEpochProd && state.prevEpochProd.epoch === (state.epoch - 1)) return;
+        try {
+          const epochInfo      = await rpcCall('getEpochInfo');
+          const slotsPerEpoch  = epochInfo.slotsInEpoch;
+          const currentStart   = epochInfo.absoluteSlot - epochInfo.slotIndex;
+          const prevEnd        = currentStart - 1;
+          const prevStart      = prevEnd - slotsPerEpoch + 1;
+          if (prevStart < 0) return; // genesis epoch, no previous
+          const prod = await rpcCall('getBlockProduction', [{ range: { firstSlot: prevStart, lastSlot: prevEnd } }]);
+          const byIdentity = (prod && prod.value && prod.value.byIdentity) || {};
+          state.prevEpochProd = { byIdentity, ts: Date.now(), epoch: epochInfo.epoch - 1 };
+          renderStats();
+        } catch (e) {
+          console.warn('[SkipMonitor] prev epoch poll error:', e && e.message || e);
         }
       }
 
@@ -24802,6 +24918,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
           if (state.epoch !== null && epochInfo.epoch !== state.epoch) {
             await rebuildSlotMap();
             state.lastProcessedSlot = null; // re-seed below
+            state.prevEpochProd = null;     // the previous epoch is now a different epoch
+            pollPrevEpoch();
+            pollEpoch();
           }
 
           const head   = epochInfo.absoluteSlot;
@@ -24930,9 +25049,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
         }
 
-        // ── THIS EPOCH ───────────────────────────────────────
+        // ── THIS EPOCH (+ previous epoch inline comparison) ──
         const epoch = prodAgg(state.epochProd);
-        const epEl = document.getElementById('skipmonEpochRate');
+        const prev  = prodAgg(state.prevEpochProd);
+        const epEl  = document.getElementById('skipmonEpochRate');
         const epSub = document.getElementById('skipmonEpochSub');
         if (epEl) {
           if (!state.epochProd) {
@@ -24946,7 +25066,81 @@ Please give me the diagnostic commands to run on my server so you can help me id
           } else {
             epEl.textContent = epoch.rate.toFixed(2) + '%';
             epEl.className = 'skipmon-stat-value ' + (epoch.rate < 1 ? 'ok' : epoch.rate < 5 ? 'warn' : 'bad');
-            if (epSub) epSub.textContent = `${fmtNum(epoch.skipped)} skip${epoch.skipped===1?'':'s'} · ${fmtNum(epoch.assigned)} slots · epoch ${state.epoch ?? '—'}`;
+            let subHtml = `${fmtNum(epoch.skipped)} skip${epoch.skipped===1?'':'s'} · ${fmtNum(epoch.assigned)} slots`;
+            if (prev && prev.rate !== null && prev.assigned > 0) {
+              const delta = epoch.rate - prev.rate;
+              const arrow = delta < -0.05 ? '↓' : delta > 0.05 ? '↑' : '→';
+              const color = delta < -0.05 ? 'var(--success)' : delta > 0.05 ? 'var(--danger)' : 'var(--text-dim)';
+              subHtml += ` · <span style="color:${color}">prev ${prev.rate.toFixed(2)}% ${arrow}${Math.abs(delta).toFixed(2)}pp</span>`;
+            }
+            if (epSub) epSub.innerHTML = subHtml;
+          }
+        }
+
+        // ── PULSE ROW: clean streak, last skip, trend ───────
+        // Streak: consecutive produced slots walking back from the newest
+        const streakEl = document.getElementById('skipmonStreak');
+        if (streakEl) {
+          if (!slots.length) {
+            streakEl.textContent = '—';
+            streakEl.className = 'skipmon-pulse-value dim';
+          } else {
+            let streak = 0;
+            for (let i = slots.length - 1; i >= 0; i--) {
+              if (slots[i].produced) streak++; else break;
+            }
+            const streakMin = (streak * 0.42 / 60).toFixed(1);
+            streakEl.textContent = streak >= 60
+              ? `${fmtNum(streak)} slots · ~${streakMin}m`
+              : `${fmtNum(streak)} slots`;
+            streakEl.className = 'skipmon-pulse-value ' + (streak >= 40 ? 'good' : streak >= 5 ? '' : 'dim');
+          }
+        }
+
+        // Last skip: newest item in filtered feed
+        const lastSkipEl = document.getElementById('skipmonLastSkip');
+        if (lastSkipEl) {
+          const feed = filteredFeed();
+          const last = feed[0];
+          if (!last) {
+            lastSkipEl.textContent = state.scope === 'portfolio' ? 'none in window' : 'none in window';
+            lastSkipEl.className = 'skipmon-pulse-value dim';
+          } else {
+            const ago = Math.max(0, Math.floor((Date.now() - last.ts) / 1000));
+            const agoStr = ago < 60
+              ? `${ago}s ago`
+              : `${Math.floor(ago/60)}m ${ago%60}s ago`;
+            const info = (typeof getValidatorByNodePubkey === 'function')
+              ? getValidatorByNodePubkey(last.leader) : null;
+            const name = info && info.name ? info.name : (last.leader.slice(0,4) + '…' + last.leader.slice(-4));
+            // Truncate long names in the compact pulse row
+            const shortName = name.length > 22 ? name.slice(0, 20) + '…' : name;
+            lastSkipEl.textContent = `${agoStr} · ${shortName}`;
+            lastSkipEl.className = 'skipmon-pulse-value ' + (ago < 30 ? 'bad' : ago < 120 ? '' : 'dim');
+          }
+        }
+
+        // Trend: live rate vs last-hour rate
+        const trendEl = document.getElementById('skipmonTrend');
+        if (trendEl) {
+          // Require enough data on both sides for a meaningful comparison
+          const haveLive = slots.length >= 400;
+          const haveHour = hour && hour.assigned >= 1000 && hour.rate !== null;
+          if (!haveLive || !haveHour) {
+            trendEl.textContent = 'not enough data';
+            trendEl.className = 'skipmon-pulse-value dim';
+          } else {
+            const delta = liveRate - hour.rate;
+            if (Math.abs(delta) < 0.1) {
+              trendEl.textContent = `→ steady (${Math.abs(delta).toFixed(2)}pp)`;
+              trendEl.className = 'skipmon-pulse-value dim';
+            } else if (delta < 0) {
+              trendEl.textContent = `↓ ${Math.abs(delta).toFixed(2)}pp better`;
+              trendEl.className = 'skipmon-pulse-value good';
+            } else {
+              trendEl.textContent = `↑ ${delta.toFixed(2)}pp worse`;
+              trendEl.className = 'skipmon-pulse-value bad';
+            }
           }
         }
       }
@@ -24992,11 +25186,21 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const info = (typeof getValidatorByNodePubkey === 'function')
           ? getValidatorByNodePubkey(e.leader) : null;
         const name = info && info.name ? info.name : (e.leader.slice(0,6) + '…' + e.leader.slice(-4));
+        const initial = esc(name.charAt(0).toUpperCase());
+        const avatar = info && info.iconUrl
+          ? `<img src="${esc(info.iconUrl)}" alt="" onerror="this.style.display='none';this.parentNode.textContent='${initial}'">`
+          : initial;
         const tStr = new Date(e.ts).toLocaleTimeString([], { hour12: false });
         return `<div class="skipmon-feed-item" data-slot="${e.slot}" onclick="skipmonJumpToValidator('${esc(e.leader)}')">`
-             + `<div class="skipmon-feed-time">${esc(tStr)}</div>`
-             + `<div class="skipmon-feed-name">${esc(name)}</div>`
-             + `<div class="skipmon-feed-slot">slot ${e.slot.toLocaleString()}</div>`
+             +   `<div class="skipmon-feed-logo">${avatar}</div>`
+             +   `<div class="skipmon-feed-body">`
+             +     `<div class="skipmon-feed-top">`
+             +       `<span class="skipmon-feed-name" title="${esc(name)}">${esc(name)}</span>`
+             +       `<span class="skipmon-feed-badge">Skipped</span>`
+             +     `</div>`
+             +     `<div class="skipmon-feed-meta">slot ${e.slot.toLocaleString()}</div>`
+             +   `</div>`
+             +   `<div class="skipmon-feed-time-right">${esc(tStr)}</div>`
              + `</div>`;
       }
 
@@ -25060,32 +25264,44 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const metaEl = document.getElementById('skipmonTopMeta');
         if (!el) return;
 
-        // Tally from the filtered slot buffer (keeps portfolio mode honest)
-        const tallies = {};
-        for (const s of filteredSlots()) {
-          if (!tallies[s.leader]) tallies[s.leader] = { assigned: 0, skipped: 0 };
-          tallies[s.leader].assigned++;
-          if (!s.produced) tallies[s.leader].skipped++;
-        }
-
-        const rows = Object.entries(tallies)
-          .filter(([, v]) => v.skipped > 0)
-          .sort((a, b) =>
-            b[1].skipped - a[1].skipped ||
-            (b[1].skipped / b[1].assigned) - (a[1].skipped / a[1].assigned)
-          )
-          .slice(0, 15);
-
-        if (metaEl) {
-          metaEl.textContent = `${rows.length} validator${rows.length === 1 ? '' : 's'} with skips`;
-        }
-
-        if (!rows.length) {
-          el.innerHTML = '<div class="skipmon-empty">No skips yet in window.</div>';
+        // Top Skippers uses EPOCH data (refreshed every 60s) rather than the
+        // 10-minute rolling window. That picks up chronic offenders, not
+        // validators who happened to have 1 unlucky slot in the last 10 min.
+        const prod = state.epochProd;
+        if (!prod || !prod.byIdentity) {
+          el.innerHTML = '<div class="skipmon-empty">Loading epoch data…</div>';
+          if (metaEl) metaEl.textContent = '—';
           return;
         }
 
-        const maxSkipped = rows[0][1].skipped || 1;
+        const tallies = [];
+        for (const [leader, pair] of Object.entries(prod.byIdentity)) {
+          if (!inScope(leader)) continue;
+          const assigned = pair[0] || 0;
+          const produced = pair[1] || 0;
+          const skipped  = assigned - produced;
+          if (assigned < 10 || skipped === 0) continue;  // denoise: need enough slots
+          tallies.push({ leader, assigned, produced, skipped, rate: (skipped / assigned) * 100 });
+        }
+
+        // Sort by skip rate desc, tiebreak on absolute skipped count
+        tallies.sort((a, b) => b.rate - a.rate || b.skipped - a.skipped);
+
+        if (metaEl) {
+          metaEl.textContent = `${tallies.length} validator${tallies.length === 1 ? '' : 's'} with skips · epoch ${state.epoch ?? '—'}`;
+        }
+
+        if (!tallies.length) {
+          el.innerHTML = '<div class="skipmon-empty">' +
+            (state.scope === 'portfolio' ? 'No skips from your portfolio this epoch.' : 'No validators with skips this epoch yet.') +
+            '</div>';
+          return;
+        }
+
+        const expanded   = !!state.topExpanded;
+        const maxVisible = 15;
+        const visible    = tallies.slice(0, expanded ? maxVisible : Math.min(3, tallies.length));
+        const maxRate    = visible.length ? visible[0].rate : 1; // for bar width
 
         let html = '<table class="skipmon-top-table"><thead><tr>'
                  + '<th style="width:48px">#</th>'
@@ -25096,32 +25312,43 @@ Please give me the diagnostic commands to run on my server so you can help me id
                  + '<th style="width:28%">Share</th>'
                  + '</tr></thead><tbody>';
 
-        rows.forEach(([leader, c], i) => {
+        visible.forEach((r, i) => {
           const info = (typeof getValidatorByNodePubkey === 'function')
-            ? getValidatorByNodePubkey(leader) : null;
-          const name = info && info.name ? info.name : (leader.slice(0,6) + '…' + leader.slice(-4));
-          const rate = (c.skipped / c.assigned) * 100;
-          const pct  = (c.skipped / maxSkipped) * 100;
+            ? getValidatorByNodePubkey(r.leader) : null;
+          const name = info && info.name ? info.name : (r.leader.slice(0,6) + '…' + r.leader.slice(-4));
+          const barPct = maxRate > 0 ? (r.rate / maxRate) * 100 : 0;
           const rank = i + 1;
           const rankCls = rank === 1 ? 'gold' : '';
+          const initial = esc(name.charAt(0).toUpperCase());
           const avatar = info && info.iconUrl
-            ? `<img src="${esc(info.iconUrl)}" alt="" onerror="this.style.display='none';this.parentNode.textContent='${esc(name.charAt(0).toUpperCase())}'">`
-            : esc(name.charAt(0).toUpperCase());
+            ? `<img src="${esc(info.iconUrl)}" alt="" onerror="this.style.display='none';this.parentNode.textContent='${initial}'">`
+            : initial;
 
-          html += `<tr onclick="skipmonJumpToValidator('${esc(leader)}')">`
+          html += `<tr onclick="skipmonJumpToValidator('${esc(r.leader)}')">`
                 + `<td><span class="skipmon-top-rank ${rankCls}">${rank}</span></td>`
                 + `<td><div class="skipmon-top-name">`
                 +   `<div class="skipmon-top-logo">${avatar}</div>`
                 +   `<span>${esc(name)}</span>`
                 + `</div></td>`
-                + `<td>${c.assigned}</td>`
-                + `<td style="color:var(--danger);font-weight:600">${c.skipped}</td>`
-                + `<td>${rate.toFixed(1)}%</td>`
-                + `<td><div class="skipmon-bar-track"><div class="skipmon-bar-fill" style="width:${pct.toFixed(1)}%"></div></div></td>`
+                + `<td>${fmtNum(r.assigned)}</td>`
+                + `<td style="color:var(--danger);font-weight:600">${fmtNum(r.skipped)}</td>`
+                + `<td>${r.rate.toFixed(2)}%</td>`
+                + `<td><div class="skipmon-bar-track"><div class="skipmon-bar-fill" style="width:${barPct.toFixed(1)}%"></div></div></td>`
                 + `</tr>`;
         });
 
         html += '</tbody></table>';
+
+        // Expand/collapse only when there's more to show than the top 3
+        if (tallies.length > 3) {
+          const remaining = Math.min(maxVisible, tallies.length) - 3;
+          html += `<div class="skipmon-top-expand">`
+                +   `<button class="skipmon-top-expand-btn" onclick="skipmonToggleTop()">`
+                +     (expanded ? '▲ Show top 3' : `▼ Show ${remaining} more`)
+                +   `</button>`
+                + `</div>`;
+        }
+
         el.innerHTML = html;
       }
 
@@ -25159,6 +25386,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Longer-window aggregates: fire once, then poll in the background
         pollHour();
         pollEpoch();
+        pollPrevEpoch();   // one-shot; re-fires on epoch rollover (handled in tick)
         hourTimer  = setInterval(pollHour,  HOUR_POLL_MS);
         epochTimer = setInterval(pollEpoch, EPOCH_POLL_MS);
       }
@@ -25188,7 +25416,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
         renderAll();
       }
 
-      return { start, stop, setScope, renderAll };
+      function toggleTopExpanded() {
+        if (!state) return;
+        state.topExpanded = !state.topExpanded;
+        renderTop();
+      }
+
+      return { start, stop, setScope, renderAll, toggleTopExpanded };
     })();
 
     // Inline-onclick bridges
@@ -25201,6 +25435,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
       if (!v) return;
       switchTab('lookup');
       if (typeof lookupValidator === 'function') lookupValidator(v.votePubkey);
+    }
+    function skipmonToggleTop() {
+      if (typeof SkipMonitor !== 'undefined') SkipMonitor.toggleTopExpanded();
     }
 
     // ─────────────────────────────────────────────────────────
