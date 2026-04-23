@@ -8199,6 +8199,8 @@
       border-radius: 12px;
       padding: 1rem 1.25rem;
       margin-bottom: 1.5rem;
+      /* Single source of truth for NOW position on the strip + scale row. */
+      --sm-tl-now-pos: 80%;
     }
     .skipmon-timeline-head {
       display: flex;
@@ -8250,12 +8252,12 @@
       overflow: hidden;
     }
     .skipmon-timeline-track::after {
-      /* center "now" marker line */
+      /* center "now" marker line — position matches PAST/FUTURE ratio in renderTimeline */
       content: '';
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 40%;
+      left: var(--sm-tl-now-pos);
       width: 2px;
       margin-left: -1px;
       background: var(--accent-cyan);
@@ -8314,6 +8316,7 @@
     }
 
     .skipmon-timeline-scale {
+      position: relative;
       display: flex;
       justify-content: space-between;
       margin-top: 0.45rem;
@@ -8321,9 +8324,11 @@
       color: var(--text-dim);
       font-family: 'JetBrains Mono', monospace;
     }
-    .skipmon-timeline-scale span:nth-child(2) {
+    .skipmon-timeline-scale .sm-tl-scale-now {
+      position: absolute;
+      left: var(--sm-tl-now-pos);
+      transform: translateX(-50%);
       color: var(--accent-cyan);
-      margin-left: -4%;  /* align with the 40% current marker */
     }
 
     /* Portfolio view: per-validator scorecards (shown only in portfolio scope) */
@@ -9373,7 +9378,7 @@
             <button class="skipmon-scope-btn active" id="skipmonScopeNetwork"
                     onclick="setSkipMonitorScope('network')">🌐 Network</button>
             <button class="skipmon-scope-btn" id="skipmonScopePortfolio"
-                    onclick="setSkipMonitorScope('portfolio')">🖥️ My Data Center</button>
+                    onclick="setSkipMonitorScope('portfolio')">🖥️ My Validators</button>
           </div>
         </div>
 
@@ -9410,9 +9415,9 @@
             <div class="skipmon-empty" style="padding: 0.5rem;">Warming up…</div>
           </div>
           <div class="skipmon-timeline-scale">
-            <span>← 40 slots ago</span>
-            <span>Now</span>
-            <span>60 slots ahead →</span>
+            <span>← 80 slots ago</span>
+            <span class="sm-tl-scale-now">Now</span>
+            <span>20 slots ahead →</span>
           </div>
         </div>
 
@@ -25313,12 +25318,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const initial = esc(name.charAt(0).toUpperCase() || '?');
         const bg = identiconBg(seed);
         if (info && info.iconUrl) {
+          // On image-load failure, repaint the wrapper as an identicon with the initial.
+          // NOTE: must NOT call this.remove() before reading this.parentNode — removing
+          // the img first nulls parentNode and the fallback silently crashes.
+          // Setting parentNode.textContent replaces all children (including the img).
           return {
             style: '',
-            inner: `<img src="${esc(info.iconUrl)}" alt="" `
+            inner: `<img src="${esc(info.iconUrl)}" alt="${initial}" `
                  + `onerror="this.parentNode.style.background='${bg}';`
                  +          `this.parentNode.style.color='#fff';`
-                 +          `this.remove();`
                  +          `this.parentNode.textContent='${initial}'">`
           };
         }
@@ -25959,7 +25967,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           return;
         }
 
-        const PAST = 40, FUTURE = 60;
+        const PAST = 80, FUTURE = 20;
         const lastProc = state.lastProcessedSlot;
 
         // Index past slot statuses for O(1) lookup
@@ -26238,30 +26246,28 @@ Please give me the diagnostic commands to run on my server so you can help me id
           infoHtml = `<div class="skipmon-pv-info-box">Epoch completed</div>`;
         }
 
-        // Slot timeline (current only — we don't have chronological data for last)
+        // Slot timeline — show for both epochs. Current epoch also gets upcoming
+        // hollow pips; last epoch is complete so there are none. Ordering is by
+        // status (green → red → hollow), not chronological — same convention the
+        // slot-explorer modal uses when it hasn't fetched per-slot history.
         let timelineHtml = '';
-        if (d.isCurrent) {
-          const produced = d.produced || 0;
-          const skipped  = d.skipped || 0;
-          const upcoming = d.upcoming || 0;
-          const pips = produced + skipped + upcoming > 0
-            ? (
-                '<div class="skipmon-pv-pip produced"></div>'.repeat(produced)
-              + '<div class="skipmon-pv-pip skipped"></div>'.repeat(skipped)
-              + '<div class="skipmon-pv-pip upcoming"></div>'.repeat(upcoming)
-              )
-            : '';
+        const produced = d.produced || 0;
+        const skipped  = d.skipped || 0;
+        const upcoming = d.isCurrent ? (d.upcoming || 0) : 0;
+        if (produced + skipped + upcoming > 0) {
+          const pips =
+              '<div class="skipmon-pv-pip produced"></div>'.repeat(produced)
+            + '<div class="skipmon-pv-pip skipped"></div>'.repeat(skipped)
+            + '<div class="skipmon-pv-pip upcoming"></div>'.repeat(upcoming);
           const legends = [
             produced > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip produced"></span> Produced</span>' : '',
             skipped  > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip skipped"></span> Skipped</span>' : '',
             upcoming > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip upcoming"></span> Upcoming</span>' : ''
           ].filter(Boolean).join('');
-          if (pips) {
-            timelineHtml = `<div class="skipmon-pv-tl-wrap">`
-              + `<div class="skipmon-pv-tl-label">Slot timeline ${legends}</div>`
-              + `<div class="skipmon-pv-tl">${pips}</div>`
-              + `</div>`;
-          }
+          timelineHtml = `<div class="skipmon-pv-tl-wrap">`
+            + `<div class="skipmon-pv-tl-label">Slot timeline ${legends}</div>`
+            + `<div class="skipmon-pv-tl">${pips}</div>`
+            + `</div>`;
         }
 
         return `<div class="${panelCls}">`
