@@ -8848,19 +8848,19 @@
             <div class="skipmon-stat-sub" id="skipmonCurSlotSub">head of chain</div>
           </div>
           <div class="skipmon-stat">
-            <div class="skipmon-stat-label">Skips in Window</div>
-            <div class="skipmon-stat-value" id="skipmonWinSkips">—</div>
-            <div class="skipmon-stat-sub" id="skipmonWinSlots">of — slots</div>
+            <div class="skipmon-stat-label">Skip Rate · Live</div>
+            <div class="skipmon-stat-value" id="skipmonLiveRate">—</div>
+            <div class="skipmon-stat-sub" id="skipmonLiveSub">rolling · last ~10 min</div>
           </div>
           <div class="skipmon-stat">
-            <div class="skipmon-stat-label">Window Skip Rate</div>
-            <div class="skipmon-stat-value" id="skipmonWinRate">—</div>
-            <div class="skipmon-stat-sub">rolling ≈3 min</div>
+            <div class="skipmon-stat-label">Skip Rate · Last Hour</div>
+            <div class="skipmon-stat-value" id="skipmonHourRate">—</div>
+            <div class="skipmon-stat-sub" id="skipmonHourSub">fetching…</div>
           </div>
           <div class="skipmon-stat">
-            <div class="skipmon-stat-label">Validators Affected</div>
-            <div class="skipmon-stat-value" id="skipmonValsHit">—</div>
-            <div class="skipmon-stat-sub">distinct, in window</div>
+            <div class="skipmon-stat-label">Skip Rate · Epoch</div>
+            <div class="skipmon-stat-value" id="skipmonEpochRate">—</div>
+            <div class="skipmon-stat-sub" id="skipmonEpochSub">fetching…</div>
           </div>
         </div>
 
@@ -24668,15 +24668,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
     const SkipMonitor = (function() {
       const POLL_INTERVAL_MS   = 3000;
       const UI_TICK_MS         = 1000;
-      const MAX_RECENT_SLOTS   = 432;   // ~3 min of history at 420ms slots
-      const MAX_FEED           = 80;
-      const INITIAL_BACKFILL   = 300;   // slots to hydrate on first tick / long absence
-      const CONFIRM_LAG        = 12;    // stay this many slots behind head
-      const MAX_RANGE_PER_CALL = 500;   // safety cap on a single getBlocks call
+      const MAX_RECENT_SLOTS   = 1500;   // ~10 min of history at 420ms slots
+      const MAX_FEED           = 120;
+      const INITIAL_BACKFILL   = 1400;   // slots to hydrate on first tick / long absence
+      const CONFIRM_LAG        = 12;     // stay this many slots behind head
+      const MAX_RANGE_PER_CALL = 500;    // safety cap on a single getBlocks call
+      const HOUR_SLOTS         = 8571;   // ~1 hour at 420ms/slot
+      const HOUR_POLL_MS       = 30000;  // refresh last-hour aggregate every 30s
+      const EPOCH_POLL_MS      = 60000;  // refresh epoch-to-date aggregate every 60s
 
       let state    = null;
       let pollTimer = null;
       let uiTimer   = null;
+      let hourTimer = null;
+      let epochTimer = null;
 
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
@@ -24699,6 +24704,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
           lastSeenHead: null,
           slots: [],               // ring buffer: {slot, leader, produced, ts}
           feed: [],                // skip events (newest first)
+          hourProd: null,          // {byIdentity, firstSlot, lastSlot, ts}
+          epochProd: null,         // {byIdentity, ts, epoch}
+          feedRenderedTopSlot: null, // slot # of the topmost rendered feed item (for incremental render)
         };
       }
 
@@ -24718,6 +24726,54 @@ Please give me the diagnostic commands to run on my server so you can help me id
         state.epochStartAbsoluteSlot = epochStart;
         state.slotToLeader           = map;
         return epochInfo;
+      }
+
+      // Aggregate a getBlockProduction result into {assigned, produced, skipped, rate},
+      // respecting the current scope filter (network vs portfolio).
+      function prodAgg(prod) {
+        if (!prod || !prod.byIdentity) return null;
+        let assigned = 0, produced = 0;
+        for (const [id, pair] of Object.entries(prod.byIdentity)) {
+          if (!inScope(id)) continue;
+          assigned += (pair[0] || 0);
+          produced += (pair[1] || 0);
+        }
+        return {
+          assigned, produced,
+          skipped: assigned - produced,
+          rate: assigned > 0 ? ((assigned - produced) / assigned) * 100 : null
+        };
+      }
+
+      async function pollHour() {
+        if (!state || !state.running) return;
+        try {
+          const epochInfo  = await rpcCall('getEpochInfo');
+          const head       = epochInfo.absoluteSlot;
+          const epochStart = head - epochInfo.slotIndex;
+          const firstSlot  = Math.max(epochStart, head - HOUR_SLOTS);
+          const lastSlot   = head;
+          if (lastSlot <= firstSlot) return;
+          const prod = await rpcCall('getBlockProduction', [{ range: { firstSlot, lastSlot } }]);
+          const byIdentity = (prod && prod.value && prod.value.byIdentity) || {};
+          state.hourProd = { byIdentity, firstSlot, lastSlot, ts: Date.now() };
+          renderStats();
+        } catch (e) {
+          console.warn('[SkipMonitor] hour poll error:', e && e.message || e);
+        }
+      }
+
+      async function pollEpoch() {
+        if (!state || !state.running) return;
+        try {
+          // No range param → current epoch to date
+          const prod = await rpcCall('getBlockProduction');
+          const byIdentity = (prod && prod.value && prod.value.byIdentity) || {};
+          state.epochProd = { byIdentity, ts: Date.now(), epoch: state.epoch };
+          renderStats();
+        } catch (e) {
+          console.warn('[SkipMonitor] epoch poll error:', e && e.message || e);
+        }
       }
 
       function inScope(leader) {
@@ -24820,45 +24876,79 @@ Please give me the diagnostic commands to run on my server so you can help me id
           sub.textContent = `Real-time leader-slot tracking · Epoch ${state.epoch ?? '—'}`;
         }
 
+        // Current Slot card
         const curEl = document.getElementById('skipmonCurSlot');
         if (curEl) curEl.textContent = state.lastSeenHead ? fmtNum(state.lastSeenHead) : '—';
-
-        const subEl = document.getElementById('skipmonCurSlotSub');
-        if (subEl && state.lastProcessedSlot && state.lastSeenHead) {
+        const curSubEl = document.getElementById('skipmonCurSlotSub');
+        if (curSubEl && state.lastProcessedSlot && state.lastSeenHead) {
           const lag = Math.max(0, state.lastSeenHead - state.lastProcessedSlot);
-          subEl.textContent = `${lag} slots behind head · confirm lag`;
+          curSubEl.textContent = `${lag} slots behind head · confirm lag`;
         }
 
+        // ── LIVE (rolling window) ────────────────────────────
         const slots = filteredSlots();
         const skips = slots.filter(s => !s.produced);
-
-        const winSkips = document.getElementById('skipmonWinSkips');
-        if (winSkips) {
-          winSkips.textContent = fmtNum(skips.length);
-          winSkips.className = 'skipmon-stat-value ' + (
-            slots.length === 0 ? '' :
-            skips.length === 0 ? 'ok' :
-            skips.length < 5   ? 'warn' : 'bad'
+        const liveRate = slots.length ? (skips.length / slots.length) * 100 : null;
+        const liveEl = document.getElementById('skipmonLiveRate');
+        if (liveEl) {
+          liveEl.textContent = (liveRate === null) ? '—' : liveRate.toFixed(2) + '%';
+          liveEl.className = 'skipmon-stat-value ' + (
+            liveRate === null ? '' :
+            liveRate < 1  ? 'ok' :
+            liveRate < 5  ? 'warn' : 'bad'
           );
         }
-
-        const winSlots = document.getElementById('skipmonWinSlots');
-        if (winSlots) winSlots.textContent = `of ${fmtNum(slots.length)} slots`;
-
-        const rate = slots.length ? (skips.length / slots.length) * 100 : 0;
-        const rateEl = document.getElementById('skipmonWinRate');
-        if (rateEl) {
-          rateEl.textContent = slots.length ? rate.toFixed(2) + '%' : '—';
-          rateEl.className = 'skipmon-stat-value ' + (
-            !slots.length ? '' :
-            rate < 1  ? 'ok' :
-            rate < 5  ? 'warn' : 'bad'
-          );
+        const liveSub = document.getElementById('skipmonLiveSub');
+        if (liveSub) {
+          if (!slots.length) {
+            liveSub.textContent = state.scope === 'portfolio'
+              ? 'no portfolio slots in window yet'
+              : 'warming up…';
+          } else {
+            const mins = (slots.length * 0.42 / 60).toFixed(1);
+            liveSub.textContent = `${skips.length} skip${skips.length===1?'':'s'} · ${fmtNum(slots.length)} slots · ~${mins} min`;
+          }
         }
 
-        const vals = new Set(skips.map(s => s.leader)).size;
-        const valsEl = document.getElementById('skipmonValsHit');
-        if (valsEl) valsEl.textContent = fmtNum(vals);
+        // ── LAST HOUR ────────────────────────────────────────
+        const hour = prodAgg(state.hourProd);
+        const hourEl = document.getElementById('skipmonHourRate');
+        const hourSub = document.getElementById('skipmonHourSub');
+        if (hourEl) {
+          if (!state.hourProd) {
+            hourEl.textContent = '—';
+            hourEl.className = 'skipmon-stat-value';
+            if (hourSub) hourSub.textContent = 'fetching…';
+          } else if (!hour || hour.rate === null) {
+            hourEl.textContent = '—';
+            hourEl.className = 'skipmon-stat-value';
+            if (hourSub) hourSub.textContent = state.scope === 'portfolio' ? 'no portfolio slots this hour' : 'no slots';
+          } else {
+            hourEl.textContent = hour.rate.toFixed(2) + '%';
+            hourEl.className = 'skipmon-stat-value ' + (hour.rate < 1 ? 'ok' : hour.rate < 5 ? 'warn' : 'bad');
+            if (hourSub) hourSub.textContent = `${fmtNum(hour.skipped)} skip${hour.skipped===1?'':'s'} · ${fmtNum(hour.assigned)} slots`;
+          }
+        }
+
+        // ── THIS EPOCH ───────────────────────────────────────
+        const epoch = prodAgg(state.epochProd);
+        const epEl = document.getElementById('skipmonEpochRate');
+        const epSub = document.getElementById('skipmonEpochSub');
+        if (epEl) {
+          if (!state.epochProd) {
+            epEl.textContent = '—';
+            epEl.className = 'skipmon-stat-value';
+            if (epSub) epSub.textContent = 'fetching…';
+          } else if (!epoch || epoch.rate === null) {
+            epEl.textContent = '—';
+            epEl.className = 'skipmon-stat-value';
+            if (epSub) epSub.textContent = state.scope === 'portfolio' ? 'no portfolio slots this epoch' : 'no slots';
+          } else {
+            epEl.textContent = epoch.rate.toFixed(2) + '%';
+            epEl.className = 'skipmon-stat-value ' + (epoch.rate < 1 ? 'ok' : epoch.rate < 5 ? 'warn' : 'bad');
+            if (epSub) epSub.textContent = `${fmtNum(epoch.skipped)} skip${epoch.skipped===1?'':'s'} · ${fmtNum(epoch.assigned)} slots · epoch ${state.epoch ?? '—'}`;
+          }
+        }
       }
 
       function renderGrid() {
@@ -24897,6 +24987,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
       }
 
+      // Render a single feed item's HTML (used by both full-rebuild and incremental paths)
+      function feedItemHtml(e) {
+        const info = (typeof getValidatorByNodePubkey === 'function')
+          ? getValidatorByNodePubkey(e.leader) : null;
+        const name = info && info.name ? info.name : (e.leader.slice(0,6) + '…' + e.leader.slice(-4));
+        const tStr = new Date(e.ts).toLocaleTimeString([], { hour12: false });
+        return `<div class="skipmon-feed-item" data-slot="${e.slot}" onclick="skipmonJumpToValidator('${esc(e.leader)}')">`
+             + `<div class="skipmon-feed-time">${esc(tStr)}</div>`
+             + `<div class="skipmon-feed-name">${esc(name)}</div>`
+             + `<div class="skipmon-feed-slot">slot ${e.slot.toLocaleString()}</div>`
+             + `</div>`;
+      }
+
       function renderFeed() {
         const el = document.getElementById('skipmonFeed');
         const metaEl = document.getElementById('skipmonFeedMeta');
@@ -24906,21 +25009,50 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (metaEl) metaEl.textContent = `${feed.length} event${feed.length === 1 ? '' : 's'}`;
 
         if (!feed.length) {
-          el.innerHTML = '<div class="skipmon-empty">Waiting for skips…</div>';
+          el.innerHTML = '<div class="skipmon-empty">' +
+            (state && state.scope === 'portfolio' ? 'No skips from your portfolio yet.' : 'Waiting for skips…') +
+            '</div>';
+          state.feedRenderedTopSlot = null;
           return;
         }
 
-        el.innerHTML = feed.map(e => {
-          const info = (typeof getValidatorByNodePubkey === 'function')
-            ? getValidatorByNodePubkey(e.leader) : null;
-          const name = info && info.name ? info.name : (e.leader.slice(0,6) + '…' + e.leader.slice(-4));
-          const tStr = new Date(e.ts).toLocaleTimeString([], { hour12: false });
-          return `<div class="skipmon-feed-item" onclick="skipmonJumpToValidator('${esc(e.leader)}')">`
-               + `<div class="skipmon-feed-time">${esc(tStr)}</div>`
-               + `<div class="skipmon-feed-name">${esc(name)}</div>`
-               + `<div class="skipmon-feed-slot">slot ${e.slot.toLocaleString()}</div>`
-               + `</div>`;
-        }).join('');
+        // Feed is newest-first. Prepending new items at the top keeps scroll behavior natural:
+        // - If user is at top, they see new events push old ones down.
+        // - If user has scrolled down to read older events, we compensate scrollTop so nothing
+        //   jumps under them.
+        const isEmptyDom = !!el.querySelector('.skipmon-empty') || el.children.length === 0;
+        const doFullRebuild = isEmptyDom || state.feedRenderedTopSlot === null;
+
+        if (doFullRebuild) {
+          el.innerHTML = feed.map(feedItemHtml).join('');
+          state.feedRenderedTopSlot = feed[0].slot;
+          return;
+        }
+
+        // Incremental: find events newer than the topmost currently rendered slot, prepend them
+        const newItems = [];
+        for (const e of feed) {
+          if (e.slot <= state.feedRenderedTopSlot) break; // feed is sorted newest-first
+          newItems.push(e);
+        }
+
+        if (newItems.length) {
+          const wasScrolledDown = el.scrollTop > 4;
+          const prevScrollHeight = el.scrollHeight;
+          // newItems is already newest-first; insertAdjacentHTML preserves order at the top
+          el.insertAdjacentHTML('afterbegin', newItems.map(feedItemHtml).join(''));
+          state.feedRenderedTopSlot = feed[0].slot;
+          // Compensate scroll so what the user was reading doesn't slide under them
+          if (wasScrolledDown) {
+            el.scrollTop += (el.scrollHeight - prevScrollHeight);
+          }
+        }
+
+        // Trim overflow from the bottom without disturbing the scroll
+        const rendered = el.querySelectorAll('.skipmon-feed-item');
+        if (rendered.length > MAX_FEED) {
+          for (let i = MAX_FEED; i < rendered.length; i++) rendered[i].remove();
+        }
       }
 
       function renderTop() {
@@ -25021,17 +25153,24 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
 
         await tick();
-        pollTimer = setInterval(tick,       POLL_INTERVAL_MS);
-        uiTimer   = setInterval(renderStats, UI_TICK_MS);
+        pollTimer  = setInterval(tick,        POLL_INTERVAL_MS);
+        uiTimer    = setInterval(renderStats, UI_TICK_MS);
+
+        // Longer-window aggregates: fire once, then poll in the background
+        pollHour();
+        pollEpoch();
+        hourTimer  = setInterval(pollHour,  HOUR_POLL_MS);
+        epochTimer = setInterval(pollEpoch, EPOCH_POLL_MS);
       }
 
       function stop() {
         if (!state || !state.running) return;
         state.running = false;
-        if (pollTimer) clearInterval(pollTimer);
-        if (uiTimer)   clearInterval(uiTimer);
-        pollTimer = null;
-        uiTimer   = null;
+        if (pollTimer)  clearInterval(pollTimer);
+        if (uiTimer)    clearInterval(uiTimer);
+        if (hourTimer)  clearInterval(hourTimer);
+        if (epochTimer) clearInterval(epochTimer);
+        pollTimer = uiTimer = hourTimer = epochTimer = null;
         setLiveStatus(false, 'Paused');
       }
 
@@ -25039,6 +25178,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (!state) state = freshState(scope);
         if (state.scope === scope) return;
         state.scope = scope;
+        // Invalidate feed render marker so incremental-render does a clean rebuild
+        // under the new filter (otherwise we'd be appending to the wrong filtered list).
+        state.feedRenderedTopSlot = null;
         const nBtn = document.getElementById('skipmonScopeNetwork');
         const pBtn = document.getElementById('skipmonScopePortfolio');
         if (nBtn) nBtn.classList.toggle('active', scope === 'network');
