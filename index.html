@@ -8147,6 +8147,391 @@
       border-radius: 3px; transition: width 0.3s;
     }
 
+    /* Epoch stat card with split (This | Previous) + delta footer */
+    .skipmon-stat-epoch-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.9rem;
+      margin-top: 0.35rem;
+    }
+    .skipmon-stat-epoch-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .skipmon-stat-epoch-col-label {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .skipmon-stat-epoch-col-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-top: 0.3rem;
+      color: var(--text-primary);
+    }
+    .skipmon-stat-epoch-col-value.ok   { color: var(--success); }
+    .skipmon-stat-epoch-col-value.warn { color: var(--warning); }
+    .skipmon-stat-epoch-col-value.bad  { color: var(--danger); }
+    .skipmon-stat-epoch-col-prev .skipmon-stat-epoch-col-value {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+    }
+    .skipmon-stat-epoch-delta {
+      margin-top: 0.6rem;
+      padding-top: 0.55rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-dim);
+    }
+
+    /* Live horizontal timeline */
+    .skipmon-timeline-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .skipmon-timeline-head {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .skipmon-timeline-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    .skipmon-timeline-meta {
+      font-size: 0.73rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .skipmon-timeline-legend {
+      display: flex;
+      gap: 0.9rem;
+      margin-left: auto;
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+    .sm-tl-leg {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .sm-tl-leg-pip {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+    .sm-tl-leg-pip.produced { background: var(--success); opacity: 0.85; }
+    .sm-tl-leg-pip.skipped  { background: var(--danger); box-shadow: 0 0 4px rgba(255,82,82,0.6); }
+    .sm-tl-leg-pip.current  { background: var(--accent-cyan); box-shadow: 0 0 5px var(--accent-cyan); }
+    .sm-tl-leg-pip.upcoming { border: 1px solid var(--accent-blue); background: rgba(77,166,255,0.1); }
+
+    .skipmon-timeline-track {
+      position: relative;
+      display: flex;
+      gap: 2px;
+      height: 48px;
+      padding: 5px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .skipmon-timeline-track::after {
+      /* center "now" marker line */
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 40%;
+      width: 2px;
+      margin-left: -1px;
+      background: var(--accent-cyan);
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .sm-tl-cell {
+      flex: 1 1 0;
+      min-width: 5px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: transform 0.15s;
+      position: relative;
+      z-index: 2;
+    }
+    .sm-tl-cell:hover {
+      transform: scaleY(1.18);
+    }
+    .sm-tl-cell.produced { background: var(--success); opacity: 0.8; }
+    .sm-tl-cell.skipped  { background: var(--danger); box-shadow: 0 0 6px rgba(255,82,82,0.6); }
+    .sm-tl-cell.unknown  { background: var(--border); opacity: 0.3; }
+    .sm-tl-cell.current  {
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan);
+      animation: skipmon-tl-pulse 1s ease-in-out infinite;
+    }
+    @keyframes skipmon-tl-pulse {
+      0%, 100% { opacity: 1; }
+      50%      { opacity: 0.55; }
+    }
+    .sm-tl-cell.upcoming {
+      border: 1px solid rgba(77, 166, 255, 0.35);
+      background: rgba(77, 166, 255, 0.08);
+    }
+    .sm-tl-cell.upcoming-next {
+      border-color: var(--accent-blue);
+      background: rgba(77, 166, 255, 0.25);
+    }
+    .sm-tl-cell.portfolio-mine {
+      /* In portfolio scope, the user's own upcoming slots glow */
+      box-shadow: 0 0 8px var(--accent-gold);
+      border-color: var(--accent-gold);
+      background: rgba(240, 185, 11, 0.18);
+    }
+
+    .skipmon-timeline-scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.45rem;
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .skipmon-timeline-scale span:nth-child(2) {
+      color: var(--accent-cyan);
+      margin-left: -4%;  /* align with the 40% current marker */
+    }
+
+    /* Portfolio view: per-validator scorecards (shown only in portfolio scope) */
+    .skipmon-portfolio-view { /* visibility controlled by mode classes below */ }
+
+    .skipmon-pv-head-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 1rem;
+      padding: 0 0.25rem;
+      gap: 1rem;
+    }
+    .skipmon-pv-head-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .skipmon-pv-head-meta {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .skipmon-portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1rem;
+    }
+    .skipmon-pv-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.15rem;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+    .skipmon-pv-card:hover {
+      border-color: var(--accent-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(77, 166, 255, 0.15);
+    }
+    .skipmon-pv-card.delinquent {
+      border-color: rgba(255, 82, 82, 0.35);
+    }
+    .skipmon-pv-head {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .skipmon-pv-logo {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fff;
+      overflow: hidden;
+    }
+    .skipmon-pv-logo img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .skipmon-pv-meta { flex: 1; min-width: 0; }
+    .skipmon-pv-name {
+      font-weight: 700;
+      font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+    }
+    .skipmon-pv-addr {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      margin-top: 0.15rem;
+    }
+    .skipmon-pv-badge-delinquent {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 0.12rem 0.45rem;
+      border-radius: 3px;
+      background: rgba(255, 82, 82, 0.2);
+      color: var(--danger);
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .skipmon-pv-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 0.9rem;
+    }
+    .skipmon-pv-stat {
+      background: var(--bg-primary);
+      padding: 0.6rem 0.5rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .skipmon-pv-stat-label {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+    .skipmon-pv-stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .skipmon-pv-stat-value.danger { color: var(--danger); }
+    .skipmon-pv-stat-value.ok     { color: var(--success); }
+
+    .skipmon-pv-rate-row {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 0.9rem;
+    }
+    .skipmon-pv-rate-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .skipmon-pv-rate-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .skipmon-pv-rate-value.ok     { color: var(--success); }
+    .skipmon-pv-rate-value.warn   { color: var(--warning); }
+    .skipmon-pv-rate-value.danger { color: var(--danger); }
+    .skipmon-pv-rate-bar {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-primary);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .skipmon-pv-rate-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+
+    .skipmon-pv-next {
+      background: var(--bg-primary);
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.9rem;
+      gap: 0.5rem;
+    }
+    .skipmon-pv-next-label {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    .skipmon-pv-next-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      font-size: 0.9rem;
+    }
+    .skipmon-pv-next-value.none {
+      color: var(--text-dim);
+    }
+
+    .skipmon-pv-pips-wrap {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+    .skipmon-pv-pips {
+      display: flex;
+      gap: 2px;
+      flex-wrap: wrap;
+    }
+    .skipmon-pv-pip {
+      width: 11px;
+      height: 11px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .skipmon-pv-pip.produced { background: var(--success); opacity: 0.85; }
+    .skipmon-pv-pip.skipped  { background: var(--danger); box-shadow: 0 0 4px rgba(255,82,82,0.5); }
+    .skipmon-pv-pip.upcoming { border: 1px dashed rgba(77,166,255,0.6); background: transparent; }
+
+    /* Mode gating — show only the layout that matches the active scope */
+    .skipmon-mode-portfolio .skipmon-main,
+    .skipmon-mode-portfolio .skipmon-top-panel {
+      display: none;
+    }
+    .skipmon-mode-network .skipmon-portfolio-view {
+      display: none;
+    }
+
     @media (max-width: 900px) {
       .skipmon-stats { grid-template-columns: repeat(2, 1fr); }
       .skipmon-main  { grid-template-columns: 1fr; }
@@ -8900,7 +9285,7 @@
 
     <!-- Skip Monitor Tab -->
     <div class="tab-content" id="skipmonitorTab">
-      <div class="skipmon-wrap">
+      <div class="skipmon-wrap skipmon-mode-network">
         <section class="search-section">
           <h1>Skip <span>Monitor</span></h1>
           <p id="skipmonSubtitle">Real-time leader-slot tracking · Epoch —</p>
@@ -8933,6 +9318,28 @@
           </div>
         </div>
 
+        <!-- Live horizontal timeline: past / current / upcoming -->
+        <div class="skipmon-timeline-panel">
+          <div class="skipmon-timeline-head">
+            <div class="skipmon-timeline-title">Live Timeline</div>
+            <div class="skipmon-timeline-meta" id="skipmonTimelineMeta">—</div>
+            <div class="skipmon-timeline-legend">
+              <span class="sm-tl-leg"><span class="sm-tl-leg-pip produced"></span>Produced</span>
+              <span class="sm-tl-leg"><span class="sm-tl-leg-pip skipped"></span>Skipped</span>
+              <span class="sm-tl-leg"><span class="sm-tl-leg-pip current"></span>Now</span>
+              <span class="sm-tl-leg"><span class="sm-tl-leg-pip upcoming"></span>Upcoming</span>
+            </div>
+          </div>
+          <div class="skipmon-timeline-track" id="skipmonTimelineTrack">
+            <div class="skipmon-empty" style="padding: 0.5rem;">Warming up…</div>
+          </div>
+          <div class="skipmon-timeline-scale">
+            <span>← 40 slots ago</span>
+            <span>Now</span>
+            <span>60 slots ahead →</span>
+          </div>
+        </div>
+
         <div class="skipmon-stats">
           <div class="skipmon-stat">
             <div class="skipmon-stat-label">Current Slot</div>
@@ -8949,13 +9356,24 @@
             <div class="skipmon-stat-value" id="skipmonHourRate">—</div>
             <div class="skipmon-stat-sub" id="skipmonHourSub">fetching…</div>
           </div>
-          <div class="skipmon-stat">
+          <!-- Epoch card: split — This vs Previous — with delta footer -->
+          <div class="skipmon-stat skipmon-stat-epoch">
             <div class="skipmon-stat-label">Skip Rate · Epoch</div>
-            <div class="skipmon-stat-value" id="skipmonEpochRate">—</div>
-            <div class="skipmon-stat-sub" id="skipmonEpochSub">fetching…</div>
+            <div class="skipmon-stat-epoch-row">
+              <div class="skipmon-stat-epoch-col">
+                <div class="skipmon-stat-epoch-col-label">This</div>
+                <div class="skipmon-stat-epoch-col-value" id="skipmonEpochRate">—</div>
+              </div>
+              <div class="skipmon-stat-epoch-col skipmon-stat-epoch-col-prev">
+                <div class="skipmon-stat-epoch-col-label">Previous</div>
+                <div class="skipmon-stat-epoch-col-value" id="skipmonPrevRate">—</div>
+              </div>
+            </div>
+            <div class="skipmon-stat-epoch-delta" id="skipmonEpochDelta">loading…</div>
           </div>
         </div>
 
+        <!-- NETWORK-MODE LAYOUT: slots grid + live feed, then top skippers -->
         <div class="skipmon-main">
           <div class="skipmon-panel">
             <div class="skipmon-panel-head">
@@ -8989,13 +9407,24 @@
           </div>
         </div>
 
-        <div class="skipmon-panel">
+        <div class="skipmon-panel skipmon-top-panel">
           <div class="skipmon-panel-head">
             <div class="skipmon-panel-title">Top Skippers · This Epoch</div>
             <div class="skipmon-panel-meta" id="skipmonTopMeta">—</div>
           </div>
           <div id="skipmonTopWrap">
             <div class="skipmon-empty">Loading epoch data…</div>
+          </div>
+        </div>
+
+        <!-- PORTFOLIO-MODE LAYOUT: per-validator scorecards -->
+        <div class="skipmon-portfolio-view">
+          <div class="skipmon-pv-head-row">
+            <div class="skipmon-pv-head-title">Your Validators · This Epoch</div>
+            <div class="skipmon-pv-head-meta" id="skipmonPvMeta">—</div>
+          </div>
+          <div class="skipmon-portfolio-grid" id="skipmonPortfolioGrid">
+            <div class="skipmon-empty">Loading portfolio…</div>
           </div>
         </div>
       </div>
@@ -24785,6 +25214,55 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return typeof n === 'number' ? n.toLocaleString() : '—';
       }
 
+      // Deterministic colorful gradient from any string key.
+      // Used as a fallback avatar background when a validator has no iconUrl.
+      function identiconBg(seed) {
+        const s = String(seed || 'x');
+        let h1 = 0, h2 = 0;
+        for (let i = 0; i < s.length; i++) {
+          h1 = ((h1 * 31) + s.charCodeAt(i)) & 0x7fffffff;
+          h2 = ((h2 * 17) ^ s.charCodeAt(s.length - 1 - i)) & 0x7fffffff;
+        }
+        const hue1 = h1 % 360;
+        const hue2 = (hue1 + 40 + (h2 % 160)) % 360;
+        return `linear-gradient(135deg, hsl(${hue1},55%,42%), hsl(${hue2},60%,30%))`;
+      }
+
+      // Returns { style, inner } to apply on a logo wrapper element.
+      // Uses iconUrl when available; falls back to a deterministic identicon
+      // with the validator's initial when it's missing or the image fails to load.
+      function avatarFor(info, seedOverride) {
+        const seed = seedOverride || (info && (info.nodePubkey || info.votePubkey || info.name)) || 'x';
+        const name = (info && info.name) || seed;
+        const initial = esc(name.charAt(0).toUpperCase() || '?');
+        const bg = identiconBg(seed);
+        if (info && info.iconUrl) {
+          return {
+            style: '',
+            inner: `<img src="${esc(info.iconUrl)}" alt="" `
+                 + `onerror="this.parentNode.style.background='${bg}';`
+                 +          `this.parentNode.style.color='#fff';`
+                 +          `this.remove();`
+                 +          `this.parentNode.textContent='${initial}'">`
+          };
+        }
+        return {
+          style: `background:${bg};color:#fff;`,
+          inner: initial
+        };
+      }
+
+      // Compact countdown: "~23s", "~3m 12s", "~1h 4m"
+      function formatCountdown(ms) {
+        if (ms === null || ms === undefined) return 'None';
+        const s = Math.max(0, Math.round(ms / 1000));
+        if (s < 60) return `~${s}s`;
+        const m = Math.floor(s / 60), rs = s % 60;
+        if (m < 60) return `~${m}m ${rs}s`;
+        const h = Math.floor(m / 60), rm = m % 60;
+        return `~${h}h ${rm}m`;
+      }
+
       function freshState(scope) {
         return {
           running: false,
@@ -24999,9 +25477,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const curEl = document.getElementById('skipmonCurSlot');
         if (curEl) curEl.textContent = state.lastSeenHead ? fmtNum(state.lastSeenHead) : '—';
         const curSubEl = document.getElementById('skipmonCurSlotSub');
-        if (curSubEl && state.lastProcessedSlot && state.lastSeenHead) {
-          const lag = Math.max(0, state.lastSeenHead - state.lastProcessedSlot);
-          curSubEl.textContent = `${lag} slots behind head · confirm lag`;
+        if (curSubEl) {
+          curSubEl.textContent = state.lastSeenHead ? 'live · head of chain' : 'head of chain';
         }
 
         // ── LIVE (rolling window) ────────────────────────────
@@ -25049,31 +25526,53 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
         }
 
-        // ── THIS EPOCH (+ previous epoch inline comparison) ──
+        // ── EPOCH (split: this / prev) + delta footer ────────
         const epoch = prodAgg(state.epochProd);
         const prev  = prodAgg(state.prevEpochProd);
-        const epEl  = document.getElementById('skipmonEpochRate');
-        const epSub = document.getElementById('skipmonEpochSub');
+        const epEl    = document.getElementById('skipmonEpochRate');
+        const prevEl  = document.getElementById('skipmonPrevRate');
+        const deltaEl = document.getElementById('skipmonEpochDelta');
+
+        // "This" epoch value
         if (epEl) {
-          if (!state.epochProd) {
+          if (!state.epochProd || !epoch || epoch.rate === null) {
             epEl.textContent = '—';
-            epEl.className = 'skipmon-stat-value';
-            if (epSub) epSub.textContent = 'fetching…';
-          } else if (!epoch || epoch.rate === null) {
-            epEl.textContent = '—';
-            epEl.className = 'skipmon-stat-value';
-            if (epSub) epSub.textContent = state.scope === 'portfolio' ? 'no portfolio slots this epoch' : 'no slots';
+            epEl.className = 'skipmon-stat-epoch-col-value';
           } else {
             epEl.textContent = epoch.rate.toFixed(2) + '%';
-            epEl.className = 'skipmon-stat-value ' + (epoch.rate < 1 ? 'ok' : epoch.rate < 5 ? 'warn' : 'bad');
-            let subHtml = `${fmtNum(epoch.skipped)} skip${epoch.skipped===1?'':'s'} · ${fmtNum(epoch.assigned)} slots`;
-            if (prev && prev.rate !== null && prev.assigned > 0) {
-              const delta = epoch.rate - prev.rate;
-              const arrow = delta < -0.05 ? '↓' : delta > 0.05 ? '↑' : '→';
-              const color = delta < -0.05 ? 'var(--success)' : delta > 0.05 ? 'var(--danger)' : 'var(--text-dim)';
-              subHtml += ` · <span style="color:${color}">prev ${prev.rate.toFixed(2)}% ${arrow}${Math.abs(delta).toFixed(2)}pp</span>`;
+            epEl.className = 'skipmon-stat-epoch-col-value ' + (
+              epoch.rate < 1 ? 'ok' : epoch.rate < 5 ? 'warn' : 'bad'
+            );
+          }
+        }
+
+        // "Previous" epoch value (dimmer, smaller — deliberate)
+        if (prevEl) {
+          if (!state.prevEpochProd || !prev || prev.rate === null) {
+            prevEl.textContent = '—';
+          } else {
+            prevEl.textContent = prev.rate.toFixed(2) + '%';
+          }
+        }
+
+        // Delta footer
+        if (deltaEl) {
+          if (!epoch || !prev || epoch.rate === null || prev.rate === null) {
+            deltaEl.textContent = state.prevEpochProd ? '—' : 'loading comparison…';
+            deltaEl.style.color = 'var(--text-dim)';
+          } else {
+            const delta = epoch.rate - prev.rate;
+            const abs = Math.abs(delta);
+            if (abs < 0.05) {
+              deltaEl.innerHTML = '→ flat vs prev epoch';
+              deltaEl.style.color = 'var(--text-dim)';
+            } else if (delta < 0) {
+              deltaEl.innerHTML = `▼ ${abs.toFixed(2)}pp improving vs prev epoch`;
+              deltaEl.style.color = 'var(--success)';
+            } else {
+              deltaEl.innerHTML = `▲ ${abs.toFixed(2)}pp worsening vs prev epoch`;
+              deltaEl.style.color = 'var(--danger)';
             }
-            if (epSub) epSub.innerHTML = subHtml;
           }
         }
 
@@ -25186,13 +25685,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const info = (typeof getValidatorByNodePubkey === 'function')
           ? getValidatorByNodePubkey(e.leader) : null;
         const name = info && info.name ? info.name : (e.leader.slice(0,6) + '…' + e.leader.slice(-4));
-        const initial = esc(name.charAt(0).toUpperCase());
-        const avatar = info && info.iconUrl
-          ? `<img src="${esc(info.iconUrl)}" alt="" onerror="this.style.display='none';this.parentNode.textContent='${initial}'">`
-          : initial;
+        const a = avatarFor(info, e.leader);
         const tStr = new Date(e.ts).toLocaleTimeString([], { hour12: false });
         return `<div class="skipmon-feed-item" data-slot="${e.slot}" onclick="skipmonJumpToValidator('${esc(e.leader)}')">`
-             +   `<div class="skipmon-feed-logo">${avatar}</div>`
+             +   `<div class="skipmon-feed-logo" style="${a.style}">${a.inner}</div>`
              +   `<div class="skipmon-feed-body">`
              +     `<div class="skipmon-feed-top">`
              +       `<span class="skipmon-feed-name" title="${esc(name)}">${esc(name)}</span>`
@@ -25319,15 +25815,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const barPct = maxRate > 0 ? (r.rate / maxRate) * 100 : 0;
           const rank = i + 1;
           const rankCls = rank === 1 ? 'gold' : '';
-          const initial = esc(name.charAt(0).toUpperCase());
-          const avatar = info && info.iconUrl
-            ? `<img src="${esc(info.iconUrl)}" alt="" onerror="this.style.display='none';this.parentNode.textContent='${initial}'">`
-            : initial;
+          const a = avatarFor(info, r.leader);
 
           html += `<tr onclick="skipmonJumpToValidator('${esc(r.leader)}')">`
                 + `<td><span class="skipmon-top-rank ${rankCls}">${rank}</span></td>`
                 + `<td><div class="skipmon-top-name">`
-                +   `<div class="skipmon-top-logo">${avatar}</div>`
+                +   `<div class="skipmon-top-logo" style="${a.style}">${a.inner}</div>`
                 +   `<span>${esc(name)}</span>`
                 + `</div></td>`
                 + `<td>${fmtNum(r.assigned)}</td>`
@@ -25352,11 +25845,206 @@ Please give me the diagnostic commands to run on my server so you can help me id
         el.innerHTML = html;
       }
 
+      // ── Live Timeline ──────────────────────────────────────
+      // Renders ~40 past + current + 60 upcoming slots as a horizontal strip.
+      // Past cells reflect real produced/skipped state from our slot buffer.
+      // Upcoming cells are derived from the leader schedule, coloured
+      // specially if they belong to the current leader's batch (next ≤4)
+      // or, in portfolio scope, if they belong to one of your validators.
+      function renderTimeline() {
+        const el = document.getElementById('skipmonTimelineTrack');
+        const metaEl = document.getElementById('skipmonTimelineMeta');
+        if (!el) return;
+
+        if (!state || !state.lastSeenHead) {
+          el.innerHTML = '<div class="skipmon-empty" style="padding:0.5rem;">Warming up…</div>';
+          if (metaEl) metaEl.textContent = '—';
+          return;
+        }
+
+        const head = state.lastSeenHead;
+        const PAST = 40, FUTURE = 60;
+
+        // Index past slot statuses for O(1) lookup
+        const slotStatus = {};
+        for (const s of state.slots) slotStatus[s.slot] = s.produced ? 'produced' : 'skipped';
+
+        // Portfolio membership for highlighting "your" upcoming slots
+        const portfolioNodePubkeys = new Set();
+        if (state.scope === 'portfolio' && Array.isArray(myPortfolio) && allValidators) {
+          for (const v of allValidators) {
+            if (myPortfolio.includes(v.votePubkey)) portfolioNodePubkeys.add(v.nodePubkey);
+          }
+        }
+
+        const parts = new Array(PAST + 1 + FUTURE);
+        for (let offset = -PAST; offset <= FUTURE; offset++) {
+          const slot   = head + offset;
+          const leader = state.slotToLeader[slot];
+          const info   = leader ? (typeof getValidatorByNodePubkey === 'function' ? getValidatorByNodePubkey(leader) : null) : null;
+          const name   = info && info.name ? info.name : (leader ? leader.slice(0,4) + '…' + leader.slice(-4) : 'unknown');
+
+          let cls = 'sm-tl-cell';
+          let label;
+
+          if (offset === 0) {
+            cls += ' current';
+            label = `Slot ${slot.toLocaleString()} · NOW · ${name}`;
+          } else if (offset < 0) {
+            const status = slotStatus[slot];
+            if (status === 'produced')      cls += ' produced';
+            else if (status === 'skipped')  cls += ' skipped';
+            else                            cls += ' unknown';
+            label = `Slot ${slot.toLocaleString()} · ${name} · ${status || 'no data'}`;
+          } else {
+            // Upcoming
+            if (offset <= 4)                cls += ' upcoming-next';
+            else                            cls += ' upcoming';
+            if (leader && portfolioNodePubkeys.has(leader)) cls += ' portfolio-mine';
+            const etaSec = offset * 0.42;
+            const etaStr = etaSec < 60 ? `${etaSec.toFixed(1)}s` : `${(etaSec/60).toFixed(1)}m`;
+            label = `Slot ${slot.toLocaleString()} · ${name} · in ${etaStr}`;
+          }
+
+          parts[offset + PAST] = `<div class="${cls}" title="${esc(label)}"`
+            + (leader ? ` onclick="skipmonJumpToValidator('${esc(leader)}')"` : '')
+            + `></div>`;
+        }
+
+        el.innerHTML = parts.join('');
+
+        if (metaEl) {
+          metaEl.textContent = `head ${fmtNum(head)} · ${PAST} past / ${FUTURE} ahead`;
+        }
+      }
+
+      // ── Portfolio View (per-validator scorecards) ──────────
+      // Reuses data we already have: epochProd.byIdentity for assigned/produced,
+      // state.slots for recent pips, state.slotToLeader for upcoming slots.
+      // No extra RPC calls — everything's derived from existing state.
+      function renderPortfolioView() {
+        const grid = document.getElementById('skipmonPortfolioGrid');
+        const meta = document.getElementById('skipmonPvMeta');
+        if (!grid) return;
+
+        if (!Array.isArray(myPortfolio) || myPortfolio.length === 0) {
+          grid.innerHTML = `<div class="skipmon-empty" style="grid-column:1/-1">`
+            + `Your Data Center is empty. Add validators from the My Data Center tab to track them here.`
+            + `</div>`;
+          if (meta) meta.textContent = '0 validators';
+          return;
+        }
+
+        const head = state.lastSeenHead;
+        if (!head || !state.epochProd) {
+          grid.innerHTML = `<div class="skipmon-empty" style="grid-column:1/-1">Loading portfolio data…</div>`;
+          if (meta) meta.textContent = `${myPortfolio.length} validator${myPortfolio.length===1?'':'s'}`;
+          return;
+        }
+
+        if (meta) {
+          meta.textContent = `${myPortfolio.length} validator${myPortfolio.length===1?'':'s'} · epoch ${state.epoch ?? '—'}`;
+        }
+
+        const cards = [];
+        for (const votePubkey of myPortfolio) {
+          const v = allValidators && allValidators.find(x => x.votePubkey === votePubkey);
+          if (!v) {
+            cards.push(`<div class="skipmon-pv-card" style="opacity:0.6;cursor:default">`
+              + `<div class="skipmon-pv-name">Unknown validator</div>`
+              + `<div class="skipmon-pv-addr">${esc(votePubkey.slice(0,12))}…</div>`
+              + `</div>`);
+            continue;
+          }
+
+          const nodePubkey = v.nodePubkey;
+          const pair     = (state.epochProd.byIdentity && state.epochProd.byIdentity[nodePubkey]) || [0, 0];
+          const assigned = pair[0] || 0;
+          const produced = pair[1] || 0;
+          const skipped  = assigned - produced;
+          const rate     = assigned > 0 ? (skipped / assigned) * 100 : null;
+
+          // This validator's upcoming leader slots
+          const mySlots = [];
+          for (const slotStr in state.slotToLeader) {
+            if (state.slotToLeader[slotStr] === nodePubkey) mySlots.push(+slotStr);
+          }
+          mySlots.sort((a, b) => a - b);
+          const nextSlot       = mySlots.find(s => s >= head);
+          const nextSlotsAway  = nextSlot !== undefined ? nextSlot - head : null;
+          const nextMs         = nextSlotsAway !== null ? nextSlotsAway * 420 : null;
+          const nextCountdown  = nextMs !== null ? formatCountdown(nextMs) : 'None remaining';
+
+          // Recent pips — last ~14 slots this validator held (from our live buffer)
+          const pastPips = state.slots
+            .filter(s => s.leader === nodePubkey)
+            .slice(-14);
+
+          // Upcoming pips — next few slots this validator will hold
+          const upcomingPips = mySlots
+            .filter(s => s >= head && s < head + 200)
+            .slice(0, 8);
+
+          const pipsHtml = [
+            ...pastPips.map(s => `<div class="skipmon-pv-pip ${s.produced ? 'produced' : 'skipped'}" title="Slot ${s.slot} · ${s.produced?'Produced':'Skipped'}"></div>`),
+            ...upcomingPips.map(s => `<div class="skipmon-pv-pip upcoming" title="Slot ${s} · upcoming"></div>`)
+          ].join('');
+
+          const a = avatarFor(v);
+          const rateCls  = rate === null ? '' : rate < 1 ? 'ok' : rate < 5 ? 'warn' : 'danger';
+          const rateDisp = rate === null ? '—' : rate.toFixed(2) + '%';
+          const rateBarPct    = rate === null ? 0 : Math.min(100, rate * 10);
+          const rateBarColor  = rate === null ? 'var(--border)' :
+                                rate < 1 ? 'var(--success)' :
+                                rate < 5 ? 'var(--warning)' : 'var(--danger)';
+
+          const nextCls = nextSlotsAway === null ? 'none' : '';
+          const delinquentBadge = v.delinquent
+            ? `<span class="skipmon-pv-badge-delinquent">Delinquent</span>`
+            : '';
+          const cardCls = v.delinquent ? 'skipmon-pv-card delinquent' : 'skipmon-pv-card';
+
+          cards.push(
+            `<div class="${cardCls}" onclick="skipmonOpenPortfolioModal('${esc(nodePubkey)}','${esc(v.name)}','${esc(v.votePubkey)}')">`
+            + `<div class="skipmon-pv-head">`
+            +   `<div class="skipmon-pv-logo" style="${a.style}">${a.inner}</div>`
+            +   `<div class="skipmon-pv-meta">`
+            +     `<div class="skipmon-pv-name">${esc(v.name)}${delinquentBadge}</div>`
+            +     `<div class="skipmon-pv-addr">${esc(v.votePubkey.slice(0,8))}…${esc(v.votePubkey.slice(-4))}</div>`
+            +   `</div>`
+            + `</div>`
+            + `<div class="skipmon-pv-stats">`
+            +   `<div class="skipmon-pv-stat"><div class="skipmon-pv-stat-label">Assigned</div><div class="skipmon-pv-stat-value">${fmtNum(assigned)}</div></div>`
+            +   `<div class="skipmon-pv-stat"><div class="skipmon-pv-stat-label">Produced</div><div class="skipmon-pv-stat-value ok">${fmtNum(produced)}</div></div>`
+            +   `<div class="skipmon-pv-stat"><div class="skipmon-pv-stat-label">Skipped</div><div class="skipmon-pv-stat-value ${skipped>0?'danger':'ok'}">${fmtNum(skipped)}</div></div>`
+            + `</div>`
+            + `<div class="skipmon-pv-rate-row">`
+            +   `<span class="skipmon-pv-rate-label">Skip rate</span>`
+            +   `<span class="skipmon-pv-rate-value ${rateCls}">${rateDisp}</span>`
+            +   `<div class="skipmon-pv-rate-bar"><div class="skipmon-pv-rate-fill" style="width:${rateBarPct}%;background:${rateBarColor}"></div></div>`
+            + `</div>`
+            + `<div class="skipmon-pv-next">`
+            +   `<span class="skipmon-pv-next-label">Next leader slot</span>`
+            +   `<span class="skipmon-pv-next-value ${nextCls}">${esc(nextCountdown)}</span>`
+            + `</div>`
+            + (pipsHtml ? `<div class="skipmon-pv-pips-wrap">Recent · Upcoming</div><div class="skipmon-pv-pips">${pipsHtml}</div>` : '')
+            + `</div>`
+          );
+        }
+
+        grid.innerHTML = cards.join('');
+      }
+
       function renderAll() {
         renderStats();
-        renderGrid();
-        renderFeed();
-        renderTop();
+        renderTimeline();
+        if (state && state.scope === 'portfolio') {
+          renderPortfolioView();
+        } else {
+          renderGrid();
+          renderFeed();
+          renderTop();
+        }
       }
 
       // ── Lifecycle ──────────────────────────────────────────
@@ -25409,6 +26097,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Invalidate feed render marker so incremental-render does a clean rebuild
         // under the new filter (otherwise we'd be appending to the wrong filtered list).
         state.feedRenderedTopSlot = null;
+        // Toggle the layout mode class on the wrap — CSS hides whichever layout
+        // doesn't match the active scope.
+        const wrap = document.querySelector('#skipmonitorTab .skipmon-wrap');
+        if (wrap) {
+          wrap.classList.toggle('skipmon-mode-network',   scope === 'network');
+          wrap.classList.toggle('skipmon-mode-portfolio', scope === 'portfolio');
+        }
         const nBtn = document.getElementById('skipmonScopeNetwork');
         const pBtn = document.getElementById('skipmonScopePortfolio');
         if (nBtn) nBtn.classList.toggle('active', scope === 'network');
@@ -25438,6 +26133,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
     function skipmonToggleTop() {
       if (typeof SkipMonitor !== 'undefined') SkipMonitor.toggleTopExpanded();
+    }
+    // Portfolio card → open the existing slot explorer modal for this validator.
+    // Prevents event from bubbling so cards and table rows behave cleanly.
+    function skipmonOpenPortfolioModal(nodePubkey, name, voteAccount) {
+      if (typeof openSlotModal === 'function') {
+        openSlotModal(nodePubkey, name, voteAccount);
+      }
     }
 
     // ─────────────────────────────────────────────────────────
