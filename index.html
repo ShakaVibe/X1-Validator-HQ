@@ -7828,6 +7828,252 @@
         grid-template-columns: 1fr 1fr;
       }
     }
+
+    /* ========================================
+       Skip Monitor Tab
+       ======================================== */
+
+    /* Hidden entrance — intentionally low-key so it reads as a visual
+       flourish at the end of the epoch row. Click opens Skip Monitor. */
+    .epoch-hidden-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      opacity: 0.22;
+      margin-left: 0.6rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: opacity 0.25s, transform 0.2s, box-shadow 0.25s;
+    }
+    .epoch-hidden-dot:hover {
+      opacity: 0.75;
+      transform: scale(1.35);
+      box-shadow: 0 0 6px rgba(77, 166, 255, 0.45);
+    }
+
+    .skipmon-wrap { padding: 1.5rem 0; }
+
+    .skipmon-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .skipmon-title {
+      font-size: 1.5rem; font-weight: 700;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .skipmon-subtitle {
+      color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.35rem;
+    }
+
+    .skipmon-live {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      color: var(--success); letter-spacing: 1px;
+      padding: 0.25rem 0.6rem; border: 1px solid rgba(0,230,118,0.35);
+      border-radius: 999px; background: rgba(0,230,118,0.08);
+    }
+    .skipmon-live-dot {
+      width: 8px; height: 8px; background: var(--success);
+      border-radius: 50%; animation: skipmon-pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes skipmon-pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,230,118,0.6); }
+      50%      { opacity: 0.55; box-shadow: 0 0 0 8px rgba(0,230,118,0); }
+    }
+    .skipmon-live.paused {
+      color: var(--text-dim);
+      border-color: var(--border);
+      background: transparent;
+    }
+    .skipmon-live.paused .skipmon-live-dot {
+      background: var(--text-dim); animation: none;
+    }
+
+    .skipmon-scope {
+      display: inline-flex; background: var(--bg-card);
+      border: 1px solid var(--border); border-radius: 10px; padding: 3px;
+    }
+    .skipmon-scope-btn {
+      background: transparent; border: none; color: var(--text-secondary);
+      padding: 0.55rem 1.1rem; border-radius: 7px; cursor: pointer;
+      font-weight: 600; font-size: 0.85rem; transition: all 0.2s;
+      font-family: inherit;
+    }
+    .skipmon-scope-btn:hover { color: var(--text-primary); }
+    .skipmon-scope-btn.active {
+      background: var(--accent-gradient); color: var(--bg-primary);
+    }
+
+    .skipmon-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .skipmon-stat {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.1rem 1.25rem;
+    }
+    .skipmon-stat-label {
+      font-size: 0.7rem; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;
+    }
+    .skipmon-stat-value {
+      font-size: 1.6rem; font-weight: 700; margin-top: 0.3rem;
+      font-family: 'JetBrains Mono', monospace; line-height: 1.1;
+    }
+    .skipmon-stat-sub {
+      font-size: 0.75rem; color: var(--text-dim); margin-top: 0.3rem;
+    }
+    .skipmon-stat-value.ok   { color: var(--success); }
+    .skipmon-stat-value.warn { color: var(--warning); }
+    .skipmon-stat-value.bad  { color: var(--danger); }
+
+    .skipmon-main {
+      display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .skipmon-panel {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.25rem;
+    }
+    .skipmon-panel-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 1rem; gap: 1rem;
+    }
+    .skipmon-panel-title {
+      font-size: 1rem; font-weight: 700;
+    }
+    .skipmon-panel-meta {
+      font-size: 0.75rem; color: var(--text-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .skipmon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 14px);
+      gap: 3px;
+      max-height: 380px; overflow-y: auto;
+      padding: 8px; background: var(--bg-primary); border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .skipmon-cell {
+      width: 14px; height: 14px; border-radius: 3px;
+      cursor: pointer; transition: transform 0.1s;
+    }
+    .skipmon-cell:hover {
+      transform: scale(1.5); z-index: 2; position: relative;
+      box-shadow: 0 0 0 2px var(--bg-card);
+    }
+    .skipmon-cell.produced { background: var(--success); opacity: 0.85; }
+    .skipmon-cell.skipped  { background: var(--danger); box-shadow: 0 0 6px rgba(255,82,82,0.6); }
+
+    .skipmon-legend {
+      display: flex; gap: 1.25rem; flex-wrap: wrap;
+      font-size: 0.72rem; color: var(--text-secondary);
+      margin-top: 0.85rem; align-items: center;
+    }
+    .skipmon-legend-item {
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .skipmon-legend-pip {
+      width: 10px; height: 10px; border-radius: 2px;
+    }
+    .skipmon-legend-note {
+      color: var(--text-dim); font-style: italic;
+    }
+
+    .skipmon-feed {
+      max-height: 400px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .skipmon-feed-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.65rem 0.8rem; background: var(--bg-primary);
+      border-left: 3px solid var(--danger); border-radius: 6px;
+      font-size: 0.85rem;
+      animation: skipmon-slide-in 0.35s ease-out;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .skipmon-feed-item:hover { background: var(--bg-card-hover); }
+    @keyframes skipmon-slide-in {
+      from { opacity: 0; transform: translateX(-14px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .skipmon-feed-time {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim); font-size: 0.75rem; flex-shrink: 0;
+    }
+    .skipmon-feed-name {
+      font-weight: 600; flex: 1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .skipmon-feed-slot {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-secondary); font-size: 0.75rem; flex-shrink: 0;
+    }
+
+    .skipmon-empty {
+      padding: 2.5rem 1rem; text-align: center;
+      color: var(--text-dim); font-size: 0.85rem;
+    }
+
+    .skipmon-top-table { width: 100%; border-collapse: collapse; }
+    .skipmon-top-table th {
+      text-align: left; padding: 0.65rem 0.75rem;
+      font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border); font-weight: 600;
+    }
+    .skipmon-top-table td {
+      padding: 0.75rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+    .skipmon-top-table tr:last-child td { border-bottom: none; }
+    .skipmon-top-table tbody tr {
+      cursor: pointer; transition: background 0.15s;
+    }
+    .skipmon-top-table tbody tr:hover { background: var(--bg-card-hover); }
+
+    .skipmon-top-rank {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--bg-primary); color: var(--text-secondary);
+      font-weight: 700; font-size: 0.75rem;
+    }
+    .skipmon-top-rank.gold { background: var(--accent-gold); color: var(--bg-primary); }
+
+    .skipmon-top-name {
+      display: flex; align-items: center; gap: 0.65rem; font-weight: 600;
+    }
+    .skipmon-top-logo {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--bg-primary);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.75rem; color: var(--accent-blue);
+      overflow: hidden; flex-shrink: 0;
+    }
+    .skipmon-top-logo img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .skipmon-bar-track {
+      position: relative; height: 6px;
+      background: var(--bg-primary); border-radius: 3px;
+      overflow: hidden;
+    }
+    .skipmon-bar-fill {
+      height: 100%; background: var(--danger);
+      border-radius: 3px; transition: width 0.3s;
+    }
+
+    @media (max-width: 900px) {
+      .skipmon-stats { grid-template-columns: repeat(2, 1fr); }
+      .skipmon-main  { grid-template-columns: 1fr; }
+      .skipmon-header { align-items: flex-start; }
+    }
   </style>
 </head>
 <body>
@@ -7995,6 +8241,7 @@
       </div>
       <span class="epoch-progress-percent" id="epochPercent">0%</span>
       <span class="epoch-progress-time" id="epochTimeRemaining">--</span>
+      <span class="epoch-hidden-dot" onclick="switchTab('skipmonitor')" aria-hidden="true"></span>
     </div>
 
     <!-- Tabs -->
@@ -8568,6 +8815,95 @@
                 <div class="calc-empty-text">Select a validator to see profitability analysis</div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skip Monitor Tab -->
+    <div class="tab-content" id="skipmonitorTab">
+      <div class="skipmon-wrap">
+        <div class="skipmon-header">
+          <div>
+            <div class="skipmon-title">
+              📡 Skip Monitor
+              <span class="skipmon-live paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
+            </div>
+            <div class="skipmon-subtitle" id="skipmonSubtitle">
+              Real-time leader-slot tracking · Epoch —
+            </div>
+          </div>
+          <div class="skipmon-scope">
+            <button class="skipmon-scope-btn active" id="skipmonScopeNetwork"
+                    onclick="setSkipMonitorScope('network')">🌐 Network</button>
+            <button class="skipmon-scope-btn" id="skipmonScopePortfolio"
+                    onclick="setSkipMonitorScope('portfolio')">🖥️ My Data Center</button>
+          </div>
+        </div>
+
+        <div class="skipmon-stats">
+          <div class="skipmon-stat">
+            <div class="skipmon-stat-label">Current Slot</div>
+            <div class="skipmon-stat-value" id="skipmonCurSlot">—</div>
+            <div class="skipmon-stat-sub" id="skipmonCurSlotSub">head of chain</div>
+          </div>
+          <div class="skipmon-stat">
+            <div class="skipmon-stat-label">Skips in Window</div>
+            <div class="skipmon-stat-value" id="skipmonWinSkips">—</div>
+            <div class="skipmon-stat-sub" id="skipmonWinSlots">of — slots</div>
+          </div>
+          <div class="skipmon-stat">
+            <div class="skipmon-stat-label">Window Skip Rate</div>
+            <div class="skipmon-stat-value" id="skipmonWinRate">—</div>
+            <div class="skipmon-stat-sub">rolling ≈3 min</div>
+          </div>
+          <div class="skipmon-stat">
+            <div class="skipmon-stat-label">Validators Affected</div>
+            <div class="skipmon-stat-value" id="skipmonValsHit">—</div>
+            <div class="skipmon-stat-sub">distinct, in window</div>
+          </div>
+        </div>
+
+        <div class="skipmon-main">
+          <div class="skipmon-panel">
+            <div class="skipmon-panel-head">
+              <div class="skipmon-panel-title">Recent Slots</div>
+              <div class="skipmon-panel-meta" id="skipmonGridMeta">—</div>
+            </div>
+            <div class="skipmon-grid" id="skipmonGrid">
+              <div class="skipmon-empty">Warming up…</div>
+            </div>
+            <div class="skipmon-legend">
+              <div class="skipmon-legend-item">
+                <div class="skipmon-legend-pip" style="background:var(--success);opacity:0.85"></div>
+                Produced
+              </div>
+              <div class="skipmon-legend-item">
+                <div class="skipmon-legend-pip" style="background:var(--danger)"></div>
+                Skipped
+              </div>
+              <div class="skipmon-legend-note">Hover a cell for details · Click to open the validator</div>
+            </div>
+          </div>
+
+          <div class="skipmon-panel">
+            <div class="skipmon-panel-head">
+              <div class="skipmon-panel-title">Live Skip Feed</div>
+              <div class="skipmon-panel-meta" id="skipmonFeedMeta">0 events</div>
+            </div>
+            <div class="skipmon-feed" id="skipmonFeed">
+              <div class="skipmon-empty">Waiting for skips…</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skipmon-panel">
+          <div class="skipmon-panel-head">
+            <div class="skipmon-panel-title">Top Skippers (Window)</div>
+            <div class="skipmon-panel-meta" id="skipmonTopMeta">—</div>
+          </div>
+          <div id="skipmonTopWrap">
+            <div class="skipmon-empty">No skips yet in window.</div>
           </div>
         </div>
       </div>
@@ -14464,7 +14800,10 @@
     
     function switchTab(tab) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+      // Tab button may not exist (e.g. skipmonitor has no visible button),
+      // so guard against null.
+      const tabBtn = document.querySelector(`.tab[onclick="switchTab('${tab}')"]`);
+      if (tabBtn) tabBtn.classList.add('active');
 
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById(tab + 'Tab').classList.add('active');
@@ -14491,6 +14830,13 @@
       
       if (tab === 'calculators') {
         initializeCalculators();
+      }
+
+      // Skip Monitor: only poll while its tab is visible, preserve state across switches
+      if (tab === 'skipmonitor') {
+        if (typeof SkipMonitor !== 'undefined') SkipMonitor.start();
+      } else {
+        if (typeof SkipMonitor !== 'undefined') SkipMonitor.stop();
       }
     }
 
@@ -24307,6 +24653,414 @@ Please give me the diagnostic commands to run on my server so you can help me id
         updateNetworkTps();
       }, 2000);
     }
+
+    // ─────────────────────────────────────────────────────────
+    // SKIP MONITOR  (live leader-slot tracking)
+    // ─────────────────────────────────────────────────────────
+    // Strategy: every POLL_INTERVAL_MS we call getEpochInfo for the
+    // current head, then getBlocks(first, last) for the slot range
+    // since we last checked (staying CONFIRM_LAG slots behind head to
+    // let newly-produced blocks finalize). Any slot assigned in the
+    // cached leader schedule that doesn't appear in the produced set
+    // is a skip. Per-slot granularity enables the live feed.
+    // getBlockProduction gives aggregates only, so we don't use it here.
+    // ─────────────────────────────────────────────────────────
+    const SkipMonitor = (function() {
+      const POLL_INTERVAL_MS   = 3000;
+      const UI_TICK_MS         = 1000;
+      const MAX_RECENT_SLOTS   = 432;   // ~3 min of history at 420ms slots
+      const MAX_FEED           = 80;
+      const INITIAL_BACKFILL   = 300;   // slots to hydrate on first tick / long absence
+      const CONFIRM_LAG        = 12;    // stay this many slots behind head
+      const MAX_RANGE_PER_CALL = 500;   // safety cap on a single getBlocks call
+
+      let state    = null;
+      let pollTimer = null;
+      let uiTimer   = null;
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+          { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+        ));
+      }
+
+      function fmtNum(n) {
+        return typeof n === 'number' ? n.toLocaleString() : '—';
+      }
+
+      function freshState(scope) {
+        return {
+          running: false,
+          scope: scope || 'network',
+          epoch: null,
+          epochStartAbsoluteSlot: null,
+          slotToLeader: {},        // absoluteSlot -> nodePubkey for the current epoch
+          lastProcessedSlot: null, // last absolute slot we've classified
+          lastSeenHead: null,
+          slots: [],               // ring buffer: {slot, leader, produced, ts}
+          feed: [],                // skip events (newest first)
+        };
+      }
+
+      async function rebuildSlotMap() {
+        if (!leaderScheduleCache) await loadLeaderSchedule();
+        if (!leaderScheduleCache) throw new Error('Leader schedule unavailable');
+
+        const epochInfo = await rpcCall('getEpochInfo');
+        const epochStart = epochInfo.absoluteSlot - epochInfo.slotIndex;
+
+        const map = {};
+        for (const [leader, relSlots] of Object.entries(leaderScheduleCache)) {
+          for (const rel of relSlots) map[epochStart + rel] = leader;
+        }
+
+        state.epoch                  = epochInfo.epoch;
+        state.epochStartAbsoluteSlot = epochStart;
+        state.slotToLeader           = map;
+        return epochInfo;
+      }
+
+      function inScope(leader) {
+        if (state.scope === 'network') return true;
+        const v = (typeof getValidatorByNodePubkey === 'function')
+          ? getValidatorByNodePubkey(leader) : null;
+        if (!v) return false;
+        return Array.isArray(myPortfolio) && myPortfolio.includes(v.votePubkey);
+      }
+
+      function recordSlot(slot, leader, produced) {
+        if (state.slots.length >= MAX_RECENT_SLOTS) state.slots.shift();
+        state.slots.push({ slot, leader, produced, ts: Date.now() });
+        if (!produced) {
+          state.feed.unshift({ slot, leader, ts: Date.now() });
+          if (state.feed.length > MAX_FEED) state.feed.pop();
+        }
+      }
+
+      async function tick() {
+        if (!state || !state.running) return;
+        try {
+          const epochInfo = await rpcCall('getEpochInfo');
+
+          // Epoch rollover → rebuild schedule map
+          if (state.epoch !== null && epochInfo.epoch !== state.epoch) {
+            await rebuildSlotMap();
+            state.lastProcessedSlot = null; // re-seed below
+          }
+
+          const head   = epochInfo.absoluteSlot;
+          const target = head - CONFIRM_LAG;
+          state.lastSeenHead = head;
+
+          // First tick ever — seed a backfill window
+          if (state.lastProcessedSlot === null) {
+            state.lastProcessedSlot = Math.max(
+              state.epochStartAbsoluteSlot - 1,
+              target - INITIAL_BACKFILL
+            );
+          }
+          // Returning after a long absence — cap the catch-up
+          else if (target - state.lastProcessedSlot > INITIAL_BACKFILL * 2) {
+            state.lastProcessedSlot = target - INITIAL_BACKFILL;
+          }
+
+          if (target <= state.lastProcessedSlot) {
+            setLiveStatus(true, 'Live');
+            return;
+          }
+
+          const firstSlot = state.lastProcessedSlot + 1;
+          const lastSlot  = Math.min(target, firstSlot + MAX_RANGE_PER_CALL - 1);
+
+          const produced = await rpcCall('getBlocks', [firstSlot, lastSlot]);
+          const producedSet = new Set(produced || []);
+
+          for (let s = firstSlot; s <= lastSlot; s++) {
+            const leader = state.slotToLeader[s];
+            if (!leader) continue;  // unassigned (shouldn't happen inside an epoch)
+            recordSlot(s, leader, producedSet.has(s));
+          }
+
+          state.lastProcessedSlot = lastSlot;
+          setLiveStatus(true, 'Live');
+          renderAll();
+        } catch (e) {
+          console.warn('[SkipMonitor] tick error:', e && e.message || e);
+          setLiveStatus(false, 'RPC error · retrying');
+        }
+      }
+
+      // ── Rendering ──────────────────────────────────────────
+      function setLiveStatus(live, label) {
+        const el = document.getElementById('skipmonLive');
+        if (!el) return;
+        el.classList.toggle('paused', !live);
+        el.innerHTML = `<span class="skipmon-live-dot"></span> ${esc(label || (live ? 'Live' : 'Paused'))}`;
+      }
+
+      function filteredSlots() {
+        if (!state) return [];
+        return state.scope === 'network'
+          ? state.slots
+          : state.slots.filter(s => inScope(s.leader));
+      }
+
+      function filteredFeed() {
+        if (!state) return [];
+        return state.scope === 'network'
+          ? state.feed
+          : state.feed.filter(e => inScope(e.leader));
+      }
+
+      function renderStats() {
+        if (!state) return;
+
+        const sub = document.getElementById('skipmonSubtitle');
+        if (sub) {
+          sub.textContent = `Real-time leader-slot tracking · Epoch ${state.epoch ?? '—'}`;
+        }
+
+        const curEl = document.getElementById('skipmonCurSlot');
+        if (curEl) curEl.textContent = state.lastSeenHead ? fmtNum(state.lastSeenHead) : '—';
+
+        const subEl = document.getElementById('skipmonCurSlotSub');
+        if (subEl && state.lastProcessedSlot && state.lastSeenHead) {
+          const lag = Math.max(0, state.lastSeenHead - state.lastProcessedSlot);
+          subEl.textContent = `${lag} slots behind head · confirm lag`;
+        }
+
+        const slots = filteredSlots();
+        const skips = slots.filter(s => !s.produced);
+
+        const winSkips = document.getElementById('skipmonWinSkips');
+        if (winSkips) {
+          winSkips.textContent = fmtNum(skips.length);
+          winSkips.className = 'skipmon-stat-value ' + (
+            slots.length === 0 ? '' :
+            skips.length === 0 ? 'ok' :
+            skips.length < 5   ? 'warn' : 'bad'
+          );
+        }
+
+        const winSlots = document.getElementById('skipmonWinSlots');
+        if (winSlots) winSlots.textContent = `of ${fmtNum(slots.length)} slots`;
+
+        const rate = slots.length ? (skips.length / slots.length) * 100 : 0;
+        const rateEl = document.getElementById('skipmonWinRate');
+        if (rateEl) {
+          rateEl.textContent = slots.length ? rate.toFixed(2) + '%' : '—';
+          rateEl.className = 'skipmon-stat-value ' + (
+            !slots.length ? '' :
+            rate < 1  ? 'ok' :
+            rate < 5  ? 'warn' : 'bad'
+          );
+        }
+
+        const vals = new Set(skips.map(s => s.leader)).size;
+        const valsEl = document.getElementById('skipmonValsHit');
+        if (valsEl) valsEl.textContent = fmtNum(vals);
+      }
+
+      function renderGrid() {
+        const el = document.getElementById('skipmonGrid');
+        const metaEl = document.getElementById('skipmonGridMeta');
+        if (!el) return;
+
+        const slots = filteredSlots();
+        if (!slots.length) {
+          el.innerHTML = '<div class="skipmon-empty">' +
+            (state && state.scope === 'portfolio' ? 'No portfolio validators have held leader slots in this window yet.' : 'Warming up…') +
+            '</div>';
+          if (metaEl) metaEl.textContent = '—';
+          return;
+        }
+
+        // Preserve scroll position if user has scrolled away from the bottom
+        const wasNearBottom = (el.scrollHeight - el.scrollTop - el.clientHeight) < 40;
+
+        const cells = new Array(slots.length);
+        for (let i = 0; i < slots.length; i++) {
+          const s = slots[i];
+          const info = (typeof getValidatorByNodePubkey === 'function')
+            ? getValidatorByNodePubkey(s.leader) : null;
+          const name = info && info.name ? info.name : (s.leader.slice(0,4) + '…' + s.leader.slice(-4));
+          const label = `Slot ${s.slot.toLocaleString()} · ${name} · ${s.produced ? 'Produced' : 'SKIPPED'}`;
+          cells[i] = `<div class="skipmon-cell ${s.produced ? 'produced' : 'skipped'}" `
+                   + `title="${esc(label)}" `
+                   + `onclick="skipmonJumpToValidator('${esc(s.leader)}')"></div>`;
+        }
+        el.innerHTML = cells.join('');
+        if (wasNearBottom) el.scrollTop = el.scrollHeight;
+
+        if (metaEl) {
+          metaEl.textContent = `${slots.length} slots · ${slots[0].slot.toLocaleString()} → ${slots[slots.length-1].slot.toLocaleString()}`;
+        }
+      }
+
+      function renderFeed() {
+        const el = document.getElementById('skipmonFeed');
+        const metaEl = document.getElementById('skipmonFeedMeta');
+        if (!el) return;
+
+        const feed = filteredFeed();
+        if (metaEl) metaEl.textContent = `${feed.length} event${feed.length === 1 ? '' : 's'}`;
+
+        if (!feed.length) {
+          el.innerHTML = '<div class="skipmon-empty">Waiting for skips…</div>';
+          return;
+        }
+
+        el.innerHTML = feed.map(e => {
+          const info = (typeof getValidatorByNodePubkey === 'function')
+            ? getValidatorByNodePubkey(e.leader) : null;
+          const name = info && info.name ? info.name : (e.leader.slice(0,6) + '…' + e.leader.slice(-4));
+          const tStr = new Date(e.ts).toLocaleTimeString([], { hour12: false });
+          return `<div class="skipmon-feed-item" onclick="skipmonJumpToValidator('${esc(e.leader)}')">`
+               + `<div class="skipmon-feed-time">${esc(tStr)}</div>`
+               + `<div class="skipmon-feed-name">${esc(name)}</div>`
+               + `<div class="skipmon-feed-slot">slot ${e.slot.toLocaleString()}</div>`
+               + `</div>`;
+        }).join('');
+      }
+
+      function renderTop() {
+        const el = document.getElementById('skipmonTopWrap');
+        const metaEl = document.getElementById('skipmonTopMeta');
+        if (!el) return;
+
+        // Tally from the filtered slot buffer (keeps portfolio mode honest)
+        const tallies = {};
+        for (const s of filteredSlots()) {
+          if (!tallies[s.leader]) tallies[s.leader] = { assigned: 0, skipped: 0 };
+          tallies[s.leader].assigned++;
+          if (!s.produced) tallies[s.leader].skipped++;
+        }
+
+        const rows = Object.entries(tallies)
+          .filter(([, v]) => v.skipped > 0)
+          .sort((a, b) =>
+            b[1].skipped - a[1].skipped ||
+            (b[1].skipped / b[1].assigned) - (a[1].skipped / a[1].assigned)
+          )
+          .slice(0, 15);
+
+        if (metaEl) {
+          metaEl.textContent = `${rows.length} validator${rows.length === 1 ? '' : 's'} with skips`;
+        }
+
+        if (!rows.length) {
+          el.innerHTML = '<div class="skipmon-empty">No skips yet in window.</div>';
+          return;
+        }
+
+        const maxSkipped = rows[0][1].skipped || 1;
+
+        let html = '<table class="skipmon-top-table"><thead><tr>'
+                 + '<th style="width:48px">#</th>'
+                 + '<th>Validator</th>'
+                 + '<th style="width:90px">Assigned</th>'
+                 + '<th style="width:80px">Skipped</th>'
+                 + '<th style="width:100px">Skip Rate</th>'
+                 + '<th style="width:28%">Share</th>'
+                 + '</tr></thead><tbody>';
+
+        rows.forEach(([leader, c], i) => {
+          const info = (typeof getValidatorByNodePubkey === 'function')
+            ? getValidatorByNodePubkey(leader) : null;
+          const name = info && info.name ? info.name : (leader.slice(0,6) + '…' + leader.slice(-4));
+          const rate = (c.skipped / c.assigned) * 100;
+          const pct  = (c.skipped / maxSkipped) * 100;
+          const rank = i + 1;
+          const rankCls = rank === 1 ? 'gold' : '';
+          const avatar = info && info.iconUrl
+            ? `<img src="${esc(info.iconUrl)}" alt="" onerror="this.style.display='none';this.parentNode.textContent='${esc(name.charAt(0).toUpperCase())}'">`
+            : esc(name.charAt(0).toUpperCase());
+
+          html += `<tr onclick="skipmonJumpToValidator('${esc(leader)}')">`
+                + `<td><span class="skipmon-top-rank ${rankCls}">${rank}</span></td>`
+                + `<td><div class="skipmon-top-name">`
+                +   `<div class="skipmon-top-logo">${avatar}</div>`
+                +   `<span>${esc(name)}</span>`
+                + `</div></td>`
+                + `<td>${c.assigned}</td>`
+                + `<td style="color:var(--danger);font-weight:600">${c.skipped}</td>`
+                + `<td>${rate.toFixed(1)}%</td>`
+                + `<td><div class="skipmon-bar-track"><div class="skipmon-bar-fill" style="width:${pct.toFixed(1)}%"></div></div></td>`
+                + `</tr>`;
+        });
+
+        html += '</tbody></table>';
+        el.innerHTML = html;
+      }
+
+      function renderAll() {
+        renderStats();
+        renderGrid();
+        renderFeed();
+        renderTop();
+      }
+
+      // ── Lifecycle ──────────────────────────────────────────
+      async function start() {
+        if (state && state.running) return;
+        if (!state) state = freshState('network');
+        state.running = true;
+        setLiveStatus(true, 'Live');
+        renderAll();   // reflect preserved state immediately on re-entry
+
+        // Ensure we have a schedule map (skip if we already rebuilt it this session)
+        if (!state.epoch) {
+          try {
+            await rebuildSlotMap();
+          } catch (e) {
+            console.warn('[SkipMonitor] schedule load failed:', e);
+            setLiveStatus(false, 'Schedule unavailable');
+            state.running = false;
+            return;
+          }
+        }
+
+        await tick();
+        pollTimer = setInterval(tick,       POLL_INTERVAL_MS);
+        uiTimer   = setInterval(renderStats, UI_TICK_MS);
+      }
+
+      function stop() {
+        if (!state || !state.running) return;
+        state.running = false;
+        if (pollTimer) clearInterval(pollTimer);
+        if (uiTimer)   clearInterval(uiTimer);
+        pollTimer = null;
+        uiTimer   = null;
+        setLiveStatus(false, 'Paused');
+      }
+
+      function setScope(scope) {
+        if (!state) state = freshState(scope);
+        if (state.scope === scope) return;
+        state.scope = scope;
+        const nBtn = document.getElementById('skipmonScopeNetwork');
+        const pBtn = document.getElementById('skipmonScopePortfolio');
+        if (nBtn) nBtn.classList.toggle('active', scope === 'network');
+        if (pBtn) pBtn.classList.toggle('active', scope === 'portfolio');
+        renderAll();
+      }
+
+      return { start, stop, setScope, renderAll };
+    })();
+
+    // Inline-onclick bridges
+    function setSkipMonitorScope(s) {
+      if (typeof SkipMonitor !== 'undefined') SkipMonitor.setScope(s);
+    }
+    function skipmonJumpToValidator(nodePubkey) {
+      const v = (typeof getValidatorByNodePubkey === 'function')
+        ? getValidatorByNodePubkey(nodePubkey) : null;
+      if (!v) return;
+      switchTab('lookup');
+      if (typeof lookupValidator === 'function') lookupValidator(v.votePubkey);
+    }
+
     // ─────────────────────────────────────────────────────────
     // SLOT EXPLORER MODAL  (current + last epoch + both)
     // ─────────────────────────────────────────────────────────
