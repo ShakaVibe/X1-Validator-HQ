@@ -7858,8 +7858,121 @@
     /* Controls row: Live badge + scope toggle. Title itself uses the standard
        `.search-section h1/span` pattern so it matches "My Data <Center>" etc. */
     .skipmon-controls {
-      display: flex; justify-content: space-between; align-items: center;
-      gap: 1rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+      /* Toolbar: scope toggle is the centered focal element,
+         with the Live/Idle status pill tucked subtly to one side. */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      position: relative;
+      flex-wrap: wrap;
+    }
+    .skipmon-controls-status {
+      /* Live/Idle pill floats to the right on wide screens, wraps below on narrow. */
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    @media (max-width: 720px) {
+      .skipmon-controls-status {
+        position: static;
+        transform: none;
+      }
+    }
+
+    /* Search input — shown only in validator-lookup mode */
+    .skipmon-lookup-search {
+      display: none;
+      position: relative;
+      max-width: 620px;
+      margin: 0 auto 1.25rem;
+    }
+    .skipmon-mode-lookup .skipmon-lookup-search { display: block; }
+    .skipmon-lookup-search input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .skipmon-lookup-search input:focus {
+      outline: none;
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.12);
+    }
+    .skipmon-lookup-search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      pointer-events: none;
+      font-size: 1rem;
+    }
+    .skipmon-lookup-results {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      max-height: 320px;
+      overflow-y: auto;
+      z-index: 20;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+    .skipmon-lookup-results:empty { display: none; }
+    .skipmon-lookup-result {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.7rem 0.9rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+    .skipmon-lookup-result:last-child { border-bottom: none; }
+    .skipmon-lookup-result:hover,
+    .skipmon-lookup-result.active {
+      background: rgba(77, 166, 255, 0.08);
+    }
+    .skipmon-lookup-result-logo {
+      width: 32px; height: 32px; min-width: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 0.8rem;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .skipmon-lookup-result-info { flex: 1; min-width: 0; }
+    .skipmon-lookup-result-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .skipmon-lookup-result-addr {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-dim);
+      font-size: 0.7rem;
+    }
+    .skipmon-lookup-empty {
+      padding: 0.9rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    .skipmon-lookup-hint {
+      text-align: center;
+      color: var(--text-dim);
+      padding: 3rem 1rem;
+      font-size: 0.95rem;
     }
 
     /* Pulse / heartbeat row — network rhythm at a glance */
@@ -7919,17 +8032,20 @@
 
     .skipmon-scope {
       display: inline-flex; background: var(--bg-card);
-      border: 1px solid var(--border); border-radius: 10px; padding: 3px;
+      border: 1px solid var(--border); border-radius: 12px; padding: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
     .skipmon-scope-btn {
       background: transparent; border: none; color: var(--text-secondary);
-      padding: 0.55rem 1.1rem; border-radius: 7px; cursor: pointer;
+      padding: 0.6rem 1.25rem; border-radius: 8px; cursor: pointer;
       font-weight: 600; font-size: 0.85rem; transition: all 0.2s;
       font-family: inherit;
+      white-space: nowrap;
     }
     .skipmon-scope-btn:hover { color: var(--text-primary); }
     .skipmon-scope-btn.active {
       background: var(--accent-gradient); color: var(--bg-primary);
+      box-shadow: 0 2px 10px rgba(0, 229, 255, 0.25);
     }
 
     .skipmon-stats {
@@ -8599,12 +8715,23 @@
       .skipmon-pv-epoch-stats { grid-template-columns: repeat(2, 1fr); }
     }
 
-    /* Mode gating — show only the layout that matches the active scope */
+    /* Mode gating — show only the layout that matches the active scope.
+       The Validator Lookup mode reuses the portfolio-view wrapper (same wide
+       cards) but feeds it a single searched validator instead of the
+       user's portfolio. So "lookup" hides the same things as "portfolio"
+       and additionally hides the portfolio-specific header row. */
     .skipmon-mode-portfolio .skipmon-main,
-    .skipmon-mode-portfolio .skipmon-top-panel {
+    .skipmon-mode-portfolio .skipmon-top-panel,
+    .skipmon-mode-lookup    .skipmon-main,
+    .skipmon-mode-lookup    .skipmon-top-panel,
+    .skipmon-mode-lookup    .skipmon-pulse,
+    .skipmon-mode-lookup    .skipmon-stats {
       display: none;
     }
-    .skipmon-mode-network .skipmon-portfolio-view {
+    .skipmon-mode-network  .skipmon-portfolio-view,
+    .skipmon-mode-network  .skipmon-lookup-view,
+    .skipmon-mode-portfolio .skipmon-lookup-view,
+    .skipmon-mode-lookup    .skipmon-portfolio-view {
       display: none;
     }
 
@@ -9375,13 +9502,30 @@
         </div>
 
         <div class="skipmon-controls">
-          <span class="skipmon-live paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
           <div class="skipmon-scope">
             <button class="skipmon-scope-btn active" id="skipmonScopeNetwork"
                     onclick="setSkipMonitorScope('network')">🌐 Network</button>
             <button class="skipmon-scope-btn" id="skipmonScopePortfolio"
                     onclick="setSkipMonitorScope('portfolio')">🖥️ My Validators</button>
+            <button class="skipmon-scope-btn" id="skipmonScopeLookup"
+                    onclick="setSkipMonitorScope('lookup')">🔍 Validator Lookup</button>
           </div>
+          <div class="skipmon-controls-status">
+            <span class="skipmon-live paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
+          </div>
+        </div>
+
+        <!-- Lookup-mode search. Only visible in Validator Lookup scope. -->
+        <div class="skipmon-lookup-search">
+          <span class="skipmon-lookup-search-icon">🔍</span>
+          <input type="text"
+                 id="skipmonLookupInput"
+                 placeholder="Search any validator by name or vote address…"
+                 oninput="skipmonLookupInputChanged()"
+                 onfocus="skipmonLookupInputChanged()"
+                 onblur="skipmonLookupInputBlurred()"
+                 autocomplete="off">
+          <div class="skipmon-lookup-results" id="skipmonLookupResults"></div>
         </div>
 
         <div class="skipmon-pulse">
@@ -9401,27 +9545,10 @@
           </div>
         </div>
 
-        <!-- Live horizontal timeline: past / current / upcoming -->
-        <div class="skipmon-timeline-panel">
-          <div class="skipmon-timeline-head">
-            <div class="skipmon-timeline-title">Live Timeline</div>
-            <div class="skipmon-timeline-meta" id="skipmonTimelineMeta">—</div>
-            <div class="skipmon-timeline-legend">
-              <span class="sm-tl-leg"><span class="sm-tl-leg-pip produced"></span>Produced</span>
-              <span class="sm-tl-leg"><span class="sm-tl-leg-pip skipped"></span>Skipped</span>
-              <span class="sm-tl-leg"><span class="sm-tl-leg-pip current"></span>Now</span>
-              <span class="sm-tl-leg"><span class="sm-tl-leg-pip upcoming"></span>Upcoming</span>
-            </div>
-          </div>
-          <div class="skipmon-timeline-track" id="skipmonTimelineTrack">
-            <div class="skipmon-empty" style="padding: 0.5rem;">Warming up…</div>
-          </div>
-          <div class="skipmon-timeline-scale">
-            <span>← 85 slots ago</span>
-            <span class="sm-tl-scale-now">Now</span>
-            <span>15 slots ahead →</span>
-          </div>
-        </div>
+        <!-- Live Timeline removed — the Leader Schedule bar above
+             (current leader + next leaders) now serves as the live "where
+             we are right now" visual, and the Recent Slots grid below
+             remains the history ledger. -->
 
         <div class="skipmon-stats">
           <div class="skipmon-stat">
@@ -9507,6 +9634,20 @@
           </div>
           <div class="skipmon-portfolio-grid" id="skipmonPortfolioGrid">
             <div class="skipmon-empty">Loading portfolio…</div>
+          </div>
+        </div>
+
+        <!-- LOOKUP-MODE LAYOUT: single validator scorecard for a searched validator.
+             Reuses the same .skipmon-portfolio-grid styling as Portfolio so the
+             card looks identical — just one card at a time, populated by the
+             search input above. -->
+        <div class="skipmon-lookup-view">
+          <div class="skipmon-pv-head-row">
+            <div class="skipmon-pv-head-title" id="skipmonLookupHeadTitle">Validator Lookup</div>
+            <div class="skipmon-pv-head-meta" id="skipmonLookupMeta">Search any validator above</div>
+          </div>
+          <div class="skipmon-portfolio-grid" id="skipmonLookupGrid">
+            <div class="skipmon-lookup-hint">Type a validator name or vote address above to see their live skip stats.</div>
           </div>
         </div>
       </div>
@@ -25388,6 +25529,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           prevEpochProd: null,     // {byIdentity, ts, epoch}
           feedRenderedTopSlot: null, // slot # of the topmost rendered feed item (for incremental render)
           topExpanded: false,      // top-skippers panel collapsed by default
+          lookupVotePubkey: null,  // Validator Lookup scope: vote address of the currently selected validator
         };
       }
 
@@ -26042,8 +26184,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
       //   last epoch    → state.prevEpochProd.byIdentity[nodePubkey]
       //   upcoming      → state.slotToLeader filtered by leader
       function renderPortfolioView() {
-        const grid = document.getElementById('skipmonPortfolioGrid');
-        const meta = document.getElementById('skipmonPvMeta');
         if (!grid) return;
 
         if (!Array.isArray(myPortfolio) || myPortfolio.length === 0) {
@@ -26084,6 +26224,54 @@ Please give me the diagnostic commands to run on my server so you can help me id
           cards.push(renderPortfolioCard(v));
         }
         grid.innerHTML = cards.join('') || `<div class="skipmon-empty">No portfolio validators found.</div>`;
+      }
+
+      // Validator Lookup scope: render the single selected validator's scorecard
+      // by piggybacking on renderPortfolioCard — the card already does exactly
+      // what this scope needs (two-epoch side-by-side stats + timeline pips).
+      // Showing a friendly hint when nothing's selected yet lets the user know
+      // the page is waiting on them.
+      function renderLookupView() {
+        const grid  = document.getElementById('skipmonLookupGrid');
+        const meta  = document.getElementById('skipmonLookupMeta');
+        const title = document.getElementById('skipmonLookupHeadTitle');
+        if (!grid) return;
+
+        const votePubkey = state && state.lookupVotePubkey;
+        if (!votePubkey) {
+          grid.innerHTML = `<div class="skipmon-lookup-hint" style="grid-column:1/-1">`
+                         + `Type a validator name or vote address above to see their live skip stats.`
+                         + `</div>`;
+          if (meta)  meta.textContent  = 'Search any validator above';
+          if (title) title.textContent = 'Validator Lookup';
+          return;
+        }
+
+        const v = allValidators && allValidators.find(x => x.votePubkey === votePubkey);
+        if (!v) {
+          grid.innerHTML = `<div class="skipmon-empty" style="grid-column:1/-1">`
+                         + `Validator not found in the active set.`
+                         + `</div>`;
+          if (meta)  meta.textContent  = '—';
+          if (title) title.textContent = 'Validator Lookup';
+          return;
+        }
+
+        if (!state.lastSeenHead || !state.epochProd) {
+          // Data not ready yet — the card would render as mostly zeros otherwise.
+          grid.innerHTML = `<div class="skipmon-empty" style="grid-column:1/-1">Loading skip data…</div>`;
+          if (title) title.textContent = v.name || 'Validator Lookup';
+          if (meta)  meta.textContent  = 'Warming up…';
+          return;
+        }
+
+        if (title) title.textContent = v.name || 'Validator Lookup';
+        if (meta) {
+          const curN  = state.epoch ?? '—';
+          const prevN = (typeof state.epoch === 'number') ? state.epoch - 1 : '—';
+          meta.textContent = `Epochs ${prevN} & ${curN}`;
+        }
+        grid.innerHTML = renderPortfolioCard(v);
       }
 
       function renderPortfolioCard(v) {
@@ -26289,6 +26477,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         renderTimeline();
         if (state && state.scope === 'portfolio') {
           renderPortfolioView();
+        } else if (state && state.scope === 'lookup') {
+          renderLookupView();
         } else {
           renderGrid();
           renderFeed();
@@ -26360,6 +26550,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       function setScope(scope) {
         if (!state) state = freshState(scope);
         if (state.scope === scope) return;
+        const prevScope = state.scope;
         state.scope = scope;
         // Invalidate feed render marker so incremental-render does a clean rebuild
         // under the new filter (otherwise we'd be appending to the wrong filtered list).
@@ -26370,12 +26561,91 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (wrap) {
           wrap.classList.toggle('skipmon-mode-network',   scope === 'network');
           wrap.classList.toggle('skipmon-mode-portfolio', scope === 'portfolio');
+          wrap.classList.toggle('skipmon-mode-lookup',    scope === 'lookup');
         }
         const nBtn = document.getElementById('skipmonScopeNetwork');
         const pBtn = document.getElementById('skipmonScopePortfolio');
+        const lBtn = document.getElementById('skipmonScopeLookup');
         if (nBtn) nBtn.classList.toggle('active', scope === 'network');
         if (pBtn) pBtn.classList.toggle('active', scope === 'portfolio');
+        if (lBtn) lBtn.classList.toggle('active', scope === 'lookup');
+        // Leaving lookup mode: clear the dropdown so it doesn't flash back on return.
+        // (Selected validator is preserved in state so it re-renders on return.)
+        if (prevScope === 'lookup' && scope !== 'lookup') {
+          const results = document.getElementById('skipmonLookupResults');
+          if (results) results.innerHTML = '';
+        }
         renderAll();
+      }
+
+      // Validator Lookup: handle typing in the search input. Uses allValidators
+      // (already loaded for the rest of the app) so lookup is instant — no RPC calls.
+      // We score name exact → prefix → contains → pubkey-contains, matching the
+      // main Validator Lookup tab's behavior, and cap the dropdown at 10 items.
+      function handleLookupInput() {
+        const input   = document.getElementById('skipmonLookupInput');
+        const results = document.getElementById('skipmonLookupResults');
+        if (!input || !results) return;
+        const raw = input.value.trim();
+        if (!raw) { results.innerHTML = ''; return; }
+        if (!Array.isArray(allValidators) || allValidators.length === 0) {
+          results.innerHTML = `<div class="skipmon-lookup-empty">Validator set still loading…</div>`;
+          return;
+        }
+        const q = raw.toLowerCase();
+        const scored = [];
+        for (const v of allValidators) {
+          const name = (v.name || '').toLowerCase();
+          const vote = (v.votePubkey || '').toLowerCase();
+          const node = (v.nodePubkey || '').toLowerCase();
+          let score = 0;
+          if (name === q)                 score = 100;
+          else if (name.startsWith(q))    score = 80;
+          else if (name.includes(q))      score = 60;
+          else if (vote.includes(q) || node.includes(q)) score = 20;
+          if (score > 0) scored.push({ v, score });
+        }
+        scored.sort((a, b) => b.score - a.score);
+        const top = scored.slice(0, 10).map(x => x.v);
+        if (top.length === 0) {
+          results.innerHTML = `<div class="skipmon-lookup-empty">No validators match "${esc(raw)}"</div>`;
+          return;
+        }
+        results.innerHTML = top.map(v => {
+          const av = avatarFor(v);
+          const short = (v.votePubkey || '').slice(0, 10) + '…' + (v.votePubkey || '').slice(-6);
+          return `<div class="skipmon-lookup-result" `
+               +      `onmousedown="skipmonLookupPick('${esc(v.votePubkey)}')">`
+               +   `<div class="skipmon-lookup-result-logo" style="${av.style}">${av.inner}</div>`
+               +   `<div class="skipmon-lookup-result-info">`
+               +     `<div class="skipmon-lookup-result-name">${esc(v.name || short)}</div>`
+               +     `<div class="skipmon-lookup-result-addr">${esc(short)}</div>`
+               +   `</div>`
+               + `</div>`;
+        }).join('');
+      }
+
+      // Dropdown dismiss. Delayed so the onmousedown on a result item
+      // can run before the blur wipes the list.
+      function handleLookupBlur() {
+        setTimeout(() => {
+          const results = document.getElementById('skipmonLookupResults');
+          if (results) results.innerHTML = '';
+        }, 150);
+      }
+
+      // Pick a result: stash the vote pubkey and re-render.
+      function pickLookup(votePubkey) {
+        if (!state) state = freshState('lookup');
+        state.lookupVotePubkey = votePubkey;
+        // Populate the input with the selected validator's name so it's clear
+        // what's being shown, and clear the results dropdown.
+        const v = allValidators && allValidators.find(x => x.votePubkey === votePubkey);
+        const input   = document.getElementById('skipmonLookupInput');
+        const results = document.getElementById('skipmonLookupResults');
+        if (input && v) input.value = v.name || votePubkey;
+        if (results)    results.innerHTML = '';
+        renderLookupView();
       }
 
       function toggleTopExpanded() {
@@ -26384,7 +26654,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         renderTop();
       }
 
-      return { start, stop, setScope, renderAll, toggleTopExpanded };
+      return { start, stop, setScope, renderAll, toggleTopExpanded, handleLookupInput, handleLookupBlur, pickLookup };
     })();
 
     // Inline-onclick bridges
@@ -26400,6 +26670,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
     function skipmonToggleTop() {
       if (typeof SkipMonitor !== 'undefined') SkipMonitor.toggleTopExpanded();
+    }
+
+    // Validator Lookup search: three bridges the search input calls.
+    // handleLookupInput rebuilds the dropdown on every keystroke;
+    // handleLookupBlur dismisses it after a brief delay so an onmousedown
+    // pick can fire first; pickLookup stashes the selection and renders.
+    function skipmonLookupInputChanged() {
+      if (typeof SkipMonitor !== 'undefined') SkipMonitor.handleLookupInput();
+    }
+    function skipmonLookupInputBlurred() {
+      if (typeof SkipMonitor !== 'undefined') SkipMonitor.handleLookupBlur();
+    }
+    function skipmonLookupPick(votePubkey) {
+      if (typeof SkipMonitor !== 'undefined') SkipMonitor.pickLookup(votePubkey);
     }
     // Portfolio card → open the existing slot explorer modal for this validator.
     // Prevents event from bubbling so cards and table rows behave cleanly.
