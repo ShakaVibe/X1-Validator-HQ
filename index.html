@@ -7937,25 +7937,6 @@
        Skip Monitor Tab
        ======================================== */
 
-    /* Network Live tab button — gets a small pulsing red dot so it reads
-       as a real-time view at a glance, without overpowering the tab bar. */
-    .tab-live-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #ff4d4d;
-      margin-left: 0.45rem;
-      vertical-align: middle;
-      position: relative;
-      box-shadow: 0 0 6px rgba(255, 77, 77, 0.6);
-      animation: tabLivePulse 1.6s ease-in-out infinite;
-    }
-    @keyframes tabLivePulse {
-      0%, 100% { box-shadow: 0 0 6px rgba(255, 77, 77, 0.5); opacity: 0.9; }
-      50%      { box-shadow: 0 0 10px rgba(255, 77, 77, 0.9); opacity: 1; }
-    }
-
     .skipmon-wrap { padding: 1.5rem 0; }
 
     /* Controls row: Live badge + scope toggle. Title itself uses the standard
@@ -9610,7 +9591,7 @@
 
     <!-- Tabs -->
     <div class="tabs">
-      <button class="tab tab-live" onclick="switchTab('skipmonitor')"><span class="x1-logo-btn"><span style="color: #ffffff;">X</span><span style="color: var(--accent-blue);">1</span></span> Network <span class="tab-live-dot" aria-hidden="true"></span></button>
+      <button class="tab" onclick="switchTab('skipmonitor')"><span class="x1-logo-btn"><span style="color: #ffffff;">X</span><span style="color: var(--accent-blue);">1</span></span> Network</button>
       <button class="tab" onclick="switchTab('lookup')">🔍 Validator Lookup</button>
       <button class="tab" onclick="switchTab('portfolio')">🖥️ My Data Center <span id="portfolioCount"></span></button>
       <button class="tab" onclick="switchTab('leaderboard')">🏆 Leaderboards</button>
