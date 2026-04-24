@@ -8587,51 +8587,65 @@
     }
     .tps-modal-stats-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-      padding: 0.5rem 1.5rem 1.5rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      padding: 0.75rem 1.25rem 1.25rem;
       border-top: 1px solid var(--border);
       margin-top: 0.25rem;
     }
     .tps-modal-card {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.9rem 1.1rem;
+      border-radius: 9px;
+      padding: 0.65rem 0.85rem;
       display: flex;
       flex-direction: column;
-      gap: 0.3rem;
+      gap: 0.15rem;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Thin accent bar across the top — subtle cyan line so the cards feel
+       like proper data tiles rather than empty boxes. */
+    .tps-modal-card::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(0,212,255,0.55), rgba(0,212,255,0.05));
     }
     .tps-modal-card-label {
-      font-size: 0.6rem;
-      color: var(--text-dim);
+      font-size: 0.78rem;
+      color: var(--accent-cyan);
       text-transform: uppercase;
-      letter-spacing: 0.7px;
+      letter-spacing: 0.8px;
       font-weight: 700;
     }
     .tps-modal-card-value {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       font-weight: 700;
       color: var(--text-primary);
       line-height: 1.1;
+      margin-top: 0.1rem;
     }
     .tps-modal-card-value.peak { color: var(--success); }
     .tps-modal-card-value.low  { color: var(--warning); }
     .tps-modal-card-sub {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-dim);
       font-family: 'JetBrains Mono', monospace;
+      margin-top: 0.05rem;
     }
     .tps-modal-card-sub.up   { color: var(--success); }
     .tps-modal-card-sub.down { color: var(--danger); }
     .tps-modal-axis {
       display: flex;
       justify-content: space-between;
-      padding: 0.25rem 1.5rem 0;
-      font-size: 0.62rem;
-      color: var(--text-dim);
+      padding: 0.35rem 1.5rem 0;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
       font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
     }
 
     /* Scorecard modal — wide enough to hold the full Last Epoch / Current
@@ -10327,6 +10341,11 @@
           <div class="tps-modal-card-sub" id="tpsModalAvgSub">—</div>
         </div>
         <div class="tps-modal-card">
+          <div class="tps-modal-card-label">Median</div>
+          <div class="tps-modal-card-value" id="tpsModalMedianValue">—</div>
+          <div class="tps-modal-card-sub" id="tpsModalMedianSub">—</div>
+        </div>
+        <div class="tps-modal-card">
           <div class="tps-modal-card-label">Peak</div>
           <div class="tps-modal-card-value peak" id="tpsModalPeakValue">—</div>
           <div class="tps-modal-card-sub" id="tpsModalPeakSub">—</div>
@@ -10335,6 +10354,11 @@
           <div class="tps-modal-card-label">Low</div>
           <div class="tps-modal-card-value low" id="tpsModalLowValue">—</div>
           <div class="tps-modal-card-sub" id="tpsModalLowSub">—</div>
+        </div>
+        <div class="tps-modal-card">
+          <div class="tps-modal-card-label">Total Txs</div>
+          <div class="tps-modal-card-value" id="tpsModalTotalValue">—</div>
+          <div class="tps-modal-card-sub" id="tpsModalTotalSub">—</div>
         </div>
       </div>
     </div>
@@ -27927,6 +27951,29 @@ Please give me the diagnostic commands to run on my server so you can help me id
       if (modal) modal.style.display = 'none';
     }
 
+    // Human-friendly formatter for large cumulative numbers (total
+    // transactions, etc). Distinct from _tpsFmt which is tuned for
+    // per-second magnitudes.
+    function _tpsFmtLarge(n) {
+      if (!isFinite(n)) return '—';
+      if (n >= 1e9) return (n / 1e9).toFixed(2) + 'B';
+      if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+      if (n >= 1e3) return (n / 1e3).toFixed(1) + 'k';
+      return Math.round(n).toLocaleString();
+    }
+
+    // Clean minute/hour formatter. Rounds FIRST, then splits, so
+    // "5h 60m" / "2h 60m" rollover bugs can't happen.
+    function _tpsFmtAgo(minutes) {
+      const m = Math.round(minutes);
+      if (m < 1) return 'now';
+      if (m < 60) return m + 'm';
+      const h = Math.floor(m / 60);
+      const rem = m - h * 60;
+      if (h < 12) return rem === 0 ? `${h}h` : `${h}h ${rem}m`;
+      return `${Math.round(m / 60)}h`;
+    }
+
     function renderTpsModal() {
       const chartEl = document.getElementById('tpsModalChart');
       if (!chartEl) return;
@@ -27936,90 +27983,95 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return;
       }
 
-      const W = 1000, H = 280;
-      // Peak/low plus their indices so we can compute "time ago" in the stats.
+      // ── Stats from the RAW series (full fidelity) ──────────────
       let peak = -Infinity, peakIdx = 0, low = Infinity, lowIdx = 0;
+      let total = 0;
       for (let i = 0; i < series.length; i++) {
         if (series[i] > peak) { peak = series[i]; peakIdx = i; }
         if (series[i] < low)  { low  = series[i]; lowIdx  = i; }
+        total += series[i];
       }
-      const avg = series.reduce((a, b) => a + b, 0) / series.length;
-      const max = Math.max(peak, 1);
-      const step = W / (series.length - 1);
+      const avg = total / series.length;
+      // Median without mutating the source.
+      const sorted = series.slice().sort((a, b) => a - b);
+      const mid = sorted.length >> 1;
+      const median = sorted.length % 2
+        ? sorted[mid]
+        : (sorted[mid - 1] + sorted[mid]) / 2;
+      // Total transactions — each sample covers 60s, so TPS * 60 = txs.
+      const totalTxs = total * 60;
+      const totalMinutes = Math.max(1, series.length - 1);
 
-      let stroke = '';
-      for (let i = 0; i < series.length; i++) {
-        const x = (i * step).toFixed(2);
-        const y = (H - (series[i] / max) * H).toFixed(2);
-        stroke += (i === 0 ? 'M' : 'L') + x + ',' + y + ' ';
+      // ── Bucket into 60 bars for a cleaner visual ──────────────
+      const BUCKET_COUNT = 60;
+      const bucketSize = Math.max(1, Math.ceil(series.length / BUCKET_COUNT));
+      const buckets = [];
+      for (let i = 0; i < series.length; i += bucketSize) {
+        const end = Math.min(i + bucketSize, series.length);
+        let sum = 0;
+        for (let j = i; j < end; j++) sum += series[j];
+        buckets.push(sum / (end - i));
       }
-      const area = stroke + `L${W},${H} L0,${H} Z`;
+      const bucketPeak = Math.max.apply(null, buckets);
+      const scaleMax = Math.max(bucketPeak, 1);
 
-      // Reference gridlines at 25/50/75/100% of peak.
-      const gridValues = [max, max * 0.75, max * 0.5, max * 0.25];
+      // ── SVG bar chart ─────────────────────────────────────────
+      const W = 1000, H = 280;
+      const gap = 2;
+      const n = buckets.length;
+      const barW = Math.max(1, (W - gap * (n - 1)) / n);
+
+      // Gridlines at 25/50/75/100% of bucket peak, with right-edge labels.
+      const gridValues = [scaleMax, scaleMax * 0.75, scaleMax * 0.5, scaleMax * 0.25];
       const gridLines = gridValues.map(v => {
-        const y = (H - (v / max) * H).toFixed(1);
-        return `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"/>`
-             + `<text x="${W - 6}" y="${y}" fill="rgba(255,255,255,0.45)" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="end" dominant-baseline="middle">${_tpsFmt(v)}</text>`;
+        const y = (H - (v / scaleMax) * H).toFixed(1);
+        return `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"/>`
+             + `<text x="${W - 8}" y="${y}" fill="rgba(255,255,255,0.65)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="500" text-anchor="end" dominant-baseline="middle">${_tpsFmt(v)}</text>`;
       }).join('');
+
+      let bars = '';
+      for (let i = 0; i < n; i++) {
+        const h = (buckets[i] / scaleMax) * H;
+        const x = (i * (barW + gap)).toFixed(2);
+        const y = (H - h).toFixed(2);
+        bars += `<rect x="${x}" y="${y}" width="${barW.toFixed(2)}" height="${h.toFixed(2)}" fill="url(#tpsGradBig)" rx="1.5"/>`;
+      }
 
       chartEl.innerHTML =
           `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="tps-spark-svg" style="overflow:visible">`
         +   `<defs>`
         +     `<linearGradient id="tpsGradBig" x1="0" x2="0" y1="0" y2="1">`
-        +       `<stop offset="0" stop-color="#00d4ff" stop-opacity="0.38"/>`
-        +       `<stop offset="1" stop-color="#00d4ff" stop-opacity="0"/>`
+        +       `<stop offset="0"    stop-color="#00d4ff" stop-opacity="0.95"/>`
+        +       `<stop offset="0.55" stop-color="#00d4ff" stop-opacity="0.55"/>`
+        +       `<stop offset="1"    stop-color="#00d4ff" stop-opacity="0.15"/>`
         +     `</linearGradient>`
         +   `</defs>`
         +   gridLines
-        +   `<path d="${area}" fill="url(#tpsGradBig)"/>`
-        +   `<path d="${stroke.trim()}" fill="none" stroke="#00d4ff" stroke-width="1.8" `
-        +         `stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`
+        +   bars
         + `</svg>`;
 
-      // Axis labels — adapt to however many samples we actually have,
-      // since the RPC sometimes returns fewer than 720 early in an epoch.
-      // Each sample is 60s, so total = (length-1) minutes.
-      const totalMinutes = Math.max(1, series.length - 1);
+      // ── Axis labels — adapt to however many samples we actually got ──
       const axisEl = document.getElementById('tpsModalAxisRow');
       if (axisEl) {
         const quarter = totalMinutes / 4;
-        const fmtAgo = (minutes) => {
-          if (minutes < 1) return 'now';
-          if (minutes < 60) return Math.round(minutes) + 'm';
-          const h = minutes / 60;
-          if (h >= 1 && h < 10) {
-            const hWhole = Math.floor(h);
-            const mRem = Math.round(minutes - hWhole * 60);
-            return mRem === 0 ? `${hWhole}h` : `${hWhole}h ${mRem}m`;
-          }
-          return Math.round(h) + 'h';
-        };
         axisEl.innerHTML =
-            `<span>${fmtAgo(totalMinutes)} ago</span>`
-          + `<span>${fmtAgo(quarter * 3)}</span>`
-          + `<span>${fmtAgo(quarter * 2)}</span>`
-          + `<span>${fmtAgo(quarter)}</span>`
+            `<span>${_tpsFmtAgo(totalMinutes)} ago</span>`
+          + `<span>${_tpsFmtAgo(quarter * 3)}</span>`
+          + `<span>${_tpsFmtAgo(quarter * 2)}</span>`
+          + `<span>${_tpsFmtAgo(quarter)}</span>`
           + `<span>now</span>`;
       }
 
-      // Stats — 2×2 card grid. "Time-ago" for peak/low is computed from the
-      // sample's position relative to the newest sample.
+      // ── Stat cards ────────────────────────────────────────────
       const currentVal = series[series.length - 1];
       const deltaVsAvg = avg > 0 ? ((currentVal - avg) / avg) * 100 : 0;
       const setText = (id, v) => {
         const el = document.getElementById(id);
         if (el) el.textContent = v;
       };
-      const minutesAgo = (idx) => (series.length - 1 - idx); // 0 = now
-      const ago = (idx) => {
-        const m = minutesAgo(idx);
-        if (m < 1) return 'just now';
-        if (m < 60) return `${m}m ago`;
-        const h = Math.floor(m / 60), r = m % 60;
-        return r === 0 ? `${h}h ago` : `${h}h ${r}m ago`;
-      };
-      setText('tpsModalCurrentValue',    _tpsFmt(currentVal));
+      const minutesAgo = (idx) => (series.length - 1 - idx);
+
+      setText('tpsModalCurrentValue', _tpsFmt(currentVal));
       const curDeltaEl = document.getElementById('tpsModalCurrentDelta');
       if (curDeltaEl) {
         if (Math.abs(deltaVsAvg) < 1) {
@@ -28033,12 +28085,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
           curDeltaEl.className = 'tps-modal-card-sub down';
         }
       }
-      setText('tpsModalAvgValue',  _tpsFmt(avg));
-      setText('tpsModalAvgSub',    `${series.length} samples · past ${(totalMinutes / 60).toFixed(1)}h`);
-      setText('tpsModalPeakValue', _tpsFmt(peak));
-      setText('tpsModalPeakSub',   ago(peakIdx));
-      setText('tpsModalLowValue',  _tpsFmt(low));
-      setText('tpsModalLowSub',    ago(lowIdx));
+      setText('tpsModalAvgValue',    _tpsFmt(avg));
+      setText('tpsModalAvgSub',      `${series.length} samples · ${(totalMinutes / 60).toFixed(1)}h`);
+      setText('tpsModalMedianValue', _tpsFmt(median));
+      setText('tpsModalMedianSub',   'half the time above this');
+      setText('tpsModalPeakValue',   _tpsFmt(peak));
+      setText('tpsModalPeakSub',     _tpsFmtAgo(minutesAgo(peakIdx)) + ' ago');
+      setText('tpsModalLowValue',    _tpsFmt(low));
+      setText('tpsModalLowSub',      _tpsFmtAgo(minutesAgo(lowIdx)) + ' ago');
+      setText('tpsModalTotalValue',  _tpsFmtLarge(totalTxs));
+      setText('tpsModalTotalSub',    `over ${(totalMinutes / 60).toFixed(1)}h`);
     }
 
     // ── Validator scorecard modal ───────────────────────────────
