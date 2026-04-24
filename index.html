@@ -7901,11 +7901,14 @@
     /* Controls row: Live badge + scope toggle. Title itself uses the standard
        `.search-section h1/span` pattern so it matches "My Data <Center>" etc. */
     .skipmon-controls {
-      /* Toolbar row — now just holds the scope tabs, centered. */
+      /* Toolbar row — now just holds the scope tabs, centered.
+         Extra top margin gives the scope tabs breathing room away from
+         the leader-schedule card above them. */
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-bottom: 1.25rem;
+      margin-top: 2rem;
+      margin-bottom: 1.5rem;
     }
 
     /* Search input — shown only in validator-lookup mode */
@@ -8263,7 +8266,7 @@
     .skipmon-top-expand-btn {
       background: transparent;
       border: 1px solid var(--border);
-      color: var(--text-secondary);
+      color: var(--accent-cyan);
       padding: 0.5rem 1rem;
       border-radius: 8px;
       cursor: pointer;
@@ -8274,8 +8277,8 @@
     }
     .skipmon-top-expand-btn:hover {
       background: var(--bg-card-hover);
-      color: var(--text-primary);
-      border-color: var(--accent-blue);
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
     }
 
     .skipmon-empty {
@@ -8935,8 +8938,6 @@
     <section class="search-section" id="skipmonitorHeader">
       <h1>Network <span>Live</span></h1>
       <p id="skipmonSubtitle">
-        <span class="skipmon-live-inline paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
-        <span class="skipmon-subtitle-sep">·</span>
         <span class="skipmon-subtitle-text">Real-time leader-slot tracking · Epoch —</span>
       </p>
     </section>
