@@ -2229,27 +2229,52 @@
 
     .slot-dots {
       display: flex;
-      gap: 3px;
+      gap: 5px;
       align-items: center;
     }
 
     .slot-dot {
-      width: 6px;
-      height: 6px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      transition: background 0.25s, border-color 0.25s, box-shadow 0.3s;
+    }
+    .slot-dot.produced {
+      background: var(--success);
+      border-color: var(--success);
+      box-shadow: 0 0 6px rgba(0, 230, 118, 0.45);
+    }
+    .slot-dot.skipped {
+      background: var(--danger);
+      border-color: var(--danger);
+      box-shadow: 0 0 6px rgba(255, 82, 82, 0.55);
+    }
+    .slot-dot.unknown {
+      background: var(--text-dim);
+      border-color: var(--text-dim);
+      opacity: 0.45;
+    }
+    .slot-dot.current {
       background: var(--accent-cyan);
-      opacity: 0.3;
-      animation: slotPulse 1.6s ease-in-out infinite;
+      border-color: var(--accent-cyan);
+      animation: slotPulseCurrent 1.1s ease-in-out infinite;
+    }
+    .slot-dot.pending {
+      background: transparent;
+      border-color: var(--border);
     }
 
-    .slot-dot:nth-child(1) { animation-delay: 0s; }
-    .slot-dot:nth-child(2) { animation-delay: 0.4s; }
-    .slot-dot:nth-child(3) { animation-delay: 0.8s; }
-    .slot-dot:nth-child(4) { animation-delay: 1.2s; }
-
-    @keyframes slotPulse {
-      0%, 100% { opacity: 0.2; transform: scale(0.8); }
-      50% { opacity: 1; transform: scale(1.1); }
+    @keyframes slotPulseCurrent {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.6);
+      }
+      50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 0 6px rgba(0, 229, 255, 0);
+      }
     }
 
     .leader-divider {
@@ -7858,28 +7883,11 @@
     /* Controls row: Live badge + scope toggle. Title itself uses the standard
        `.search-section h1/span` pattern so it matches "My Data <Center>" etc. */
     .skipmon-controls {
-      /* Toolbar: scope toggle is the centered focal element,
-         with the Live/Idle status pill tucked subtly to one side. */
+      /* Toolbar row — now just holds the scope tabs, centered. */
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 1rem;
       margin-bottom: 1.25rem;
-      position: relative;
-      flex-wrap: wrap;
-    }
-    .skipmon-controls-status {
-      /* Live/Idle pill floats to the right on wide screens, wraps below on narrow. */
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-    @media (max-width: 720px) {
-      .skipmon-controls-status {
-        position: static;
-        transform: none;
-      }
     }
 
     /* Search input — shown only in validator-lookup mode */
@@ -7976,76 +7984,95 @@
     }
 
     /* Pulse / heartbeat row — network rhythm at a glance */
+    /* Pulse row — thin status strip, not a full card. Sits between the scope
+       tabs and the main stat cards as a subtle "heartbeat" line. */
     .skipmon-pulse {
       display: flex; justify-content: center; align-items: center;
-      gap: 1.5rem; margin-bottom: 1.5rem;
-      padding: 0.85rem 1.25rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      gap: 1.25rem; margin-bottom: 1rem;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 0;
       flex-wrap: wrap;
     }
     .skipmon-pulse-item {
-      display: flex; align-items: baseline; gap: 0.55rem;
-      font-size: 0.85rem;
+      display: flex; align-items: baseline; gap: 0.5rem;
+      font-size: 0.8rem;
     }
     .skipmon-pulse-label {
-      color: var(--text-secondary);
+      color: var(--text-dim);
       text-transform: uppercase;
-      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.5px;
+      font-size: 0.62rem; font-weight: 600; letter-spacing: 0.6px;
     }
     .skipmon-pulse-value {
       font-family: 'JetBrains Mono', monospace;
       font-weight: 600;
-      color: var(--text-primary);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
     }
     .skipmon-pulse-value.good { color: var(--success); }
     .skipmon-pulse-value.bad  { color: var(--danger); }
     .skipmon-pulse-value.dim  { color: var(--text-dim); }
     .skipmon-pulse-divider {
-      width: 1px; height: 18px; background: var(--border);
+      width: 3px; height: 3px; border-radius: 50%;
+      background: var(--border);
     }
 
-    .skipmon-live {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    /* Inline live indicator that sits in the page subtitle.
+       Green LIVE when running, dim IDLE when paused. No pill background. */
+    .skipmon-live-inline {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
       color: var(--success); letter-spacing: 1px;
-      padding: 0.25rem 0.6rem; border: 1px solid rgba(0,230,118,0.35);
-      border-radius: 999px; background: rgba(0,230,118,0.08);
+      vertical-align: middle;
     }
     .skipmon-live-dot {
-      width: 8px; height: 8px; background: var(--success);
+      width: 7px; height: 7px; background: var(--success);
       border-radius: 50%; animation: skipmon-pulse 1.5s ease-in-out infinite;
+      flex-shrink: 0;
     }
     @keyframes skipmon-pulse {
       0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,230,118,0.6); }
-      50%      { opacity: 0.55; box-shadow: 0 0 0 8px rgba(0,230,118,0); }
+      50%      { opacity: 0.55; box-shadow: 0 0 0 6px rgba(0,230,118,0); }
     }
-    .skipmon-live.paused {
-      color: var(--text-dim);
-      border-color: var(--border);
-      background: transparent;
-    }
-    .skipmon-live.paused .skipmon-live-dot {
+    .skipmon-live-inline.paused { color: var(--text-dim); }
+    .skipmon-live-inline.paused .skipmon-live-dot {
       background: var(--text-dim); animation: none;
     }
+    .skipmon-subtitle-sep {
+      color: var(--text-dim);
+      margin: 0 0.4rem;
+      opacity: 0.6;
+    }
+    .skipmon-subtitle-text { color: var(--text-secondary); }
 
+    /* Scope tabs — flat, underline-style. Calmer than the old pill buttons
+       and reads as navigation rather than as calls-to-action. */
     .skipmon-scope {
-      display: inline-flex; background: var(--bg-card);
-      border: 1px solid var(--border); border-radius: 12px; padding: 4px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      display: inline-flex;
+      gap: 0.25rem;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+      box-shadow: none;
     }
     .skipmon-scope-btn {
       background: transparent; border: none; color: var(--text-secondary);
-      padding: 0.6rem 1.25rem; border-radius: 8px; cursor: pointer;
-      font-weight: 600; font-size: 0.85rem; transition: all 0.2s;
+      padding: 0.7rem 1.1rem; border-radius: 0; cursor: pointer;
+      font-weight: 600; font-size: 0.85rem;
       font-family: inherit;
       white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px; /* overlap the row border so the active underline aligns */
+      transition: color 0.18s, border-color 0.18s;
     }
     .skipmon-scope-btn:hover { color: var(--text-primary); }
     .skipmon-scope-btn.active {
-      background: var(--accent-gradient); color: var(--bg-primary);
-      box-shadow: 0 2px 10px rgba(0, 229, 255, 0.25);
+      background: transparent;
+      color: var(--accent-cyan);
+      box-shadow: none;
+      border-bottom-color: var(--accent-cyan);
     }
 
     .skipmon-stats {
@@ -8110,6 +8137,30 @@
     }
     .skipmon-cell.produced { background: var(--success); opacity: 0.85; }
     .skipmon-cell.skipped  { background: var(--danger); box-shadow: 0 0 6px rgba(255,82,82,0.6); }
+    .skipmon-cell.ghost {
+      background: transparent;
+      border: 1px dashed var(--border);
+      cursor: default;
+      opacity: 0.35;
+    }
+    .skipmon-cell.ghost:hover { transform: none; box-shadow: none; }
+
+    /* Freshly arrived cells animate in so the grid feels alive even when every slot is green. */
+    .skipmon-cell.new { animation: skipmonCellIn 0.55s ease-out both; }
+    @keyframes skipmonCellIn {
+      0%   { transform: scale(0.2); opacity: 0; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.0); }
+      45%  { transform: scale(1.35); opacity: 1; box-shadow: 0 0 6px 2px rgba(0, 229, 255, 0.55); }
+      100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
+    }
+    .skipmon-cell.skipped.new {
+      /* Red cells get a red pop instead of cyan so a skip still reads as a skip. */
+      animation-name: skipmonCellInSkip;
+    }
+    @keyframes skipmonCellInSkip {
+      0%   { transform: scale(0.2); opacity: 0; box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
+      45%  { transform: scale(1.5); opacity: 1; box-shadow: 0 0 8px 3px rgba(255, 82, 82, 0.75); }
+      100% { transform: scale(1); opacity: 1; box-shadow: 0 0 6px rgba(255, 82, 82, 0.6); }
+    }
 
     .skipmon-legend {
       display: flex; gap: 1.25rem; flex-wrap: wrap;
@@ -9466,7 +9517,11 @@
       <div class="skipmon-wrap skipmon-mode-network">
         <section class="search-section">
           <h1>Network <span>Live</span></h1>
-          <p id="skipmonSubtitle">Real-time leader-slot tracking · Epoch —</p>
+          <p id="skipmonSubtitle">
+            <span class="skipmon-live-inline paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
+            <span class="skipmon-subtitle-sep">·</span>
+            <span class="skipmon-subtitle-text">Real-time leader-slot tracking · Epoch —</span>
+          </p>
         </section>
 
         <!-- Leader Schedule Section — moved here from the home page.
@@ -9509,9 +9564,6 @@
                     onclick="setSkipMonitorScope('portfolio')">🖥️ My Validators</button>
             <button class="skipmon-scope-btn" id="skipmonScopeLookup"
                     onclick="setSkipMonitorScope('lookup')">🔍 Validator Lookup</button>
-          </div>
-          <div class="skipmon-controls-status">
-            <span class="skipmon-live paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
           </div>
         </div>
 
@@ -25185,6 +25237,37 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const currentSlot = epochInfo.absoluteSlot || (epochInfo.epoch * epochInfo.slotsInEpoch + currentSlotInEpoch);
         document.getElementById('currentLeaderSlot').textContent = formatCompact(currentSlot);
         document.getElementById('currentLeaderBlock').textContent = `Block ${blockOfFour} of 4`;
+
+        // Paint the 4 block dots with real produced/skipped state.
+        //   Past dots  → produced (green) / skipped (red) / unknown (dim) if SkipMonitor hasn't cached yet
+        //   Current    → pulsing cyan
+        //   Pending    → hollow
+        // The block's absolute slot range is [currentSlot - (blockOfFour-1) .. +4].
+        const dotsEl = document.querySelector('#currentLeaderCard .slot-dots');
+        if (dotsEl) {
+          const blockStartAbs = currentSlot - (blockOfFour - 1);
+          const smReady = (typeof SkipMonitor !== 'undefined' && SkipMonitor.getSlotStatus);
+          let html = '';
+          for (let i = 0; i < 4; i++) {
+            const pos = i + 1; // 1..4
+            const slotAbs = blockStartAbs + i;
+            let cls;
+            let title;
+            if (pos < blockOfFour) {
+              // Past slot in this block — look up status
+              const status = smReady ? SkipMonitor.getSlotStatus(slotAbs) : null;
+              if (status === 'produced')      { cls = 'produced';  title = `Slot ${slotAbs} · Produced`; }
+              else if (status === 'skipped')  { cls = 'skipped';   title = `Slot ${slotAbs} · Skipped`; }
+              else                            { cls = 'unknown';   title = `Slot ${slotAbs} · Awaiting confirmation`; }
+            } else if (pos === blockOfFour) {
+              cls = 'current'; title = `Slot ${slotAbs} · Landing now`;
+            } else {
+              cls = 'pending'; title = `Slot ${slotAbs} · Pending`;
+            }
+            html += `<div class="slot-dot ${cls}" title="${title}"></div>`;
+          }
+          dotsEl.innerHTML = html;
+        }
         
         if (currentLeaderInfo) {
           document.getElementById('currentLeaderName').textContent = currentLeaderInfo.name;
@@ -25528,6 +25611,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           epochProd: null,         // {byIdentity, ts, epoch}
           prevEpochProd: null,     // {byIdentity, ts, epoch}
           feedRenderedTopSlot: null, // slot # of the topmost rendered feed item (for incremental render)
+          gridLastMaxSlot: null,     // highest slot # already rendered into the grid (for "new cell" animation)
           topExpanded: false,      // top-skippers panel collapsed by default
           lookupVotePubkey: null,  // Validator Lookup scope: vote address of the currently selected validator
         };
@@ -25725,9 +25809,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
       function renderStats() {
         if (!state) return;
 
-        const sub = document.getElementById('skipmonSubtitle');
-        if (sub) {
-          sub.textContent = `Real-time leader-slot tracking · Epoch ${state.epoch ?? '—'}`;
+        // Only update the text span — do NOT overwrite the whole paragraph,
+        // or we'd wipe out the inline Live/Idle indicator that shares this subtitle.
+        const subText = document.querySelector('#skipmonSubtitle .skipmon-subtitle-text');
+        if (subText) {
+          subText.textContent = `Real-time leader-slot tracking · Epoch ${state.epoch ?? '—'}`;
         }
 
         // Current Slot card
@@ -25892,11 +25978,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
             (state && state.scope === 'portfolio' ? 'No portfolio validators have held leader slots in this window yet.' : 'Warming up…') +
             '</div>';
           if (metaEl) metaEl.textContent = '—';
+          state.gridLastMaxSlot = null;
           return;
         }
 
         // Preserve scroll position if user has scrolled away from the bottom
         const wasNearBottom = (el.scrollHeight - el.scrollTop - el.clientHeight) < 40;
+
+        // Cells whose slot # is strictly greater than the last render's high-water mark
+        // are "new" and get the entrance animation. On first render, nothing animates.
+        const prevMaxSlot = state.gridLastMaxSlot;
+        const newestSlot  = slots[slots.length - 1].slot;
 
         const cells = new Array(slots.length);
         for (let i = 0; i < slots.length; i++) {
@@ -25905,12 +25997,30 @@ Please give me the diagnostic commands to run on my server so you can help me id
             ? getValidatorByNodePubkey(s.leader) : null;
           const name = info && info.name ? info.name : (s.leader.slice(0,4) + '…' + s.leader.slice(-4));
           const label = `Slot ${s.slot.toLocaleString()} · ${name} · ${s.produced ? 'Produced' : 'SKIPPED'}`;
-          cells[i] = `<div class="skipmon-cell ${s.produced ? 'produced' : 'skipped'}" `
+          const isNew = prevMaxSlot !== null && s.slot > prevMaxSlot;
+          const cls = 'skipmon-cell ' + (s.produced ? 'produced' : 'skipped') + (isNew ? ' new' : '');
+          cells[i] = `<div class="${cls}" `
                    + `title="${esc(label)}" `
                    + `onclick="skipmonJumpToValidator('${esc(s.leader)}')"></div>`;
         }
+
+        // Pad the trailing row so it never looks like a half-finished line.
+        // Measure how many cells fit per row against the container's current width,
+        // then append neutral "ghost" cells to fill out the last row.
+        //   cell = 14px, gap = 3px, container padding-x = 8px (matches .skipmon-grid CSS)
+        const CELL = 14, GAP = 3, PAD_X = 8;
+        const usable = Math.max(0, el.clientWidth - PAD_X * 2);
+        const perRow = Math.max(1, Math.floor((usable + GAP) / (CELL + GAP)));
+        const remainder = slots.length % perRow;
+        const ghostCount = remainder === 0 ? 0 : (perRow - remainder);
+        if (ghostCount > 0) {
+          const ghost = '<div class="skipmon-cell ghost"></div>';
+          for (let i = 0; i < ghostCount; i++) cells.push(ghost);
+        }
+
         el.innerHTML = cells.join('');
         if (wasNearBottom) el.scrollTop = el.scrollHeight;
+        state.gridLastMaxSlot = newestSlot;
 
         if (metaEl) {
           metaEl.textContent = `${slots.length} slots · ${slots[0].slot.toLocaleString()} → ${slots[slots.length-1].slot.toLocaleString()}`;
@@ -26654,7 +26764,22 @@ Please give me the diagnostic commands to run on my server so you can help me id
         renderTop();
       }
 
-      return { start, stop, setScope, renderAll, toggleTopExpanded, handleLookupInput, handleLookupBlur, pickLookup };
+      // Lookup the produced/skipped status of a specific absolute slot from the live cache.
+      // Used by the leader bar to color the 4 block dots. Returns 'produced' | 'skipped' | null.
+      function getSlotStatus(slot) {
+        if (!state || !state.slots || !state.slots.length) return null;
+        // state.slots is ascending by slot; newest at the end. Scan from the end since
+        // the leader bar almost always asks about very recent slots.
+        for (let i = state.slots.length - 1; i >= 0; i--) {
+          if (state.slots[i].slot === slot) {
+            return state.slots[i].produced ? 'produced' : 'skipped';
+          }
+          if (state.slots[i].slot < slot) break; // ascending scan guard
+        }
+        return null;
+      }
+
+      return { start, stop, setScope, renderAll, toggleTopExpanded, handleLookupInput, handleLookupBlur, pickLookup, getSlotStatus };
     })();
 
     // Inline-onclick bridges
