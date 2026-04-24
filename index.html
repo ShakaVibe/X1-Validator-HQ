@@ -8442,7 +8442,7 @@
       display: flex;
       align-items: center;
       gap: 1.1rem;
-      height: 56px;
+      height: 64px;
       padding: 0.5rem 1rem;
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -8451,27 +8451,41 @@
     }
     .tps-strip-head {
       display: flex;
-      align-items: baseline;
-      gap: 0.55rem;
+      align-items: center;
+      gap: 0.65rem;
       flex-shrink: 0;
-      min-width: 150px;
+      min-width: 180px;
+    }
+    /* X1 logo inside the strip — reuses the shared .x1-logo-small styling. */
+    .tps-strip-logo { flex-shrink: 0; }
+    .tps-strip-head-labels {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
     }
     .tps-strip-label {
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-weight: 700;
-      letter-spacing: 0.7px;
+      letter-spacing: 0.6px;
       text-transform: uppercase;
       color: var(--text-dim);
+      white-space: nowrap;
+    }
+    .tps-strip-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.45rem;
     }
     .tps-strip-value {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 1.4rem;
+      font-size: 1.25rem;
       font-weight: 700;
       color: var(--accent-cyan);
       line-height: 1;
     }
     .tps-strip-trend {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 600;
       color: var(--text-dim);
       font-family: 'JetBrains Mono', monospace;
@@ -8514,6 +8528,23 @@
       font-weight: 700;
       font-family: 'Space Grotesk', sans-serif;
     }
+    .tps-strip-expand {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      border-radius: 6px;
+      padding: 0.4rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .tps-strip-expand:hover {
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+      background: rgba(0, 212, 255, 0.06);
+    }
     .tps-strip-empty {
       color: var(--text-dim);
       font-size: 0.8rem;
@@ -8522,6 +8553,70 @@
       align-items: center;
       justify-content: center;
       height: 100%;
+    }
+
+    /* TPS expanded modal — same chart, much bigger, with axis guide lines
+       and sample-granular hover. */
+    .tps-modal-chart-wrap {
+      padding: 1.5rem;
+      position: relative;
+    }
+    .tps-modal-chart {
+      position: relative;
+      width: 100%;
+      height: 280px;
+    }
+    .tps-modal-chart .tps-spark-svg {
+      height: 100%;
+    }
+    .tps-modal-grid-line {
+      position: absolute;
+      left: 0; right: 0;
+      border-top: 1px dashed rgba(255, 255, 255, 0.06);
+      pointer-events: none;
+    }
+    .tps-modal-grid-label {
+      position: absolute;
+      right: 0;
+      transform: translateY(-50%);
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-card);
+      padding: 0 4px;
+    }
+    .tps-modal-stats {
+      display: flex;
+      gap: 2rem;
+      padding: 1rem 1.5rem 1.5rem;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .tps-modal-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .tps-modal-stat-label {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      font-weight: 700;
+    }
+    .tps-modal-stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .tps-modal-axis {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.25rem 1.5rem 0;
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
     }
 
     .skipmon-legend {
@@ -8633,6 +8728,15 @@
       font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
       color: var(--text-secondary);
       border-bottom: 1px solid var(--border); font-weight: 600;
+    }
+    /* Dotted underline + help cursor on any column header that carries a
+       native title attribute — makes the tooltips discoverable without
+       adding visual weight. */
+    .skipmon-top-table th[title] {
+      cursor: help;
+      border-bottom: 1px solid var(--border);
+      text-decoration: underline dotted rgba(255,255,255,0.18);
+      text-underline-offset: 3px;
     }
     .skipmon-top-table td {
       padding: 0.75rem 0.75rem;
@@ -9925,14 +10029,27 @@
              on tab entry and refreshed every 60s. -->
         <div class="tps-strip" id="tpsStrip">
           <div class="tps-strip-head">
-            <span class="tps-strip-label">TPS</span>
-            <span class="tps-strip-value" id="tpsStripValue">—</span>
-            <span class="tps-strip-trend" id="tpsStripTrend"></span>
+            <span class="x1-logo-small tps-strip-logo"><span class="x-char">X</span><span class="one-char">1</span></span>
+            <div class="tps-strip-head-labels">
+              <span class="tps-strip-label">TPS · past 60 min</span>
+              <div class="tps-strip-value-row">
+                <span class="tps-strip-value" id="tpsStripValue">—</span>
+                <span class="tps-strip-trend" id="tpsStripTrend" title="Change vs the previous 60-second sample"></span>
+              </div>
+            </div>
           </div>
           <div class="tps-strip-chart" id="tpsStripChart"></div>
           <div class="tps-strip-stats">
             <div class="tps-strip-stat"><span class="tps-strip-stat-label">avg</span><span id="tpsStripAvg">—</span></div>
             <div class="tps-strip-stat"><span class="tps-strip-stat-label">peak</span><span id="tpsStripPeak">—</span></div>
+            <button class="tps-strip-expand" onclick="openTpsModal()" title="Expand chart">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <polyline points="9 21 3 21 3 15"></polyline>
+                <line x1="21" y1="3" x2="14" y2="10"></line>
+                <line x1="3" y1="21" x2="10" y2="14"></line>
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -10154,6 +10271,35 @@
           </div>
         </div>
         <div class="epoch-timeline-summary" id="epochTimelineSummary"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TPS expanded modal — enlarged sparkline with axis ticks and more
+       detailed avg/peak/low readouts. Opened from the expand icon on
+       the Network Live TPS strip. -->
+  <div class="modal-overlay" id="tpsModal">
+    <div class="modal" style="max-width: 860px;">
+      <div class="modal-header">
+        <h3><span class="x1-logo-small" style="margin-right:0.5rem;vertical-align:middle"><span class="x-char">X</span><span class="one-char">1</span></span>Network TPS · Past 60 Minutes</h3>
+        <button class="modal-close" onclick="closeTpsModal()">&times;</button>
+      </div>
+      <div class="tps-modal-chart-wrap">
+        <div class="tps-modal-chart" id="tpsModalChart"></div>
+        <div class="tps-modal-axis">
+          <span>60m ago</span>
+          <span>45m</span>
+          <span>30m</span>
+          <span>15m</span>
+          <span>now</span>
+        </div>
+      </div>
+      <div class="tps-modal-stats">
+        <div class="tps-modal-stat"><div class="tps-modal-stat-label">Current</div><div class="tps-modal-stat-value" id="tpsModalCurrent">—</div></div>
+        <div class="tps-modal-stat"><div class="tps-modal-stat-label">Average</div><div class="tps-modal-stat-value" id="tpsModalAvg">—</div></div>
+        <div class="tps-modal-stat"><div class="tps-modal-stat-label">Peak</div><div class="tps-modal-stat-value" id="tpsModalPeak">—</div></div>
+        <div class="tps-modal-stat"><div class="tps-modal-stat-label">Low</div><div class="tps-modal-stat-value" id="tpsModalLow">—</div></div>
+        <div class="tps-modal-stat"><div class="tps-modal-stat-label">Samples</div><div class="tps-modal-stat-value" id="tpsModalSamples">—</div></div>
       </div>
     </div>
   </div>
@@ -25904,13 +26050,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (prev > 0) {
           const deltaPct = ((current - prev) / prev) * 100;
           if (Math.abs(deltaPct) < 0.5) {
-            trendEl.textContent = '→';
+            trendEl.textContent = '→ steady';
             trendEl.className = 'tps-strip-trend';
           } else if (deltaPct > 0) {
-            trendEl.textContent = `↗ ${deltaPct.toFixed(0)}%`;
+            trendEl.textContent = `↗ ${deltaPct.toFixed(0)}% vs 1m ago`;
             trendEl.className = 'tps-strip-trend up';
           } else {
-            trendEl.textContent = `↘ ${Math.abs(deltaPct).toFixed(0)}%`;
+            trendEl.textContent = `↘ ${Math.abs(deltaPct).toFixed(0)}% vs 1m ago`;
             trendEl.className = 'tps-strip-trend down';
           }
         } else {
@@ -25945,6 +26091,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
         +   `<path d="${stroke.trim()}" fill="none" stroke="#00d4ff" stroke-width="1.25" `
         +         `stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`
         + `</svg>`;
+
+      // If the expanded modal is currently open, keep it live too.
+      const tpsModal = document.getElementById('tpsModal');
+      if (tpsModal && tpsModal.style.display === 'flex' && typeof renderTpsModal === 'function') {
+        renderTpsModal();
+      }
     }
 
     async function updateCurrentLeader() {
@@ -27014,11 +27166,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
         let html = '<table class="skipmon-top-table"><thead><tr>'
                  + '<th style="width:48px">#</th>'
                  + '<th>Validator</th>'
-                 + '<th style="width:90px">Assigned</th>'
-                 + '<th style="width:80px">Skipped</th>'
-                 + '<th style="width:100px">Skip Rate</th>'
-                 + '<th style="width:120px">Recent 20</th>'
-                 + '<th style="width:22%">Share</th>'
+                 + '<th style="width:90px" title="Leader slots assigned to this validator so far in this epoch">Assigned</th>'
+                 + '<th style="width:80px" title="Slots where this validator failed to produce a block">Skipped</th>'
+                 + '<th style="width:100px" title="Skipped ÷ Assigned, as a percentage">Skip Rate</th>'
+                 + '<th style="width:120px" title="The last 20 leader slots for this validator · green = produced, red = skipped">Recent 20</th>'
+                 + '<th style="width:22%" title="Bar length relative to the worst skipper in this list">Relative</th>'
                  + '</tr></thead><tbody>';
 
         visible.forEach((r, i) => {
@@ -27171,12 +27323,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
           return;
         }
 
-        const head = state.lastSeenHead;
-        if (!head || !state.epochProd) {
-          grid.innerHTML = `<div class="skipmon-empty" style="grid-column:1/-1">Loading portfolio data…</div>`;
-          if (meta) meta.textContent = `${myPortfolio.length} validator${myPortfolio.length===1?'':'s'}`;
-          return;
-        }
+        // Previously we bailed out here unless both the chain head AND the
+        // full-epoch getBlockProduction result were ready, which meant the
+        // user could stare at "Loading portfolio data…" for 5–15 s while
+        // pollEpoch completed. renderPortfolioCard already handles null
+        // epochProd gracefully (it shows "—" for missing pieces), so we
+        // render the cards immediately and the next renderAll() after the
+        // poll resolves will fill in the numbers in place.
 
         if (meta) {
           const curN  = state.epoch ?? '—';
@@ -27719,18 +27872,99 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const modal = document.getElementById('epochTimelineModal');
       if (modal) modal.style.display = 'none';
     }
-    // Click-outside-to-close and Escape-key-to-close
-    document.addEventListener('DOMContentLoaded', function() {
-      const modal = document.getElementById('epochTimelineModal');
-      if (modal) {
-        modal.addEventListener('click', function(e) {
-          if (e.target === this) closeEpochTimelineModal();
-        });
+
+    // ── TPS modal ──────────────────────────────────────────────
+    // Expands the TPS sparkline into a full-height chart with axis
+    // gridlines and richer stats. Uses the same tpsSamplesCache that
+    // feeds the inline strip, so there's no extra RPC on open.
+    function openTpsModal() {
+      const modal = document.getElementById('tpsModal');
+      if (!modal) return;
+      modal.style.display = 'flex';
+      renderTpsModal();
+    }
+    function closeTpsModal() {
+      const modal = document.getElementById('tpsModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function renderTpsModal() {
+      const chartEl = document.getElementById('tpsModalChart');
+      if (!chartEl) return;
+      const series = tpsSamplesCache;
+      if (!series || series.length < 2) {
+        chartEl.innerHTML = '<div class="tps-strip-empty" style="height:100%">No samples yet — give it a moment…</div>';
+        return;
       }
+
+      const W = 1000, H = 280;
+      const peak = Math.max.apply(null, series);
+      const low  = Math.min.apply(null, series);
+      const avg  = series.reduce((a, b) => a + b, 0) / series.length;
+      const max  = Math.max(peak, 1);
+      const step = W / (series.length - 1);
+
+      // Build the path commands.
+      let stroke = '';
+      for (let i = 0; i < series.length; i++) {
+        const x = (i * step).toFixed(2);
+        const y = (H - (series[i] / max) * H).toFixed(2);
+        stroke += (i === 0 ? 'M' : 'L') + x + ',' + y + ' ';
+      }
+      const area = stroke + `L${W},${H} L0,${H} Z`;
+
+      // Reference gridlines at 25/50/75/100% of peak, rendered as dashed
+      // lines with labels on the right edge. Purely visual — keeps the
+      // chart feeling charty instead of just a blob.
+      const gridValues = [max, max * 0.75, max * 0.5, max * 0.25];
+      const gridLines = gridValues.map(v => {
+        const y = (H - (v / max) * H).toFixed(1);
+        return `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"/>`
+             + `<text x="${W - 6}" y="${y}" fill="rgba(255,255,255,0.45)" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="end" dominant-baseline="middle">${_tpsFmt(v)}</text>`;
+      }).join('');
+
+      chartEl.innerHTML =
+          `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="tps-spark-svg" style="overflow:visible">`
+        +   `<defs>`
+        +     `<linearGradient id="tpsGradBig" x1="0" x2="0" y1="0" y2="1">`
+        +       `<stop offset="0" stop-color="#00d4ff" stop-opacity="0.38"/>`
+        +       `<stop offset="1" stop-color="#00d4ff" stop-opacity="0"/>`
+        +     `</linearGradient>`
+        +   `</defs>`
+        +   gridLines
+        +   `<path d="${area}" fill="url(#tpsGradBig)"/>`
+        +   `<path d="${stroke.trim()}" fill="none" stroke="#00d4ff" stroke-width="1.8" `
+        +         `stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`
+        + `</svg>`;
+
+      // Stats
+      const set = (id, v) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = v;
+      };
+      set('tpsModalCurrent', _tpsFmt(series[series.length - 1]));
+      set('tpsModalAvg',     _tpsFmt(avg));
+      set('tpsModalPeak',    _tpsFmt(peak));
+      set('tpsModalLow',     _tpsFmt(low));
+      set('tpsModalSamples', `${series.length} · 60s each`);
+    }
+
+    // Click-outside-to-close and Escape-key-to-close (modals using this file's pattern)
+    document.addEventListener('DOMContentLoaded', function() {
+      [['epochTimelineModal', closeEpochTimelineModal],
+       ['tpsModal',           closeTpsModal]].forEach(([id, closer]) => {
+        const modal = document.getElementById(id);
+        if (!modal) return;
+        modal.addEventListener('click', function(e) {
+          if (e.target === this) closer();
+        });
+      });
       document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-          const m = document.getElementById('epochTimelineModal');
-          if (m && m.style.display === 'flex') closeEpochTimelineModal();
+        if (e.key !== 'Escape') return;
+        for (const [id, closer] of [['epochTimelineModal', closeEpochTimelineModal],
+                                     ['tpsModal',           closeTpsModal]]) {
+          const m = document.getElementById(id);
+          if (m && m.style.display === 'flex') { closer(); break; }
         }
       });
     });
@@ -27748,10 +27982,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
     function skipmonLookupPick(votePubkey) {
       if (typeof SkipMonitor !== 'undefined') SkipMonitor.pickLookup(votePubkey);
     }
-    // Portfolio card → open the existing slot explorer modal for this validator.
-    // Prevents event from bubbling so cards and table rows behave cleanly.
+    // Portfolio card → open the Validator Lookup tab for this validator.
+    // Previously this opened the separate "slot explorer" modal, but the
+    // Validator Lookup view is more consistent with every other clickable
+    // validator reference on Network Live (grid cells, feed items, top
+    // skippers rows, leader cards), so we route everything the same way.
     function skipmonOpenPortfolioModal(nodePubkey, name, voteAccount) {
-      if (typeof openSlotModal === 'function') {
+      if (voteAccount && typeof lookupValidator === 'function') {
+        lookupValidator(voteAccount);
+      } else if (typeof openSlotModal === 'function') {
+        // Fallback for the edge case where we don't have a vote account.
         openSlotModal(nodePubkey, name, voteAccount);
       }
     }
