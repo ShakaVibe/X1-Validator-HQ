@@ -8228,16 +8228,32 @@
       padding: 8px; background: var(--bg-primary); border-radius: 8px;
       border: 1px solid var(--border);
     }
+    /* Base cell — transparent fill plus a subtle outline. The produced/
+       skipped classes layer on top with translucent fills so the grid
+       reads as a quieter data surface instead of a saturated game board. */
     .skipmon-cell {
       width: 14px; height: 14px; border-radius: 3px;
-      cursor: pointer; transition: transform 0.1s;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.15s, background-color 0.15s;
+      box-sizing: border-box;
     }
     .skipmon-cell:hover {
       transform: scale(1.5); z-index: 2; position: relative;
       box-shadow: 0 0 0 2px var(--bg-card);
     }
-    .skipmon-cell.produced { background: var(--success); opacity: 0.85; }
-    .skipmon-cell.skipped  { background: var(--danger); box-shadow: 0 0 6px rgba(255,82,82,0.6); }
+    /* Produced — cyan-teal outline with a faint translucent wash. Ties
+       the grid into the X1 cyan palette used elsewhere in the tab. */
+    .skipmon-cell.produced {
+      background: rgba(64, 220, 180, 0.14);
+      border: 1px solid rgba(64, 220, 180, 0.55);
+    }
+    /* Skipped — muted coral. Still clearly a skip, just without the
+       fire-engine red glow that was dominating the original grid. */
+    .skipmon-cell.skipped {
+      background: rgba(255, 120, 110, 0.18);
+      border: 1px solid rgba(255, 120, 110, 0.7);
+      box-shadow: 0 0 4px rgba(255, 120, 110, 0.25);
+    }
     .skipmon-cell.ghost {
       background: transparent;
       border: 1px dashed var(--border);
@@ -8246,21 +8262,23 @@
     }
     .skipmon-cell.ghost:hover { transform: none; box-shadow: none; }
 
-    /* Freshly arrived cells animate in so the grid feels alive even when every slot is green. */
+    /* Freshly arrived cells animate in so the grid feels alive even when
+       every slot is green. Pop uses cyan for produced to echo the site
+       brand color. */
     .skipmon-cell.new { animation: skipmonCellIn 0.55s ease-out both; }
     @keyframes skipmonCellIn {
-      0%   { transform: scale(0.2); opacity: 0; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.0); }
+      0%   { transform: scale(0.2); opacity: 0; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
       45%  { transform: scale(1.35); opacity: 1; box-shadow: 0 0 6px 2px rgba(0, 229, 255, 0.55); }
       100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
     }
     .skipmon-cell.skipped.new {
-      /* Red cells get a red pop instead of cyan so a skip still reads as a skip. */
+      /* Skip cells get a coral pop instead of cyan so a skip still reads as a skip. */
       animation-name: skipmonCellInSkip;
     }
     @keyframes skipmonCellInSkip {
-      0%   { transform: scale(0.2); opacity: 0; box-shadow: 0 0 0 0 rgba(255, 82, 82, 0); }
-      45%  { transform: scale(1.5); opacity: 1; box-shadow: 0 0 8px 3px rgba(255, 82, 82, 0.75); }
-      100% { transform: scale(1); opacity: 1; box-shadow: 0 0 6px rgba(255, 82, 82, 0.6); }
+      0%   { transform: scale(0.2); opacity: 0; box-shadow: 0 0 0 0 rgba(255, 120, 110, 0); }
+      45%  { transform: scale(1.5); opacity: 1; box-shadow: 0 0 8px 3px rgba(255, 120, 110, 0.65); }
+      100% { transform: scale(1); opacity: 1; box-shadow: 0 0 4px rgba(255, 120, 110, 0.25); }
     }
 
     /* ──────────────────────────────────────────────────────────
@@ -10316,11 +10334,11 @@
             </div>
             <div class="skipmon-legend">
               <div class="skipmon-legend-item">
-                <div class="skipmon-legend-pip" style="background:var(--success);opacity:0.85"></div>
+                <div class="skipmon-legend-pip" style="background:rgba(64, 220, 180, 0.14);border:1px solid rgba(64, 220, 180, 0.7)"></div>
                 Produced
               </div>
               <div class="skipmon-legend-item">
-                <div class="skipmon-legend-pip" style="background:var(--danger)"></div>
+                <div class="skipmon-legend-pip" style="background:rgba(255, 120, 110, 0.18);border:1px solid rgba(255, 120, 110, 0.8)"></div>
                 Skipped
               </div>
               <div class="skipmon-legend-note">Hover a cell for details · Click to open the validator</div>
