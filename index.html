@@ -15102,57 +15102,86 @@
 
     // Fetch last epoch rewards for all portfolio validators
     async function fetchPortfolioLastEpochRewards(validators) {
+      const valueEl = document.getElementById('portfolioLastEpochRewards');
+      const labelEl = valueEl?.parentElement?.querySelector('.portfolio-stat-label');
       try {
-        // Fetch 3 epochs of rewards for each validator in parallel.
-        // We need the buffer because at an epoch boundary, the most recent
-        // epoch's rewards may not yet be indexed by the RPC node.
+        // Fetch a generous buffer (6 epochs) because at an epoch boundary the
+        // RPC may take a while to index the most recent completed epoch — and
+        // if ANY validator in the portfolio is missing that epoch, we'd fall
+        // through to "—" unnecessarily. More buffer = more chance of finding
+        // a recent epoch where every validator has data.
+        const EPOCH_BUFFER = 6;
         const rewardPromises = validators.map(async (v) => {
           try {
-            return await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 3);
+            return await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, EPOCH_BUFFER);
           } catch (e) {
-            console.error(`Error fetching rewards for ${v.voteAccount}:`, e);
+            console.warn(`[rewards] fetch failed for ${v.voteAccount}:`, e && e.message || e);
             return [];
           }
         });
 
         const allRewards = await Promise.all(rewardPromises);
 
-        // Find the most recent epoch for which EVERY validator has real indexed data.
-        // This keeps the summed number consistent (we don't mix epoch N-1 data for
-        // one validator with epoch N-2 for another).
-        const epochCandidates = (allRewards[0] || []).map(r => r.epoch); // already sorted desc
-        let chosenEpoch = null;
-        let totalLastEpochRewards = 0;
+        // Collect every epoch we saw across any validator, sorted newest first.
+        const epochSet = new Set();
+        for (const list of allRewards) {
+          for (const r of list) if (r && typeof r.epoch === 'number') epochSet.add(r.epoch);
+        }
+        const sortedEpochs = Array.from(epochSet).sort((a, b) => b - a);
 
-        for (const epoch of epochCandidates) {
-          const perValidator = allRewards.map(rewards =>
-            rewards.find(r => r.epoch === epoch)
-          );
+        // Primary path: newest epoch where EVERY validator has indexed data.
+        // This gives a clean, accurate total.
+        let chosenEpoch = null;
+        let totalAmount = 0;
+        let isPartial = false;
+        let indexedCount = 0;
+
+        for (const epoch of sortedEpochs) {
+          const perValidator = allRewards.map(list => list.find(r => r.epoch === epoch));
           if (perValidator.every(r => r && r.indexed)) {
             chosenEpoch = epoch;
-            totalLastEpochRewards = perValidator.reduce(
-              (sum, r) => sum + (r.amount || 0) / 1e9, 0
-            );
+            totalAmount = perValidator.reduce((s, r) => s + (r.amount || 0) / 1e9, 0);
+            indexedCount = perValidator.length;
             break;
           }
         }
 
-        const valueEl = document.getElementById('portfolioLastEpochRewards');
-        const labelEl = valueEl?.parentElement?.querySelector('.portfolio-stat-label');
+        // Fallback: if no epoch has complete data, find the newest epoch where
+        // at least half the validators have indexed data and show a partial
+        // total so the card still conveys useful information.
+        if (chosenEpoch === null) {
+          for (const epoch of sortedEpochs) {
+            const perValidator = allRewards.map(list => list.find(r => r.epoch === epoch));
+            const indexed = perValidator.filter(r => r && r.indexed);
+            if (indexed.length >= Math.max(1, Math.ceil(validators.length / 2))) {
+              chosenEpoch = epoch;
+              totalAmount = indexed.reduce((s, r) => s + (r.amount || 0) / 1e9, 0);
+              isPartial = true;
+              indexedCount = indexed.length;
+              break;
+            }
+          }
+        }
 
         if (chosenEpoch !== null) {
-          valueEl.textContent = formatNumber(totalLastEpochRewards, 2);
+          if (valueEl) valueEl.textContent = formatNumber(totalAmount, 2);
           if (labelEl) {
-            labelEl.innerHTML = `Rewards Last Epoch (XNT) <span style="opacity:0.55;font-size:0.85em;font-weight:400;">· Epoch #${chosenEpoch}</span>`;
+            const partialSuffix = isPartial
+              ? ` · ${indexedCount}/${validators.length} indexed`
+              : '';
+            labelEl.innerHTML = `Rewards Last Epoch (XNT) <span style="opacity:0.55;font-size:0.85em;font-weight:400;">· Epoch #${chosenEpoch}${partialSuffix}</span>`;
           }
         } else {
-          // No epoch had complete data for all validators - RPC is likely unavailable
-          valueEl.textContent = '-';
-          if (labelEl) labelEl.textContent = 'Rewards Last Epoch (XNT)';
+          // Nothing indexed at all — RPC probably hasn't caught up on any
+          // recent epoch for the portfolio. Show a clearer state than a bare "-".
+          if (valueEl) valueEl.textContent = '—';
+          if (labelEl) labelEl.innerHTML = `Rewards Last Epoch (XNT) <span style="opacity:0.55;font-size:0.85em;font-weight:400;">· awaiting RPC indexing</span>`;
+          console.warn('[rewards] no indexed epoch found across portfolio — RPC may be catching up');
         }
       } catch (e) {
-        console.error('Error fetching portfolio last epoch rewards:', e);
-        document.getElementById('portfolioLastEpochRewards').textContent = '-';
+        console.error('[rewards] fetch error:', e);
+        if (valueEl) valueEl.textContent = '—';
+        if (labelEl) labelEl.innerHTML = `Rewards Last Epoch (XNT) <span style="opacity:0.55;font-size:0.85em;font-weight:400;">· fetch failed</span>`;
       }
     }
 
