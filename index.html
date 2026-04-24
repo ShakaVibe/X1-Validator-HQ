@@ -8817,34 +8817,9 @@
         </div>
       </div>
       
-      <!-- Leader Schedule Section -->
-      <div class="leader-schedule-section">
-        <div class="leader-current" id="currentLeaderCard">
-          <div class="leader-logo" id="currentLeaderLogo">?</div>
-          <div class="leader-info">
-            <div class="leader-current-header">Current Leader</div>
-            <div class="leader-name" id="currentLeaderName">Loading...</div>
-            <div class="leader-vote" id="currentLeaderVote"></div>
-            <div class="leader-slot-row">
-              <div class="leader-slot">Slot <span id="currentLeaderSlot">--</span></div>
-              <div class="leader-block" id="currentLeaderBlock">Block 1 of 4</div>
-              <div class="slot-dots">
-                <div class="slot-dot"></div>
-                <div class="slot-dot"></div>
-                <div class="slot-dot"></div>
-                <div class="slot-dot"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="leader-divider"></div>
-        <div class="leader-next">
-          <div class="leader-next-header">Next Leaders</div>
-          <div class="leader-next-list" id="nextLeadersList">
-            <div class="leader-next-item">Loading...</div>
-          </div>
-        </div>
-      </div>
+      <!-- Leader Schedule Section has moved to the Network Live tab (Skip Monitor).
+           Update logic still lives in updateCurrentLeader() and refreshes every 2s;
+           the IDs below are now owned by the Network Live tab. -->
     </div>
 
     <!-- Lookup Tab -->
@@ -9366,6 +9341,38 @@
           <h1>Network <span>Live</span></h1>
           <p id="skipmonSubtitle">Real-time leader-slot tracking · Epoch —</p>
         </section>
+
+        <!-- Leader Schedule Section — moved here from the home page.
+             Shows the current slot leader and upcoming leaders in real time.
+             Updated by updateCurrentLeader() on a global 2-second interval,
+             independent of Skip Monitor's start/stop state. -->
+        <div class="leader-schedule-section">
+          <div class="leader-current" id="currentLeaderCard">
+            <div class="leader-logo" id="currentLeaderLogo">?</div>
+            <div class="leader-info">
+              <div class="leader-current-header">Current Leader</div>
+              <div class="leader-name" id="currentLeaderName">Loading...</div>
+              <div class="leader-vote" id="currentLeaderVote"></div>
+              <div class="leader-slot-row">
+                <div class="leader-slot">Slot <span id="currentLeaderSlot">--</span></div>
+                <div class="leader-block" id="currentLeaderBlock">Block 1 of 4</div>
+                <div class="slot-dots">
+                  <div class="slot-dot"></div>
+                  <div class="slot-dot"></div>
+                  <div class="slot-dot"></div>
+                  <div class="slot-dot"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="leader-divider"></div>
+          <div class="leader-next">
+            <div class="leader-next-header">Next Leaders</div>
+            <div class="leader-next-list" id="nextLeadersList">
+              <div class="leader-next-item">Loading...</div>
+            </div>
+          </div>
+        </div>
 
         <div class="skipmon-controls">
           <span class="skipmon-live paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
