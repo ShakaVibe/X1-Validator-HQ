@@ -8619,21 +8619,22 @@
       font-family: 'Space Grotesk', sans-serif;
     }
     .tps-strip-expand {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
+      background: rgba(77, 166, 255, 0.08);
+      border: 1px solid rgba(77, 166, 255, 0.45);
+      color: var(--accent-blue);
       border-radius: 6px;
       padding: 0.4rem;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      transition: color 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
     }
     .tps-strip-expand:hover {
       color: var(--accent-cyan);
       border-color: var(--accent-cyan);
-      background: rgba(0, 212, 255, 0.06);
+      background: rgba(0, 212, 255, 0.15);
+      box-shadow: 0 0 10px rgba(0, 212, 255, 0.25);
     }
     .tps-strip-empty {
       color: var(--text-dim);
@@ -9539,16 +9540,6 @@
       </p>
     </section>
 
-    <!-- Epoch Progress -->
-    <div class="epoch-progress" id="epochProgress">
-      <span class="epoch-progress-label">Epoch</span>
-      <div class="epoch-progress-bar">
-        <div class="epoch-progress-fill" id="epochProgressFill" style="width: 0%"></div>
-      </div>
-      <span class="epoch-progress-percent" id="epochPercent">0%</span>
-      <span class="epoch-progress-time" id="epochTimeRemaining">--</span>
-    </div>
-
     <!-- Network Stats -->
     <div class="network-stats" id="networkStats">
       <div class="network-stat">
@@ -9587,6 +9578,16 @@
         <div class="network-stat-value" id="delinquentValidators">--</div>
         <div class="network-stat-label">Delinquent</div>
       </div>
+    </div>
+
+    <!-- Epoch Progress -->
+    <div class="epoch-progress" id="epochProgress">
+      <span class="epoch-progress-label">Epoch</span>
+      <div class="epoch-progress-bar">
+        <div class="epoch-progress-fill" id="epochProgressFill" style="width: 0%"></div>
+      </div>
+      <span class="epoch-progress-percent" id="epochPercent">0%</span>
+      <span class="epoch-progress-time" id="epochTimeRemaining">--</span>
     </div>
 
     <!-- Tabs -->
