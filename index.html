@@ -8350,6 +8350,180 @@
       box-shadow: inset 0 0 0 1px rgba(0, 212, 255, 0.35);
     }
 
+    /* "Past 6 ↗" link in the Skip Rate · Epoch stat card — opens the
+       historical timeline modal. Sits in a header row alongside the
+       card label. */
+    .skipmon-stat-epoch-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .skipmon-stat-link {
+      background: transparent;
+      border: none;
+      color: var(--accent-cyan);
+      font-family: inherit;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      transition: background 0.15s, color 0.15s;
+    }
+    .skipmon-stat-link:hover {
+      background: rgba(0, 212, 255, 0.1);
+    }
+    .skipmon-stat-link-arrow {
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+
+    /* Modal variant of the epoch timeline — taller bars, more breathing
+       room, plus a summary row underneath. */
+    .epoch-timeline-modal {
+      margin: 0;
+      padding: 1.5rem;
+      background: transparent;
+      border: none;
+    }
+    .epoch-timeline-modal .epoch-timeline-bars {
+      min-height: 200px;
+      gap: 1rem;
+    }
+    .epoch-timeline-modal .epoch-timeline-label { display: none; }
+    .epoch-timeline-modal .epoch-timeline-rate {
+      font-size: 0.85rem;
+    }
+    .epoch-timeline-modal .epoch-timeline-num {
+      font-size: 0.85rem;
+    }
+    .epoch-timeline-summary {
+      padding: 1rem 1.5rem 1.5rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+      margin-top: 0.5rem;
+    }
+    .epoch-timeline-summary-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .epoch-timeline-summary-label {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      font-weight: 700;
+    }
+    .epoch-timeline-summary-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .epoch-timeline-summary-value.good { color: var(--success); }
+    .epoch-timeline-summary-value.warn { color: var(--warning); }
+    .epoch-timeline-summary-value.bad  { color: var(--danger); }
+
+    /* ──────────────────────────────────────────────────────────
+       TPS strip — low-profile horizontal sparkline with a live value
+       on the left and avg/peak readouts on the right. Sits above the
+       current-leader card.
+       ────────────────────────────────────────────────────────── */
+    .tps-strip {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      height: 56px;
+      padding: 0.5rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-top: 0.75rem;
+    }
+    .tps-strip-head {
+      display: flex;
+      align-items: baseline;
+      gap: 0.55rem;
+      flex-shrink: 0;
+      min-width: 150px;
+    }
+    .tps-strip-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .tps-strip-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      line-height: 1;
+    }
+    .tps-strip-trend {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap;
+    }
+    .tps-strip-trend.up   { color: var(--success); }
+    .tps-strip-trend.down { color: var(--danger); }
+    .tps-strip-chart {
+      flex: 1;
+      height: 100%;
+      min-width: 0;
+      position: relative;
+    }
+    .tps-spark-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .tps-strip-stats {
+      display: flex;
+      gap: 0.85rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .tps-strip-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .tps-strip-stat-label {
+      font-size: 0.55rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      font-weight: 700;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .tps-strip-empty {
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
     .skipmon-legend {
       display: flex; gap: 1.25rem; flex-wrap: wrap;
       font-size: 0.72rem; color: var(--text-secondary);
@@ -9745,6 +9919,23 @@
              Shows the current slot leader and upcoming leaders in real time.
              Updated by updateCurrentLeader() on a global 2-second interval,
              independent of Skip Monitor's start/stop state. -->
+        <!-- TPS strip — thin horizontal sparkline + live value. Lives
+             between the shared epoch bar (above) and the current leader
+             card (below) on Network Live only. Populated by loadTpsSamples()
+             on tab entry and refreshed every 60s. -->
+        <div class="tps-strip" id="tpsStrip">
+          <div class="tps-strip-head">
+            <span class="tps-strip-label">TPS</span>
+            <span class="tps-strip-value" id="tpsStripValue">—</span>
+            <span class="tps-strip-trend" id="tpsStripTrend"></span>
+          </div>
+          <div class="tps-strip-chart" id="tpsStripChart"></div>
+          <div class="tps-strip-stats">
+            <div class="tps-strip-stat"><span class="tps-strip-stat-label">avg</span><span id="tpsStripAvg">—</span></div>
+            <div class="tps-strip-stat"><span class="tps-strip-stat-label">peak</span><span id="tpsStripPeak">—</span></div>
+          </div>
+        </div>
+
         <div class="leader-schedule-section">
           <div class="leader-current" id="currentLeaderCard">
             <div class="leader-logo" id="currentLeaderLogo">?</div>
@@ -9770,16 +9961,6 @@
             <div class="leader-next-list" id="nextLeadersList">
               <div class="leader-next-item">Loading...</div>
             </div>
-          </div>
-        </div>
-
-        <!-- Epoch timeline — last ~6 completed epochs + the current (partial)
-             epoch as a bar strip, colored and sized by network-wide skip rate.
-             Loaded lazily ~20s after tab open and cached until the epoch changes. -->
-        <div class="epoch-timeline" id="epochTimelineStrip">
-          <div class="epoch-timeline-label">Past Epochs</div>
-          <div class="epoch-timeline-bars" id="epochTimelineBars">
-            <div class="epoch-timeline-empty">Loading epoch history…</div>
           </div>
         </div>
 
@@ -9847,7 +10028,12 @@
           </div>
           <!-- Epoch card: split — This vs Previous -->
           <div class="skipmon-stat skipmon-stat-epoch">
-            <div class="skipmon-stat-label">Skip Rate · Epoch</div>
+            <div class="skipmon-stat-epoch-head">
+              <div class="skipmon-stat-label">Skip Rate · Epoch</div>
+              <button class="skipmon-stat-link" onclick="openEpochTimelineModal()" title="Open past epochs chart">
+                Past 6 <span class="skipmon-stat-link-arrow">↗</span>
+              </button>
+            </div>
             <div class="skipmon-stat-epoch-row">
               <div class="skipmon-stat-epoch-col">
                 <div class="skipmon-stat-epoch-col-label">This</div>
@@ -9951,6 +10137,26 @@
       <a href="#" onclick="showDisclaimerModal(); return false;" style="color: var(--accent-blue); margin-left: 0.5rem;">View Full Terms</a>
     </p>
   </footer>
+
+  <!-- Past Epochs timeline modal — enlarged view of network skip rate
+       across the last 6 completed epochs + the current partial epoch.
+       Opened from the "Past 6 ↗" link in the Skip Rate · Epoch card. -->
+  <div class="modal-overlay" id="epochTimelineModal">
+    <div class="modal" style="max-width: 760px;">
+      <div class="modal-header">
+        <h3>Network Skip Rate · Past 6 Epochs</h3>
+        <button class="modal-close" onclick="closeEpochTimelineModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="epoch-timeline epoch-timeline-modal">
+          <div class="epoch-timeline-bars" id="epochTimelineBars">
+            <div class="epoch-timeline-empty">Loading epoch history…</div>
+          </div>
+        </div>
+        <div class="epoch-timeline-summary" id="epochTimelineSummary"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Validators list modal -->
   <div class="modal-overlay" id="validatorModal">
@@ -25588,6 +25794,157 @@ Please give me the diagnostic commands to run on my server so you can help me id
              + `</div>`;
       });
       barsEl.innerHTML = pieces.join('');
+
+      // Summary row — rolling averages and totals across the completed epochs
+      // in the returned set. Excludes the current (partial) epoch so the
+      // average isn't skewed by whatever early slice we happened to sample.
+      const summaryEl = document.getElementById('epochTimelineSummary');
+      if (summaryEl) {
+        const completed = data.filter(d => !d.partial && typeof d.skipRate === 'number');
+        if (!completed.length) {
+          summaryEl.innerHTML = '';
+        } else {
+          let leaderSlots = 0, skippedSlots = 0;
+          for (const d of completed) {
+            leaderSlots  += d.leaderSlots || 0;
+            skippedSlots += (d.leaderSlots || 0) - (d.blocksProduced || 0);
+          }
+          const rollingAvg = leaderSlots > 0
+            ? (skippedSlots / leaderSlots) * 100
+            : null;
+          const avgCls = rollingAvg == null ? ''
+            : (rollingAvg < 2 ? 'good'
+             : rollingAvg < 6 ? 'warn'
+             : 'bad');
+          const avgStr = rollingAvg == null ? '—' : `${rollingAvg.toFixed(2)}%`;
+          summaryEl.innerHTML =
+              `<div class="epoch-timeline-summary-item">`
+            +   `<div class="epoch-timeline-summary-label">Rolling avg · ${completed.length} epochs</div>`
+            +   `<div class="epoch-timeline-summary-value ${avgCls}">${avgStr}</div>`
+            + `</div>`
+            + `<div class="epoch-timeline-summary-item">`
+            +   `<div class="epoch-timeline-summary-label">Total skipped</div>`
+            +   `<div class="epoch-timeline-summary-value">${skippedSlots.toLocaleString()}</div>`
+            + `</div>`
+            + `<div class="epoch-timeline-summary-item">`
+            +   `<div class="epoch-timeline-summary-label">Total leader slots</div>`
+            +   `<div class="epoch-timeline-summary-value">${leaderSlots.toLocaleString()}</div>`
+            + `</div>`;
+        }
+      }
+    }
+
+    // ───────────────────────────────────────────────────────────
+    // TPS strip — compact sparkline of network throughput from
+    // getRecentPerformanceSamples. One RPC per refresh (cheap); we
+    // keep the last ~60 samples for the area chart, and use a module-
+    // level cache so cross-tab state survives SkipMonitor.stop().
+    // ───────────────────────────────────────────────────────────
+    const TPS_SAMPLES = 60;           // ~60 minutes at 60s/sample
+    let tpsSamplesCache = [];         // oldest-first, each = TPS number
+    let tpsFetching = false;
+
+    async function loadTpsSamples() {
+      if (tpsFetching) return;
+      tpsFetching = true;
+      try {
+        // The RPC returns newest-first, so reverse for oldest-first display.
+        const raw = await rpcCall('getRecentPerformanceSamples', [TPS_SAMPLES]);
+        if (!Array.isArray(raw)) return;
+        const tps = raw
+          .slice()
+          .reverse()
+          .map(s => (s && s.samplePeriodSecs > 0)
+            ? (s.numTransactions / s.samplePeriodSecs)
+            : 0);
+        tpsSamplesCache = tps;
+        renderTpsStrip();
+      } catch (e) {
+        console.warn('[TPS] load error:', e && e.message || e);
+      } finally {
+        tpsFetching = false;
+      }
+    }
+
+    function _tpsFmt(n) {
+      if (!isFinite(n)) return '—';
+      if (n >= 10000) return (n / 1000).toFixed(1) + 'k';
+      if (n >= 1000)  return (n / 1000).toFixed(2) + 'k';
+      return Math.round(n).toLocaleString();
+    }
+
+    function renderTpsStrip() {
+      const valueEl = document.getElementById('tpsStripValue');
+      const trendEl = document.getElementById('tpsStripTrend');
+      const avgEl   = document.getElementById('tpsStripAvg');
+      const peakEl  = document.getElementById('tpsStripPeak');
+      const chartEl = document.getElementById('tpsStripChart');
+      if (!valueEl || !chartEl) return;
+
+      const series = tpsSamplesCache;
+      if (!series || series.length < 2) {
+        valueEl.textContent = '—';
+        if (trendEl) trendEl.textContent = '';
+        if (avgEl)   avgEl.textContent   = '—';
+        if (peakEl)  peakEl.textContent  = '—';
+        chartEl.innerHTML = '<div class="tps-strip-empty">Warming up…</div>';
+        return;
+      }
+
+      const current = series[series.length - 1];
+      const prev    = series[series.length - 2];
+      const avg     = series.reduce((a, b) => a + b, 0) / series.length;
+      const peak    = Math.max.apply(null, series);
+
+      valueEl.textContent = _tpsFmt(current);
+      if (avgEl)  avgEl.textContent  = _tpsFmt(avg);
+      if (peakEl) peakEl.textContent = _tpsFmt(peak);
+
+      if (trendEl) {
+        if (prev > 0) {
+          const deltaPct = ((current - prev) / prev) * 100;
+          if (Math.abs(deltaPct) < 0.5) {
+            trendEl.textContent = '→';
+            trendEl.className = 'tps-strip-trend';
+          } else if (deltaPct > 0) {
+            trendEl.textContent = `↗ ${deltaPct.toFixed(0)}%`;
+            trendEl.className = 'tps-strip-trend up';
+          } else {
+            trendEl.textContent = `↘ ${Math.abs(deltaPct).toFixed(0)}%`;
+            trendEl.className = 'tps-strip-trend down';
+          }
+        } else {
+          trendEl.textContent = '';
+        }
+      }
+
+      // Build the sparkline SVG. We use a fixed viewBox and stretch it with
+      // preserveAspectRatio="none" so the chart fills whatever width the
+      // flex container gives us without re-measuring.
+      const W = 100, H = 40;
+      const min = 0; // anchor at zero so the fill reads as absolute magnitude
+      const max = Math.max(peak, 1);
+      const range = max - min || 1;
+      const step = W / (series.length - 1);
+      let stroke = '';
+      for (let i = 0; i < series.length; i++) {
+        const x = (i * step).toFixed(2);
+        const y = (H - ((series[i] - min) / range) * H).toFixed(2);
+        stroke += (i === 0 ? 'M' : 'L') + x + ',' + y + ' ';
+      }
+      const area = stroke + `L${W},${H} L0,${H} Z`;
+      chartEl.innerHTML =
+          `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="tps-spark-svg">`
+        +   `<defs>`
+        +     `<linearGradient id="tpsGrad" x1="0" x2="0" y1="0" y2="1">`
+        +       `<stop offset="0" stop-color="#00d4ff" stop-opacity="0.45"/>`
+        +       `<stop offset="1" stop-color="#00d4ff" stop-opacity="0"/>`
+        +     `</linearGradient>`
+        +   `</defs>`
+        +   `<path d="${area}" fill="url(#tpsGrad)"/>`
+        +   `<path d="${stroke.trim()}" fill="none" stroke="#00d4ff" stroke-width="1.25" `
+        +         `stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`
+        + `</svg>`;
     }
 
     async function updateCurrentLeader() {
@@ -25942,6 +26299,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       let hourTimer = null;
       let epochTimer = null;
       let epochTimelineTimer = null;   // long-period refresh so epoch advances get picked up
+      let tpsTimer = null;             // 60s poll for the TPS sparkline
 
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
@@ -27151,22 +27509,37 @@ Please give me the diagnostic commands to run on my server so you can help me id
         safely(pollHour,      2000);
         safely(pollEpoch,     5000);
         safely(pollPrevEpoch, 12000);   // heaviest — defer longest
+        // TPS sparkline: cheap (1 RPC, no per-slot scan). Kick off early so
+        // the strip populates almost immediately, then refresh every 60s
+        // which matches the sample cadence.
+        safely(() => {
+          if (typeof loadTpsSamples === 'function') loadTpsSamples();
+        }, 1500);
+        tpsTimer = setInterval(() => {
+          if (state && state.running && typeof loadTpsSamples === 'function') {
+            loadTpsSamples();
+          }
+        }, 60000);
         // Epoch timeline: up to 7 getBlockProduction calls fanning out across
         // the last 6 epochs + current. Deferred the longest so it never fights
         // the user's first interactions on this tab. The loader itself caches
         // per-epoch, so later tab visits within the same epoch are free.
+        // We only prefetch here — no DOM work — since the bars live inside a
+        // modal that may never be opened. openEpochTimelineModal() triggers
+        // the actual render and pulls from the warm cache.
         safely(() => {
-          if (typeof renderEpochTimeline === 'function') renderEpochTimeline();
+          if (typeof loadNetworkEpochHistory === 'function') loadNetworkEpochHistory();
         }, 20000);
         hourTimer  = setInterval(pollHour,  HOUR_POLL_MS);
         epochTimer = setInterval(pollEpoch, EPOCH_POLL_MS);
         // 15-minute refresh is plenty — the loader's per-epoch cache returns
         // instantly when the current epoch hasn't advanced, so most ticks
         // cost nothing. We only pay the ~7-RPC fan-out when the chain
-        // crosses an epoch boundary.
+        // crosses an epoch boundary. This just warms the cache; re-rendering
+        // happens the next time the user opens the Past Epochs modal.
         epochTimelineTimer = setInterval(() => {
-          if (state && state.running && typeof renderEpochTimeline === 'function') {
-            renderEpochTimeline();
+          if (state && state.running && typeof loadNetworkEpochHistory === 'function') {
+            loadNetworkEpochHistory();
           }
         }, 15 * 60 * 1000);
       }
@@ -27179,7 +27552,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (hourTimer)  clearInterval(hourTimer);
         if (epochTimer) clearInterval(epochTimer);
         if (epochTimelineTimer) clearInterval(epochTimelineTimer);
-        pollTimer = uiTimer = hourTimer = epochTimer = epochTimelineTimer = null;
+        if (tpsTimer)   clearInterval(tpsTimer);
+        pollTimer = uiTimer = hourTimer = epochTimer = epochTimelineTimer = tpsTimer = null;
         setLiveStatus(false, 'Paused');
       }
 
@@ -27329,6 +27703,37 @@ Please give me the diagnostic commands to run on my server so you can help me id
         SkipMonitor.scrubberJumpTo(index);
       }
     }
+
+    // ── Epoch Timeline modal ────────────────────────────────────
+    // Opens the historical skip-rate chart. Data is prefetched 20s
+    // after SkipMonitor.start so the modal usually populates instantly;
+    // if the user clicks before the fetch finishes, renderEpochTimeline
+    // awaits the in-flight load and fills in when it resolves.
+    function openEpochTimelineModal() {
+      const modal = document.getElementById('epochTimelineModal');
+      if (!modal) return;
+      modal.style.display = 'flex';
+      if (typeof renderEpochTimeline === 'function') renderEpochTimeline();
+    }
+    function closeEpochTimelineModal() {
+      const modal = document.getElementById('epochTimelineModal');
+      if (modal) modal.style.display = 'none';
+    }
+    // Click-outside-to-close and Escape-key-to-close
+    document.addEventListener('DOMContentLoaded', function() {
+      const modal = document.getElementById('epochTimelineModal');
+      if (modal) {
+        modal.addEventListener('click', function(e) {
+          if (e.target === this) closeEpochTimelineModal();
+        });
+      }
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          const m = document.getElementById('epochTimelineModal');
+          if (m && m.style.display === 'flex') closeEpochTimelineModal();
+        }
+      });
+    });
 
     // Validator Lookup search: three bridges the search input calls.
     // handleLookupInput rebuilds the dropdown on every keystroke;
