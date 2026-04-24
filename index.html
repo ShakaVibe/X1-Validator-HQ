@@ -12072,10 +12072,46 @@
     // (both rpcCall() and the many direct fetch(RPC_URL, ...) sites).
     // ─────────────────────────────────────────────────────────────────────
     (function installRpcThrottle() {
-      const MAX_CONCURRENT = 4;   // max simultaneous in-flight RPC requests
-      const MAX_RETRIES    = 4;   // total attempts per request = 1 + MAX_RETRIES
-      const BASE_BACKOFF   = 300; // ms
-      const MAX_BACKOFF    = 5000;
+      const MAX_CONCURRENT    = 4;   // max simultaneous in-flight RPC requests
+      const MAX_RETRIES_429   = 3;   // rate-limited: retry a few times with backoff
+      const MAX_RETRIES_NET   = 1;   // network / CORS: fail fast, don't hammer
+      const BASE_BACKOFF      = 500; // ms
+      const MAX_BACKOFF       = 5000;
+
+      // ── Circuit breaker ───────────────────────────────────────
+      // When the RPC is unreachable (CORS blocked, DNS failing, server
+      // down, etc.) the app's many pollers all fail near-simultaneously
+      // and each one was retrying 4× — a cascade of useless requests
+      // that gets the app rate-limited for real, even after the RPC
+      // comes back. The breaker tracks consecutive failures globally;
+      // when it trips, every RPC fetch rejects instantly for a cooldown
+      // window, giving the server breathing room and the browser a
+      // chance to stop logging hundreds of errors per second.
+      const CB_FAIL_THRESHOLD = 6;     // trip after N back-to-back failures
+      const CB_COOLDOWN_MS    = 30000; // pause duration
+      let cbFailures     = 0;
+      let cbOpenUntil    = 0;          // epoch ms while the breaker is open
+      let cbWarnedThisTrip = false;
+
+      function cbIsOpen()     { return Date.now() < cbOpenUntil; }
+      function cbRecordFail() {
+        cbFailures++;
+        if (cbFailures >= CB_FAIL_THRESHOLD && !cbIsOpen()) {
+          cbOpenUntil = Date.now() + CB_COOLDOWN_MS;
+          if (!cbWarnedThisTrip) {
+            console.warn(`[RPC] Circuit breaker tripped after ${cbFailures} failures — pausing all RPC for ${CB_COOLDOWN_MS / 1000}s`);
+            cbWarnedThisTrip = true;
+          }
+        }
+      }
+      function cbRecordSuccess() {
+        if (cbFailures > 0 || cbOpenUntil > 0) {
+          console.info('[RPC] Circuit breaker reset — RPC responding normally');
+        }
+        cbFailures = 0;
+        cbOpenUntil = 0;
+        cbWarnedThisTrip = false;
+      }
 
       const originalFetch = window.fetch.bind(window);
       let active = 0;
@@ -12112,29 +12148,39 @@
           return originalFetch(url, options);
         }
 
+        // Short-circuit immediately if the breaker is open. No fetch, no
+        // queue slot, no console spam — just a fast reject so callers can
+        // fail cleanly. Cooldown auto-expires based on wall-clock time.
+        if (cbIsOpen()) {
+          const waitSec = Math.ceil((cbOpenUntil - Date.now()) / 1000);
+          throw new Error(`RPC paused by circuit breaker (${waitSec}s remaining)`);
+        }
+
         await acquire();
         try {
           let lastErr;
-          for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+          for (let attempt = 0; attempt <= MAX_RETRIES_429; attempt++) {
             try {
               const response = await originalFetch(url, options);
 
-              // 429 = rate limited. Back off and retry.
               if (response.status === 429) {
-                if (attempt < MAX_RETRIES) {
+                cbRecordFail();
+                if (attempt < MAX_RETRIES_429 && !cbIsOpen()) {
                   await new Promise(r => setTimeout(r, backoffDelay(attempt)));
                   continue;
                 }
                 return response; // give up, let caller see the 429
               }
 
-              // Any other status (including non-2xx) is passed through — the
-              // callers parse JSON and handle errors themselves.
+              // Any non-429 response (2xx, 4xx, 5xx) is treated as the
+              // server actually responding — reset the breaker.
+              cbRecordSuccess();
               return response;
             } catch (e) {
-              // Network error / CORS block / 429-without-CORS-headers land here.
+              // Network error / CORS block / DNS failure land here.
               lastErr = e;
-              if (attempt < MAX_RETRIES) {
+              cbRecordFail();
+              if (attempt < MAX_RETRIES_NET && !cbIsOpen()) {
                 await new Promise(r => setTimeout(r, backoffDelay(attempt)));
                 continue;
               }
