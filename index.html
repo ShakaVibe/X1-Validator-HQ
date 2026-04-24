@@ -8166,8 +8166,23 @@
       margin-bottom: 1.5rem;
     }
     .skipmon-stat {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.1rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid rgba(77, 166, 255, 0.35);
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.05), 0 0 18px rgba(0, 212, 255, 0.04);
+    }
+    /* Thin cyan accent stripe across the top — echoes the epoch progress
+       bar's gradient so the stat row and the progress bar feel like a set. */
+    .skipmon-stat::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 2px;
+      background: var(--accent-gradient);
+      opacity: 0.75;
     }
     .skipmon-stat-label {
       font-size: 0.7rem; color: var(--text-secondary);
@@ -10264,7 +10279,7 @@
             <div class="skipmon-stat-epoch-head">
               <div class="skipmon-stat-label">Skip Rate · Epoch</div>
               <button class="skipmon-stat-link" onclick="openEpochTimelineModal()" title="Open past epochs chart">
-                Past 6 <span class="skipmon-stat-link-arrow">↗</span>
+                Past <span class="skipmon-stat-link-arrow">↗</span>
               </button>
             </div>
             <div class="skipmon-stat-epoch-row">
@@ -10381,7 +10396,7 @@
           <div class="x1-logo-brand"><span class="x-char">X</span><span class="one-char">1</span></div>
           <div class="brand-title">
             <div class="brand-title-main">Network Skip Rate</div>
-            <div class="brand-title-sub">Past 6 Epochs</div>
+            <div class="brand-title-sub">Past</div>
           </div>
         </div>
         <button class="modal-close" onclick="closeEpochTimelineModal()">&times;</button>
@@ -25987,7 +26002,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // once per session (staggered 20s after SkipMonitor.start) and
     // cached until the current epoch advances.
     // ───────────────────────────────────────────────────────────
-    const EPOCH_TIMELINE_COUNT = 6; // past completed epochs to fetch
+    const EPOCH_TIMELINE_COUNT = 4; // past completed epochs to fetch (plus current)
     const networkEpochHistory = {
       data: null,            // array of {epoch, skipRate, leaderSlots, blocksProduced, partial?}
       fetchedAtEpoch: null,  // current epoch at the time of the fetch — invalidates on advance
