@@ -12265,13 +12265,17 @@
             try {
               const response = await originalFetch(url, options);
 
+              // 429 = server is alive and asking us to slow down. Back off
+              // and retry — but do NOT count this toward the circuit breaker.
+              // The breaker is for genuine outages (CORS, DNS, server down),
+              // not for rate-limit pushback, which bursts of parallel calls
+              // will trigger harmlessly.
               if (response.status === 429) {
-                cbRecordFail();
-                if (attempt < MAX_RETRIES_429 && !cbIsOpen()) {
+                if (attempt < MAX_RETRIES_429) {
                   await new Promise(r => setTimeout(r, backoffDelay(attempt)));
                   continue;
                 }
-                return response; // give up, let caller see the 429
+                return response; // give up this request, let caller see 429
               }
 
               // Any non-429 response (2xx, 4xx, 5xx) is treated as the
@@ -12279,7 +12283,8 @@
               cbRecordSuccess();
               return response;
             } catch (e) {
-              // Network error / CORS block / DNS failure land here.
+              // Network error / CORS block / DNS failure land here — these
+              // are the genuine outages the circuit breaker is meant for.
               lastErr = e;
               cbRecordFail();
               if (attempt < MAX_RETRIES_NET && !cbIsOpen()) {
