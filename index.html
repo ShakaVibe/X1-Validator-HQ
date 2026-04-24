@@ -592,7 +592,25 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 2rem;
+      /* Column flex so the Network Live tab can reshuffle the shared
+         stats/epoch/tabs/heading via `order` when that tab is active. */
+      display: flex;
+      flex-direction: column;
     }
+
+    /* Hide the Network Live heading on every tab except Network Live. */
+    #skipmonitorHeader { display: none; }
+    body.active-skipmonitor #skipmonitorHeader { display: block; }
+
+    /* When Network Live is active, reorder <main>'s children so the layout is:
+       tab buttons → "Network Live" heading → stats bar → epoch bar → rest. */
+    body.active-skipmonitor main > .tabs            { order: 1; }
+    body.active-skipmonitor main > #skipmonitorHeader { order: 2; }
+    body.active-skipmonitor main > .network-stats   { order: 3; }
+    body.active-skipmonitor main > .epoch-progress  { order: 4; }
+    body.active-skipmonitor main > #skipmonitorTab  { order: 5; }
+    /* Other tab-content panels stay at the default order 0 — they're hidden
+       anyway since only the active tab-content renders. */
 
     /* Network Stats Bar */
     .network-stats {
@@ -8910,6 +8928,19 @@
   </header>
 
   <main>
+    <!-- Network Live heading — lives as a sibling of the shared stats/epoch/tabs
+         so that, when the Network Live tab is active, flex `order` on <main>
+         can position this heading ABOVE the stats bar and epoch bar. Hidden
+         on every other tab via .tab-content-style gating (see CSS). -->
+    <section class="search-section" id="skipmonitorHeader">
+      <h1>Network <span>Live</span></h1>
+      <p id="skipmonSubtitle">
+        <span class="skipmon-live-inline paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
+        <span class="skipmon-subtitle-sep">·</span>
+        <span class="skipmon-subtitle-text">Real-time leader-slot tracking · Epoch —</span>
+      </p>
+    </section>
+
     <!-- Network Stats -->
     <div class="network-stats" id="networkStats">
       <div class="network-stat">
@@ -9515,14 +9546,9 @@
     <!-- Skip Monitor Tab -->
     <div class="tab-content" id="skipmonitorTab">
       <div class="skipmon-wrap skipmon-mode-network">
-        <section class="search-section">
-          <h1>Network <span>Live</span></h1>
-          <p id="skipmonSubtitle">
-            <span class="skipmon-live-inline paused" id="skipmonLive"><span class="skipmon-live-dot"></span> Idle</span>
-            <span class="skipmon-subtitle-sep">·</span>
-            <span class="skipmon-subtitle-text">Real-time leader-slot tracking · Epoch —</span>
-          </p>
-        </section>
+        <!-- The "Network Live" heading section lives outside this tab (see
+             #skipmonitorHeader in <main>) so it can sit ABOVE the shared
+             stats bar and epoch bar when this tab is active, via flex order. -->
 
         <!-- Leader Schedule Section — moved here from the home page.
              Shows the current slot leader and upcoming leaders in real time.
@@ -15642,10 +15668,13 @@
         initializeCalculators();
       }
 
-      // Skip Monitor: only poll while its tab is visible, preserve state across switches
+      // Skip Monitor: only poll while its tab is visible, preserve state across switches.
+      // The body class drives the flex reordering of <main>'s children on this tab.
       if (tab === 'skipmonitor') {
+        document.body.classList.add('active-skipmonitor');
         if (typeof SkipMonitor !== 'undefined') SkipMonitor.start();
       } else {
+        document.body.classList.remove('active-skipmonitor');
         if (typeof SkipMonitor !== 'undefined') SkipMonitor.stop();
       }
     }
