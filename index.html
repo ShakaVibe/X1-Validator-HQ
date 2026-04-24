@@ -8585,31 +8585,46 @@
       background: var(--bg-card);
       padding: 0 4px;
     }
-    .tps-modal-stats {
-      display: flex;
-      gap: 2rem;
-      padding: 1rem 1.5rem 1.5rem;
+    .tps-modal-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      padding: 0.5rem 1.5rem 1.5rem;
       border-top: 1px solid var(--border);
-      flex-wrap: wrap;
+      margin-top: 0.25rem;
     }
-    .tps-modal-stat {
+    .tps-modal-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem 1.1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
+      gap: 0.3rem;
     }
-    .tps-modal-stat-label {
-      font-size: 0.62rem;
+    .tps-modal-card-label {
+      font-size: 0.6rem;
       color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: 0.7px;
       font-weight: 700;
     }
-    .tps-modal-stat-value {
+    .tps-modal-card-value {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 1.2rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: var(--text-primary);
+      line-height: 1.1;
     }
+    .tps-modal-card-value.peak { color: var(--success); }
+    .tps-modal-card-value.low  { color: var(--warning); }
+    .tps-modal-card-sub {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .tps-modal-card-sub.up   { color: var(--success); }
+    .tps-modal-card-sub.down { color: var(--danger); }
     .tps-modal-axis {
       display: flex;
       justify-content: space-between;
@@ -8617,6 +8632,16 @@
       font-size: 0.62rem;
       color: var(--text-dim);
       font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Scorecard modal — wide enough to hold the full Last Epoch / Current
+       Epoch side-by-side scorecard without shrinking the inner panels. */
+    .skipmon-scorecard-modal { max-width: 900px; }
+    .skipmon-scorecard-body  { padding: 1.25rem; overflow: auto; }
+    /* The scorecard card renders with its own header + border; keep modal
+       chrome minimal so the card's own styling leads. */
+    .skipmon-scorecard-body > .skipmon-pv-card {
+      margin: 0;
     }
 
     .skipmon-legend {
@@ -10034,7 +10059,7 @@
               <span class="tps-strip-label">TPS · past 60 min</span>
               <div class="tps-strip-value-row">
                 <span class="tps-strip-value" id="tpsStripValue">—</span>
-                <span class="tps-strip-trend" id="tpsStripTrend" title="Change vs the previous 60-second sample"></span>
+                <span class="tps-strip-trend" id="tpsStripTrend" title="Current TPS vs the rolling average of the last 60 samples"></span>
               </div>
             </div>
           </div>
@@ -10279,27 +10304,53 @@
        detailed avg/peak/low readouts. Opened from the expand icon on
        the Network Live TPS strip. -->
   <div class="modal-overlay" id="tpsModal">
-    <div class="modal" style="max-width: 860px;">
+    <div class="modal" style="max-width: 900px;">
       <div class="modal-header">
-        <h3><span class="x1-logo-small" style="margin-right:0.5rem;vertical-align:middle"><span class="x-char">X</span><span class="one-char">1</span></span>Network TPS · Past 60 Minutes</h3>
+        <h3><span class="x1-logo-small" style="margin-right:0.5rem;vertical-align:middle"><span class="x-char">X</span><span class="one-char">1</span></span>Network TPS · Past 12 Hours</h3>
         <button class="modal-close" onclick="closeTpsModal()">&times;</button>
       </div>
       <div class="tps-modal-chart-wrap">
         <div class="tps-modal-chart" id="tpsModalChart"></div>
-        <div class="tps-modal-axis">
-          <span>60m ago</span>
-          <span>45m</span>
-          <span>30m</span>
-          <span>15m</span>
-          <span>now</span>
+        <div class="tps-modal-axis" id="tpsModalAxisRow">
+          <span>12h ago</span><span>9h</span><span>6h</span><span>3h</span><span>now</span>
         </div>
       </div>
-      <div class="tps-modal-stats">
-        <div class="tps-modal-stat"><div class="tps-modal-stat-label">Current</div><div class="tps-modal-stat-value" id="tpsModalCurrent">—</div></div>
-        <div class="tps-modal-stat"><div class="tps-modal-stat-label">Average</div><div class="tps-modal-stat-value" id="tpsModalAvg">—</div></div>
-        <div class="tps-modal-stat"><div class="tps-modal-stat-label">Peak</div><div class="tps-modal-stat-value" id="tpsModalPeak">—</div></div>
-        <div class="tps-modal-stat"><div class="tps-modal-stat-label">Low</div><div class="tps-modal-stat-value" id="tpsModalLow">—</div></div>
-        <div class="tps-modal-stat"><div class="tps-modal-stat-label">Samples</div><div class="tps-modal-stat-value" id="tpsModalSamples">—</div></div>
+      <div class="tps-modal-stats-grid">
+        <div class="tps-modal-card">
+          <div class="tps-modal-card-label">Current</div>
+          <div class="tps-modal-card-value" id="tpsModalCurrentValue">—</div>
+          <div class="tps-modal-card-sub" id="tpsModalCurrentDelta">—</div>
+        </div>
+        <div class="tps-modal-card">
+          <div class="tps-modal-card-label">Average</div>
+          <div class="tps-modal-card-value" id="tpsModalAvgValue">—</div>
+          <div class="tps-modal-card-sub" id="tpsModalAvgSub">—</div>
+        </div>
+        <div class="tps-modal-card">
+          <div class="tps-modal-card-label">Peak</div>
+          <div class="tps-modal-card-value peak" id="tpsModalPeakValue">—</div>
+          <div class="tps-modal-card-sub" id="tpsModalPeakSub">—</div>
+        </div>
+        <div class="tps-modal-card">
+          <div class="tps-modal-card-label">Low</div>
+          <div class="tps-modal-card-value low" id="tpsModalLowValue">—</div>
+          <div class="tps-modal-card-sub" id="tpsModalLowSub">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Validator scorecard modal — opens from any slot/feed/top-skipper
+       click on Network Live and shows the same wide "Last Epoch / Current
+       Epoch" scorecard that the Validator Lookup scope renders inline. -->
+  <div class="modal-overlay" id="skipmonScorecardModal">
+    <div class="modal skipmon-scorecard-modal">
+      <div class="modal-header">
+        <h3 id="skipmonScorecardTitle">Validator</h3>
+        <button class="modal-close" onclick="closeSkipmonScorecard()">&times;</button>
+      </div>
+      <div class="modal-body skipmon-scorecard-body" id="skipmonScorecardBody">
+        <div class="skipmon-empty">Loading…</div>
       </div>
     </div>
   </div>
@@ -25983,10 +26034,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // ───────────────────────────────────────────────────────────
     // TPS strip — compact sparkline of network throughput from
     // getRecentPerformanceSamples. One RPC per refresh (cheap); we
-    // keep the last ~60 samples for the area chart, and use a module-
-    // level cache so cross-tab state survives SkipMonitor.stop().
+    // fetch the RPC's maximum (720 samples = 12 hours at 60s each) so
+    // the expanded modal has real history to show, while the inline
+    // strip trims to the last 60 samples for its "past 60 min" scope.
     // ───────────────────────────────────────────────────────────
-    const TPS_SAMPLES = 60;           // ~60 minutes at 60s/sample
+    const TPS_SAMPLES = 720;          // 12 hours at 60s/sample — the RPC max
+    const TPS_STRIP_WINDOW = 60;      // last 60 samples drive the inline strip
     let tpsSamplesCache = [];         // oldest-first, each = TPS number
     let tpsFetching = false;
 
@@ -26027,7 +26080,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const chartEl = document.getElementById('tpsStripChart');
       if (!valueEl || !chartEl) return;
 
-      const series = tpsSamplesCache;
+      // Strip shows only the trailing hour even though the cache holds 12h.
+      const all = tpsSamplesCache;
+      const series = (all && all.length > TPS_STRIP_WINDOW)
+        ? all.slice(-TPS_STRIP_WINDOW)
+        : (all || []);
       if (!series || series.length < 2) {
         valueEl.textContent = '—';
         if (trendEl) trendEl.textContent = '';
@@ -26047,16 +26104,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
       if (peakEl) peakEl.textContent = _tpsFmt(peak);
 
       if (trendEl) {
-        if (prev > 0) {
-          const deltaPct = ((current - prev) / prev) * 100;
-          if (Math.abs(deltaPct) < 0.5) {
-            trendEl.textContent = '→ steady';
+        if (avg > 0) {
+          const deltaPct = ((current - avg) / avg) * 100;
+          if (Math.abs(deltaPct) < 1) {
+            trendEl.textContent = '→ near avg';
             trendEl.className = 'tps-strip-trend';
           } else if (deltaPct > 0) {
-            trendEl.textContent = `↗ ${deltaPct.toFixed(0)}% vs 1m ago`;
+            trendEl.textContent = `↗ ${deltaPct.toFixed(0)}% vs avg`;
             trendEl.className = 'tps-strip-trend up';
           } else {
-            trendEl.textContent = `↘ ${Math.abs(deltaPct).toFixed(0)}% vs 1m ago`;
+            trendEl.textContent = `↘ ${Math.abs(deltaPct).toFixed(0)}% vs avg`;
             trendEl.className = 'tps-strip-trend down';
           }
         } else {
@@ -27139,45 +27196,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const expanded   = !!state.topExpanded;
         const maxVisible = 15;
         const visible    = tallies.slice(0, expanded ? maxVisible : Math.min(3, tallies.length));
-        const maxRate    = visible.length ? visible[0].rate : 1; // for bar width
-
-        // Build a per-leader slot history from state.slots so we can render a
-        // sparkline in each row. state.slots is ascending by slot; we walk
-        // backward to collect the latest SPARK_SLOTS entries per leader.
-        const SPARK_SLOTS = 20;
-        const sparkByLeader = {};
-        for (let i = state.slots.length - 1; i >= 0; i--) {
-          const s = state.slots[i];
-          const bucket = sparkByLeader[s.leader];
-          if (!bucket) { sparkByLeader[s.leader] = [s]; continue; }
-          if (bucket.length < SPARK_SLOTS) bucket.push(s);
-        }
-        const sparkHtml = (leaderPubkey) => {
-          const list = sparkByLeader[leaderPubkey];
-          if (!list || !list.length) return '<span class="skipmon-spark-empty">—</span>';
-          // We collected newest-first while walking backward; reverse for left→right time order.
-          const ordered = list.slice().reverse();
-          return ordered.map(s =>
-            `<span class="skipmon-spark-pip ${s.produced ? 'produced' : 'skipped'}" `
-            + `title="Slot ${s.slot.toLocaleString()} · ${s.produced ? 'Produced' : 'Skipped'}"></span>`
-          ).join('');
-        };
 
         let html = '<table class="skipmon-top-table"><thead><tr>'
                  + '<th style="width:48px">#</th>'
                  + '<th>Validator</th>'
-                 + '<th style="width:90px" title="Leader slots assigned to this validator so far in this epoch">Assigned</th>'
-                 + '<th style="width:80px" title="Slots where this validator failed to produce a block">Skipped</th>'
-                 + '<th style="width:100px" title="Skipped ÷ Assigned, as a percentage">Skip Rate</th>'
-                 + '<th style="width:120px" title="The last 20 leader slots for this validator · green = produced, red = skipped">Recent 20</th>'
-                 + '<th style="width:22%" title="Bar length relative to the worst skipper in this list">Relative</th>'
+                 + '<th style="width:110px" title="Leader slots assigned to this validator so far in this epoch">Assigned</th>'
+                 + '<th style="width:100px" title="Slots where this validator failed to produce a block">Skipped</th>'
+                 + '<th style="width:120px" title="Skipped ÷ Assigned, as a percentage">Skip Rate</th>'
                  + '</tr></thead><tbody>';
 
         visible.forEach((r, i) => {
           const info = (typeof getValidatorByNodePubkey === 'function')
             ? getValidatorByNodePubkey(r.leader) : null;
           const name = info && info.name ? info.name : (r.leader.slice(0,6) + '…' + r.leader.slice(-4));
-          const barPct = maxRate > 0 ? (r.rate / maxRate) * 100 : 0;
           const rank = i + 1;
           const rankCls = rank === 1 ? 'gold' : '';
           const a = avatarFor(info, r.leader);
@@ -27191,8 +27222,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
                 + `<td>${fmtNum(r.assigned)}</td>`
                 + `<td style="color:var(--danger);font-weight:600">${fmtNum(r.skipped)}</td>`
                 + `<td>${r.rate.toFixed(2)}%</td>`
-                + `<td><div class="skipmon-spark">${sparkHtml(r.leader)}</div></td>`
-                + `<td><div class="skipmon-bar-track"><div class="skipmon-bar-fill" style="width:${barPct.toFixed(1)}%"></div></div></td>`
                 + `</tr>`;
         });
 
@@ -27313,6 +27342,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       //   last epoch    → state.prevEpochProd.byIdentity[nodePubkey]
       //   upcoming      → state.slotToLeader filtered by leader
       function renderPortfolioView() {
+        const grid = document.getElementById('skipmonPortfolioGrid');
+        const meta = document.getElementById('skipmonPvMeta');
         if (!grid) return;
 
         if (!Array.isArray(myPortfolio) || myPortfolio.length === 0) {
@@ -27832,7 +27863,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return null;
       }
 
-      return { start, stop, setScope, renderAll, toggleTopExpanded, handleLookupInput, handleLookupBlur, pickLookup, getSlotStatus, scrubberJumpTo };
+      // Public helper: return the full scorecard HTML for a given vote
+      // address, so top-level UI (the scorecard modal) can render the same
+      // wide "last epoch / current epoch" view the Validator Lookup scope uses.
+      function getScorecardHtml(votePubkey) {
+        const v = allValidators && allValidators.find(x => x.votePubkey === votePubkey);
+        if (!v) return null;
+        return renderPortfolioCard(v);
+      }
+
+      return { start, stop, setScope, renderAll, toggleTopExpanded, handleLookupInput, handleLookupBlur, pickLookup, getSlotStatus, scrubberJumpTo, getScorecardHtml };
     })();
 
     // Inline-onclick bridges
@@ -27843,8 +27883,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const v = (typeof getValidatorByNodePubkey === 'function')
         ? getValidatorByNodePubkey(nodePubkey) : null;
       if (!v) return;
-      switchTab('lookup');
-      if (typeof lookupValidator === 'function') lookupValidator(v.votePubkey);
+      skipmonOpenScorecard(v.votePubkey);
     }
     function skipmonToggleTop() {
       if (typeof SkipMonitor !== 'undefined') SkipMonitor.toggleTopExpanded();
@@ -27898,13 +27937,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
 
       const W = 1000, H = 280;
-      const peak = Math.max.apply(null, series);
-      const low  = Math.min.apply(null, series);
-      const avg  = series.reduce((a, b) => a + b, 0) / series.length;
-      const max  = Math.max(peak, 1);
+      // Peak/low plus their indices so we can compute "time ago" in the stats.
+      let peak = -Infinity, peakIdx = 0, low = Infinity, lowIdx = 0;
+      for (let i = 0; i < series.length; i++) {
+        if (series[i] > peak) { peak = series[i]; peakIdx = i; }
+        if (series[i] < low)  { low  = series[i]; lowIdx  = i; }
+      }
+      const avg = series.reduce((a, b) => a + b, 0) / series.length;
+      const max = Math.max(peak, 1);
       const step = W / (series.length - 1);
 
-      // Build the path commands.
       let stroke = '';
       for (let i = 0; i < series.length; i++) {
         const x = (i * step).toFixed(2);
@@ -27913,9 +27955,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
       const area = stroke + `L${W},${H} L0,${H} Z`;
 
-      // Reference gridlines at 25/50/75/100% of peak, rendered as dashed
-      // lines with labels on the right edge. Purely visual — keeps the
-      // chart feeling charty instead of just a blob.
+      // Reference gridlines at 25/50/75/100% of peak.
       const gridValues = [max, max * 0.75, max * 0.5, max * 0.25];
       const gridLines = gridValues.map(v => {
         const y = (H - (v / max) * H).toFixed(1);
@@ -27937,22 +27977,99 @@ Please give me the diagnostic commands to run on my server so you can help me id
         +         `stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>`
         + `</svg>`;
 
-      // Stats
-      const set = (id, v) => {
+      // Axis labels — adapt to however many samples we actually have,
+      // since the RPC sometimes returns fewer than 720 early in an epoch.
+      // Each sample is 60s, so total = (length-1) minutes.
+      const totalMinutes = Math.max(1, series.length - 1);
+      const axisEl = document.getElementById('tpsModalAxisRow');
+      if (axisEl) {
+        const quarter = totalMinutes / 4;
+        const fmtAgo = (minutes) => {
+          if (minutes < 1) return 'now';
+          if (minutes < 60) return Math.round(minutes) + 'm';
+          const h = minutes / 60;
+          if (h >= 1 && h < 10) {
+            const hWhole = Math.floor(h);
+            const mRem = Math.round(minutes - hWhole * 60);
+            return mRem === 0 ? `${hWhole}h` : `${hWhole}h ${mRem}m`;
+          }
+          return Math.round(h) + 'h';
+        };
+        axisEl.innerHTML =
+            `<span>${fmtAgo(totalMinutes)} ago</span>`
+          + `<span>${fmtAgo(quarter * 3)}</span>`
+          + `<span>${fmtAgo(quarter * 2)}</span>`
+          + `<span>${fmtAgo(quarter)}</span>`
+          + `<span>now</span>`;
+      }
+
+      // Stats — 2×2 card grid. "Time-ago" for peak/low is computed from the
+      // sample's position relative to the newest sample.
+      const currentVal = series[series.length - 1];
+      const deltaVsAvg = avg > 0 ? ((currentVal - avg) / avg) * 100 : 0;
+      const setText = (id, v) => {
         const el = document.getElementById(id);
         if (el) el.textContent = v;
       };
-      set('tpsModalCurrent', _tpsFmt(series[series.length - 1]));
-      set('tpsModalAvg',     _tpsFmt(avg));
-      set('tpsModalPeak',    _tpsFmt(peak));
-      set('tpsModalLow',     _tpsFmt(low));
-      set('tpsModalSamples', `${series.length} · 60s each`);
+      const minutesAgo = (idx) => (series.length - 1 - idx); // 0 = now
+      const ago = (idx) => {
+        const m = minutesAgo(idx);
+        if (m < 1) return 'just now';
+        if (m < 60) return `${m}m ago`;
+        const h = Math.floor(m / 60), r = m % 60;
+        return r === 0 ? `${h}h ago` : `${h}h ${r}m ago`;
+      };
+      setText('tpsModalCurrentValue',    _tpsFmt(currentVal));
+      const curDeltaEl = document.getElementById('tpsModalCurrentDelta');
+      if (curDeltaEl) {
+        if (Math.abs(deltaVsAvg) < 1) {
+          curDeltaEl.textContent = '→ near avg';
+          curDeltaEl.className = 'tps-modal-card-sub';
+        } else if (deltaVsAvg > 0) {
+          curDeltaEl.textContent = `↗ ${deltaVsAvg.toFixed(0)}% vs avg`;
+          curDeltaEl.className = 'tps-modal-card-sub up';
+        } else {
+          curDeltaEl.textContent = `↘ ${Math.abs(deltaVsAvg).toFixed(0)}% vs avg`;
+          curDeltaEl.className = 'tps-modal-card-sub down';
+        }
+      }
+      setText('tpsModalAvgValue',  _tpsFmt(avg));
+      setText('tpsModalAvgSub',    `${series.length} samples · past ${(totalMinutes / 60).toFixed(1)}h`);
+      setText('tpsModalPeakValue', _tpsFmt(peak));
+      setText('tpsModalPeakSub',   ago(peakIdx));
+      setText('tpsModalLowValue',  _tpsFmt(low));
+      setText('tpsModalLowSub',    ago(lowIdx));
+    }
+
+    // ── Validator scorecard modal ───────────────────────────────
+    // Pops open from any slot/feed/top-skipper/portfolio click on Network
+    // Live and shows the validator's "Last Epoch / Current Epoch" scorecard
+    // without ever leaving the page.
+    function skipmonOpenScorecard(votePubkey) {
+      const body  = document.getElementById('skipmonScorecardBody');
+      const title = document.getElementById('skipmonScorecardTitle');
+      const modal = document.getElementById('skipmonScorecardModal');
+      if (!body || !modal) return;
+
+      const v = (typeof allValidators !== 'undefined' && Array.isArray(allValidators))
+        ? allValidators.find(x => x.votePubkey === votePubkey) : null;
+      if (title) title.textContent = v && v.name ? v.name : 'Validator';
+
+      const html = (typeof SkipMonitor !== 'undefined' && SkipMonitor.getScorecardHtml)
+        ? SkipMonitor.getScorecardHtml(votePubkey) : null;
+      body.innerHTML = html || '<div class="skipmon-empty">Validator not found in the active set.</div>';
+      modal.style.display = 'flex';
+    }
+    function closeSkipmonScorecard() {
+      const modal = document.getElementById('skipmonScorecardModal');
+      if (modal) modal.style.display = 'none';
     }
 
     // Click-outside-to-close and Escape-key-to-close (modals using this file's pattern)
     document.addEventListener('DOMContentLoaded', function() {
-      [['epochTimelineModal', closeEpochTimelineModal],
-       ['tpsModal',           closeTpsModal]].forEach(([id, closer]) => {
+      [['epochTimelineModal',   closeEpochTimelineModal],
+       ['tpsModal',              closeTpsModal],
+       ['skipmonScorecardModal', closeSkipmonScorecard]].forEach(([id, closer]) => {
         const modal = document.getElementById(id);
         if (!modal) return;
         modal.addEventListener('click', function(e) {
@@ -27961,8 +28078,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
       });
       document.addEventListener('keydown', function(e) {
         if (e.key !== 'Escape') return;
-        for (const [id, closer] of [['epochTimelineModal', closeEpochTimelineModal],
-                                     ['tpsModal',           closeTpsModal]]) {
+        for (const [id, closer] of [['epochTimelineModal',   closeEpochTimelineModal],
+                                     ['tpsModal',              closeTpsModal],
+                                     ['skipmonScorecardModal', closeSkipmonScorecard]]) {
           const m = document.getElementById(id);
           if (m && m.style.display === 'flex') { closer(); break; }
         }
@@ -27982,16 +28100,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
     function skipmonLookupPick(votePubkey) {
       if (typeof SkipMonitor !== 'undefined') SkipMonitor.pickLookup(votePubkey);
     }
-    // Portfolio card → open the Validator Lookup tab for this validator.
-    // Previously this opened the separate "slot explorer" modal, but the
-    // Validator Lookup view is more consistent with every other clickable
-    // validator reference on Network Live (grid cells, feed items, top
-    // skippers rows, leader cards), so we route everything the same way.
+    // Portfolio card → open the on-page scorecard modal for this validator.
+    // Routes through the same helper the grid cells, feed items, and top-
+    // skipper rows use, so clicking any validator reference on Network Live
+    // opens the same wide scorecard view without leaving the page.
     function skipmonOpenPortfolioModal(nodePubkey, name, voteAccount) {
-      if (voteAccount && typeof lookupValidator === 'function') {
-        lookupValidator(voteAccount);
+      if (voteAccount) {
+        skipmonOpenScorecard(voteAccount);
       } else if (typeof openSlotModal === 'function') {
-        // Fallback for the edge case where we don't have a vote account.
+        // Extreme fallback — scorecard needs a vote account to resolve.
         openSlotModal(nodePubkey, name, voteAccount);
       }
     }
