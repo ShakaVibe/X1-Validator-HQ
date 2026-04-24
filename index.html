@@ -9363,7 +9363,7 @@
     <div class="tab-content" id="skipmonitorTab">
       <div class="skipmon-wrap skipmon-mode-network">
         <section class="search-section">
-          <h1>Skip <span>Monitor</span></h1>
+          <h1>Network <span>Live</span></h1>
           <p id="skipmonSubtitle">Real-time leader-slot tracking · Epoch —</p>
         </section>
 
@@ -25290,45 +25290,41 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
 
       // Deterministic colorful gradient from any string key.
-      // Used as a fallback avatar background when a validator has no iconUrl.
+      // Wider color space than a simple hue roll: three independent hash outputs
+      // drive hue1/hue2/saturation/lightness so two adjacent validators can't
+      // easily produce near-identical gradients.
       function identiconBg(seed) {
         const s = String(seed || 'x');
-        let h1 = 0, h2 = 0;
+        let h1 = 0, h2 = 0, h3 = 0;
         for (let i = 0; i < s.length; i++) {
           h1 = ((h1 * 31) + s.charCodeAt(i)) & 0x7fffffff;
           h2 = ((h2 * 17) ^ s.charCodeAt(s.length - 1 - i)) & 0x7fffffff;
+          h3 = ((h3 * 13) + s.charCodeAt(i) * 7) & 0x7fffffff;
         }
         const hue1 = h1 % 360;
-        const hue2 = (hue1 + 40 + (h2 % 160)) % 360;
-        return `linear-gradient(135deg, hsl(${hue1},55%,42%), hsl(${hue2},60%,30%))`;
+        const hue2 = (hue1 + 60 + (h2 % 240)) % 360;
+        const sat1 = 52 + (h3 % 25);        // 52-77
+        const sat2 = 48 + ((h1 + h3) % 22); // 48-70
+        const lit1 = 38 + (h2 % 14);        // 38-52
+        const lit2 = 26 + (h3 % 14);        // 26-40
+        return `linear-gradient(135deg, hsl(${hue1},${sat1}%,${lit1}%), hsl(${hue2},${sat2}%,${lit2}%))`;
       }
 
       // Returns { style, inner } to apply on a logo wrapper element.
       //
-      // Strategy: always paint the identicon + initial as the wrapper's
-      // BACKGROUND. When iconUrl is present, the <img> overlays on top —
-      // covering the gradient if it loads, and falling back to reveal it
-      // if the load fails (silent CORS failures, empty responses, or
-      // anything else that doesn't fire a clean `onerror`).
-      // This guarantees the circle never shows up blank.
+      // NOTE: On the Network page we deliberately IGNORE iconUrl and always
+      // render a unique colorful identicon. Reason: the vast majority of
+      // X1 validators share the same default brand logo, so using iconUrl
+      // produces a wall of visually identical circles and you can't tell
+      // validators apart at a glance. Identicons guarantee a unique gradient
+      // per pubkey. The home page and the slot-explorer modal still use real
+      // logos — they care about "who is this one validator", not "distinguish
+      // at a glance in a list".
       function avatarFor(info, seedOverride) {
         const seed = seedOverride || (info && (info.nodePubkey || info.votePubkey || info.name)) || 'x';
         const name = (info && info.name) || seed;
         const initial = esc(name.charAt(0).toUpperCase() || '?');
         const bg = identiconBg(seed);
-
-        if (info && info.iconUrl) {
-          // Wrapper is pre-painted with the identicon + initial. The <img>
-          // sits over it when it loads successfully; if it fails, onerror
-          // wipes the img (textContent replaces it), revealing the identicon.
-          return {
-            style: `background:${bg};color:#fff;`,
-            inner: initial
-                 + `<img src="${esc(info.iconUrl)}" alt="${initial}" `
-                 +      `style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" `
-                 +      `onerror="this.remove()">`
-          };
-        }
         return {
           style: `background:${bg};color:#fff;`,
           inner: initial
