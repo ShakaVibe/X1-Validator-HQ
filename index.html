@@ -289,6 +289,59 @@
       color: var(--accent-blue);
     }
 
+    /* Screenshot-grade branding logo used in modal headers. Larger than
+       .x1-logo-small and surrounded by a subtle cyan halo so it reads
+       as a brand mark rather than an icon. */
+    .x1-logo-brand {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 30% 30%, #0a1628 0%, #000000 70%);
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: -0.8px;
+      border: 1px solid rgba(0, 212, 255, 0.35);
+      box-shadow:
+        0 0 0 3px rgba(0, 212, 255, 0.08),
+        0 0 24px rgba(0, 212, 255, 0.18),
+        inset 0 0 14px rgba(0, 212, 255, 0.10);
+      flex-shrink: 0;
+    }
+    .x1-logo-brand .x-char   { color: #ffffff; }
+    .x1-logo-brand .one-char { color: var(--accent-blue); }
+
+    /* Header row that pairs the brand logo with the modal title. Keeps
+       the title flush with the logo and gives the header real presence
+       — the kind of thing that looks intentional in a screenshot. */
+    .modal-brand-head {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+    }
+    .modal-brand-head .brand-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .modal-brand-head .brand-title-main {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 0.2px;
+    }
+    .modal-brand-head .brand-title-sub {
+      font-size: 0.72rem;
+      color: var(--accent-cyan);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
     /* Disclaimer/Terms Modal */
     .disclaimer-modal-overlay {
       display: none;
@@ -8403,35 +8456,59 @@
     .epoch-timeline-modal .epoch-timeline-num {
       font-size: 0.85rem;
     }
+    /* Epoch modal summary — 3x2 grid of screenshot-ready stat cards.
+       Matches the TPS modal's card system (cyan uppercase labels, thin
+       cyan accent bar across the top) so both modals feel like siblings. */
     .epoch-timeline-summary {
-      padding: 1rem 1.5rem 1.5rem;
-      display: flex;
-      gap: 2rem;
-      flex-wrap: wrap;
+      padding: 0.85rem 1.25rem 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
       border-top: 1px solid var(--border);
-      margin-top: 0.5rem;
+      margin-top: 0.35rem;
     }
     .epoch-timeline-summary-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 0.65rem 0.85rem;
       display: flex;
       flex-direction: column;
-      gap: 0.2rem;
+      gap: 0.15rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .epoch-timeline-summary-item::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(0, 212, 255, 0.55), rgba(0, 212, 255, 0.05));
     }
     .epoch-timeline-summary-label {
-      font-size: 0.62rem;
-      color: var(--text-dim);
+      font-size: 0.78rem;
+      color: var(--accent-cyan);
       text-transform: uppercase;
-      letter-spacing: 0.7px;
+      letter-spacing: 0.8px;
       font-weight: 700;
     }
     .epoch-timeline-summary-value {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 1.1rem;
+      font-size: 1.55rem;
       font-weight: 700;
       color: var(--text-primary);
+      line-height: 1.1;
+      margin-top: 0.1rem;
     }
     .epoch-timeline-summary-value.good { color: var(--success); }
     .epoch-timeline-summary-value.warn { color: var(--warning); }
     .epoch-timeline-summary-value.bad  { color: var(--danger); }
+    .epoch-timeline-summary-sub {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 0.05rem;
+    }
 
     /* ──────────────────────────────────────────────────────────
        TPS strip — low-profile horizontal sparkline with a live value
@@ -10298,9 +10375,15 @@
        across the last 6 completed epochs + the current partial epoch.
        Opened from the "Past 6 ↗" link in the Skip Rate · Epoch card. -->
   <div class="modal-overlay" id="epochTimelineModal">
-    <div class="modal" style="max-width: 760px;">
+    <div class="modal" style="max-width: 900px;">
       <div class="modal-header">
-        <h3>Network Skip Rate · Past 6 Epochs</h3>
+        <div class="modal-brand-head">
+          <div class="x1-logo-brand"><span class="x-char">X</span><span class="one-char">1</span></div>
+          <div class="brand-title">
+            <div class="brand-title-main">Network Skip Rate</div>
+            <div class="brand-title-sub">Past 6 Epochs</div>
+          </div>
+        </div>
         <button class="modal-close" onclick="closeEpochTimelineModal()">&times;</button>
       </div>
       <div class="modal-body">
@@ -10320,7 +10403,13 @@
   <div class="modal-overlay" id="tpsModal">
     <div class="modal" style="max-width: 900px;">
       <div class="modal-header">
-        <h3><span class="x1-logo-small" style="margin-right:0.5rem;vertical-align:middle"><span class="x-char">X</span><span class="one-char">1</span></span>Network TPS · Past 12 Hours</h3>
+        <div class="modal-brand-head">
+          <div class="x1-logo-brand"><span class="x-char">X</span><span class="one-char">1</span></div>
+          <div class="brand-title">
+            <div class="brand-title-main">Network TPS</div>
+            <div class="brand-title-sub">Past 12 Hours</div>
+          </div>
+        </div>
         <button class="modal-close" onclick="closeTpsModal()">&times;</button>
       </div>
       <div class="tps-modal-chart-wrap">
@@ -26065,6 +26154,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // Summary row — rolling averages and totals across the completed epochs
       // in the returned set. Excludes the current (partial) epoch so the
       // average isn't skewed by whatever early slice we happened to sample.
+      // Rendered as a 3x2 grid of screenshot-quality cards to match the TPS
+      // modal's treatment.
       const summaryEl = document.getElementById('epochTimelineSummary');
       if (summaryEl) {
         const completed = data.filter(d => !d.partial && typeof d.skipRate === 'number');
@@ -26072,9 +26163,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
           summaryEl.innerHTML = '';
         } else {
           let leaderSlots = 0, skippedSlots = 0;
+          let best = completed[0], worst = completed[0];
           for (const d of completed) {
             leaderSlots  += d.leaderSlots || 0;
             skippedSlots += (d.leaderSlots || 0) - (d.blocksProduced || 0);
+            if (d.skipRate < best.skipRate)  best  = d;
+            if (d.skipRate > worst.skipRate) worst = d;
           }
           const rollingAvg = leaderSlots > 0
             ? (skippedSlots / leaderSlots) * 100
@@ -26084,19 +26178,29 @@ Please give me the diagnostic commands to run on my server so you can help me id
              : rollingAvg < 6 ? 'warn'
              : 'bad');
           const avgStr = rollingAvg == null ? '—' : `${rollingAvg.toFixed(2)}%`;
-          summaryEl.innerHTML =
+          // Network uptime = (1 - skipRate). 99.xx% is the screenshot-worthy
+          // framing — skip rate says "how bad", uptime says "how good".
+          const uptime = rollingAvg == null ? null : (100 - rollingAvg);
+          const uptimeStr = uptime == null ? '—' : `${uptime.toFixed(2)}%`;
+          const uptimeCls = uptime == null ? ''
+            : (uptime >= 98 ? 'good'
+             : uptime >= 94 ? 'warn'
+             : 'bad');
+
+          const card = (label, value, sub, valueCls) =>
               `<div class="epoch-timeline-summary-item">`
-            +   `<div class="epoch-timeline-summary-label">Rolling avg · ${completed.length} epochs</div>`
-            +   `<div class="epoch-timeline-summary-value ${avgCls}">${avgStr}</div>`
-            + `</div>`
-            + `<div class="epoch-timeline-summary-item">`
-            +   `<div class="epoch-timeline-summary-label">Total skipped</div>`
-            +   `<div class="epoch-timeline-summary-value">${skippedSlots.toLocaleString()}</div>`
-            + `</div>`
-            + `<div class="epoch-timeline-summary-item">`
-            +   `<div class="epoch-timeline-summary-label">Total leader slots</div>`
-            +   `<div class="epoch-timeline-summary-value">${leaderSlots.toLocaleString()}</div>`
+            +   `<div class="epoch-timeline-summary-label">${label}</div>`
+            +   `<div class="epoch-timeline-summary-value${valueCls ? ' ' + valueCls : ''}">${value}</div>`
+            +   (sub ? `<div class="epoch-timeline-summary-sub">${sub}</div>` : '')
             + `</div>`;
+
+          summaryEl.innerHTML =
+              card('Rolling Avg',   avgStr,    `${completed.length} completed epochs`, avgCls)
+            + card('Network Uptime', uptimeStr, '100 − skip rate',                      uptimeCls)
+            + card('Best Epoch',    `${best.skipRate.toFixed(2)}%`,  `epoch ${best.epoch}`,  'good')
+            + card('Worst Epoch',   `${worst.skipRate.toFixed(2)}%`, `epoch ${worst.epoch}`, 'bad')
+            + card('Total Skipped', skippedSlots.toLocaleString(),   'across window')
+            + card('Total Assigned', leaderSlots.toLocaleString(),   'leader slots');
         }
       }
     }
@@ -26117,16 +26221,38 @@ Please give me the diagnostic commands to run on my server so you can help me id
       if (tpsFetching) return;
       tpsFetching = true;
       try {
-        // The RPC returns newest-first, so reverse for oldest-first display.
-        const raw = await rpcCall('getRecentPerformanceSamples', [TPS_SAMPLES]);
-        if (!Array.isArray(raw)) return;
+        // Full backfill (720 samples ≈ 12h) only when the cache is empty
+        // or nearly so. After that, poll with count=1 so each refresh is
+        // ~200 bytes of JSON instead of ~20 KB, and the RPC does far less
+        // work per call.
+        const needFull = tpsSamplesCache.length < 2;
+        const count = needFull ? TPS_SAMPLES : 1;
+        const raw = await rpcCall('getRecentPerformanceSamples', [count]);
+        if (!Array.isArray(raw) || !raw.length) return;
         const tps = raw
           .slice()
           .reverse()
           .map(s => (s && s.samplePeriodSecs > 0)
             ? (s.numTransactions / s.samplePeriodSecs)
             : 0);
-        tpsSamplesCache = tps;
+        if (needFull) {
+          tpsSamplesCache = tps;
+        } else {
+          // Incremental path — append the newest sample, trim the oldest.
+          tpsSamplesCache.push(tps[tps.length - 1]);
+          while (tpsSamplesCache.length > TPS_SAMPLES) tpsSamplesCache.shift();
+        }
+
+        // Drive the shared top-of-page TPS readout from the same cache
+        // (replaces the old dedicated updateNetworkTps poll).
+        const latest = tpsSamplesCache[tpsSamplesCache.length - 1];
+        const topEl = document.getElementById('networkTps');
+        if (topEl && typeof latest === 'number') {
+          topEl.textContent = (typeof formatCompact === 'function')
+            ? formatCompact(Math.round(latest))
+            : Math.round(latest).toLocaleString();
+        }
+
         renderTpsStrip();
       } catch (e) {
         console.warn('[TPS] load error:', e && e.message || e);
@@ -26540,13 +26666,24 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       // Load leader schedule and TPS
       loadLeaderSchedule();
-      updateNetworkTps();
-      
-      // Refresh leader display and TPS every 2 seconds
+      // First TPS load does a full 720-sample backfill; subsequent polls
+      // only pull 1 sample (the latest) and shift it into the cache.
+      loadTpsSamples();
+
+      // Leader card only exists on the Network Live tab, so don't poll when
+      // the user isn't looking at it. This cuts the 2-second blaster from
+      // running on every page (~3,600 RPC calls/hour) to running only while
+      // Network Live is active.
       setInterval(() => {
-        updateCurrentLeader();
-        updateNetworkTps();
+        if (document.body.classList.contains('active-skipmonitor')) {
+          updateCurrentLeader();
+        }
       }, 2000);
+
+      // TPS — the top-bar readout and the Network Live sparkline share
+      // tpsSamplesCache. One poller covers both. New samples only arrive
+      // every 60s, so polling faster than that is pure waste.
+      setInterval(loadTpsSamples, 60000);
     }
 
     // ─────────────────────────────────────────────────────────
@@ -26578,7 +26715,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
       let hourTimer = null;
       let epochTimer = null;
       let epochTimelineTimer = null;   // long-period refresh so epoch advances get picked up
-      let tpsTimer = null;             // 60s poll for the TPS sparkline
 
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
@@ -27763,17 +27899,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
         safely(pollHour,      2000);
         safely(pollEpoch,     5000);
         safely(pollPrevEpoch, 12000);   // heaviest — defer longest
-        // TPS sparkline: cheap (1 RPC, no per-slot scan). Kick off early so
-        // the strip populates almost immediately, then refresh every 60s
-        // which matches the sample cadence.
+        // TPS polling lives at the top level now (init()) so the top-bar
+        // readout stays fresh on every tab, not just Network Live. We just
+        // kick the cache once here to ensure renderTpsStrip() has data to
+        // draw as soon as the tab opens.
         safely(() => {
           if (typeof loadTpsSamples === 'function') loadTpsSamples();
         }, 1500);
-        tpsTimer = setInterval(() => {
-          if (state && state.running && typeof loadTpsSamples === 'function') {
-            loadTpsSamples();
-          }
-        }, 60000);
         // Epoch timeline: up to 7 getBlockProduction calls fanning out across
         // the last 6 epochs + current. Deferred the longest so it never fights
         // the user's first interactions on this tab. The loader itself caches
@@ -27806,8 +27938,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (hourTimer)  clearInterval(hourTimer);
         if (epochTimer) clearInterval(epochTimer);
         if (epochTimelineTimer) clearInterval(epochTimelineTimer);
-        if (tpsTimer)   clearInterval(tpsTimer);
-        pollTimer = uiTimer = hourTimer = epochTimer = epochTimelineTimer = tpsTimer = null;
+        pollTimer = uiTimer = hourTimer = epochTimer = epochTimelineTimer = null;
         setLiveStatus(false, 'Paused');
       }
 
@@ -28062,17 +28193,23 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const scaleMax = Math.max(bucketPeak, 1);
 
       // ── SVG bar chart ─────────────────────────────────────────
+      // Reserve a right-side gutter for the Y-axis labels so they don't
+      // sit on top of the tallest bars. All drawing math below treats
+      // `chartW` (not W) as the usable plotting area.
       const W = 1000, H = 280;
+      const RIGHT_PAD = 58;
+      const chartW = W - RIGHT_PAD;
       const gap = 2;
       const n = buckets.length;
-      const barW = Math.max(1, (W - gap * (n - 1)) / n);
+      const barW = Math.max(1, (chartW - gap * (n - 1)) / n);
 
-      // Gridlines at 25/50/75/100% of bucket peak, with right-edge labels.
+      // Gridlines at 25/50/75/100% of bucket peak, stopping at the
+      // gutter so the label column stays clean.
       const gridValues = [scaleMax, scaleMax * 0.75, scaleMax * 0.5, scaleMax * 0.25];
       const gridLines = gridValues.map(v => {
         const y = (H - (v / scaleMax) * H).toFixed(1);
-        return `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"/>`
-             + `<text x="${W - 8}" y="${y}" fill="rgba(255,255,255,0.65)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="500" text-anchor="end" dominant-baseline="middle">${_tpsFmt(v)}</text>`;
+        return `<line x1="0" y1="${y}" x2="${chartW}" y2="${y}" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"/>`
+             + `<text x="${chartW + 6}" y="${y}" fill="rgba(255,255,255,0.7)" font-family="JetBrains Mono, monospace" font-size="11" font-weight="500" text-anchor="start" dominant-baseline="middle">${_tpsFmt(v)}</text>`;
       }).join('');
 
       let bars = '';
