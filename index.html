@@ -25409,12 +25409,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (!state || !state.running) return;
         try {
           const epochInfo  = await rpcCall('getEpochInfo');
+          if (!state || !state.running) return;
           const head       = epochInfo.absoluteSlot;
           const epochStart = head - epochInfo.slotIndex;
           const firstSlot  = Math.max(epochStart, head - HOUR_SLOTS);
           const lastSlot   = head;
           if (lastSlot <= firstSlot) return;
           const prod = await rpcCall('getBlockProduction', [{ range: { firstSlot, lastSlot } }]);
+          if (!state || !state.running) return;
           const byIdentity = (prod && prod.value && prod.value.byIdentity) || {};
           state.hourProd = { byIdentity, firstSlot, lastSlot, ts: Date.now() };
           renderStats();
@@ -25428,6 +25430,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         try {
           // No range param → current epoch to date
           const prod = await rpcCall('getBlockProduction');
+          if (!state || !state.running) return;
           const byIdentity = (prod && prod.value && prod.value.byIdentity) || {};
           state.epochProd = { byIdentity, ts: Date.now(), epoch: state.epoch };
           renderStats();
@@ -25444,12 +25447,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (state.prevEpochProd && state.prevEpochProd.epoch === (state.epoch - 1)) return;
         try {
           const epochInfo      = await rpcCall('getEpochInfo');
+          if (!state || !state.running) return;
           const slotsPerEpoch  = epochInfo.slotsInEpoch;
           const currentStart   = epochInfo.absoluteSlot - epochInfo.slotIndex;
           const prevEnd        = currentStart - 1;
           const prevStart      = prevEnd - slotsPerEpoch + 1;
           if (prevStart < 0) return; // genesis epoch, no previous
           const prod = await rpcCall('getBlockProduction', [{ range: { firstSlot: prevStart, lastSlot: prevEnd } }]);
+          if (!state || !state.running) return;
           const byIdentity = (prod && prod.value && prod.value.byIdentity) || {};
           state.prevEpochProd = { byIdentity, ts: Date.now(), epoch: epochInfo.epoch - 1 };
           renderStats();
@@ -26299,10 +26304,23 @@ Please give me the diagnostic commands to run on my server so you can help me id
           renderTimeline();
         }, UI_TICK_MS);
 
-        // Longer-window aggregates: fire once, then poll in the background
-        pollHour();
-        pollEpoch();
-        pollPrevEpoch();   // one-shot; re-fires on epoch rollover (handled in tick)
+        // Staggered kickoff for the heavier aggregate polls.
+        //
+        // Why: pollEpoch and pollPrevEpoch each issue a getBlockProduction
+        // that can scan hundreds of thousands of slots — 5–15 s per call on
+        // a loaded RPC. If they all fired synchronously alongside tick(),
+        // they'd saturate the shared 4-slot rpcCall queue and starve any
+        // work the user does in other tabs (loadPortfolio, validator lookup)
+        // for the duration.
+        //
+        // Each setTimeout rechecks `state.running` at fire time so a quick
+        // tab-switch cancels pending kick-offs before they start.
+        const safely = (fn, delay) => setTimeout(() => {
+          if (state && state.running) fn();
+        }, delay);
+        safely(pollHour,      2000);
+        safely(pollEpoch,     5000);
+        safely(pollPrevEpoch, 12000);   // heaviest — defer longest
         hourTimer  = setInterval(pollHour,  HOUR_POLL_MS);
         epochTimer = setInterval(pollEpoch, EPOCH_POLL_MS);
       }
