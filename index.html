@@ -656,11 +656,11 @@
     body.active-skipmonitor #skipmonitorHeader { display: block; }
 
     /* When Network Live is active, reorder <main>'s children so the layout is:
-       tab buttons → "Network Live" heading → stats bar → epoch bar → rest. */
+       tab buttons → "Network Live" heading → epoch bar → stats bar → rest. */
     body.active-skipmonitor main > .tabs            { order: 1; }
     body.active-skipmonitor main > #skipmonitorHeader { order: 2; }
-    body.active-skipmonitor main > .network-stats   { order: 3; }
-    body.active-skipmonitor main > .epoch-progress  { order: 4; }
+    body.active-skipmonitor main > .epoch-progress  { order: 3; }
+    body.active-skipmonitor main > .network-stats   { order: 4; }
     body.active-skipmonitor main > #skipmonitorTab  { order: 5; }
     /* Other tab-content panels stay at the default order 0 — they're hidden
        anyway since only the active tab-content renders. */
@@ -668,8 +668,8 @@
     /* Tighten the vertical rhythm on Network Live only — the default spacing
        suits the info-dense home page, but Network Live feels cramped below the
        stats bar and breathy above the leader card. */
-    body.active-skipmonitor main > .network-stats   { margin-bottom: 0.75rem; }
-    body.active-skipmonitor main > .epoch-progress  { margin-bottom: 0.25rem; }
+    body.active-skipmonitor main > .epoch-progress  { margin-bottom: 0.75rem; }
+    body.active-skipmonitor main > .network-stats   { margin-bottom: 0.25rem; }
     body.active-skipmonitor #skipmonitorTab .skipmon-wrap { padding-top: 0.25rem; }
     body.active-skipmonitor .leader-schedule-section { margin-top: 0.5rem; }
 
@@ -8241,17 +8241,17 @@
       transform: scale(1.5); z-index: 2; position: relative;
       box-shadow: 0 0 0 2px var(--bg-card);
     }
-    /* Produced — cyan-teal outline with a faint translucent wash. Ties
+    /* Produced — cyan-teal outline with a translucent wash. Ties
        the grid into the X1 cyan palette used elsewhere in the tab. */
     .skipmon-cell.produced {
-      background: rgba(64, 220, 180, 0.14);
-      border: 1px solid rgba(64, 220, 180, 0.55);
+      background: rgba(64, 220, 180, 0.28);
+      border: 1px solid rgba(64, 220, 180, 0.6);
     }
     /* Skipped — muted coral. Still clearly a skip, just without the
        fire-engine red glow that was dominating the original grid. */
     .skipmon-cell.skipped {
-      background: rgba(255, 120, 110, 0.18);
-      border: 1px solid rgba(255, 120, 110, 0.7);
+      background: rgba(255, 120, 110, 0.34);
+      border: 1px solid rgba(255, 120, 110, 0.75);
       box-shadow: 0 0 4px rgba(255, 120, 110, 0.25);
     }
     .skipmon-cell.ghost {
@@ -9559,6 +9559,17 @@
       </p>
     </section>
 
+    <!-- Epoch Progress -->
+    <div class="epoch-progress" id="epochProgress">
+      <span class="epoch-progress-label">Epoch</span>
+      <div class="epoch-progress-bar">
+        <div class="epoch-progress-fill" id="epochProgressFill" style="width: 0%"></div>
+      </div>
+      <span class="epoch-progress-percent" id="epochPercent">0%</span>
+      <span class="epoch-progress-time" id="epochTimeRemaining">--</span>
+      <span class="epoch-hidden-dot" onclick="switchTab('skipmonitor')" aria-hidden="true"></span>
+    </div>
+
     <!-- Network Stats -->
     <div class="network-stats" id="networkStats">
       <div class="network-stat">
@@ -9597,17 +9608,6 @@
         <div class="network-stat-value" id="delinquentValidators">--</div>
         <div class="network-stat-label">Delinquent</div>
       </div>
-    </div>
-
-    <!-- Epoch Progress -->
-    <div class="epoch-progress" id="epochProgress">
-      <span class="epoch-progress-label">Epoch</span>
-      <div class="epoch-progress-bar">
-        <div class="epoch-progress-fill" id="epochProgressFill" style="width: 0%"></div>
-      </div>
-      <span class="epoch-progress-percent" id="epochPercent">0%</span>
-      <span class="epoch-progress-time" id="epochTimeRemaining">--</span>
-      <span class="epoch-hidden-dot" onclick="switchTab('skipmonitor')" aria-hidden="true"></span>
     </div>
 
     <!-- Tabs -->
@@ -10334,11 +10334,11 @@
             </div>
             <div class="skipmon-legend">
               <div class="skipmon-legend-item">
-                <div class="skipmon-legend-pip" style="background:rgba(64, 220, 180, 0.14);border:1px solid rgba(64, 220, 180, 0.7)"></div>
+                <div class="skipmon-legend-pip" style="background:rgba(64, 220, 180, 0.28);border:1px solid rgba(64, 220, 180, 0.7)"></div>
                 Produced
               </div>
               <div class="skipmon-legend-item">
-                <div class="skipmon-legend-pip" style="background:rgba(255, 120, 110, 0.18);border:1px solid rgba(255, 120, 110, 0.8)"></div>
+                <div class="skipmon-legend-pip" style="background:rgba(255, 120, 110, 0.34);border:1px solid rgba(255, 120, 110, 0.8)"></div>
                 Skipped
               </div>
               <div class="skipmon-legend-note">Hover a cell for details · Click to open the validator</div>
@@ -27276,12 +27276,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
           const total = produced + skipped;
           const skipRate = total > 0 ? skipped / total : 0;
-          // Desaturate slightly when there are no skips so the bar reads as
-          // "nominal" rather than shouting green.
-          const hue = Math.round(130 * (1 - skipRate));
-          const sat = skipRate === 0 ? 35 : 60;
-          const lit = skipRate === 0 ? 38 : 46;
-          const color = `hsl(${hue},${sat}%,${lit}%)`;
+          // Interpolate between the same teal (produced) and coral (skipped)
+          // colors the grid cells use, so the scrubber reads as a smooth
+          // condensed view of the grid above it rather than a different
+          // chart with a different palette.
+          //   0% skip  → rgb(64, 220, 180)  cyan-teal
+          //   100%     → rgb(255, 120, 110) coral
+          const r = Math.round(64  + (255 - 64)  * skipRate);
+          const g = Math.round(220 - (220 - 120) * skipRate);
+          const b = Math.round(180 - (180 - 110) * skipRate);
+          // Keep clean (no-skip) buckets a touch more transparent so the
+          // eye naturally lands on hotspots instead of an even green wall.
+          const alpha = skipRate === 0 ? 0.42 : (0.55 + skipRate * 0.35);
+          const color = `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(2)})`;
           const firstSlot = slots[start].slot;
           const lastSlot  = slots[end - 1].slot;
           const title = `Slots ${firstSlot.toLocaleString()}–${lastSlot.toLocaleString()} · `
