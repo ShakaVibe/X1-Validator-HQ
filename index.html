@@ -612,6 +612,14 @@
     /* Other tab-content panels stay at the default order 0 — they're hidden
        anyway since only the active tab-content renders. */
 
+    /* Tighten the vertical rhythm on Network Live only — the default spacing
+       suits the info-dense home page, but Network Live feels cramped below the
+       stats bar and breathy above the leader card. */
+    body.active-skipmonitor main > .network-stats   { margin-bottom: 0.75rem; }
+    body.active-skipmonitor main > .epoch-progress  { margin-bottom: 0.25rem; }
+    body.active-skipmonitor #skipmonitorTab .skipmon-wrap { padding-top: 0.25rem; }
+    body.active-skipmonitor .leader-schedule-section { margin-top: 0.5rem; }
+
     /* Network Stats Bar */
     .network-stats {
       display: flex;
@@ -2143,6 +2151,97 @@
       border: 1px solid var(--border);
       align-items: center;
     }
+
+    /* ──────────────────────────────────────────────────────────────
+       Leader history tail — up to 2 recently-finished leaders sit to
+       the left of the current leader, faded, showing their final 4-dot
+       outcome. When a new leader starts, the previous leader's block
+       gets archived here.
+       ────────────────────────────────────────────────────────────── */
+    .leader-history {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .leader-history:empty { display: none; }
+
+    .leader-history-card {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.6rem;
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      opacity: 0.65;
+      cursor: pointer;
+      transition: opacity 0.18s, border-color 0.18s, background 0.18s;
+      max-width: 170px;
+    }
+    .leader-history-card:hover {
+      opacity: 1;
+      border-color: var(--accent-blue);
+      background: rgba(77, 166, 255, 0.06);
+    }
+
+    .leader-history-logo {
+      width: 26px;
+      height: 26px;
+      min-width: 26px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .leader-history-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+    .leader-history-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      min-width: 0;
+    }
+    .leader-history-name {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 90px;
+    }
+    .leader-history-dots {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+    }
+    /* Shrink the dots slightly for the history card's tighter footprint. */
+    .leader-history-dots .slot-dot {
+      width: 7px; height: 7px;
+      border-width: 1px;
+      animation: none;
+    }
+
+    .leader-history-score {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .leader-history-score.good { color: var(--success); border-color: rgba(0,230,118,0.35); }
+    .leader-history-score.bad  { color: var(--danger);  border-color: rgba(255,82,82,0.35); }
 
     .leader-current {
       flex-shrink: 0;
@@ -8183,6 +8282,129 @@
       100% { transform: scale(1); opacity: 1; box-shadow: 0 0 6px rgba(255, 82, 82, 0.6); }
     }
 
+    /* ──────────────────────────────────────────────────────────
+       Mini-scrubber — compact 100-bucket overview of the whole 1500-slot
+       history. Each bar's color reflects that bucket's skip rate.
+       Clicking a bar scrolls the main grid to that range.
+       ────────────────────────────────────────────────────────── */
+    .skipmon-scrubber {
+      display: flex;
+      gap: 0;
+      height: 16px;
+      margin-top: 0.75rem;
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+    }
+    .skipmon-scrubber:empty { display: none; }
+    .skipmon-scrubber-bar {
+      flex: 1;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      min-width: 0;
+      transition: filter 0.12s;
+    }
+    .skipmon-scrubber-bar:hover {
+      filter: brightness(1.45);
+      outline: 1px solid rgba(255, 255, 255, 0.35);
+      outline-offset: -1px;
+      z-index: 1;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       Epoch timeline strip — last ~6 completed epochs + the current
+       partial epoch as vertical bars sized and colored by network-wide
+       skip rate. Lives directly under the leader schedule section.
+       ────────────────────────────────────────────────────────── */
+    .epoch-timeline {
+      margin-top: 1rem;
+      padding: 0.75rem 1.1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: stretch;
+      gap: 1rem;
+    }
+    .epoch-timeline-label {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      font-weight: 600;
+      flex-shrink: 0;
+      align-self: center;
+      max-width: 70px;
+      line-height: 1.25;
+    }
+    .epoch-timeline-bars {
+      flex: 1;
+      display: flex;
+      gap: 0.55rem;
+      min-height: 54px;
+      align-items: stretch;
+    }
+    .epoch-timeline-empty {
+      color: var(--text-dim); font-size: 0.8rem; text-align: center; width: 100%;
+      align-self: center;
+    }
+    .epoch-timeline-bar-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 0;
+      cursor: default;
+      position: relative;
+    }
+    .epoch-timeline-col {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 36px;
+      background: var(--bg-primary);
+      border-radius: 3px 3px 0 0;
+      overflow: hidden;
+    }
+    .epoch-timeline-fill {
+      width: 100%;
+      border-radius: 3px 3px 0 0;
+      transition: height 0.45s ease, background 0.3s;
+      min-height: 3px;
+    }
+    .epoch-timeline-rate {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      margin-top: 3px;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    .epoch-timeline-num {
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 1px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .epoch-timeline-partial {
+      color: var(--accent-cyan);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.52rem;
+      padding: 1px 3px;
+      border: 1px solid rgba(0, 212, 255, 0.35);
+      border-radius: 2px;
+      letter-spacing: 0.5px;
+    }
+
     .skipmon-legend {
       display: flex; gap: 1.25rem; flex-wrap: wrap;
       font-size: 0.72rem; color: var(--text-secondary);
@@ -8335,6 +8557,29 @@
     .skipmon-bar-fill {
       height: 100%; background: var(--danger);
       border-radius: 3px; transition: width 0.3s;
+    }
+
+    /* ──────────────────────────────────────────────────────────
+       Per-row sparkline — the last N leader slots for this validator,
+       rendered as 4px colored pips in a row. Sits in the "Recent" column
+       of the Top Skippers table.
+       ────────────────────────────────────────────────────────── */
+    .skipmon-spark {
+      display: flex;
+      gap: 2px;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+    .skipmon-spark-pip {
+      width: 4px;
+      height: 10px;
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
+    .skipmon-spark-pip.produced { background: var(--success); opacity: 0.85; }
+    .skipmon-spark-pip.skipped  { background: var(--danger); }
+    .skipmon-spark-empty {
+      color: var(--text-dim); font-size: 0.75rem;
     }
 
     /* Epoch stat card with split (This | Previous) + delta footer */
@@ -9556,6 +9801,9 @@
              Updated by updateCurrentLeader() on a global 2-second interval,
              independent of Skip Monitor's start/stop state. -->
         <div class="leader-schedule-section">
+          <!-- Recently-finished leaders (up to 2), rendered left-to-right.
+               Populated by updateCurrentLeader() on every leader transition. -->
+          <div class="leader-history" id="leaderHistoryList"></div>
           <div class="leader-current" id="currentLeaderCard">
             <div class="leader-logo" id="currentLeaderLogo">?</div>
             <div class="leader-info">
@@ -9580,6 +9828,16 @@
             <div class="leader-next-list" id="nextLeadersList">
               <div class="leader-next-item">Loading...</div>
             </div>
+          </div>
+        </div>
+
+        <!-- Epoch timeline — last ~6 completed epochs + the current (partial)
+             epoch as a bar strip, colored and sized by network-wide skip rate.
+             Loaded lazily ~20s after tab open and cached until the epoch changes. -->
+        <div class="epoch-timeline" id="epochTimelineStrip">
+          <div class="epoch-timeline-label">Past Epochs</div>
+          <div class="epoch-timeline-bars" id="epochTimelineBars">
+            <div class="epoch-timeline-empty">Loading epoch history…</div>
           </div>
         </div>
 
@@ -9671,6 +9929,9 @@
             <div class="skipmon-grid" id="skipmonGrid">
               <div class="skipmon-empty">Warming up…</div>
             </div>
+            <!-- Mini-scrubber: all 1500 slots aggregated into 100 color-coded
+                 buckets. Click a bucket to jump the main grid to that range. -->
+            <div class="skipmon-scrubber" id="skipmonScrubber"></div>
             <div class="skipmon-legend">
               <div class="skipmon-legend-item">
                 <div class="skipmon-legend-pip" style="background:var(--success);opacity:0.85"></div>
@@ -9680,7 +9941,7 @@
                 <div class="skipmon-legend-pip" style="background:var(--danger)"></div>
                 Skipped
               </div>
-              <div class="skipmon-legend-note">Hover a cell for details · Click to open the validator</div>
+              <div class="skipmon-legend-note">Hover a cell for details · Click to open the validator · Click the bar below to jump</div>
             </div>
           </div>
 
@@ -25202,6 +25463,244 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
     
+    // ───────────────────────────────────────────────────────────
+    // Leader history tail — tracks the last 1–2 finished leader blocks
+    // so the card strip can show "who just produced (and how well)"
+    // to the left of the current leader. Populated by updateCurrentLeader
+    // on every block transition; re-resolves 'unknown' dots each tick in
+    // case SkipMonitor catches up after the transition was recorded.
+    // ───────────────────────────────────────────────────────────
+    let leaderHistory = [];       // [{pubkey, info, blockStartAbs, dots:[4], producedCount}]
+    let leaderTrackLast = null;   // {pubkey, info, blockStartAbs, key}
+    const LEADER_HISTORY_MAX = 2;
+
+    // Local html-escape. SkipMonitor has its own `esc` but it's scoped inside
+    // the IIFE, and this function lives at top level.
+    function _escHtml(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+        { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+      ));
+    }
+
+    function resolveBlockDots(blockStartAbs) {
+      const smReady = (typeof SkipMonitor !== 'undefined' && SkipMonitor.getSlotStatus);
+      const dots = new Array(4);
+      for (let i = 0; i < 4; i++) {
+        const status = smReady ? SkipMonitor.getSlotStatus(blockStartAbs + i) : null;
+        dots[i] = (status === 'produced') ? 'produced'
+               : (status === 'skipped')  ? 'skipped'
+               : 'unknown';
+      }
+      return dots;
+    }
+
+    function updateLeaderHistory(currentLeader, currentLeaderInfo, currentSlot, blockOfFour) {
+      if (!currentLeader) return;
+      const currentBlockStartAbs = currentSlot - (blockOfFour - 1);
+      const currentKey = `${currentLeader}:${currentBlockStartAbs}`;
+
+      // Transition? Archive the block we were watching last tick.
+      if (leaderTrackLast && leaderTrackLast.key !== currentKey) {
+        const prev = leaderTrackLast;
+        const dots = resolveBlockDots(prev.blockStartAbs);
+        const producedCount = dots.filter(d => d === 'produced').length;
+        leaderHistory.unshift({
+          pubkey: prev.pubkey,
+          info: prev.info,
+          blockStartAbs: prev.blockStartAbs,
+          dots,
+          producedCount
+        });
+        if (leaderHistory.length > LEADER_HISTORY_MAX) {
+          leaderHistory.length = LEADER_HISTORY_MAX;
+        }
+      }
+
+      // Re-resolve existing history entries whose dots are still 'unknown'
+      // (late-arriving SkipMonitor data will now flip them to real statuses).
+      for (const h of leaderHistory) {
+        if (h.dots.some(d => d === 'unknown')) {
+          h.dots = resolveBlockDots(h.blockStartAbs);
+          h.producedCount = h.dots.filter(d => d === 'produced').length;
+        }
+      }
+
+      leaderTrackLast = {
+        pubkey: currentLeader,
+        info: currentLeaderInfo,
+        blockStartAbs: currentBlockStartAbs,
+        key: currentKey
+      };
+    }
+
+    function renderLeaderHistory() {
+      const el = document.getElementById('leaderHistoryList');
+      if (!el) return;
+      if (!leaderHistory.length) { el.innerHTML = ''; return; }
+
+      // Render oldest→newest left-to-right, so the most recent finished leader
+      // sits closest to the current leader card.
+      const ordered = leaderHistory.slice().reverse();
+      el.innerHTML = ordered.map(h => {
+        const info = h.info;
+        const fullName = info && info.name ? info.name : (h.pubkey.slice(0, 4) + '…' + h.pubkey.slice(-4));
+        const displayName = fullName.length > 12 ? fullName.slice(0, 11) + '…' : fullName;
+        const initial = fullName.charAt(0).toUpperCase();
+        const logoInner = (info && info.iconUrl)
+          ? `<img src="${_escHtml(info.iconUrl)}" alt="${_escHtml(initial)}" onerror="this.style.display='none';this.parentElement.textContent='${_escHtml(initial)}';">`
+          : _escHtml(initial);
+        const dotsHtml = h.dots.map(d => `<div class="slot-dot ${_escHtml(d)}"></div>`).join('');
+        const scoreCls = h.producedCount === 4 ? 'good'
+                       : (h.producedCount <= 1 ? 'bad' : '');
+        const clickAttr = (info && info.votePubkey)
+          ? `onclick="lookupValidator('${_escHtml(info.votePubkey)}')"` : '';
+        const titleAttr = `title="${_escHtml(fullName)} · ${h.producedCount}/4 at slot ${h.blockStartAbs.toLocaleString()}"`;
+        return `<div class="leader-history-card" ${clickAttr} ${titleAttr}>`
+             +   `<div class="leader-history-logo">${logoInner}</div>`
+             +   `<div class="leader-history-body">`
+             +     `<div class="leader-history-name">${_escHtml(displayName)}</div>`
+             +     `<div class="leader-history-dots">${dotsHtml}</div>`
+             +   `</div>`
+             +   `<div class="leader-history-score ${scoreCls}">${h.producedCount}/4</div>`
+             + `</div>`;
+      }).join('');
+    }
+
+    // ───────────────────────────────────────────────────────────
+    // Epoch timeline strip — network-wide skip rate for the last N
+    // completed epochs plus the current (partial) epoch. Lazy-loaded
+    // once per session (staggered 20s after SkipMonitor.start) and
+    // cached until the current epoch advances.
+    // ───────────────────────────────────────────────────────────
+    const EPOCH_TIMELINE_COUNT = 6; // past completed epochs to fetch
+    const networkEpochHistory = {
+      data: null,            // array of {epoch, skipRate, leaderSlots, blocksProduced, partial?}
+      fetchedAtEpoch: null,  // current epoch at the time of the fetch — invalidates on advance
+      fetching: false        // guard against overlapping loads
+    };
+
+    // Network-wide variant of fetchSkipRateForSlotRange. Returns totals
+    // aggregated across ALL identities instead of filtering to one.
+    async function fetchNetworkSkipRateForSlotRange(firstSlot, lastSlot) {
+      try {
+        const response = await fetch(RPC_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'getBlockProduction',
+            params: [{ range: { firstSlot, lastSlot } }]
+          })
+        });
+        const data = await response.json();
+        const byIdentity = data && data.result && data.result.value && data.result.value.byIdentity;
+        if (!byIdentity) return null;
+        let leaderSlots = 0, blocksProduced = 0;
+        for (const pair of Object.values(byIdentity)) {
+          if (Array.isArray(pair) && pair.length >= 2) {
+            leaderSlots    += pair[0] || 0;
+            blocksProduced += pair[1] || 0;
+          }
+        }
+        if (leaderSlots <= 0) return null;
+        return {
+          skipRate: ((leaderSlots - blocksProduced) / leaderSlots) * 100,
+          leaderSlots,
+          blocksProduced
+        };
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function loadNetworkEpochHistory(numEpochs) {
+      numEpochs = numEpochs || EPOCH_TIMELINE_COUNT;
+      if (networkEpochHistory.fetching) return networkEpochHistory.data;
+      try {
+        const epochInfo = await rpcCall('getEpochInfo');
+        const currentEpoch = epochInfo.epoch;
+
+        // Cache hit for this epoch — skip the RPC fan-out entirely.
+        if (networkEpochHistory.data && networkEpochHistory.fetchedAtEpoch === currentEpoch) {
+          return networkEpochHistory.data;
+        }
+        networkEpochHistory.fetching = true;
+
+        const slotsPerEpoch      = epochInfo.slotsInEpoch;
+        const currentSlot        = epochInfo.absoluteSlot;
+        const slotIndex          = epochInfo.slotIndex;
+        const firstSlotOfCurrent = currentSlot - slotIndex;
+
+        const promises = [];
+        for (let i = 1; i <= numEpochs; i++) {
+          const epochNum = currentEpoch - i;
+          if (epochNum < 0) continue;
+          const epochFirst = firstSlotOfCurrent - (i * slotsPerEpoch);
+          const epochLast  = epochFirst + slotsPerEpoch - 1;
+          promises.push(
+            fetchNetworkSkipRateForSlotRange(epochFirst, epochLast)
+              .then(r => r ? ({ epoch: epochNum, ...r }) : ({ epoch: epochNum, skipRate: null }))
+          );
+        }
+        // Current partial epoch — from epoch-start up to the current head.
+        promises.push(
+          fetchNetworkSkipRateForSlotRange(firstSlotOfCurrent, currentSlot)
+            .then(r => r
+              ? ({ epoch: currentEpoch, partial: true, ...r })
+              : ({ epoch: currentEpoch, partial: true, skipRate: null }))
+        );
+
+        const results = await Promise.all(promises);
+        results.sort((a, b) => a.epoch - b.epoch);
+
+        networkEpochHistory.data = results;
+        networkEpochHistory.fetchedAtEpoch = currentEpoch;
+        networkEpochHistory.fetching = false;
+        return results;
+      } catch (e) {
+        networkEpochHistory.fetching = false;
+        console.warn('[EpochTimeline] load error:', e && e.message || e);
+        return null;
+      }
+    }
+
+    async function renderEpochTimeline() {
+      const barsEl = document.getElementById('epochTimelineBars');
+      if (!barsEl) return;
+
+      const data = await loadNetworkEpochHistory();
+      if (!data || !data.length) {
+        barsEl.innerHTML = '<div class="epoch-timeline-empty">No epoch history available</div>';
+        return;
+      }
+
+      // Height scaling: map 0..8% skip rate to 15..100% bar height.
+      // Above 8% pegs at 100%. Clean epochs still show a visible sliver.
+      const pieces = data.map(d => {
+        const r = d.skipRate;
+        const hasData = typeof r === 'number';
+        const heightPct = hasData
+          ? Math.min(100, Math.max(15, (r / 8) * 100))
+          : 12;
+        const hue = hasData ? Math.round(130 * Math.max(0, 1 - r / 12)) : 0;
+        const color = hasData ? `hsl(${hue}, 55%, 48%)` : 'var(--text-dim)';
+        const rateStr = hasData ? `${r.toFixed(2)}%` : '—';
+        const partialTag = d.partial ? `<span class="epoch-timeline-partial">live</span>` : '';
+        const title = hasData
+          ? `Epoch ${d.epoch}${d.partial ? ' (in progress)' : ''} · ${rateStr} skip · ${(d.blocksProduced||0).toLocaleString()} produced / ${(d.leaderSlots||0).toLocaleString()} assigned`
+          : `Epoch ${d.epoch} — data unavailable`;
+        return `<div class="epoch-timeline-bar-wrap" title="${_escHtml(title)}">`
+             +   `<div class="epoch-timeline-col">`
+             +     `<div class="epoch-timeline-fill" style="background:${color};height:${heightPct.toFixed(1)}%"></div>`
+             +   `</div>`
+             +   `<div class="epoch-timeline-rate">${rateStr}</div>`
+             +   `<div class="epoch-timeline-num">${d.epoch}${partialTag}</div>`
+             + `</div>`;
+      });
+      barsEl.innerHTML = pieces.join('');
+    }
+
     async function updateCurrentLeader() {
       if (!leaderScheduleCache) {
         await loadLeaderSchedule();
@@ -25298,6 +25797,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
           dotsEl.innerHTML = html;
         }
+
+        // ── Leader history tail ─────────────────────────────────
+        // Detect block transitions so we can show the last 1–2 finished
+        // leaders to the left of the current leader card.
+        updateLeaderHistory(currentLeader, currentLeaderInfo, currentSlot, blockOfFour);
+        renderLeaderHistory();
         
         if (currentLeaderInfo) {
           document.getElementById('currentLeaderName').textContent = currentLeaderInfo.name;
@@ -25553,6 +26058,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       let uiTimer   = null;
       let hourTimer = null;
       let epochTimer = null;
+      let epochTimelineTimer = null;   // long-period refresh so epoch advances get picked up
 
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
@@ -26055,6 +26561,68 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (metaEl) {
           metaEl.textContent = `${slots.length} slots · ${slots[0].slot.toLocaleString()} → ${slots[slots.length-1].slot.toLocaleString()}`;
         }
+
+        // Scrubber is driven by the same slot array, so render it alongside.
+        renderScrubber(slots);
+      }
+
+      // ── Mini-scrubber ──────────────────────────────────────
+      // Aggregates the full slot history into up to BUCKET_COUNT buckets and
+      // renders each as a color-coded bar. Clicking a bar scrolls the main
+      // grid to the first slot in that bucket. Color is interpolated from
+      // green (no skips) toward red (many skips) in HSL space.
+      function renderScrubber(slots) {
+        const el = document.getElementById('skipmonScrubber');
+        if (!el) return;
+        if (!slots || !slots.length) { el.innerHTML = ''; return; }
+
+        const BUCKET_COUNT = 100;
+        const bucketSize = Math.max(1, Math.ceil(slots.length / BUCKET_COUNT));
+        const pieces = [];
+        for (let start = 0; start < slots.length; start += bucketSize) {
+          const end = Math.min(start + bucketSize, slots.length);
+          let produced = 0, skipped = 0;
+          for (let i = start; i < end; i++) {
+            if (slots[i].produced) produced++; else skipped++;
+          }
+          const total = produced + skipped;
+          const skipRate = total > 0 ? skipped / total : 0;
+          // Desaturate slightly when there are no skips so the bar reads as
+          // "nominal" rather than shouting green.
+          const hue = Math.round(130 * (1 - skipRate));
+          const sat = skipRate === 0 ? 35 : 60;
+          const lit = skipRate === 0 ? 38 : 46;
+          const color = `hsl(${hue},${sat}%,${lit}%)`;
+          const firstSlot = slots[start].slot;
+          const lastSlot  = slots[end - 1].slot;
+          const title = `Slots ${firstSlot.toLocaleString()}–${lastSlot.toLocaleString()} · `
+                      + `${total} cells · ${(skipRate * 100).toFixed(1)}% skipped`;
+          pieces.push(
+            `<button class="skipmon-scrubber-bar" `
+            + `style="background:${color}" `
+            + `data-idx="${start}" `
+            + `title="${esc(title)}" `
+            + `onclick="skipmonScrubberJump(${start})"></button>`
+          );
+        }
+        el.innerHTML = pieces.join('');
+      }
+
+      // Scroll the main grid so the cell at `index` in the slots array is
+      // near the top of the visible area. Uses the same CELL/GAP/PAD math
+      // as the ghost-padding computation in renderGrid.
+      function scrubberJumpTo(index) {
+        const gridEl = document.getElementById('skipmonGrid');
+        if (!gridEl) return;
+        const CELL = 14, GAP = 3, PAD = 8;
+        const usable = Math.max(0, gridEl.clientWidth - PAD * 2);
+        const perRow = Math.max(1, Math.floor((usable + GAP) / (CELL + GAP)));
+        const rowIdx = Math.floor(index / perRow);
+        const rowHeight = CELL + GAP;
+        gridEl.scrollTo({
+          top: Math.max(0, rowIdx * rowHeight - 40),
+          behavior: 'smooth'
+        });
       }
 
       // Render a single feed item's HTML (used by both full-rebuild and incremental paths)
@@ -26063,7 +26631,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
           ? getValidatorByNodePubkey(e.leader) : null;
         const name = info && info.name ? info.name : (e.leader.slice(0,6) + '…' + e.leader.slice(-4));
         const a = avatarFor(info, e.leader);
-        const tStr = new Date(e.ts).toLocaleTimeString([], { hour12: false });
+        const d = new Date(e.ts);
+        const hh = String(d.getUTCHours()).padStart(2, '0');
+        const mm = String(d.getUTCMinutes()).padStart(2, '0');
+        const ss = String(d.getUTCSeconds()).padStart(2, '0');
+        const tStr = `${hh}:${mm}:${ss} UTC`;
         return `<div class="skipmon-feed-item" data-slot="${e.slot}" onclick="skipmonJumpToValidator('${esc(e.leader)}')">`
              +   `<div class="skipmon-feed-logo" style="${a.style}">${a.inner}</div>`
              +   `<div class="skipmon-feed-body">`
@@ -26176,13 +26748,36 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const visible    = tallies.slice(0, expanded ? maxVisible : Math.min(3, tallies.length));
         const maxRate    = visible.length ? visible[0].rate : 1; // for bar width
 
+        // Build a per-leader slot history from state.slots so we can render a
+        // sparkline in each row. state.slots is ascending by slot; we walk
+        // backward to collect the latest SPARK_SLOTS entries per leader.
+        const SPARK_SLOTS = 20;
+        const sparkByLeader = {};
+        for (let i = state.slots.length - 1; i >= 0; i--) {
+          const s = state.slots[i];
+          const bucket = sparkByLeader[s.leader];
+          if (!bucket) { sparkByLeader[s.leader] = [s]; continue; }
+          if (bucket.length < SPARK_SLOTS) bucket.push(s);
+        }
+        const sparkHtml = (leaderPubkey) => {
+          const list = sparkByLeader[leaderPubkey];
+          if (!list || !list.length) return '<span class="skipmon-spark-empty">—</span>';
+          // We collected newest-first while walking backward; reverse for left→right time order.
+          const ordered = list.slice().reverse();
+          return ordered.map(s =>
+            `<span class="skipmon-spark-pip ${s.produced ? 'produced' : 'skipped'}" `
+            + `title="Slot ${s.slot.toLocaleString()} · ${s.produced ? 'Produced' : 'Skipped'}"></span>`
+          ).join('');
+        };
+
         let html = '<table class="skipmon-top-table"><thead><tr>'
                  + '<th style="width:48px">#</th>'
                  + '<th>Validator</th>'
                  + '<th style="width:90px">Assigned</th>'
                  + '<th style="width:80px">Skipped</th>'
                  + '<th style="width:100px">Skip Rate</th>'
-                 + '<th style="width:28%">Share</th>'
+                 + '<th style="width:120px">Recent 20</th>'
+                 + '<th style="width:22%">Share</th>'
                  + '</tr></thead><tbody>';
 
         visible.forEach((r, i) => {
@@ -26203,6 +26798,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
                 + `<td>${fmtNum(r.assigned)}</td>`
                 + `<td style="color:var(--danger);font-weight:600">${fmtNum(r.skipped)}</td>`
                 + `<td>${r.rate.toFixed(2)}%</td>`
+                + `<td><div class="skipmon-spark">${sparkHtml(r.leader)}</div></td>`
                 + `<td><div class="skipmon-bar-track"><div class="skipmon-bar-fill" style="width:${barPct.toFixed(1)}%"></div></div></td>`
                 + `</tr>`;
         });
@@ -26672,8 +27268,24 @@ Please give me the diagnostic commands to run on my server so you can help me id
         safely(pollHour,      2000);
         safely(pollEpoch,     5000);
         safely(pollPrevEpoch, 12000);   // heaviest — defer longest
+        // Epoch timeline: up to 7 getBlockProduction calls fanning out across
+        // the last 6 epochs + current. Deferred the longest so it never fights
+        // the user's first interactions on this tab. The loader itself caches
+        // per-epoch, so later tab visits within the same epoch are free.
+        safely(() => {
+          if (typeof renderEpochTimeline === 'function') renderEpochTimeline();
+        }, 20000);
         hourTimer  = setInterval(pollHour,  HOUR_POLL_MS);
         epochTimer = setInterval(pollEpoch, EPOCH_POLL_MS);
+        // 15-minute refresh is plenty — the loader's per-epoch cache returns
+        // instantly when the current epoch hasn't advanced, so most ticks
+        // cost nothing. We only pay the ~7-RPC fan-out when the chain
+        // crosses an epoch boundary.
+        epochTimelineTimer = setInterval(() => {
+          if (state && state.running && typeof renderEpochTimeline === 'function') {
+            renderEpochTimeline();
+          }
+        }, 15 * 60 * 1000);
       }
 
       function stop() {
@@ -26683,7 +27295,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (uiTimer)    clearInterval(uiTimer);
         if (hourTimer)  clearInterval(hourTimer);
         if (epochTimer) clearInterval(epochTimer);
-        pollTimer = uiTimer = hourTimer = epochTimer = null;
+        if (epochTimelineTimer) clearInterval(epochTimelineTimer);
+        pollTimer = uiTimer = hourTimer = epochTimer = epochTimelineTimer = null;
         setLiveStatus(false, 'Paused');
       }
 
@@ -26809,7 +27422,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return null;
       }
 
-      return { start, stop, setScope, renderAll, toggleTopExpanded, handleLookupInput, handleLookupBlur, pickLookup, getSlotStatus };
+      return { start, stop, setScope, renderAll, toggleTopExpanded, handleLookupInput, handleLookupBlur, pickLookup, getSlotStatus, scrubberJumpTo };
     })();
 
     // Inline-onclick bridges
@@ -26825,6 +27438,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
     function skipmonToggleTop() {
       if (typeof SkipMonitor !== 'undefined') SkipMonitor.toggleTopExpanded();
+    }
+
+    // Mini-scrubber click → jump the main Recent Slots grid to that bucket.
+    function skipmonScrubberJump(index) {
+      if (typeof SkipMonitor !== 'undefined' && SkipMonitor.scrubberJumpTo) {
+        SkipMonitor.scrubberJumpTo(index);
+      }
     }
 
     // Validator Lookup search: three bridges the search input calls.
