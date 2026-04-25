@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-25T08:37:38.176Z",
-  "totalNodes": 2423,
-  "totalLocations": 2409,
+  "lastUpdated": "2026-04-25T10:36:38.925Z",
+  "totalNodes": 2421,
+  "totalLocations": 2407,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -4301,20 +4301,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "38.58.176.74": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
-    "38.58.176.107": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "54.38.194.74": {
       "country": "Poland",
       "countryCode": "PL",
@@ -8346,13 +8332,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "38.58.178.141": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "144.217.73.226": {
       "country": "Canada",
@@ -16865,64 +16844,71 @@
       "city": "Freeland Park",
       "lat": 40.6128,
       "lon": -87.4917
+    },
+    "45.94.81.202": {
+      "country": "Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.352,
+      "lon": 4.9392
     }
   },
   "countries": {
-    "FI": {
-      "name": "Finland",
-      "count": 86
-    },
     "US": {
       "name": "United States",
-      "count": 1546
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 59
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 160
-    },
-    "FR": {
-      "name": "France",
-      "count": 216
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 187
+      "count": 1543
     },
     "PL": {
       "name": "Poland",
       "count": 112
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 27
+    "CA": {
+      "name": "Canada",
+      "count": 160
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "DE": {
+      "name": "Germany",
+      "count": 187
     },
-    "SG": {
-      "name": "Singapore",
+    "FI": {
+      "name": "Finland",
+      "count": 86
+    },
+    "FR": {
+      "name": "France",
+      "count": 216
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 59
+    },
+    "PT": {
+      "name": "Portugal",
       "count": 2
     },
     "BE": {
       "name": "Belgium",
       "count": 7
     },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "ES": {
       "name": "Spain",
       "count": 4
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 28
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 2
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
     "IT": {
       "name": "Italy",
