@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-27T15:05:47.935Z",
-  "totalNodes": 2268,
-  "totalLocations": 2254,
+  "lastUpdated": "2026-04-27T16:56:38.806Z",
+  "totalNodes": 2267,
+  "totalLocations": 2253,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -3929,13 +3929,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "38.92.24.154": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "23.239.108.38": {
       "country": "United States",
@@ -15805,7 +15798,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 1548
+      "count": 1547
     },
     "GB": {
       "name": "United Kingdom",
