@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-27T01:08:56.582Z",
-  "totalNodes": 2342,
-  "totalLocations": 2326,
+  "lastUpdated": "2026-04-27T03:34:28.016Z",
+  "totalNodes": 2296,
+  "totalLocations": 2280,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -450,13 +450,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "54.38.45.139": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "64.20.57.146": {
       "country": "United States",
@@ -2089,13 +2082,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.91.29.119": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "69.164.250.98": {
       "country": "United States",
       "countryCode": "US",
@@ -2172,13 +2158,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "54.39.19.203": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
     },
     "157.90.67.217": {
       "country": "Germany",
@@ -2782,13 +2761,6 @@
       "lat": 45.5029,
       "lon": -73.5723
     },
-    "51.195.104.175": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "65.108.200.141": {
       "country": "Finland",
       "countryCode": "FI",
@@ -3076,27 +3048,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "135.125.222.184": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "135.125.223.170": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.89.232.62": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "135.125.222.145": {
       "country": "Germany",
       "countryCode": "DE",
@@ -3160,13 +3111,6 @@
       "lat": 50.7012,
       "lon": 3.21501
     },
-    "135.125.222.189": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "51.195.5.182": {
       "country": "Germany",
       "countryCode": "DE",
@@ -3181,13 +3125,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "135.125.222.191": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "51.91.118.79": {
       "country": "France",
       "countryCode": "FR",
@@ -3195,26 +3132,12 @@
       "lat": 48.5734,
       "lon": 7.75211
     },
-    "51.83.143.96": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "51.255.75.37": {
       "country": "France",
       "countryCode": "FR",
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "51.83.141.22": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "51.83.238.112": {
       "country": "Poland",
@@ -3258,13 +3181,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "213.32.27.164": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "51.83.239.84": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3286,28 +3202,7 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "57.129.100.186": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "57.129.101.185": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "57.129.100.183": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "57.129.100.189": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Frankfurt am Main",
@@ -3377,33 +3272,12 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "57.129.102.201": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "142.44.138.223": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
-    },
     "57.129.101.198": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Frankfurt am Main",
       "lat": 50.1162,
       "lon": 8.6693
-    },
-    "217.182.200.109": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
     },
     "57.129.101.193": {
       "country": "Germany",
@@ -3425,13 +3299,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "142.44.139.130": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "54.39.19.66": {
       "country": "Canada",
@@ -3523,13 +3390,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "54.36.172.91": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
     },
     "51.75.61.95": {
       "country": "Poland",
@@ -3923,13 +3783,6 @@
       "lat": 51.4808,
       "lon": 0.174675
     },
-    "57.129.101.204": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "64.20.54.154": {
       "country": "United States",
       "countryCode": "US",
@@ -4175,26 +4028,12 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "51.91.6.64": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "51.75.61.214": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "51.91.29.231": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "65.109.57.34": {
       "country": "Finland",
@@ -4455,26 +4294,12 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "135.125.222.137": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "135.125.222.144": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "57.129.102.186": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "149.56.241.74": {
       "country": "Canada",
@@ -4503,13 +4328,6 @@
       "city": "Roubaix",
       "lat": 50.6977,
       "lon": 3.1786
-    },
-    "51.89.153.192": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "51.255.79.223": {
       "country": "France",
@@ -4580,13 +4398,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "146.59.47.178": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "54.36.174.82": {
       "country": "Poland",
@@ -4889,13 +4700,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "51.83.66.88": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "51.83.66.64": {
       "country": "France",
       "countryCode": "FR",
@@ -4909,34 +4713,6 @@
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "192.99.233.176": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5063,
-      "lon": -73.5794
-    },
-    "158.69.224.219": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
-    "192.99.233.193": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5063,
-      "lon": -73.5794
-    },
-    "144.217.252.67": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
     },
     "158.69.52.28": {
       "country": "Canada",
@@ -4966,21 +4742,7 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "54.39.104.24": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "54.39.104.86": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "54.39.104.21": {
       "country": "Canada",
       "countryCode": "CA",
       "city": "Beauharnois",
@@ -4994,28 +4756,7 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "54.39.103.110": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "54.39.104.137": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "54.39.104.51": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "54.39.104.27": {
       "country": "Canada",
       "countryCode": "CA",
       "city": "Beauharnois",
@@ -5035,27 +4776,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "54.39.104.134": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "54.39.103.109": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "158.69.118.114": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
     },
     "149.56.240.82": {
       "country": "Canada",
@@ -5085,13 +4805,6 @@
       "lat": 45.4995,
       "lon": -73.5848
     },
-    "144.217.67.161": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "149.56.240.87": {
       "country": "Canada",
       "countryCode": "CA",
@@ -5099,35 +4812,7 @@
       "lat": 45.4995,
       "lon": -73.5848
     },
-    "149.56.240.7": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
     "142.44.212.104": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "144.217.68.163": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "54.39.50.134": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "54.39.49.109": {
       "country": "Canada",
       "countryCode": "CA",
       "city": "Beauharnois",
@@ -5714,13 +5399,6 @@
       "city": "Wroclaw",
       "lat": 51.098,
       "lon": 17.0321
-    },
-    "158.69.124.185": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
     },
     "158.69.124.125": {
       "country": "Canada",
@@ -7801,41 +7479,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "51.91.220.142": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.83.96.40": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "57.128.32.128": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Strasbourg",
-      "lat": 48.5734,
-      "lon": 7.75211
-    },
-    "57.128.32.132": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Strasbourg",
-      "lat": 48.5734,
-      "lon": 7.75211
-    },
-    "51.91.29.148": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "51.222.105.217": {
       "country": "Canada",
       "countryCode": "CA",
@@ -7856,13 +7499,6 @@
       "city": "Warsaw",
       "lat": 52.2297,
       "lon": 21.0122
-    },
-    "51.89.194.84": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "144.217.73.198": {
       "country": "Canada",
@@ -13191,13 +12827,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "51.195.190.120": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Blackburn",
-      "lat": 53.75,
-      "lon": -2.48333
-    },
     "37.187.254.106": {
       "country": "France",
       "countryCode": "FR",
@@ -15389,13 +15018,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "23.146.144.61": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9598,
-      "lon": -75.1607
-    },
     "23.175.145.109": {
       "country": "United States",
       "countryCode": "US",
@@ -16264,84 +15886,140 @@
       "lat": 52.352,
       "lon": 4.9392
     },
-    "151.80.27.58": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6974,
-      "lon": 3.178
+    "54.39.132.165": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     },
-    "54.36.172.88": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
+    "216.23.105.8": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
     },
-    "135.125.222.192": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
+    "51.89.192.149": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5081,
+      "lon": -0.1278
+    },
+    "216.23.105.3": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.105.2": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.105.9": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "51.195.190.9": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "Blackburn",
+      "lat": 53.75,
+      "lon": -2.48333
+    },
+    "216.23.105.7": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.105.4": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.105.5": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.105.6": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
     }
   },
   "countries": {
-    "SE": {
-      "name": "Sweden",
-      "count": 7
-    },
-    "US": {
-      "name": "United States",
-      "count": 1542
-    },
-    "FR": {
-      "name": "France",
-      "count": 206
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 113
-    },
     "DE": {
       "name": "Germany",
-      "count": 175
+      "count": 162
     },
     "FI": {
       "name": "Finland",
       "count": 86
     },
+    "US": {
+      "name": "United States",
+      "count": 1549
+    },
     "PL": {
       "name": "Poland",
-      "count": 110
+      "count": 104
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 50
+    },
+    "FR": {
+      "name": "France",
+      "count": 194
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
     "NL": {
       "name": "The Netherlands",
       "count": 28
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 52
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 2
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 7
+    "CA": {
+      "name": "Canada",
+      "count": 93
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "PT": {
-      "name": "Portugal",
+    "SG": {
+      "name": "Singapore",
       "count": 2
     },
     "ES": {
       "name": "Spain",
       "count": 4
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 7
+    },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
     },
     "IT": {
       "name": "Italy",
