@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-27T18:49:47.050Z",
-  "totalNodes": 2267,
-  "totalLocations": 2253,
+  "lastUpdated": "2026-04-27T20:42:41.657Z",
+  "totalNodes": 2268,
+  "totalLocations": 2254,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -15773,64 +15773,71 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "23.146.144.61": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9598,
+      "lon": -75.1607
     }
   },
   "countries": {
-    "SE": {
-      "name": "Sweden",
-      "count": 7
-    },
-    "US": {
-      "name": "United States",
-      "count": 1547
-    },
     "FR": {
       "name": "France",
       "count": 193
     },
-    "CA": {
-      "name": "Canada",
-      "count": 78
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 159
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 82
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 103
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 28
+    "US": {
+      "name": "United States",
+      "count": 1548
     },
     "GB": {
       "name": "United Kingdom",
       "count": 48
     },
+    "DE": {
+      "name": "Germany",
+      "count": 159
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 28
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 82
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 78
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 103
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
     "SG": {
       "name": "Singapore",
       "count": 2
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 7
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
     },
     "PT": {
       "name": "Portugal",
       "count": 2
     },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "ES": {
       "name": "Spain",
       "count": 4
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 7
     },
     "IT": {
       "name": "Italy",
