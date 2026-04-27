@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-27T07:17:37.024Z",
-  "totalNodes": 2291,
-  "totalLocations": 2275,
+  "lastUpdated": "2026-04-27T09:10:02.387Z",
+  "totalNodes": 2275,
+  "totalLocations": 2259,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -653,13 +653,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "51.83.66.111": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "37.120.191.20": {
       "country": "Germany",
@@ -4357,13 +4350,6 @@
       "lat": 45.5029,
       "lon": -73.5723
     },
-    "51.91.29.179": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "54.36.174.82": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4819,75 +4805,12 @@
       "lat": 52.1783,
       "lon": 21.0602
     },
-    "149.56.22.220": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
-    "149.56.22.195": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
-    "149.56.22.70": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
-    "149.56.22.76": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
-    "54.39.18.77": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "149.56.27.65": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
-    "51.79.20.76": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "213.246.39.92": {
       "country": "France",
       "countryCode": "FR",
       "city": "Boulogne-Billancourt",
       "lat": 48.8356,
       "lon": 2.23832
-    },
-    "149.56.24.24": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
-    "149.56.23.83": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
     },
     "38.83.114.48": {
       "country": "United States",
@@ -5141,13 +5064,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "54.39.19.61": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "69.10.40.70": {
       "country": "United States",
       "countryCode": "US",
@@ -5337,13 +5253,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "54.39.105.156": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "5.9.106.211": {
       "country": "Germany",
       "countryCode": "DE",
@@ -5351,33 +5260,12 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "51.161.116.24": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "217.182.203.138": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Wroclaw",
       "lat": 51.098,
       "lon": 17.0321
-    },
-    "158.69.124.125": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
-    "51.161.116.120": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
     },
     "45.139.135.57": {
       "country": "Germany",
@@ -15930,25 +15818,37 @@
     }
   },
   "countries": {
-    "DE": {
-      "name": "Germany",
-      "count": 159
-    },
-    "FR": {
-      "name": "France",
-      "count": 194
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
     "US": {
       "name": "United States",
       "count": 1549
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 28
+    "FR": {
+      "name": "France",
+      "count": 192
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 79
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 159
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 86
     },
     "PL": {
       "name": "Poland",
       "count": 103
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 28
     },
     "GB": {
       "name": "United Kingdom",
@@ -15958,29 +15858,17 @@
       "name": "Singapore",
       "count": 2
     },
-    "CA": {
-      "name": "Canada",
-      "count": 93
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 86
-    },
-    "SE": {
-      "name": "Sweden",
+    "BE": {
+      "name": "Belgium",
       "count": 7
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
     },
     "KE": {
       "name": "Kenya",
       "count": 6
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 7
+    "PT": {
+      "name": "Portugal",
+      "count": 2
     },
     "ES": {
       "name": "Spain",
