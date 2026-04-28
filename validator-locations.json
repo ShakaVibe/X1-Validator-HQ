@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-27T22:37:29.308Z",
-  "totalNodes": 2268,
-  "totalLocations": 2254,
+  "lastUpdated": "2026-04-28T01:11:13.164Z",
+  "totalNodes": 2155,
+  "totalLocations": 2141,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -129,20 +129,6 @@
       "lat": 32.7767,
       "lon": -96.797
     },
-    "51.77.66.175": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.255.93.175": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "74.50.69.74": {
       "country": "United States",
       "countryCode": "US",
@@ -156,13 +142,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "51.89.21.161": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "5.39.218.188": {
       "country": "The Netherlands",
@@ -311,13 +290,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "135.125.171.152": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "67.217.49.10": {
       "country": "United States",
       "countryCode": "US",
@@ -380,13 +352,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "57.129.101.202": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "195.3.223.23": {
       "country": "Poland",
@@ -500,13 +465,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "198.244.167.93": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "51.79.17.83": {
       "country": "Canada",
       "countryCode": "CA",
@@ -563,13 +521,6 @@
       "lat": 40.866,
       "lon": -74.0544
     },
-    "198.244.167.97": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "209.159.154.102": {
       "country": "United States",
       "countryCode": "US",
@@ -583,13 +534,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "51.178.131.67": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
     },
     "64.20.49.142": {
       "country": "United States",
@@ -752,13 +696,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "135.125.171.151": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "204.13.232.66": {
       "country": "United States",
       "countryCode": "US",
@@ -779,13 +716,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "51.255.92.163": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "64.20.46.74": {
       "country": "United States",
@@ -835,13 +765,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "135.125.171.160": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "192.154.102.242": {
       "country": "United States",
@@ -1039,13 +962,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "135.125.171.157": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "135.181.115.157": {
       "country": "Finland",
       "countryCode": "FI",
@@ -1108,13 +1024,6 @@
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
-    },
-    "51.75.61.80": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "161.129.67.218": {
       "country": "United States",
@@ -1200,13 +1109,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "57.129.101.201": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "69.10.52.82": {
       "country": "United States",
       "countryCode": "US",
@@ -1262,20 +1164,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "57.129.101.200": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "51.255.83.50": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9853,
-      "lon": 2.1311
     },
     "66.45.245.42": {
       "country": "United States",
@@ -1354,13 +1242,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "198.244.164.199": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "104.204.140.254": {
       "country": "Germany",
       "countryCode": "DE",
@@ -1388,13 +1269,6 @@
       "city": "Warsaw",
       "lat": 52.2297,
       "lon": 21.0122
-    },
-    "198.244.164.207": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "74.50.84.138": {
       "country": "United States",
@@ -1445,13 +1319,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "152.228.224.72": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "64.20.39.74": {
       "country": "United States",
       "countryCode": "US",
@@ -1466,13 +1333,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "51.75.135.40": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "149.50.101.54": {
       "country": "Poland",
       "countryCode": "PL",
@@ -1486,13 +1346,6 @@
       "city": "Warsaw",
       "lat": 52.1957,
       "lon": 20.9921
-    },
-    "51.83.67.30": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "51.83.223.78": {
       "country": "Poland",
@@ -1521,13 +1374,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "198.244.167.95": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "167.235.3.123": {
       "country": "Germany",
@@ -1570,13 +1416,6 @@
       "city": "Łaziska Górne",
       "lat": 50.1441,
       "lon": 18.8675
-    },
-    "51.255.83.61": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9853,
-      "lon": 2.1311
     },
     "69.164.248.198": {
       "country": "United States",
@@ -1683,13 +1522,6 @@
       "lat": 41.3072,
       "lon": -111.992
     },
-    "51.255.71.228": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "205.209.118.154": {
       "country": "United States",
       "countryCode": "US",
@@ -1724,13 +1556,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "57.129.101.186": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "51.255.92.159": {
       "country": "France",
@@ -1788,13 +1613,6 @@
       "lat": 45.5029,
       "lon": -73.5723
     },
-    "135.125.223.89": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "45.136.213.34": {
       "country": "The Netherlands",
       "countryCode": "NL",
@@ -1815,13 +1633,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "51.83.220.57": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "66.45.226.238": {
       "country": "United States",
@@ -1844,27 +1655,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.89.232.217": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
-    "51.83.221.35": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "135.125.171.161": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "152.53.168.122": {
       "country": "United States",
       "countryCode": "US",
@@ -1885,13 +1675,6 @@
       "city": "Amsterdam",
       "lat": 52.3676,
       "lon": 4.90414
-    },
-    "51.91.221.53": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "157.250.197.34": {
       "country": "United States",
@@ -2159,13 +1942,6 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "54.36.173.25": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
     "67.217.56.186": {
       "country": "United States",
       "countryCode": "US",
@@ -2237,13 +2013,6 @@
       "lon": 3.1786
     },
     "51.89.99.142": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
-    "51.89.6.82": {
       "country": "United Kingdom",
       "countryCode": "GB",
       "city": "London",
@@ -2334,13 +2103,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "51.77.42.15": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "205.209.116.70": {
       "country": "United States",
       "countryCode": "US",
@@ -2396,13 +2158,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "135.125.171.159": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "94.130.167.252": {
       "country": "Germany",
@@ -2572,13 +2327,6 @@
       "lat": 51.5081,
       "lon": -0.1278
     },
-    "51.89.233.64": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Erith",
-      "lat": 51.487,
-      "lon": 0.1812
-    },
     "193.34.212.143": {
       "country": "Poland",
       "countryCode": "PL",
@@ -2649,13 +2397,6 @@
       "lat": 40.9117,
       "lon": -74.1786
     },
-    "135.125.171.156": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "37.187.249.141": {
       "country": "France",
       "countryCode": "FR",
@@ -2697,13 +2438,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "198.244.167.94": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "161.129.70.226": {
       "country": "United States",
@@ -2810,96 +2544,12 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "135.125.171.140": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "74.50.65.194": {
       "country": "United States",
       "countryCode": "US",
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "51.38.53.162": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "147.135.222.99": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Strasbourg",
-      "lat": 48.5734,
-      "lon": 7.75211
-    },
-    "147.135.222.100": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Strasbourg",
-      "lat": 48.5734,
-      "lon": 7.75211
-    },
-    "51.91.73.90": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.77.134.147": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.91.74.121": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.91.17.119": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "135.125.171.145": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "135.125.171.142": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.91.14.216": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.89.40.20": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "45.94.81.250": {
       "country": "The Netherlands",
@@ -2914,13 +2564,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "51.91.30.36": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "65.108.72.181": {
       "country": "Finland",
@@ -3013,27 +2656,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "135.125.222.145": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "79.137.70.59": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "164.132.162.113": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "152.53.246.12": {
       "country": "Germany",
       "countryCode": "DE",
@@ -3062,13 +2684,6 @@
       "lat": 49.4423,
       "lon": 11.0191
     },
-    "137.74.206.226": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "141.94.74.3": {
       "country": "France",
       "countryCode": "FR",
@@ -3076,28 +2691,7 @@
       "lat": 50.7012,
       "lon": 3.21501
     },
-    "51.195.5.182": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3847,
-      "lon": 8.0475
-    },
     "147.135.130.108": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.91.118.79": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Strasbourg",
-      "lat": 48.5734,
-      "lon": 7.75211
-    },
-    "51.255.75.37": {
       "country": "France",
       "countryCode": "FR",
       "city": "Roubaix",
@@ -3118,26 +2712,12 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "141.94.161.14": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "51.195.176.113": {
       "country": "United Kingdom",
       "countryCode": "GB",
       "city": "Erith",
       "lat": 51.4808,
       "lon": 0.174675
-    },
-    "135.125.222.190": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "51.83.239.80": {
       "country": "Poland",
@@ -3166,13 +2746,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "57.129.100.183": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "23.239.109.22": {
       "country": "United States",
@@ -3209,61 +2782,12 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "51.77.66.154": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.195.104.111": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.77.66.146": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.77.64.130": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "38.147.104.94": {
       "country": "United States",
       "countryCode": "US",
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "54.39.19.66": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "57.129.106.86": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "149.202.94.24": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "185.189.46.20": {
       "country": "Sweden",
@@ -3944,27 +3468,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "54.36.174.76": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.255.91.91": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.75.61.214": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "65.109.57.34": {
       "country": "Finland",
       "countryCode": "FI",
@@ -4035,125 +3538,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "57.129.106.95": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "51.195.104.98": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "51.83.221.34": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "135.125.180.4": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "54.38.193.67": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "141.94.100.50": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "57.129.106.94": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "57.129.102.181": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "57.129.106.93": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "57.129.106.97": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "51.83.140.136": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
-    "57.129.102.185": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "57.129.106.92": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "57.129.106.96": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "54.38.193.74": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "57.129.102.184": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
-    "51.83.221.74": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "167.114.208.95": {
       "country": "Canada",
       "countryCode": "CA",
@@ -4217,20 +3601,6 @@
       "lat": 50.6977,
       "lon": 3.1786
     },
-    "141.95.3.150": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
-    "135.125.222.144": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "149.56.241.74": {
       "country": "Canada",
       "countryCode": "CA",
@@ -4266,40 +3636,12 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "217.182.200.53": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.91.29.112": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "216.158.235.162": {
       "country": "United States",
       "countryCode": "US",
       "city": "Paterson",
       "lat": 40.9117,
       "lon": -74.1786
-    },
-    "51.83.66.114": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.83.96.47": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "135.125.109.224": {
       "country": "France",
@@ -4321,13 +3663,6 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
-    },
-    "54.36.174.82": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
     },
     "51.161.52.232": {
       "country": "Canada",
@@ -4567,13 +3902,6 @@
       "lat": 50.1162,
       "lon": 8.6693
     },
-    "57.129.100.171": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "69.164.250.154": {
       "country": "United States",
       "countryCode": "US",
@@ -4644,110 +3972,12 @@
       "lat": 45.4995,
       "lon": -73.5848
     },
-    "54.39.129.199": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "54.39.16.155": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "142.44.212.165": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "54.39.104.86": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "54.39.104.5": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "54.39.104.51": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "144.217.79.138": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "144.217.78.68": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "149.56.240.82": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
-    "192.99.232.19": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5063,
-      "lon": -73.5794
-    },
-    "149.56.26.13": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
     "149.56.240.60": {
       "country": "Canada",
       "countryCode": "CA",
       "city": "Montreal",
       "lat": 45.4995,
       "lon": -73.5848
-    },
-    "149.56.240.87": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
-    },
-    "142.44.212.104": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
-    "144.217.67.184": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
     },
     "103.167.235.160": {
       "country": "Germany",
@@ -4763,13 +3993,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "144.217.67.168": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "95.214.55.210": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4783,13 +4006,6 @@
       "city": "Boulogne-Billancourt",
       "lat": 48.8356,
       "lon": 2.23832
-    },
-    "38.83.114.48": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Atlanta",
-      "lat": 33.7489,
-      "lon": -84.3879
     },
     "5.196.77.69": {
       "country": "France",
@@ -7786,13 +7002,6 @@
       "city": "Freeland Park",
       "lat": 40.6128,
       "lon": -87.4917
-    },
-    "135.125.171.101": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "162.245.187.106": {
       "country": "United States",
@@ -14416,13 +13625,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.89.233.16": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Erith",
-      "lat": 51.487,
-      "lon": 0.1812
-    },
     "45.136.215.90": {
       "country": "Netherlands",
       "countryCode": "NL",
@@ -15767,69 +14969,76 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "51.91.29.179": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "23.146.144.61": {
       "country": "United States",
       "countryCode": "US",
       "city": "Philadelphia",
       "lat": 39.9598,
       "lon": -75.1607
+    },
+    "205.209.115.118": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "57.129.101.122": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
     }
   },
   "countries": {
-    "SE": {
-      "name": "Sweden",
-      "count": 7
-    },
-    "FR": {
-      "name": "France",
-      "count": 193
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 103
+    "DE": {
+      "name": "Germany",
+      "count": 120
     },
     "US": {
       "name": "United States",
       "count": 1548
     },
-    "DE": {
-      "name": "Germany",
-      "count": 159
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 78
+    "PL": {
+      "name": "Poland",
+      "count": 88
     },
     "FI": {
       "name": "Finland",
       "count": 82
     },
+    "CA": {
+      "name": "Canada",
+      "count": 62
+    },
+    "FR": {
+      "name": "France",
+      "count": 162
+    },
     "GB": {
       "name": "United Kingdom",
-      "count": 48
+      "count": 36
     },
     "NL": {
       "name": "The Netherlands",
       "count": 28
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
     "BE": {
       "name": "Belgium",
+      "count": 7
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 7
     },
     "SG": {
       "name": "Singapore",
       "count": 2
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "PT": {
       "name": "Portugal",
