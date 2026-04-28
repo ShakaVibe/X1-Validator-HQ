@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-28T07:15:31.555Z",
+  "lastUpdated": "2026-04-28T09:10:08.244Z",
   "totalNodes": 2160,
   "totalLocations": 2146,
   "locations": {
@@ -3118,13 +3118,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.89.6.180": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "146.59.55.11": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3133,13 +3126,6 @@
       "lon": 21.0283
     },
     "198.244.164.218": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
-    "198.244.167.80": {
       "country": "United Kingdom",
       "countryCode": "GB",
       "city": "London",
@@ -3194,13 +3180,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "144.217.252.202": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
     },
     "65.109.49.253": {
       "country": "Finland",
@@ -3315,13 +3294,6 @@
       "lon": -123.2068
     },
     "54.38.192.216": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "54.38.194.74": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
@@ -15024,52 +14996,84 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "146.59.82.106": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "146.59.68.196": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "51.210.3.234": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Wattrelos",
+      "lat": 50.7012,
+      "lon": 3.21501
+    },
+    "162.19.121.209": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Wattrelos",
+      "lat": 50.7012,
+      "lon": 3.21501
     }
   },
   "countries": {
-    "DE": {
-      "name": "Germany",
-      "count": 117
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 87
+    "FR": {
+      "name": "France",
+      "count": 163
     },
     "US": {
       "name": "United States",
       "count": 1548
     },
-    "PL": {
-      "name": "Poland",
-      "count": 98
-    },
     "GB": {
       "name": "United Kingdom",
-      "count": 31
+      "count": 29
     },
-    "FR": {
-      "name": "France",
-      "count": 161
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
+    "DE": {
+      "name": "Germany",
+      "count": 117
     },
     "NL": {
       "name": "The Netherlands",
       "count": 28
     },
+    "FI": {
+      "name": "Finland",
+      "count": 87
+    },
     "CA": {
       "name": "Canada",
-      "count": 61
+      "count": 60
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "PL": {
+      "name": "Poland",
+      "count": 99
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
     "SG": {
       "name": "Singapore",
       "count": 2
+    },
+    "PT": {
+      "name": "Portugal",
+      "count": 2
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "ES": {
       "name": "Spain",
@@ -15078,10 +15082,6 @@
     "BE": {
       "name": "Belgium",
       "count": 7
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 2
     },
     "IT": {
       "name": "Italy",
