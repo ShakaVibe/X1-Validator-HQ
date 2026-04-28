@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-28T15:11:04.423Z",
+  "lastUpdated": "2026-04-28T17:00:57.563Z",
   "totalNodes": 2160,
   "totalLocations": 2146,
   "locations": {
@@ -3096,13 +3096,6 @@
       "city": "London",
       "lat": 51.5122,
       "lon": -0.0816
-    },
-    "51.195.190.6": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Blackburn",
-      "lat": 53.75,
-      "lon": -2.48333
     },
     "38.147.104.84": {
       "country": "United States",
@@ -14675,13 +14668,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "216.23.107.252": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
     "146.59.84.129": {
       "country": "Poland",
       "countryCode": "PL",
@@ -14716,34 +14702,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "216.23.107.253": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
-    "216.23.107.254": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
-    "216.23.107.250": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
-    "216.23.107.251": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
     },
     "146.59.84.240": {
       "country": "Poland",
@@ -14948,13 +14906,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "57.129.100.171": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "51.38.159.47": {
       "country": "Poland",
       "countryCode": "PL",
@@ -15024,68 +14975,117 @@
       "city": "Lisbon",
       "lat": 38.7364,
       "lon": -9.15079
+    },
+    "216.23.105.6": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.105.4": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "5.39.57.87": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Paris",
+      "lat": 48.8575,
+      "lon": 2.35138
+    },
+    "216.23.105.5": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.105.3": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.105.2": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "57.129.101.122": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
     }
   },
   "countries": {
-    "SE": {
-      "name": "Sweden",
-      "count": 7
-    },
-    "FR": {
-      "name": "France",
-      "count": 165
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 108
-    },
-    "US": {
-      "name": "United States",
-      "count": 1548
-    },
     "DE": {
       "name": "Germany",
       "count": 111
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 59
     },
     "FI": {
       "name": "Finland",
       "count": 87
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 23
+    "US": {
+      "name": "United States",
+      "count": 1548
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 108
+    },
+    "FR": {
+      "name": "France",
+      "count": 166
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
     "NL": {
       "name": "The Netherlands",
       "count": 28
     },
+    "CA": {
+      "name": "Canada",
+      "count": 59
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 22
+    },
     "KE": {
       "name": "Kenya",
       "count": 6
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 7
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 2
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 3
     },
     "CZ": {
       "name": "Czechia",
       "count": 1
     },
+    "SG": {
+      "name": "Singapore",
+      "count": 2
+    },
     "ES": {
       "name": "Spain",
       "count": 4
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 7
+    },
+    "PT": {
+      "name": "Portugal",
+      "count": 3
     },
     "IT": {
       "name": "Italy",
