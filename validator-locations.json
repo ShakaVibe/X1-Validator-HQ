@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-28T03:34:36.559Z",
-  "totalNodes": 2155,
-  "totalLocations": 2141,
+  "lastUpdated": "2026-04-28T05:34:14.441Z",
+  "totalNodes": 2156,
+  "totalLocations": 2142,
   "locations": {
     "198.244.167.86": {
       "country": "United Kingdom",
@@ -373,13 +373,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "164.132.162.216": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "45.139.134.57": {
       "country": "Germany",
@@ -3167,13 +3160,6 @@
       "lat": 51.5081,
       "lon": -0.1278
     },
-    "149.202.80.31": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "198.244.167.80": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -3196,20 +3182,6 @@
       "lon": -2.48333
     },
     "51.89.219.50": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
-    "51.195.190.25": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "Blackburn",
-      "lat": 53.75,
-      "lon": -2.48333
-    },
-    "51.89.192.236": {
       "country": "United Kingdom",
       "countryCode": "GB",
       "city": "London",
@@ -14213,20 +14185,6 @@
       "lat": 40.7128,
       "lon": -74.006
     },
-    "216.23.105.3": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
-    "216.23.105.2": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
     "216.23.105.9": {
       "country": "United States",
       "countryCode": "US",
@@ -14235,27 +14193,6 @@
       "lon": -74.006
     },
     "216.23.105.7": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
-    "216.23.105.4": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
-    "216.23.105.5": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
-    "216.23.105.6": {
       "country": "United States",
       "countryCode": "US",
       "city": "New York",
@@ -14989,56 +14926,126 @@
       "city": "Frankfurt am Main",
       "lat": 50.1162,
       "lon": 8.6693
+    },
+    "216.23.107.252": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "146.59.84.129": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "146.59.84.204": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "146.59.84.111": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "146.59.84.241": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "65.108.1.43": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "216.23.107.253": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.107.254": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.107.250": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.107.251": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
     }
   },
   "countries": {
-    "DE": {
-      "name": "Germany",
-      "count": 120
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
+    "FR": {
+      "name": "France",
+      "count": 160
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 92
     },
     "US": {
       "name": "United States",
       "count": 1548
     },
-    "PL": {
-      "name": "Poland",
-      "count": 88
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 82
+    "DE": {
+      "name": "Germany",
+      "count": 120
     },
     "CA": {
       "name": "Canada",
       "count": 62
     },
-    "FR": {
-      "name": "France",
-      "count": 162
+    "FI": {
+      "name": "Finland",
+      "count": 83
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 36
+      "count": 34
     },
     "NL": {
       "name": "The Netherlands",
       "count": 28
     },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "BE": {
       "name": "Belgium",
-      "count": 7
-    },
-    "SE": {
-      "name": "Sweden",
       "count": 7
     },
     "SG": {
       "name": "Singapore",
       "count": 2
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
     },
     "PT": {
       "name": "Portugal",
