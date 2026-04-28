@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-28T11:05:16.067Z",
+  "lastUpdated": "2026-04-28T12:57:56.853Z",
   "totalNodes": 2160,
   "totalLocations": 2146,
   "locations": {
@@ -1088,13 +1088,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "51.255.91.53": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "69.10.52.82": {
       "country": "United States",
       "countryCode": "US",
@@ -1465,13 +1458,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "198.244.164.173": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "65.108.78.88": {
       "country": "Finland",
@@ -2369,13 +2355,6 @@
       "lat": 49.4423,
       "lon": 11.0191
     },
-    "217.182.133.29": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "216.158.235.182": {
       "country": "United States",
       "countryCode": "US",
@@ -3041,13 +3020,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "135.125.223.221": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "185.189.46.27": {
       "country": "Sweden",
       "countryCode": "SE",
@@ -3097,13 +3069,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "146.59.47.185": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "51.79.77.133": {
       "country": "Canada",
       "countryCode": "CA",
@@ -3126,13 +3091,6 @@
       "lon": 21.0283
     },
     "198.244.164.218": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
-    "51.89.232.82": {
       "country": "United Kingdom",
       "countryCode": "GB",
       "city": "London",
@@ -3174,13 +3132,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "135.125.223.220": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "65.109.49.253": {
       "country": "Finland",
       "countryCode": "FI",
@@ -3216,13 +3167,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "54.36.109.118": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3847,
-      "lon": 8.0475
-    },
     "198.244.164.71": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -3236,20 +3180,6 @@
       "city": "Frankfurt am Main",
       "lat": 50.1162,
       "lon": 8.6693
-    },
-    "51.83.141.86": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "51.77.64.149": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "51.195.190.198": {
       "country": "United Kingdom",
@@ -15018,7 +14948,77 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "57.129.101.122": {
+    "141.95.172.91": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Wattrelos",
+      "lat": 50.7012,
+      "lon": 3.21501
+    },
+    "37.187.57.175": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Wattrelos",
+      "lat": 50.7012,
+      "lon": 3.21501
+    },
+    "146.59.82.109": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "141.95.171.16": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Wattrelos",
+      "lat": 50.7012,
+      "lon": 3.21501
+    },
+    "146.59.71.153": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "37.187.57.176": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Wattrelos",
+      "lat": 50.7012,
+      "lon": 3.21501
+    },
+    "146.59.71.17": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "146.59.71.156": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "146.59.71.33": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "146.59.71.15": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2633,
+      "lon": 21.0283
+    },
+    "57.129.100.171": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Frankfurt am Main",
@@ -15027,53 +15027,53 @@
     }
   },
   "countries": {
-    "SE": {
-      "name": "Sweden",
-      "count": 7
-    },
-    "FR": {
-      "name": "France",
-      "count": 163
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 99
+    "DE": {
+      "name": "Germany",
+      "count": 113
     },
     "US": {
       "name": "United States",
       "count": 1548
     },
-    "DE": {
-      "name": "Germany",
-      "count": 117
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 60
+    "PL": {
+      "name": "Poland",
+      "count": 103
     },
     "FI": {
       "name": "Finland",
       "count": 87
     },
+    "CA": {
+      "name": "Canada",
+      "count": 60
+    },
+    "FR": {
+      "name": "France",
+      "count": 165
+    },
     "GB": {
       "name": "United Kingdom",
-      "count": 29
+      "count": 27
     },
     "NL": {
       "name": "The Netherlands",
       "count": 28
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
     "BE": {
       "name": "Belgium",
+      "count": 7
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 7
     },
     "SG": {
       "name": "Singapore",
       "count": 2
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "PT": {
       "name": "Portugal",
