@@ -26763,6 +26763,18 @@ Please give me the diagnostic commands to run on my server so you can help me id
       let epochTimer = null;
       let epochTimelineTimer = null;   // long-period refresh so epoch advances get picked up
 
+      // ── Per-identity backfill tracking ─────────────────────────
+      // iPad Safari occasionally truncates / fails the unfiltered getBlockProduction
+      // response (which can be >1MB on a busy mainnet), causing portfolio validators
+      // to render as "no leader slots assigned" even when they do have slots.
+      // When we detect a portfolio/lookup validator is missing from the bulk response,
+      // we fall back to a per-identity getBlockProduction (same call the Slot Explorer
+      // modal uses successfully on iPad — far smaller payload). This Set tracks
+      // in-flight (or recently-issued) backfill keys to avoid spamming duplicate
+      // RPCs on every render. Keys are reset by pollEpoch / pollPrevEpoch when
+      // fresh bulk data arrives.
+      const _portfolioBackfillSeen = new Set();
+
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
           { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
@@ -26919,8 +26931,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
           if (!state || !state.running) return;
           const byIdentity = (prod && prod.value && prod.value.byIdentity) || {};
           state.epochProd = { byIdentity, ts: Date.now(), epoch: state.epoch };
+          // Fresh current-epoch bulk data → clear cur backfill tracking so any still-missing
+          // entries (iPad-truncated bulk response) get retried per-identity.
+          for (const k of [..._portfolioBackfillSeen]) {
+            if (k.startsWith('cur:')) _portfolioBackfillSeen.delete(k);
+          }
           renderStats();
           renderTop();  // top skippers panel is epoch-driven now
+          if (state.scope === 'portfolio' || state.scope === 'lookup') {
+            backfillPortfolioEpochs();
+          }
         } catch (e) {
           console.warn('[SkipMonitor] epoch poll error:', e && e.message || e);
         }
@@ -26943,10 +26963,143 @@ Please give me the diagnostic commands to run on my server so you can help me id
           if (!state || !state.running) return;
           const byIdentity = (prod && prod.value && prod.value.byIdentity) || {};
           state.prevEpochProd = { byIdentity, ts: Date.now(), epoch: epochInfo.epoch - 1 };
+          // Fresh prev-epoch bulk data → clear prev backfill tracking so any still-missing
+          // entries get retried per-identity.
+          for (const k of [..._portfolioBackfillSeen]) {
+            if (k.startsWith('prev:')) _portfolioBackfillSeen.delete(k);
+          }
           renderStats();
+          if (state.scope === 'portfolio' || state.scope === 'lookup') {
+            backfillPortfolioEpochs();
+          }
         } catch (e) {
           console.warn('[SkipMonitor] prev epoch poll error:', e && e.message || e);
         }
+      }
+
+      // ── Per-identity backfill (iPad Safari fix) ─────────────────────────
+      // Ensures portfolio / lookup validators get rendered correctly even when
+      // the bulk getBlockProduction response truncates or is incomplete.
+      // For each portfolio validator missing from state.epochProd / state.prevEpochProd,
+      // fires a small per-identity getBlockProduction (the same shape the Slot
+      // Explorer modal uses successfully on iPad). On success, the result is
+      // merged into the shared byIdentity map so the next render picks it up.
+      // No-op when bulk data is complete, when scope is 'network', or when the
+      // portfolio is empty. Safe to call repeatedly — _portfolioBackfillSeen
+      // de-duplicates in-flight requests per (which, epoch, nodePubkey).
+      async function backfillPortfolioEpochs() {
+        if (!state || !state.running) return;
+        if (state.scope !== 'portfolio' && state.scope !== 'lookup') return;
+
+        // Resolve the set of nodePubkeys we care about for the active scope.
+        const targets = [];
+        if (state.scope === 'portfolio') {
+          if (!Array.isArray(myPortfolio) || myPortfolio.length === 0) return;
+          for (const votePubkey of myPortfolio) {
+            const v = Array.isArray(allValidators)
+              ? allValidators.find(x => x.votePubkey === votePubkey) : null;
+            if (v && v.nodePubkey) targets.push(v.nodePubkey);
+          }
+        } else { // lookup
+          const votePubkey = state.lookupVotePubkey;
+          if (!votePubkey) return;
+          const v = Array.isArray(allValidators)
+            ? allValidators.find(x => x.votePubkey === votePubkey) : null;
+          if (v && v.nodePubkey) targets.push(v.nodePubkey);
+        }
+        if (targets.length === 0) return;
+
+        // Decide which validators are missing from each bulk response.
+        // If the bulk poll hasn't completed yet at all (epochProd === null),
+        // we still wait — pollEpoch fires shortly after start and will trigger
+        // this backfill itself. Backfilling pre-poll would race against the
+        // bulk call and risk creating an empty epochProd shell that flips
+        // panels from "Loading…" to "no slots".
+        const curBulk  = state.epochProd     && state.epochProd.byIdentity;
+        const prevBulk = state.prevEpochProd && state.prevEpochProd.byIdentity;
+        const needCur  = curBulk  ? targets.filter(np => !curBulk[np])  : [];
+        const needPrev = prevBulk ? targets.filter(np => !prevBulk[np]) : [];
+        if (needCur.length === 0 && needPrev.length === 0) return;
+
+        const curEpochNum  = (state.epochProd && state.epochProd.epoch) ?? state.epoch ?? '?';
+        const prevEpochNum = (state.prevEpochProd && state.prevEpochProd.epoch)
+          ?? ((typeof state.epoch === 'number') ? state.epoch - 1 : '?');
+
+        const tasks = [];
+
+        // ── Current epoch backfills ────────────────────────────
+        for (const np of needCur) {
+          const key = `cur:${curEpochNum}:${np}`;
+          if (_portfolioBackfillSeen.has(key)) continue;
+          _portfolioBackfillSeen.add(key);
+          tasks.push((async () => {
+            try {
+              const prod = await rpcCall('getBlockProduction', [{ identity: np }]);
+              if (!state || !state.running) return;
+              const pair = prod && prod.value && prod.value.byIdentity && prod.value.byIdentity[np];
+              if (!pair) return;
+              if (!state.epochProd) {
+                state.epochProd = { byIdentity: {}, ts: Date.now(), epoch: state.epoch };
+              }
+              state.epochProd.byIdentity[np] = pair;
+            } catch (e) {
+              // Allow retry next render
+              _portfolioBackfillSeen.delete(key);
+              console.warn('[SkipMonitor] portfolio backfill (cur) failed for', np, e && e.message || e);
+            }
+          })());
+        }
+
+        // ── Previous epoch backfills (need range from epochInfo) ──
+        if (needPrev.length > 0) {
+          tasks.push((async () => {
+            let prevRange = null;
+            try {
+              const epochInfo = await rpcCall('getEpochInfo');
+              if (!state || !state.running) return;
+              const slotsPerEpoch = epochInfo.slotsInEpoch;
+              const currentStart  = epochInfo.absoluteSlot - epochInfo.slotIndex;
+              const prevEnd       = currentStart - 1;
+              const prevStart     = prevEnd - slotsPerEpoch + 1;
+              if (prevStart >= 0) prevRange = { firstSlot: prevStart, lastSlot: prevEnd };
+            } catch (e) {
+              console.warn('[SkipMonitor] portfolio backfill (epochInfo) failed:', e && e.message || e);
+              return;
+            }
+            if (!prevRange) return;
+
+            const prevTasks = [];
+            for (const np of needPrev) {
+              const key = `prev:${prevEpochNum}:${np}`;
+              if (_portfolioBackfillSeen.has(key)) continue;
+              _portfolioBackfillSeen.add(key);
+              prevTasks.push((async () => {
+                try {
+                  const prod = await rpcCall('getBlockProduction', [{ identity: np, range: prevRange }]);
+                  if (!state || !state.running) return;
+                  const pair = prod && prod.value && prod.value.byIdentity && prod.value.byIdentity[np];
+                  if (!pair) return;
+                  if (!state.prevEpochProd) {
+                    state.prevEpochProd = { byIdentity: {}, ts: Date.now(), epoch: prevEpochNum };
+                  }
+                  state.prevEpochProd.byIdentity[np] = pair;
+                } catch (e) {
+                  _portfolioBackfillSeen.delete(key);
+                  console.warn('[SkipMonitor] portfolio backfill (prev) failed for', np, e && e.message || e);
+                }
+              })());
+            }
+            await Promise.allSettled(prevTasks);
+          })());
+        }
+
+        if (tasks.length === 0) return;
+        await Promise.allSettled(tasks);
+
+        // Re-render the active view so the freshly-backfilled validators show up.
+        if (!state || !state.running) return;
+        if (state.scope === 'portfolio')   renderPortfolioView();
+        else if (state.scope === 'lookup') renderLookupView();
       }
 
       function inScope(leader) {
@@ -27645,6 +27798,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
           cards.push(renderPortfolioCard(v));
         }
         grid.innerHTML = cards.join('') || `<div class="skipmon-empty">No portfolio validators found.</div>`;
+
+        // iPad Safari fix: if the bulk getBlockProduction response was truncated
+        // and any portfolio validators are missing from state.epochProd /
+        // state.prevEpochProd, fetch them per-identity. No-op when bulk is complete.
+        backfillPortfolioEpochs();
       }
 
       // Validator Lookup scope: render the single selected validator's scorecard
@@ -27693,6 +27851,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
           meta.textContent = `Epochs ${prevN} & ${curN}`;
         }
         grid.innerHTML = renderPortfolioCard(v);
+
+        // iPad Safari fix: if the bulk getBlockProduction response is missing
+        // this validator, backfill per-identity (same call shape the Slot
+        // Explorer uses successfully on iPad).
+        backfillPortfolioEpochs();
       }
 
       function renderPortfolioCard(v) {
