@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-29T20:43:10.873Z",
-  "totalNodes": 2160,
-  "totalLocations": 2146,
+  "lastUpdated": "2026-04-29T22:40:10.590Z",
+  "totalNodes": 2161,
+  "totalLocations": 2147,
   "locations": {
     "162.250.121.78": {
       "country": "United States",
@@ -15024,6 +15024,13 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0749
+    },
+    "102.210.25.134": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
     }
   },
   "countries": {
@@ -15069,7 +15076,7 @@
     },
     "KE": {
       "name": "Kenya",
-      "count": 6
+      "count": 7
     },
     "NL": {
       "name": "The Netherlands",
