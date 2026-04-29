@@ -27911,7 +27911,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
           isCurrent: true,
           epochNum:  state.epoch,
           hasData:   !!state.epochProd,
-          hasValidatorData: curPair !== null && (curAssignedTotal > 0),
+          // NOTE: don't require curPair !== null here. curPair comes from the
+          // bulk getBlockProduction response (state.epochProd.byIdentity),
+          // which only includes validators that have already had a leader slot
+          // elapse this epoch. A validator whose slots are entirely upcoming
+          // is missing from that map but still has curAssignedTotal > 0 from
+          // the leader schedule — and we absolutely want to show those.
+          hasValidatorData: curAssignedTotal > 0,
           assigned:  curAssignedTotal,
           elapsed:   curElapsed,
           produced:  curProduced,
