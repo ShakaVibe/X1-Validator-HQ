@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-30T12:56:12.913Z",
+  "lastUpdated": "2026-04-30T15:05:56.393Z",
   "totalNodes": 2162,
   "totalLocations": 2146,
   "locations": {
@@ -15027,18 +15027,6 @@
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 108
-    },
-    "FR": {
-      "name": "France",
-      "count": 169
-    },
     "FI": {
       "name": "Finland",
       "count": 87
@@ -15047,13 +15035,13 @@
       "name": "United States",
       "count": 1549
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 28
+    "FR": {
+      "name": "France",
+      "count": 169
     },
-    "CA": {
-      "name": "Canada",
-      "count": 59
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
     "PL": {
       "name": "Poland",
@@ -15063,29 +15051,41 @@
       "name": "United Kingdom",
       "count": 21
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 6
+    "DE": {
+      "name": "Germany",
+      "count": 108
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 28
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 59
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SG": {
       "name": "Singapore",
       "count": 2
     },
-    "ES": {
-      "name": "Spain",
-      "count": 4
+    "PT": {
+      "name": "Portugal",
+      "count": 3
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
+    "BE": {
+      "name": "Belgium",
+      "count": 6
     },
     "CZ": {
       "name": "Czechia",
       "count": 1
     },
-    "PT": {
-      "name": "Portugal",
-      "count": 3
+    "ES": {
+      "name": "Spain",
+      "count": 4
     },
     "IT": {
       "name": "Italy",
