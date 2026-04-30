@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-30T09:06:58.707Z",
+  "lastUpdated": "2026-04-30T11:01:38.576Z",
   "totalNodes": 2161,
   "totalLocations": 2145,
   "locations": {
@@ -14927,47 +14927,12 @@
       "lat": 38.7364,
       "lon": -9.15079
     },
-    "216.23.105.6": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
-    "216.23.105.4": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
     "5.39.57.87": {
       "country": "France",
       "countryCode": "FR",
       "city": "Paris",
       "lat": 48.8575,
       "lon": 2.35138
-    },
-    "216.23.105.5": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
-    "216.23.105.3": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
-    "216.23.105.2": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
     },
     "38.83.114.48": {
       "country": "United States",
@@ -15017,56 +14982,95 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "216.23.107.253": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.107.252": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.107.250": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.107.251": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "216.23.107.254": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 108
-    },
-    "FR": {
-      "name": "France",
-      "count": 168
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 87
-    },
     "US": {
       "name": "United States",
       "count": 1549
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 28
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 59
     },
     "PL": {
       "name": "Poland",
       "count": 110
     },
+    "CA": {
+      "name": "Canada",
+      "count": 59
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 108
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 87
+    },
+    "FR": {
+      "name": "France",
+      "count": 168
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 21
+    },
+    "PT": {
+      "name": "Portugal",
+      "count": 3
     },
     "BE": {
       "name": "Belgium",
       "count": 6
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 2
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "ES": {
       "name": "Spain",
       "count": 4
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 28
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 2
     },
     "SE": {
       "name": "Sweden",
@@ -15075,10 +15079,6 @@
     "CZ": {
       "name": "Czechia",
       "count": 1
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 3
     },
     "IT": {
       "name": "Italy",
