@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-04-30T18:51:03.880Z",
-  "totalNodes": 2162,
-  "totalLocations": 2146,
+  "lastUpdated": "2026-04-30T20:43:05.687Z",
+  "totalNodes": 2157,
+  "totalLocations": 2141,
   "locations": {
     "162.250.121.78": {
       "country": "United States",
@@ -6183,20 +6183,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "51.91.7.153": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "104.37.190.90": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "51.222.105.217": {
       "country": "Canada",
@@ -13520,26 +13506,12 @@
       "lat": 48.8575,
       "lon": 2.35138
     },
-    "51.255.209.249": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6916,
-      "lon": 3.20151
-    },
     "5.196.61.130": {
       "country": "Italy",
       "countryCode": "IT",
       "city": "Milan",
       "lat": 45.5002,
       "lon": 9.18347
-    },
-    "46.105.88.251": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Paris",
-      "lat": 48.8575,
-      "lon": 2.35138
     },
     "162.19.72.121": {
       "country": "France",
@@ -13561,13 +13533,6 @@
       "city": "Zaventem",
       "lat": 50.871,
       "lon": 4.47636
-    },
-    "54.36.26.228": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "141.95.157.29": {
       "country": "France",
@@ -13687,13 +13652,6 @@
       "city": "Philadelphia",
       "lat": 39.9596,
       "lon": -75.161
-    },
-    "45.141.224.114": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5072,
-      "lon": -0.127586
     },
     "104.250.159.138": {
       "country": "United States",
@@ -15024,16 +14982,23 @@
       "city": "Paris",
       "lat": 48.8558,
       "lon": 2.3494
+    },
+    "149.50.101.73": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1549
+      "count": 1548
     },
     "PL": {
       "name": "Poland",
-      "count": 110
+      "count": 111
     },
     "CA": {
       "name": "Canada",
@@ -15049,11 +15014,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 169
+      "count": 165
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 21
+      "count": 20
     },
     "PT": {
       "name": "Portugal",
