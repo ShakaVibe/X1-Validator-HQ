@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-01T14:40:55.355Z",
-  "totalNodes": 2115,
-  "totalLocations": 2098,
+  "lastUpdated": "2026-05-01T16:39:44.572Z",
+  "totalNodes": 2114,
+  "totalLocations": 2097,
   "locations": {
     "162.250.121.78": {
       "country": "United States",
@@ -3643,13 +3643,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "51.83.66.64": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "51.75.54.214": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4118,13 +4111,6 @@
       "city": "Amsterdam",
       "lat": 52.3676,
       "lon": 4.90414
-    },
-    "5.9.106.211": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "217.182.203.138": {
       "country": "Poland",
@@ -14688,67 +14674,74 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
+    },
+    "216.219.91.54": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 1544
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
-    "PL": {
-      "name": "Poland",
-      "count": 110
+    "DE": {
+      "name": "Germany",
+      "count": 78
     },
-    "CA": {
-      "name": "Canada",
-      "count": 59
+    "FR": {
+      "name": "France",
+      "count": 162
     },
     "FI": {
       "name": "Finland",
       "count": 82
     },
-    "FR": {
-      "name": "France",
-      "count": 163
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 79
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 20
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 3
-    },
-    "BE": {
-      "name": "Belgium",
-      "count": 6
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "ES": {
-      "name": "Spain",
-      "count": 4
+    "US": {
+      "name": "United States",
+      "count": 1545
     },
     "NL": {
       "name": "The Netherlands",
       "count": 28
     },
+    "CA": {
+      "name": "Canada",
+      "count": 59
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 110
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 20
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 6
+    },
+    "ES": {
+      "name": "Spain",
+      "count": 4
+    },
     "SE": {
       "name": "Sweden",
       "count": 7
     },
-    "SG": {
-      "name": "Singapore",
-      "count": 1
-    },
     "CZ": {
       "name": "Czechia",
+      "count": 1
+    },
+    "PT": {
+      "name": "Portugal",
+      "count": 3
+    },
+    "SG": {
+      "name": "Singapore",
       "count": 1
     },
     "IT": {
