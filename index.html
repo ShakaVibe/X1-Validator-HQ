@@ -5962,52 +5962,48 @@
       font-weight: 600;
     }
 
-    /* ── Delegations leaderboard controls ─────────────────────────── */
-    .delegations-controls {
+    /* ── Delegations leaderboard: source segmented control ─────────── */
+    .delegations-segment-wrap {
       max-width: 900px;
-      margin: -1rem auto 1.5rem;
-      padding: 1rem 1.25rem;
+      margin: 0 auto 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+    .delegations-segment {
+      display: inline-flex;
       background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
+      border-radius: 10px;
+      padding: 4px;
+      gap: 2px;
     }
-    .delegations-control-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .delegations-control-label {
-      font-size: 0.85rem;
-      color: var(--text-dim);
-      font-weight: 500;
-      min-width: 60px;
-    }
-    .delegations-pill {
-      padding: 0.45rem 0.95rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: var(--bg-primary);
+    .delegations-segment-btn {
+      padding: 0.5rem 1.25rem;
+      border: none;
+      background: transparent;
       color: var(--text-secondary);
-      transition: all 0.15s;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 500;
+      border-radius: 7px;
       font-family: 'Space Grotesk', sans-serif;
+      transition: background 0.15s, color 0.15s;
+      white-space: nowrap;
     }
-    .delegations-pill:hover {
-      border-color: var(--accent-blue);
-      color: var(--accent-blue);
+    .delegations-segment-btn:hover:not(.active) {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.04);
     }
-    .delegations-pill.active {
+    .delegations-segment-btn.active {
       background: var(--accent-blue);
-      border-color: var(--accent-blue);
       color: var(--bg-primary);
       font-weight: 600;
     }
+    @media (max-width: 480px) {
+      .delegations-segment-btn { padding: 0.45rem 0.85rem; font-size: 0.82rem; }
+    }
+
+    /* ── Delegations summary line (lives inside the leaderboard header) ─ */
     .delegations-summary {
       margin-top: 0.5rem;
       padding: 0.75rem 1rem;
@@ -9855,18 +9851,12 @@
         <button class="leaderboard-cat-btn" onclick="switchLeaderboard('delegations')">🤝 Delegations</button>
       </div>
 
-      <!-- Delegations selector controls (only visible when Delegations is active) -->
-      <div class="delegations-controls" id="delegationsControls" style="display: none;">
-        <div class="delegations-control-row">
-          <span class="delegations-control-label">Source:</span>
-          <button class="delegations-pill active" data-source="both" onclick="setDelegationsSource('both')">Both</button>
-          <button class="delegations-pill" data-source="x1Labs" onclick="setDelegationsSource('x1Labs')">X1 Labs</button>
-          <button class="delegations-pill" data-source="ripper" onclick="setDelegationsSource('ripper')">Ripper Pool</button>
-        </div>
-        <div class="delegations-control-row">
-          <span class="delegations-control-label">Show:</span>
-          <button class="delegations-pill active" data-team="without" onclick="setDelegationsTeamFilter('without')">Without X1 Labs Team</button>
-          <button class="delegations-pill" data-team="with" onclick="setDelegationsTeamFilter('with')">With X1 Labs Team</button>
+      <!-- Delegations source selector (only visible when Delegations is active) -->
+      <div class="delegations-segment-wrap" id="delegationsControls" style="display: none;">
+        <div class="delegations-segment" role="tablist" aria-label="Delegation source">
+          <button class="delegations-segment-btn active" data-source="both" onclick="setDelegationsSource('both')">Both</button>
+          <button class="delegations-segment-btn" data-source="x1Labs" onclick="setDelegationsSource('x1Labs')">X1 Labs</button>
+          <button class="delegations-segment-btn" data-source="ripper" onclick="setDelegationsSource('ripper')">Ripper Pool</button>
         </div>
       </div>
 
@@ -15761,11 +15751,10 @@
     // delegationsData[source] = { byVoter: { votePubkey -> totalLamports },
     //                             totalLamports, accountCount, validatorCount }
     // Populated lazily on first delegations view; cached in-memory for the
-    // session so flipping the source/team selectors is instant.
+    // session so flipping the source selector is instant.
     // ─────────────────────────────────────────────────────────────────────
     let delegationsData = null;
     let delegationsSource = 'both';        // 'both' | 'x1Labs' | 'ripper'
-    let delegationsTeamFilter = 'without'; // 'without' | 'with'
     let delegationsLoading = false;
 
     // Fetch every delegated stake account where `stakerPubkey` is the
@@ -15834,16 +15823,8 @@
 
     function setDelegationsSource(source) {
       delegationsSource = source;
-      document.querySelectorAll('.delegations-pill[data-source]').forEach(b => {
+      document.querySelectorAll('.delegations-segment-btn[data-source]').forEach(b => {
         b.classList.toggle('active', b.dataset.source === source);
-      });
-      if (currentLeaderboard === 'delegations') renderLeaderboard('delegations');
-    }
-
-    function setDelegationsTeamFilter(filter) {
-      delegationsTeamFilter = filter;
-      document.querySelectorAll('.delegations-pill[data-team]').forEach(b => {
-        b.classList.toggle('active', b.dataset.team === filter);
       });
       if (currentLeaderboard === 'delegations') renderLeaderboard('delegations');
     }
@@ -16336,11 +16317,6 @@
         filtered = filtered.filter(r => r.totalStake > 0);
       }
 
-      // Apply team filter — skip validators whose name starts with "X1 Labs:"
-      if (delegationsTeamFilter === 'without') {
-        filtered = filtered.filter(r => !/^x1\s*labs\s*:/i.test(r.name));
-      }
-
       // Sort by the stake from the selected source(s), descending
       filtered.sort((a, b) => {
         if (delegationsSource === 'x1Labs') return b.x1Stake - a.x1Stake;
@@ -16348,7 +16324,7 @@
         return b.totalStake - a.totalStake;
       });
 
-      // Header summary line — totals reflect the active selectors
+      // Header summary line — totals reflect the active source
       const sumX1 = filtered.reduce((s, r) => s + r.x1Stake, 0);
       const sumRp = filtered.reduce((s, r) => s + r.rpStake, 0);
       const sumTotal = sumX1 + sumRp;
@@ -16357,7 +16333,6 @@
         delegationsSource === 'x1Labs' ? 'X1 Labs' :
         delegationsSource === 'ripper' ? 'Ripper Pool' :
         'X1 Labs + Ripper Pool';
-      const teamSuffix = delegationsTeamFilter === 'without' ? ' (excl. X1 Labs team)' : '';
 
       let summaryAmount;
       let breakdown = '';
@@ -16375,7 +16350,7 @@
         <p class="leaderboard-subtitle">Validators ranked by stake delegated from X1 Labs and the Ripper Pool</p>
         <div class="delegations-summary">
           <strong>${sourceLabel}</strong> has delegated <strong>${summaryAmount}</strong>
-          across <strong>${filtered.length}</strong> validator${filtered.length === 1 ? '' : 's'}${teamSuffix}.
+          across <strong>${filtered.length}</strong> validator${filtered.length === 1 ? '' : 's'}.
           ${breakdown}
         </div>
       `;
