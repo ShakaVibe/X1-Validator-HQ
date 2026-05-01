@@ -12396,7 +12396,6 @@
     let allValidatorsFetchedAt = 0;   // ms timestamp; 0 = never fetched. Used by
                                        // the lookup tab to decide whether to do a
                                        // silent refresh before / after a search.
-    let _searchDebounceTimer = null;   // debounce handle for handleSearchInput
     let _searchRequestId = 0;          // monotonic counter; stale searches abort
     let validatorInfoCache = {};
     let myPortfolio = JSON.parse(localStorage.getItem('x1Portfolio') || '[]');
@@ -14923,24 +14922,25 @@
 
     // Search functionality
     //
-    // Typing fires this on every keystroke. Without a debounce, "skywalker"
-    // fires 6 separate full searches — each potentially 80 RPC calls —
-    // and the loading spinner thrashes between them. Worse, since none
-    // are cancelled, whichever finishes last wins, not whichever was
-    // typed last. So we debounce the live-search to ~300ms and let the
-    // race-guard inside performSearch handle any in-flight result that
-    // returns after the user has typed more.
+    // Fires on every keystroke. We *don't* debounce here on purpose —
+    // most keystrokes resolve from validatorInfoCache in microseconds,
+    // and the original "populates while you type" feel comes from that
+    // immediate render. The protections that matter for fast typing
+    // happen elsewhere:
+    //   • performSearch's request-id race-guard ensures only the latest
+    //     search ever renders, so a slow uncached search can't overwrite
+    //     a newer result.
+    //   • The global RPC throttle (installRpcThrottle) caps concurrent
+    //     in-flight requests, so even a flurry of keystrokes against an
+    //     empty cache doesn't hammer the endpoint.
     function handleSearchInput() {
       const input = document.getElementById('searchInput').value.trim();
       if (input.length < 2) return;
 
-      // Likely a name search, not a full address — auto-search after debounce
+      // Likely a name search, not a full address — fire immediately so
+      // results populate as the user types.
       if (input.length > 3 && input.length < 44) {
-        clearTimeout(_searchDebounceTimer);
-        _searchDebounceTimer = setTimeout(() => {
-          _searchDebounceTimer = null;
-          performSearch();
-        }, 300);
+        performSearch();
       }
     }
 
@@ -14962,13 +14962,6 @@
     async function performSearch() {
       const input = document.getElementById('searchInput').value.trim();
       if (!input) return;
-
-      // Cancel any pending debounced search so this one isn't followed
-      // by a duplicate (e.g. user pressed Enter with the timer pending).
-      if (_searchDebounceTimer) {
-        clearTimeout(_searchDebounceTimer);
-        _searchDebounceTimer = null;
-      }
 
       // Race-guard: each invocation gets a unique id. When async work
       // finishes, we only render if our id is still the latest one —
