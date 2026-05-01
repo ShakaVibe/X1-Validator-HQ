@@ -13024,26 +13024,9 @@
           document.getElementById('totalSupply').textContent = formatCompact(lamportsToXNT(supply.value.total));
         }
 
-        // Calculate epoch progress
-        const epochProgress = (epochInfo.slotIndex / epochInfo.slotsInEpoch) * 100;
-        window.epochProgressRatio = epochInfo.slotIndex / epochInfo.slotsInEpoch;
-        const remainingSlots = epochInfo.slotsInEpoch - epochInfo.slotIndex;
-        const secondsRemaining = remainingSlots * 0.4; // ~400ms per slot
-        
-        // Format time remaining
-        const hours = Math.floor(secondsRemaining / 3600);
-        const minutes = Math.floor((secondsRemaining % 3600) / 60);
-        let timeString = '';
-        if (hours > 0) {
-          timeString = `${hours}h ${minutes}m`;
-        } else {
-          timeString = `${minutes}m`;
-        }
-
-        // Update epoch progress UI
-        document.getElementById('epochProgressFill').style.width = epochProgress + '%';
-        document.getElementById('epochPercent').textContent = epochProgress.toFixed(1) + '%';
-        document.getElementById('epochTimeRemaining').textContent = timeString;
+        // Hand the freshly-fetched epoch info to the live updater (single
+        // source of truth for the bar — handles rendering and drift correction).
+        setEpochBaseline(epochInfo);
 
         // Expose identities map globally so fallback paths (e.g., zombie validator
         // lookup) can reuse published name/icon data without re-fetching.
@@ -26690,6 +26673,123 @@ Please give me the diagnostic commands to run on my server so you can help me id
             closeSolanaModal();
           }
         });
+      }
+    });
+
+    // ─────────────────────────────────────────────────────────────────────
+    // EPOCH PROGRESS BAR — live updater
+    //
+    // The epoch bar (#epochProgress) shows up on every tab and used to only
+    // refresh when loadNetworkStats() ran, which meant a tab left open went
+    // stale (frozen percent, lying time-remaining). This block makes the bar
+    // truly live by combining three things:
+    //
+    //   1. Local 1-second tick that advances the bar based on the chain's
+    //      ~400ms slot duration relative to the last known baseline. Free —
+    //      no RPC calls — so it can run forever without burning the public
+    //      endpoint.
+    //   2. Background re-sync of getEpochInfo every 90s to correct any drift
+    //      and pick up the next epoch when the chain rolls over.
+    //   3. Immediate re-sync on tab visibilitychange, so a user who alt-tabs
+    //      back after an hour sees correct values right away instead of
+    //      whatever the local prediction drifted to.
+    //
+    // Single source of truth: setEpochBaseline() is called by loadNetworkStats
+    // (initial + manual refreshes) and by the periodic / visibility re-syncs.
+    // The renderer reads the baseline and projects forward.
+    // ─────────────────────────────────────────────────────────────────────
+    let _epochBaseline = null;  // { epoch, slotIndex, slotsInEpoch, fetchedAt }
+    const _EPOCH_SLOT_MS = 400;            // X1/Solana target slot time
+    const _EPOCH_RESYNC_MS = 90 * 1000;    // background re-sync cadence
+
+    function setEpochBaseline(epochInfo) {
+      const prevEpoch = _epochBaseline?.epoch;
+      _epochBaseline = {
+        epoch: epochInfo.epoch,
+        slotIndex: epochInfo.slotIndex,
+        slotsInEpoch: epochInfo.slotsInEpoch,
+        fetchedAt: Date.now(),
+      };
+      renderEpochBar();
+
+      // If the epoch number actually changed (rolled over), kick a full
+      // network refresh so credits, leader schedule, validator list etc.
+      // all pick up fresh data. Don't await — let it run in the background.
+      if (prevEpoch !== undefined && prevEpoch !== epochInfo.epoch) {
+        loadNetworkStats().catch(err =>
+          console.error('Epoch rollover refresh failed:', err)
+        );
+      }
+    }
+
+    function renderEpochBar() {
+      if (!_epochBaseline) return;
+      const fill = document.getElementById('epochProgressFill');
+      const pctEl = document.getElementById('epochPercent');
+      const timeEl = document.getElementById('epochTimeRemaining');
+      if (!fill || !pctEl || !timeEl) return;
+
+      const elapsedMs = Date.now() - _epochBaseline.fetchedAt;
+      const slotsAdvanced = elapsedMs / _EPOCH_SLOT_MS;
+      const predictedIdx = Math.min(
+        _epochBaseline.slotIndex + slotsAdvanced,
+        _epochBaseline.slotsInEpoch
+      );
+      const pct = (predictedIdx / _epochBaseline.slotsInEpoch) * 100;
+      const remainingSlots = Math.max(0, _epochBaseline.slotsInEpoch - predictedIdx);
+      const secondsRemaining = remainingSlots * (_EPOCH_SLOT_MS / 1000);
+      const hours = Math.floor(secondsRemaining / 3600);
+      const minutes = Math.floor((secondsRemaining % 3600) / 60);
+      const timeString = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+
+      fill.style.width = pct + '%';
+      pctEl.textContent = pct.toFixed(1) + '%';
+      timeEl.textContent = timeString;
+
+      // Keep this exposed for the credit-pace tooltip and other consumers
+      window.epochProgressRatio = predictedIdx / _epochBaseline.slotsInEpoch;
+
+      // If the local prediction has crossed the end of the epoch, force a
+      // real re-sync — the chain has rolled over (or we drifted past it).
+      // Guard with a flag so we don't spam during the gap between predicted
+      // rollover and the resync resolving.
+      if (predictedIdx >= _epochBaseline.slotsInEpoch && !_epochBaseline._resyncing) {
+        _epochBaseline._resyncing = true;
+        resyncEpochBaseline();
+      }
+    }
+
+    async function resyncEpochBaseline() {
+      try {
+        const epochInfo = await rpcCall('getEpochInfo');
+        // Keep the displayed epoch # and absolute slot fresh too, since
+        // those live in the same top stats row and would otherwise stale
+        // out alongside the bar.
+        const ce = document.getElementById('currentEpoch');
+        const cs = document.getElementById('currentSlot');
+        if (ce) ce.textContent = epochInfo.epoch;
+        if (cs && typeof formatCompact === 'function') {
+          cs.textContent = formatCompact(epochInfo.absoluteSlot);
+        }
+        setEpochBaseline(epochInfo);
+      } catch (e) {
+        console.warn('Epoch resync failed:', e);
+        // Clear the resync flag so we'll try again next tick if we did
+        // hit the rollover branch.
+        if (_epochBaseline) _epochBaseline._resyncing = false;
+      }
+    }
+
+    // 1-second local tick — pure visual, no RPC
+    setInterval(renderEpochBar, 1000);
+
+    // Background re-sync against RPC
+    setInterval(resyncEpochBaseline, _EPOCH_RESYNC_MS);
+
+    // Re-sync immediately when the user returns to the tab
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        resyncEpochBaseline();
       }
     });
 
