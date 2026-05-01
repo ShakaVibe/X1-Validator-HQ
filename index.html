@@ -6003,6 +6003,15 @@
       .delegations-segment-btn { padding: 0.45rem 0.85rem; font-size: 0.82rem; }
     }
 
+    /* Delegations stat labels — lighter grey for readability against the
+       dark card background. Default --text-dim was too low-contrast for
+       the multi-column "Total / X1 Labs / Ripper" row. Scoped via a data
+       attribute on #leaderboardList so other leaderboards keep their
+       existing styling. */
+    #leaderboardList[data-category="delegations"] .leaderboard-stat-label {
+      color: var(--text-secondary);
+    }
+
     /* ── Delegations summary line (lives inside the leaderboard header) ─ */
     .delegations-summary {
       margin-top: 0.5rem;
@@ -15974,6 +15983,11 @@
         return;
       }
 
+      // Clear the delegations-scoped marker so its lighter label color
+      // doesn't bleed into other categories.
+      const listEl = document.getElementById('leaderboardList');
+      if (listEl) delete listEl.dataset.category;
+
       if (!leaderboardData || leaderboardData.length === 0) {
         document.getElementById('leaderboardList').innerHTML = '<p style="text-align: center; color: var(--text-dim);">No data available</p>';
         return;
@@ -16263,6 +16277,7 @@
     function renderDelegationsLeaderboard() {
       const list = document.getElementById('leaderboardList');
       const header = document.getElementById('leaderboardHeader');
+      list.dataset.category = 'delegations';
 
       // Loading state — data isn't back yet
       if (!delegationsData) {
