@@ -5962,6 +5962,69 @@
       font-weight: 600;
     }
 
+    /* ── Delegations leaderboard controls ─────────────────────────── */
+    .delegations-controls {
+      max-width: 900px;
+      margin: -1rem auto 1.5rem;
+      padding: 1rem 1.25rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .delegations-control-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .delegations-control-label {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      font-weight: 500;
+      min-width: 60px;
+    }
+    .delegations-pill {
+      padding: 0.45rem 0.95rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      transition: all 0.15s;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .delegations-pill:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+    .delegations-pill.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: var(--bg-primary);
+      font-weight: 600;
+    }
+    .delegations-summary {
+      margin-top: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 212, 255, 0.06);
+      border-left: 3px solid var(--accent-blue);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .delegations-summary strong { color: var(--text-primary); }
+    .delegations-breakdown {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 0.15rem;
+    }
+
     .leaderboard-container {
       max-width: 900px;
       margin: 0 auto;
@@ -9789,6 +9852,22 @@
         <button class="leaderboard-cat-btn" onclick="switchLeaderboard('efficient')">🎯 Most Efficient</button>
         <button class="leaderboard-cat-btn" onclick="switchLeaderboard('reliable')">🛡️ Most Reliable</button>
         <button class="leaderboard-cat-btn" onclick="switchLeaderboard('newest')">🆕 Newest Validators</button>
+        <button class="leaderboard-cat-btn" onclick="switchLeaderboard('delegations')">🤝 Delegations</button>
+      </div>
+
+      <!-- Delegations selector controls (only visible when Delegations is active) -->
+      <div class="delegations-controls" id="delegationsControls" style="display: none;">
+        <div class="delegations-control-row">
+          <span class="delegations-control-label">Source:</span>
+          <button class="delegations-pill active" data-source="both" onclick="setDelegationsSource('both')">Both</button>
+          <button class="delegations-pill" data-source="x1Labs" onclick="setDelegationsSource('x1Labs')">X1 Labs</button>
+          <button class="delegations-pill" data-source="ripper" onclick="setDelegationsSource('ripper')">Ripper Pool</button>
+        </div>
+        <div class="delegations-control-row">
+          <span class="delegations-control-label">Show:</span>
+          <button class="delegations-pill active" data-team="without" onclick="setDelegationsTeamFilter('without')">Without X1 Labs Team</button>
+          <button class="delegations-pill" data-team="with" onclick="setDelegationsTeamFilter('with')">With X1 Labs Team</button>
+        </div>
       </div>
 
       <div class="leaderboard-loading-panel" id="leaderboardLoading" style="display: none;">
@@ -12154,6 +12233,18 @@
   <script>
     const RPC_URL = 'https://rpc.mainnet.x1.xyz';
     const REWARDS_API_URL = null; // Set to your API URL when rewards tracker is running
+
+    // ─────────────────────────────────────────────────────────────────────
+    // DELEGATION POOL IDENTITIES
+    // Used by the Delegations leaderboard to surface which validators are
+    // backed by X1 Labs (Foundation) and which are members of the Ripper
+    // liquid-staking pool. These are the staker authorities on the
+    // respective stake accounts — used as a memcmp filter at offset 12
+    // of stake-program accounts.
+    // ─────────────────────────────────────────────────────────────────────
+    const X1_LABS_DELEGATOR    = 'uXgzYh1XhJbeoxNYf55t9E9NhpjC1kWe1mMvpp8vM31';
+    const RIPPER_POOL_DELEGATOR = 'AZhRy4DQJ9TsMiWA6NuZzFa1MWDmmgKQn6L5St7tPWBk';
+    const STAKE_PROGRAM_ID      = 'Stake11111111111111111111111111111111111111';
 
     // ─────────────────────────────────────────────────────────────────────
     // Global RPC fetch throttle + retry layer
@@ -15664,6 +15755,98 @@
     
     let currentLeaderboard = 'performance';
     let leaderboardData = null;
+
+    // ─────────────────────────────────────────────────────────────────────
+    // DELEGATIONS LEADERBOARD STATE
+    // delegationsData[source] = { byVoter: { votePubkey -> totalLamports },
+    //                             totalLamports, accountCount, validatorCount }
+    // Populated lazily on first delegations view; cached in-memory for the
+    // session so flipping the source/team selectors is instant.
+    // ─────────────────────────────────────────────────────────────────────
+    let delegationsData = null;
+    let delegationsSource = 'both';        // 'both' | 'x1Labs' | 'ripper'
+    let delegationsTeamFilter = 'without'; // 'without' | 'with'
+    let delegationsLoading = false;
+
+    // Fetch every delegated stake account where `stakerPubkey` is the
+    // staker authority. We use jsonParsed encoding so we can read the
+    // voter pubkey and stake amount directly without manually decoding
+    // the binary stake-account layout. The memcmp filter at offset 12
+    // narrows the result set to just this staker's accounts.
+    async function fetchDelegationsFromStaker(stakerPubkey) {
+      const accounts = await rpcCall('getProgramAccounts', [
+        STAKE_PROGRAM_ID,
+        {
+          encoding: 'jsonParsed',
+          filters: [
+            { dataSize: 200 },
+            { memcmp: { offset: 12, bytes: stakerPubkey } },
+          ],
+        },
+      ]);
+
+      const byVoter = {};
+      let totalLamports = 0;
+      let accountCount = 0;
+
+      for (const acc of accounts || []) {
+        const parsed = acc?.account?.data?.parsed;
+        if (!parsed || parsed.type !== 'delegated') continue;
+        const delegation = parsed.info?.stake?.delegation;
+        if (!delegation || !delegation.voter) continue;
+
+        // Skip fully-deactivated stake — it's no longer earning credit
+        // for the validator. The "never deactivated" sentinel value is
+        // u64::MAX as a string. Anything else is in cooldown or done.
+        const deact = delegation.deactivationEpoch;
+        if (deact && deact !== '18446744073709551615') continue;
+
+        const voter = delegation.voter;
+        const stake = Number(delegation.stake) || 0;
+        byVoter[voter] = (byVoter[voter] || 0) + stake;
+        totalLamports += stake;
+        accountCount++;
+      }
+
+      return {
+        byVoter,
+        totalLamports,
+        accountCount,
+        validatorCount: Object.keys(byVoter).length,
+      };
+    }
+
+    async function loadDelegationsData(force = false) {
+      if (delegationsData && !force) return delegationsData;
+      if (delegationsLoading) return null;
+      delegationsLoading = true;
+      try {
+        const [x1Labs, ripper] = await Promise.all([
+          fetchDelegationsFromStaker(X1_LABS_DELEGATOR),
+          fetchDelegationsFromStaker(RIPPER_POOL_DELEGATOR),
+        ]);
+        delegationsData = { x1Labs, ripper };
+        return delegationsData;
+      } finally {
+        delegationsLoading = false;
+      }
+    }
+
+    function setDelegationsSource(source) {
+      delegationsSource = source;
+      document.querySelectorAll('.delegations-pill[data-source]').forEach(b => {
+        b.classList.toggle('active', b.dataset.source === source);
+      });
+      if (currentLeaderboard === 'delegations') renderLeaderboard('delegations');
+    }
+
+    function setDelegationsTeamFilter(filter) {
+      delegationsTeamFilter = filter;
+      document.querySelectorAll('.delegations-pill[data-team]').forEach(b => {
+        b.classList.toggle('active', b.dataset.team === filter);
+      });
+      if (currentLeaderboard === 'delegations') renderLeaderboard('delegations');
+    }
     
     function switchLeaderboard(category) {
       currentLeaderboard = category;
@@ -15672,6 +15855,12 @@
       document.querySelectorAll('.leaderboard-cat-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelector(`.leaderboard-cat-btn[onclick="switchLeaderboard('${category}')"]`).classList.add('active');
       
+      // Show/hide the delegations selector controls
+      const delegControls = document.getElementById('delegationsControls');
+      if (delegControls) {
+        delegControls.style.display = category === 'delegations' ? 'flex' : 'none';
+      }
+
       // Update header
       const header = document.getElementById('leaderboardHeader');
       const headers = {
@@ -15680,7 +15869,8 @@
         'commission': { title: '🏷️ Lowest Commission', subtitle: 'Active validators with the lowest commission rates' },
         'efficient': { title: '🎯 Most Efficient', subtitle: 'Validators earning the most credits relative to their stake' },
         'reliable': { title: '🛡️ Most Reliable', subtitle: 'Validators with the lowest skip rates and best uptime' },
-        'newest': { title: '🆕 Newest Validators', subtitle: 'Most recently started validators on the network' }
+        'newest': { title: '🆕 Newest Validators', subtitle: 'Most recently started validators on the network' },
+        'delegations': { title: '🤝 Delegations', subtitle: 'Validators ranked by stake delegated from X1 Labs and the Ripper Pool' }
       };
       header.innerHTML = `<h2>${headers[category].title}</h2><p class="leaderboard-subtitle">${headers[category].subtitle}</p>`;
       
@@ -15781,10 +15971,28 @@
       loading.style.display = 'none';
       container.style.display = 'block';
 
+      // Warm the delegations cache in the background — no spinner, no
+      // await. This way switching to the Delegations tab is usually
+      // instant. If it isn't ready yet, the render path shows its own
+      // small loading state and re-renders when the data arrives.
+      loadDelegationsData()
+        .then(() => {
+          if (currentLeaderboard === 'delegations') renderLeaderboard('delegations');
+        })
+        .catch(err => console.warn('Delegations fetch failed:', err));
+
       renderLeaderboard(currentLeaderboard);
     }
     
     function renderLeaderboard(category) {
+      // Delegations is its own data path — it doesn't derive from
+      // leaderboardData (which is keyed on performance/skip/credit
+      // metrics). Hand off to a dedicated renderer.
+      if (category === 'delegations') {
+        renderDelegationsLeaderboard();
+        return;
+      }
+
       if (!leaderboardData || leaderboardData.length === 0) {
         document.getElementById('leaderboardList').innerHTML = '<p style="text-align: center; color: var(--text-dim);">No data available</p>';
         return;
@@ -16048,6 +16256,185 @@
             <div class="leaderboard-validator">
               ${logoHtml}
               <div class="leaderboard-name">${v.name}</div>
+            </div>
+            <div class="leaderboard-stats">
+              ${statsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // DELEGATIONS LEADERBOARD RENDERER
+    //
+    // Builds a ranking of validators by stake delegated from the selected
+    // source (X1 Labs, Ripper Pool, or both combined). Reads from the
+    // `delegationsData` cache populated by loadDelegationsData(). Honors
+    // the team filter — when set to "without", validators whose published
+    // identity name starts with "X1 Labs:" are excluded so the listing
+    // reflects independent operators backed by these pools rather than
+    // the team's own validators.
+    //
+    // The header summary updates based on the same filters:
+    //   "X1 Labs has delegated 4.5M XNT across 23 validators"
+    // ─────────────────────────────────────────────────────────────────────
+    function renderDelegationsLeaderboard() {
+      const list = document.getElementById('leaderboardList');
+      const header = document.getElementById('leaderboardHeader');
+
+      // Loading state — data isn't back yet
+      if (!delegationsData) {
+        list.innerHTML =
+          '<p style="text-align: center; color: var(--text-dim); padding: 2rem;">' +
+          '<span style="display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent-blue);border-radius:50%;animation:spin 1s linear infinite;vertical-align:middle;margin-right:0.5rem;"></span>' +
+          'Fetching delegation data…</p>';
+        // Try to start the fetch if it hasn't already started
+        loadDelegationsData()
+          .then(() => {
+            if (currentLeaderboard === 'delegations') renderDelegationsLeaderboard();
+          })
+          .catch(err => {
+            list.innerHTML = `<p style="text-align: center; color: var(--text-dim); padding: 2rem;">Could not load delegation data: ${err.message}</p>`;
+          });
+        return;
+      }
+
+      // Pull the right slice based on the source selector
+      const x1 = delegationsData.x1Labs;
+      const rp = delegationsData.ripper;
+
+      // Build a per-voter combined view (always compute both — cheap)
+      const allVoters = new Set([
+        ...Object.keys(x1.byVoter),
+        ...Object.keys(rp.byVoter),
+      ]);
+      const rows = [];
+      allVoters.forEach(votePubkey => {
+        const x1Stake = x1.byVoter[votePubkey] || 0;
+        const rpStake = rp.byVoter[votePubkey] || 0;
+        const validator = (allValidators || []).find(v => v.votePubkey === votePubkey);
+        rows.push({
+          votePubkey,
+          x1Stake,
+          rpStake,
+          totalStake: x1Stake + rpStake,
+          name: validator ? validator.name : votePubkey.slice(0, 8) + '…' + votePubkey.slice(-4),
+          iconUrl: validator ? validator.iconUrl : '',
+          activatedStake: validator ? validator.activatedStake : 0,
+        });
+      });
+
+      // Apply source filter — only keep rows that have stake from the
+      // selected source(s)
+      let filtered = rows;
+      if (delegationsSource === 'x1Labs') {
+        filtered = filtered.filter(r => r.x1Stake > 0);
+      } else if (delegationsSource === 'ripper') {
+        filtered = filtered.filter(r => r.rpStake > 0);
+      } else {
+        filtered = filtered.filter(r => r.totalStake > 0);
+      }
+
+      // Apply team filter — skip validators whose name starts with "X1 Labs:"
+      if (delegationsTeamFilter === 'without') {
+        filtered = filtered.filter(r => !/^x1\s*labs\s*:/i.test(r.name));
+      }
+
+      // Sort by the stake from the selected source(s), descending
+      filtered.sort((a, b) => {
+        if (delegationsSource === 'x1Labs') return b.x1Stake - a.x1Stake;
+        if (delegationsSource === 'ripper') return b.rpStake - a.rpStake;
+        return b.totalStake - a.totalStake;
+      });
+
+      // Header summary line — totals reflect the active selectors
+      const sumX1 = filtered.reduce((s, r) => s + r.x1Stake, 0);
+      const sumRp = filtered.reduce((s, r) => s + r.rpStake, 0);
+      const sumTotal = sumX1 + sumRp;
+
+      const sourceLabel =
+        delegationsSource === 'x1Labs' ? 'X1 Labs' :
+        delegationsSource === 'ripper' ? 'Ripper Pool' :
+        'X1 Labs + Ripper Pool';
+      const teamSuffix = delegationsTeamFilter === 'without' ? ' (excl. X1 Labs team)' : '';
+
+      let summaryAmount;
+      let breakdown = '';
+      if (delegationsSource === 'x1Labs') {
+        summaryAmount = `${formatStake(sumX1)} XNT`;
+      } else if (delegationsSource === 'ripper') {
+        summaryAmount = `${formatStake(sumRp)} XNT`;
+      } else {
+        summaryAmount = `${formatStake(sumTotal)} XNT`;
+        breakdown = `<div class="delegations-breakdown">X1 Labs: ${formatStake(sumX1)} XNT · Ripper Pool: ${formatStake(sumRp)} XNT</div>`;
+      }
+
+      header.innerHTML = `
+        <h2>🤝 Delegations</h2>
+        <p class="leaderboard-subtitle">Validators ranked by stake delegated from X1 Labs and the Ripper Pool</p>
+        <div class="delegations-summary">
+          <strong>${sourceLabel}</strong> has delegated <strong>${summaryAmount}</strong>
+          across <strong>${filtered.length}</strong> validator${filtered.length === 1 ? '' : 's'}${teamSuffix}.
+          ${breakdown}
+        </div>
+      `;
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<p style="text-align: center; color: var(--text-dim); padding: 2rem;">No delegations match the current filters</p>';
+        return;
+      }
+
+      // Top 50, same convention as the other leaderboards
+      const top = filtered.slice(0, 50);
+
+      list.innerHTML = top.map((r, i) => {
+        const rank = i + 1;
+        const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'normal';
+        const itemClass = rank <= 3 ? rankClass : '';
+        const rankDisplay = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+
+        // Logo (matches existing leaderboard logo treatment)
+        let logoHtml;
+        if (r.iconUrl) {
+          logoHtml = `<img class="leaderboard-logo" src="${r.iconUrl}" alt="${r.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                      <div class="leaderboard-logo-placeholder" style="display:none;">${r.name.charAt(0).toUpperCase()}</div>`;
+        } else {
+          logoHtml = `<div class="leaderboard-logo-placeholder">${r.name.charAt(0).toUpperCase()}</div>`;
+        }
+
+        // Stat block — depends on source selector
+        let statsHtml;
+        if (delegationsSource === 'both') {
+          statsHtml = `
+            <div class="leaderboard-stat">
+              <div class="leaderboard-stat-value highlight">${formatStake(r.totalStake)}</div>
+              <div class="leaderboard-stat-label">Total Delegated</div>
+            </div>
+            <div class="leaderboard-stat">
+              <div class="leaderboard-stat-value">${formatStake(r.x1Stake)}</div>
+              <div class="leaderboard-stat-label">X1 Labs</div>
+            </div>
+            <div class="leaderboard-stat">
+              <div class="leaderboard-stat-value">${formatStake(r.rpStake)}</div>
+              <div class="leaderboard-stat-label">Ripper</div>
+            </div>`;
+        } else {
+          const amount = delegationsSource === 'x1Labs' ? r.x1Stake : r.rpStake;
+          const label  = delegationsSource === 'x1Labs' ? 'X1 Labs Delegated' : 'Ripper Delegated';
+          statsHtml = `
+            <div class="leaderboard-stat">
+              <div class="leaderboard-stat-value highlight">${formatStake(amount)}</div>
+              <div class="leaderboard-stat-label">${label}</div>
+            </div>`;
+        }
+
+        return `
+          <div class="leaderboard-item ${itemClass}" onclick="lookupValidator('${r.votePubkey}')">
+            <div class="leaderboard-rank ${rankClass}">${rankDisplay}</div>
+            <div class="leaderboard-validator">
+              ${logoHtml}
+              <div class="leaderboard-name">${r.name}</div>
             </div>
             <div class="leaderboard-stats">
               ${statsHtml}
