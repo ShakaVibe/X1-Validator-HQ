@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-01T09:04:23.384Z",
-  "totalNodes": 2150,
-  "totalLocations": 2133,
+  "lastUpdated": "2026-05-01T10:51:05.984Z",
+  "totalNodes": 2147,
+  "totalLocations": 2130,
   "locations": {
     "162.250.121.78": {
       "country": "United States",
@@ -11469,13 +11469,6 @@
       "lat": 50.4777,
       "lon": 12.3649
     },
-    "152.53.245.48": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Karlsruhe",
-      "lat": 49.0291,
-      "lon": 8.35696
-    },
     "158.69.54.196": {
       "country": "Canada",
       "countryCode": "CA",
@@ -11559,13 +11552,6 @@
       "city": "Warsaw",
       "lat": 52.1783,
       "lon": 21.0602
-    },
-    "159.195.144.126": {
-      "country": "Singapore",
-      "countryCode": "SG",
-      "city": "Singapore",
-      "lat": 1.35208,
-      "lon": 103.82
     },
     "192.200.99.90": {
       "country": "United States",
@@ -14913,13 +14899,6 @@
       "lat": 40.7128,
       "lon": -74.006
     },
-    "216.23.107.254": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
     "107.155.114.146": {
       "country": "France",
       "countryCode": "FR",
@@ -14942,7 +14921,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 1548
+      "count": 1547
     },
     "FR": {
       "name": "France",
@@ -14962,7 +14941,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 108
+      "count": 107
     },
     "NL": {
       "name": "The Netherlands",
@@ -14978,7 +14957,7 @@
     },
     "SG": {
       "name": "Singapore",
-      "count": 2
+      "count": 1
     },
     "PT": {
       "name": "Portugal",
