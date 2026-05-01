@@ -12393,6 +12393,11 @@
 
     
     let allValidators = [];
+    let allValidatorsFetchedAt = 0;   // ms timestamp; 0 = never fetched. Used by
+                                       // the lookup tab to decide whether to do a
+                                       // silent refresh before / after a search.
+    let _searchDebounceTimer = null;   // debounce handle for handleSearchInput
+    let _searchRequestId = 0;          // monotonic counter; stale searches abort
     let validatorInfoCache = {};
     let myPortfolio = JSON.parse(localStorage.getItem('x1Portfolio') || '[]');
     let rewardsHistory = {};
@@ -13145,6 +13150,11 @@
           v.rank = i + 1;
           v.totalValidators = totalValidatorsCount;
         });
+
+        // Mark when this list was last refreshed so the lookup tab can
+        // decide whether to re-fetch when the user comes looking for a
+        // recently-joined validator.
+        allValidatorsFetchedAt = Date.now();
 
         // Calculate network average credits for performance scoring
         calculateNetworkAverageCredits();
@@ -14912,14 +14922,25 @@
     }
 
     // Search functionality
+    //
+    // Typing fires this on every keystroke. Without a debounce, "skywalker"
+    // fires 6 separate full searches — each potentially 80 RPC calls —
+    // and the loading spinner thrashes between them. Worse, since none
+    // are cancelled, whichever finishes last wins, not whichever was
+    // typed last. So we debounce the live-search to ~300ms and let the
+    // race-guard inside performSearch handle any in-flight result that
+    // returns after the user has typed more.
     function handleSearchInput() {
       const input = document.getElementById('searchInput').value.trim();
       if (input.length < 2) return;
-      
-      // Auto-search as user types (for name search)
+
+      // Likely a name search, not a full address — auto-search after debounce
       if (input.length > 3 && input.length < 44) {
-        // Likely a name search, not a full address
-        performSearch();
+        clearTimeout(_searchDebounceTimer);
+        _searchDebounceTimer = setTimeout(() => {
+          _searchDebounceTimer = null;
+          performSearch();
+        }, 300);
       }
     }
 
@@ -14942,6 +14963,20 @@
       const input = document.getElementById('searchInput').value.trim();
       if (!input) return;
 
+      // Cancel any pending debounced search so this one isn't followed
+      // by a duplicate (e.g. user pressed Enter with the timer pending).
+      if (_searchDebounceTimer) {
+        clearTimeout(_searchDebounceTimer);
+        _searchDebounceTimer = null;
+      }
+
+      // Race-guard: each invocation gets a unique id. When async work
+      // finishes, we only render if our id is still the latest one —
+      // otherwise the user has typed more and a newer search is on the
+      // way. Prevents an old slow response from clobbering a fresh one.
+      const myRequestId = ++_searchRequestId;
+      const isStale = () => myRequestId !== _searchRequestId;
+
       const loading = document.getElementById('loading');
       const results = document.getElementById('resultsSection');
       const error = document.getElementById('errorMessage');
@@ -14954,55 +14989,27 @@
         // Guard: ensure validator list is loaded before searching by name
         if (!allValidators || allValidators.length === 0) {
           await loadNetworkStats();
+          if (isStale()) return;
         }
 
-        let validators = [];
+        const isPubkey = input.length >= 43 && input.length <= 44;
+        let validators = await runValidatorSearch(input, isPubkey);
+        if (isStale()) return;
 
-        // Check if it's a vote account address (44 characters)
-        if (input.length >= 43 && input.length <= 44) {
-          const validator = await getValidatorInfo(input);
-          if (validator) {
-            validators.push(validator);
-          }
-        } else {
-          // Search by name — prioritize name matches over pubkey matches,
-          // and exact/prefix name matches over partial name matches
-          const searchLower = input.toLowerCase();
-
-          const scored = allValidators
-            .map(v => {
-              const nameLower = v.name.toLowerCase();
-              const voteL   = v.votePubkey.toLowerCase();
-              const nodeL   = v.nodePubkey.toLowerCase();
-
-              let score = 0;
-              if (nameLower === searchLower)               score = 100; // exact name match
-              else if (nameLower.startsWith(searchLower)) score = 80;  // name prefix match
-              else if (nameLower.includes(searchLower))   score = 60;  // partial name match
-              else if (voteL.includes(searchLower) ||
-                       nodeL.includes(searchLower))        score = 20;  // pubkey match only
-
-              return { v, score };
-            })
-            .filter(item => item.score > 0)
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 20)
-            .map(item => item.v);
-
-          // Parallel fetch — was a sequential for-await loop that queued
-          // each validator's ~4 RPC round-trips back-to-back. Promise.all
-          // shares the 4-slot RPC queue across all matches instead.
-          const settled = await Promise.all(
-            scored.map(match =>
-              getValidatorInfo(match.votePubkey).catch(err => {
-                console.warn('[performSearch] skip', match.votePubkey, err && err.message || err);
-                return null;
-              })
-            )
-          );
-          validators = settled.filter(Boolean);
+        // No name match? The validator list might be stale (a new validator
+        // joined since we last fetched getVoteAccounts). Refresh once and
+        // try again before declaring "not found". Skip this for pubkey
+        // searches because those go straight to the chain anyway.
+        const STALE_THRESHOLD_MS = 30 * 1000;
+        const cacheAge = Date.now() - (allValidatorsFetchedAt || 0);
+        if (validators.length === 0 && !isPubkey && cacheAge > STALE_THRESHOLD_MS) {
+          console.info('[performSearch] no results — refreshing validator list and retrying');
+          await loadNetworkStats();
+          if (isStale()) return;
+          validators = await runValidatorSearch(input, isPubkey);
+          if (isStale()) return;
         }
-        
+
         if (validators.length === 0) {
           throw new Error('No validators found');
         }
@@ -15019,6 +15026,7 @@
         results.style.display = 'block';
 
       } catch (err) {
+        if (isStale()) return; // silently drop — newer search is in flight
         console.error(err);
         loading.style.display = 'none';
         // Show a more specific message if validators never loaded
@@ -15028,6 +15036,54 @@
           : 'No validators found. Try searching by name or check the Vote Account ID.';
         error.style.display = 'block';
       }
+    }
+
+    // Inner search routine extracted from performSearch so the outer
+    // function can call it twice (initial attempt + post-refresh retry).
+    // Returns an array of validator objects ready for rendering.
+    async function runValidatorSearch(input, isPubkey) {
+      // Check if it's a vote account address (44 characters)
+      if (isPubkey) {
+        const validator = await getValidatorInfo(input);
+        return validator ? [validator] : [];
+      }
+
+      // Search by name — prioritize name matches over pubkey matches,
+      // and exact/prefix name matches over partial name matches
+      const searchLower = input.toLowerCase();
+
+      const scored = allValidators
+        .map(v => {
+          const nameLower = v.name.toLowerCase();
+          const voteL   = v.votePubkey.toLowerCase();
+          const nodeL   = v.nodePubkey.toLowerCase();
+
+          let score = 0;
+          if (nameLower === searchLower)               score = 100; // exact name match
+          else if (nameLower.startsWith(searchLower)) score = 80;  // name prefix match
+          else if (nameLower.includes(searchLower))   score = 60;  // partial name match
+          else if (voteL.includes(searchLower) ||
+                   nodeL.includes(searchLower))        score = 20;  // pubkey match only
+
+          return { v, score };
+        })
+        .filter(item => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 20)
+        .map(item => item.v);
+
+      // Parallel fetch — was a sequential for-await loop that queued
+      // each validator's ~4 RPC round-trips back-to-back. Promise.all
+      // shares the 4-slot RPC queue across all matches instead.
+      const settled = await Promise.all(
+        scored.map(match =>
+          getValidatorInfo(match.votePubkey).catch(err => {
+            console.warn('[performSearch] skip', match.votePubkey, err && err.message || err);
+            return null;
+          })
+        )
+      );
+      return settled.filter(Boolean);
     }
 
     // Portfolio management
@@ -16825,6 +16881,20 @@
 
       if (tab === 'portfolio') {
         loadPortfolio();
+      }
+
+      // Lookup tab: silently refresh the validator list if it's older
+      // than 5 minutes. New validators that joined since page-load won't
+      // appear in searches otherwise — users were having to hard-refresh
+      // the whole app to find recently-added validators.
+      if (tab === 'lookup') {
+        const FIVE_MIN = 5 * 60 * 1000;
+        const cacheAge = Date.now() - (allValidatorsFetchedAt || 0);
+        if (allValidatorsFetchedAt > 0 && cacheAge > FIVE_MIN) {
+          loadNetworkStats().catch(err =>
+            console.warn('[switchTab lookup] background refresh failed:', err)
+          );
+        }
       }
       
       if (tab === 'map') {
