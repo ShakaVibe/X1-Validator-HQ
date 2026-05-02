@@ -29302,11 +29302,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const leftPct = (barCenter / geom.W) * 100;
       const edge = leftPct < 8 ? 'left' : leftPct > 92 ? 'right' : 'center';
 
-      // Flip below when pinned (tooltip is too tall to fit above the chart),
-      // or when bar is in upper portion of chart (short hover-only tooltip
-      // would also clip on the tallest peaks).
-      const barTopPct = geom.bucketPeak > 0 ? (1 - meta.avgTps / geom.bucketPeak) * 100 : 100;
-      const flipBelow = isPinned || barTopPct < 18;
+      // ── Tooltip position math ──
+      // Anchor tooltip just above the BAR's top edge (not above the chart container,
+      // which is what was clipping into the modal header). For tall bars where the
+      // bar's top is too close to chart top, flip below the chart entirely.
+      // Pinned tooltips ALWAYS flip below — they're too tall (~190px) to fit above
+      // almost any bar.
+      const barHeightPct = geom.bucketPeak > 0 ? (meta.avgTps / geom.bucketPeak) * 100 : 0;
+      const CHART_H_PX = 280;
+      const barTopFromChartTop = CHART_H_PX * (1 - barHeightPct / 100);
+      const requiredRoom = isPinned ? 190 : 100;
+      const flipBelow = isPinned || barTopFromChartTop < requiredRoom;
 
       const fmtUtc = (ms) => {
         const d = new Date(ms);
@@ -29358,9 +29364,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
         inner += '<div class="tps-tooltip-hint">click bar for tx details</div>';
       }
 
+      // Build inline style: left always; bottom only when positioning above bar.
+      // When flipped below, CSS handles positioning via top: 100%+12.
+      const positionStyle = flipBelow
+        ? 'left:' + leftPct + '%'
+        : 'left:' + leftPct + '%; bottom:calc(' + barHeightPct + '% + 12px)';
+
       host.innerHTML =
           '<div class="tps-tooltip ' + (isPinned ? 'tps-tooltip-pinned' : '')
-        + '" style="left:' + leftPct + '%" data-edge="' + edge + '"'
+        + '" style="' + positionStyle + '" data-edge="' + edge + '"'
         + ' data-flip="' + (flipBelow ? 'below' : 'above') + '"'
         + ' onclick="event.stopPropagation()">'
         + inner
