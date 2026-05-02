@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-02T08:49:34.861Z",
+  "lastUpdated": "2026-05-02T10:37:38.071Z",
   "totalNodes": 1968,
-  "totalLocations": 1923,
+  "totalLocations": 1920,
   "locations": {
     "162.250.121.78": {
       "country": "United States",
@@ -86,13 +86,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "198.244.164.206": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
     },
     "95.217.224.120": {
       "country": "Finland",
@@ -1914,13 +1907,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "66.70.177.8": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
-    },
     "185.83.152.204": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -2158,13 +2144,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "66.70.177.35": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "174.138.190.14": {
       "country": "United States",
@@ -13466,45 +13445,49 @@
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 1539
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 98
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 37
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 82
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "DE": {
       "name": "Germany",
       "count": 70
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 7
+    "US": {
+      "name": "United States",
+      "count": 1539
     },
-    "FR": {
-      "name": "France",
-      "count": 86
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "FI": {
+      "name": "Finland",
+      "count": 82
     },
     "NL": {
       "name": "The Netherlands",
       "count": 28
     },
+    "FR": {
+      "name": "France",
+      "count": 86
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 35
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 101
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 6
+    },
     "SE": {
       "name": "Sweden",
       "count": 7
+    },
+    "CZ": {
+      "name": "Czechia",
+      "count": 1
     },
     "BE": {
       "name": "Belgium",
@@ -13516,10 +13499,6 @@
     },
     "PT": {
       "name": "Portugal",
-      "count": 1
-    },
-    "CZ": {
-      "name": "Czechia",
       "count": 1
     },
     "IT": {
