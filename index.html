@@ -8807,6 +8807,279 @@
       font-weight: 500;
     }
 
+    /* ──────────────────────────────────────────────────────────── */
+    /*  TPS modal — bar hover/click tooltip + tx hash display        */
+    /* ──────────────────────────────────────────────────────────── */
+
+    /* Tooltip host — overlays the chart container. Tooltip is positioned
+       absolutely inside this host, which sits in the same coordinate
+       system as .tps-modal-chart (both children of -chart-wrap, which is
+       position:relative). */
+    .tps-modal-tooltip-host {
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+      right: 1.5rem;
+      height: 280px;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .tps-tooltip {
+      position: absolute;
+      bottom: calc(100% + 12px);
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 10;
+      background: linear-gradient(180deg, rgba(15, 22, 35, 0.98) 0%, rgba(8, 12, 22, 0.99) 100%);
+      border: 1px solid rgba(0, 212, 255, 0.25);
+      border-radius: 8px;
+      padding: 8px 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 212, 255, 0.05) inset;
+      white-space: nowrap;
+      animation: tps-tip-fade 0.12s ease-out;
+    }
+
+    /* Edge clamping — keeps tooltip from spilling off chart bounds */
+    .tps-tooltip[data-edge="left"]  { transform: translateX(-12%); }
+    .tps-tooltip[data-edge="right"] { transform: translateX(-88%); }
+
+    /* Caret pointing down at bar */
+    .tps-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: rgba(15, 22, 35, 0.98);
+      filter: drop-shadow(0 1px 0 rgba(0, 212, 255, 0.25));
+    }
+    .tps-tooltip[data-edge="left"]::after  { left: 12%; }
+    .tps-tooltip[data-edge="right"]::after { left: 88%; }
+
+    /* Flip below — for pinned tooltips (always) and tall bars (clip-prone) */
+    .tps-tooltip[data-flip="below"] {
+      bottom: auto;
+      top: calc(100% + 12px);
+      animation-name: tps-tip-fade-below !important;
+    }
+    .tps-tooltip[data-flip="below"]::after {
+      top: auto;
+      bottom: 100%;
+      border-top-color: transparent;
+      border-bottom-color: rgba(15, 22, 35, 0.98);
+      filter: drop-shadow(0 -1px 0 rgba(0, 212, 255, 0.25));
+    }
+
+    .tps-tooltip-tps {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      letter-spacing: 0.01em;
+      margin-bottom: 6px;
+    }
+
+    .tps-tooltip-time,
+    .tps-tooltip-time-local {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.5;
+      letter-spacing: 0.02em;
+    }
+    .tps-tooltip-time-local { color: rgba(255, 255, 255, 0.55); }
+
+    .tps-tooltip-tz {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.45);
+      margin-left: 4px;
+    }
+
+    .tps-tooltip-hint {
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+      font-size: 9.5px;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    @keyframes tps-tip-fade {
+      from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    @keyframes tps-tip-fade-below {
+      from { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+      to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+
+    /* Pinned variant — interactive, taller, brighter border */
+    .tps-tooltip-pinned {
+      pointer-events: auto;
+      min-width: 240px;
+      border-color: rgba(0, 212, 255, 0.45);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 212, 255, 0.12) inset;
+      padding: 10px 14px 12px;
+    }
+
+    .tps-tooltip-close {
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      width: 18px;
+      height: 18px;
+      border: none;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+      border-radius: 4px;
+      transition: background 0.12s, color 0.12s;
+    }
+    .tps-tooltip-close:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .tps-tooltip-fetch-btn {
+      margin-top: 8px;
+      padding: 6px 10px;
+      width: 100%;
+      border: 1px solid rgba(0, 212, 255, 0.4);
+      background: rgba(0, 212, 255, 0.08);
+      color: var(--accent-cyan);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .tps-tooltip-fetch-btn:hover {
+      background: rgba(0, 212, 255, 0.16);
+      border-color: rgba(0, 212, 255, 0.6);
+    }
+
+    .tps-tooltip-tx-loading,
+    .tps-tooltip-tx-error {
+      margin-top: 8px;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .tps-tooltip-tx-loading {
+      color: rgba(0, 212, 255, 0.85);
+      background: rgba(0, 212, 255, 0.06);
+      border: 1px solid rgba(0, 212, 255, 0.15);
+    }
+    .tps-tooltip-tx-error {
+      color: rgba(255, 180, 100, 0.9);
+      background: rgba(255, 180, 100, 0.05);
+      border: 1px solid rgba(255, 180, 100, 0.18);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .tps-tooltip-retry-btn {
+      align-self: center;
+      border: 1px solid rgba(255, 180, 100, 0.4);
+      background: transparent;
+      color: rgba(255, 180, 100, 0.95);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .tps-tooltip-retry-btn:hover {
+      background: rgba(255, 180, 100, 0.1);
+    }
+
+    .tps-tooltip-tx-block {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .tps-tx-row {
+      display: grid;
+      grid-template-columns: 38px 1fr 24px;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .tps-tx-row-empty .tps-tx-missing {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.4);
+      font-style: italic;
+    }
+
+    .tps-tx-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(255, 255, 255, 0.45);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .tps-tx-sig {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.12s;
+      border-bottom: 1px dashed transparent;
+    }
+    .tps-tx-sig:hover {
+      color: var(--accent-cyan);
+      border-bottom-color: rgba(0, 212, 255, 0.4);
+    }
+
+    .tps-tx-copy {
+      width: 22px;
+      height: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      line-height: 1;
+      padding: 0;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .tps-tx-copy:hover {
+      background: rgba(0, 212, 255, 0.1);
+      border-color: rgba(0, 212, 255, 0.4);
+      color: var(--accent-cyan);
+    }
+
     /* Scorecard modal — wide enough to hold the full Last Epoch / Current
        Epoch side-by-side scorecard without shrinking the inner panels. */
     .skipmon-scorecard-modal { max-width: 900px; }
@@ -10505,6 +10778,7 @@
       </div>
       <div class="tps-modal-chart-wrap">
         <div class="tps-modal-chart" id="tpsModalChart"></div>
+        <div class="tps-modal-tooltip-host" id="tpsModalTooltipHost"></div>
         <div class="tps-modal-axis" id="tpsModalAxisRow">
           <span>12h ago</span><span>9h</span><span>6h</span><span>3h</span><span>now</span>
         </div>
@@ -26685,6 +26959,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
     const TPS_SAMPLES = 720;          // 12 hours at 60s/sample — the RPC max
     const TPS_STRIP_WINDOW = 60;      // last 60 samples drive the inline strip
     let tpsSamplesCache = [];         // oldest-first, each = TPS number
+    let tpsSlotDataCache = [];        // oldest-first parallel array; each = {endSlot, slotCount}
+                                       // Used by the modal tooltip's "Show first/last tx"
+                                       // feature to derive bucket slot ranges.
     let tpsFetching = false;
 
     async function loadTpsSamples() {
@@ -26703,13 +26980,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // the node's rolling sample buffer rotated. ~20 KB/min is fine.
         const raw = await rpcCall('getRecentPerformanceSamples', [TPS_SAMPLES]);
         if (!Array.isArray(raw) || !raw.length) return;
-        const tps = raw
-          .slice()
-          .reverse()
-          .map(s => (s && s.samplePeriodSecs > 0)
-            ? (s.numTransactions / s.samplePeriodSecs)
-            : 0);
+        const reversed = raw.slice().reverse();
+        const tps = reversed.map(s => (s && s.samplePeriodSecs > 0)
+          ? (s.numTransactions / s.samplePeriodSecs)
+          : 0);
         tpsSamplesCache = tps;
+        // Parallel slot data — same indexing as tpsSamplesCache.
+        // .slot is the LAST slot of the sample window; .numSlots is window length.
+        tpsSlotDataCache = reversed.map(s => ({
+          endSlot:   (s && typeof s.slot === 'number') ? s.slot : null,
+          slotCount: (s && typeof s.numSlots === 'number') ? s.numSlots : 0,
+        }));
 
         // Drive the shared top-of-page TPS readout from the same cache
         // (replaces the old dedicated updateNetworkTps poll).
@@ -28887,6 +29168,222 @@ Please give me the diagnostic commands to run on my server so you can help me id
     function closeTpsModal() {
       const modal = document.getElementById('tpsModal');
       if (modal) modal.style.display = 'none';
+      // Reset tooltip state on close so it doesn't reopen stale on next open.
+      _tpsHoveredBucket = null;
+      _tpsPinnedBucket  = null;
+      _tpsTxData        = {};
+      _tpsBucketMeta    = null;
+      _tpsBucketGeom    = null;
+    }
+
+    // ── Hover / click-to-pin tooltip state ──────────────────────
+    // Hover is transient; clicking a bar pins the tooltip open and reveals
+    // a "Show first/last tx" button. Module-level (vs. closure) so the SVG's
+    // onmouseenter/onclick attributes can reach them without a re-bind.
+    let _tpsHoveredBucket = null;
+    let _tpsPinnedBucket  = null;
+    let _tpsTxData        = {};   // keyed by bucket index → {loading, error, firstTx, lastTx, firstSlot, lastSlot}
+    let _tpsBucketMeta    = null; // populated by renderTpsModal — array of bucket-window metadata
+    let _tpsBucketGeom    = null; // populated by renderTpsModal — {barW, gap, W, bucketPeak, n}
+
+    // Block-signature fetch with skipped-slot fallback.
+    // X1 (Solana fork) skips a small fraction of slots; if the targeted slot
+    // wasn't produced, walk in `direction` (+1 forward / -1 backward) up to
+    // 3 times to find the nearest produced block. Bounded — worst case 4
+    // RPC calls per side per click. Returns {slot, signatures} or null.
+    async function _fetchBlockSigsForTps(slot, direction) {
+      const MAX_WALK = 3;
+      for (let i = 0; i <= MAX_WALK; i++) {
+        const trySlot = slot + direction * i;
+        try {
+          const res = await rpcCall('getBlock', [trySlot, {
+            transactionDetails: 'signatures',
+            rewards: false,
+            maxSupportedTransactionVersion: 0,
+          }]);
+          if (res && Array.isArray(res.signatures) && res.signatures.length > 0) {
+            return { slot: trySlot, signatures: res.signatures };
+          }
+          // Empty block (0 sigs) — keep walking; we want a slot with txs
+        } catch (err) {
+          // -32004/-32007/-32009 etc. = skipped/unavailable. rpcCall throws
+          // on data.error, so just continue the walk.
+          const msg = (err && err.message) || '';
+          if (/skip|not available|cleaned up/i.test(msg)) continue;
+          // Other errors (network, timeout) — abort the walk
+          throw err;
+        }
+      }
+      return null;
+    }
+
+    // Fires both block fetches in parallel for the bucket's first + last slot.
+    // Updates _tpsTxData[bucketIdx] and re-renders the tooltip.
+    async function _fetchTxsForTpsBucket(bucketIdx, startSlot, endSlot) {
+      _tpsTxData[bucketIdx] = { loading: true };
+      _renderTpsTooltip();
+      try {
+        const [firstBlk, lastBlk] = await Promise.all([
+          _fetchBlockSigsForTps(startSlot, +1),
+          _fetchBlockSigsForTps(endSlot, -1),
+        ]);
+        const firstTx = firstBlk && firstBlk.signatures && firstBlk.signatures[0] || null;
+        const lastTx  = lastBlk  && lastBlk.signatures  && lastBlk.signatures[0]  || null;
+        if (!firstTx && !lastTx) {
+          _tpsTxData[bucketIdx] = {
+            loading: false,
+            error: 'No blocks produced in this window',
+          };
+        } else {
+          _tpsTxData[bucketIdx] = {
+            loading: false,
+            firstTx, lastTx,
+            firstSlot: firstBlk ? firstBlk.slot : null,
+            lastSlot:  lastBlk  ? lastBlk.slot  : null,
+          };
+        }
+      } catch (err) {
+        console.warn('[TPS] tx fetch error:', err && err.message || err);
+        _tpsTxData[bucketIdx] = {
+          loading: false,
+          error: 'Couldn’t load — RPC may be busy',
+        };
+      }
+      _renderTpsTooltip();
+    }
+
+    // Copy address to clipboard with brief visual confirmation.
+    async function _copyTpsTx(sig, btnEl) {
+      try {
+        await navigator.clipboard.writeText(sig);
+        if (btnEl) {
+          const orig = btnEl.textContent;
+          btnEl.textContent = '✓';
+          setTimeout(() => { btnEl.textContent = orig; }, 1500);
+        }
+      } catch (e) { /* old browsers / non-secure context — no-op */ }
+    }
+
+    // Helper invoked by SVG hit-zone elements via inline handlers.
+    function _onTpsBarEnter(idx) {
+      _tpsHoveredBucket = idx;
+      _renderTpsTooltip();
+    }
+    function _onTpsBarLeave(idx) {
+      if (_tpsHoveredBucket === idx) _tpsHoveredBucket = null;
+      _renderTpsTooltip();
+    }
+    function _onTpsBarClick(idx) {
+      _tpsPinnedBucket = (_tpsPinnedBucket === idx) ? null : idx;
+      _renderTpsTooltip();
+    }
+    function _closeTpsPin() {
+      _tpsPinnedBucket = null;
+      _renderTpsTooltip();
+    }
+
+    // Renders the HTML tooltip overlay based on current hover/pin state.
+    // Called on every interaction (vs. React's reactive re-render).
+    function _renderTpsTooltip() {
+      const host = document.getElementById('tpsModalTooltipHost');
+      if (!host) return;
+      const activeIdx = (_tpsPinnedBucket != null) ? _tpsPinnedBucket : _tpsHoveredBucket;
+      if (activeIdx == null || !_tpsBucketMeta || !_tpsBucketGeom) {
+        host.innerHTML = '';
+        return;
+      }
+      const meta = _tpsBucketMeta[activeIdx];
+      if (!meta) { host.innerHTML = ''; return; }
+      const geom = _tpsBucketGeom;
+      const isPinned = _tpsPinnedBucket != null && _tpsPinnedBucket === activeIdx;
+
+      // Position: tooltip's left = bucket center as % of full SVG width.
+      const barCenter = activeIdx * (geom.barW + geom.gap) + geom.barW / 2;
+      const leftPct = (barCenter / geom.W) * 100;
+      const edge = leftPct < 8 ? 'left' : leftPct > 92 ? 'right' : 'center';
+
+      // Flip below when pinned (tooltip is too tall to fit above the chart),
+      // or when bar is in upper portion of chart (short hover-only tooltip
+      // would also clip on the tallest peaks).
+      const barTopPct = geom.bucketPeak > 0 ? (1 - meta.avgTps / geom.bucketPeak) * 100 : 100;
+      const flipBelow = isPinned || barTopPct < 18;
+
+      const fmtUtc = (ms) => {
+        const d = new Date(ms);
+        return String(d.getUTCHours()).padStart(2,'0') + ':' + String(d.getUTCMinutes()).padStart(2,'0');
+      };
+      const fmtLocal = (ms) => {
+        const d = new Date(ms);
+        return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+      };
+      const utcRange   = fmtUtc(meta.startMs) + '–' + fmtUtc(meta.endMs);
+      const localRange = fmtLocal(meta.startMs) + '–' + fmtLocal(meta.endMs);
+      const singleSample = meta.sampleCount <= 1;
+
+      const tx = _tpsTxData[activeIdx];
+      const canShowTxButton = isPinned && meta.startSlot != null && meta.endSlot != null;
+
+      // Build tooltip HTML
+      let inner = '';
+      if (isPinned) {
+        inner += '<button class="tps-tooltip-close" onclick="_closeTpsPin()" title="Close">×</button>';
+      }
+      inner += '<div class="tps-tooltip-tps">' + _tpsFmt(meta.avgTps) + ' TPS</div>';
+      inner += '<div class="tps-tooltip-time">'
+            + (singleSample ? fmtUtc(meta.endMs) : utcRange)
+            + ' <span class="tps-tooltip-tz">UTC</span></div>';
+      inner += '<div class="tps-tooltip-time-local">'
+            + (singleSample ? fmtLocal(meta.endMs) : localRange)
+            + ' <span class="tps-tooltip-tz">local</span></div>';
+
+      if (canShowTxButton && !tx) {
+        inner += '<button class="tps-tooltip-fetch-btn" onclick="_fetchTxsForTpsBucket('
+              + activeIdx + ',' + meta.startSlot + ',' + meta.endSlot + ')">Show first/last tx</button>';
+      } else if (tx && tx.loading) {
+        inner += '<div class="tps-tooltip-tx-loading">Loading transactions…</div>';
+      } else if (tx && tx.error) {
+        inner += '<div class="tps-tooltip-tx-error">'
+              + tx.error
+              + '<button class="tps-tooltip-retry-btn" onclick="_fetchTxsForTpsBucket('
+              + activeIdx + ',' + meta.startSlot + ',' + meta.endSlot + ')">Retry</button>'
+              + '</div>';
+      } else if (tx && (tx.firstTx || tx.lastTx)) {
+        inner += '<div class="tps-tooltip-tx-block">'
+              + _renderTxRow('First', tx.firstTx, tx.firstSlot)
+              + _renderTxRow('Last',  tx.lastTx,  tx.lastSlot)
+              + '</div>';
+      }
+
+      if (!isPinned) {
+        inner += '<div class="tps-tooltip-hint">click bar for tx details</div>';
+      }
+
+      host.innerHTML =
+          '<div class="tps-tooltip ' + (isPinned ? 'tps-tooltip-pinned' : '')
+        + '" style="left:' + leftPct + '%" data-edge="' + edge + '"'
+        + ' data-flip="' + (flipBelow ? 'below' : 'above') + '"'
+        + ' onclick="event.stopPropagation()">'
+        + inner
+        + '</div>';
+    }
+
+    // Builds one tx-hash row (label · truncated link · copy button).
+    function _renderTxRow(label, sig, slot) {
+      if (!sig) {
+        return '<div class="tps-tx-row tps-tx-row-empty">'
+             + '<span class="tps-tx-label">' + label + '</span>'
+             + '<span class="tps-tx-missing">— no tx —</span>'
+             + '</div>';
+      }
+      const trunc = sig.slice(0, 6) + '…' + sig.slice(-6);
+      const explorerUrl = 'https://explorer.mainnet.x1.xyz/tx/' + encodeURIComponent(sig);
+      const title = sig + (slot ? ' (slot ' + slot + ')' : '');
+      // Inline copy handler — passes the button element so it can flash ✓
+      return '<div class="tps-tx-row">'
+           + '<span class="tps-tx-label">' + label + '</span>'
+           + '<a href="' + explorerUrl + '" target="_blank" rel="noopener noreferrer" class="tps-tx-sig" title="' + title.replace(/"/g, '&quot;') + '">' + trunc + '</a>'
+           + '<button class="tps-tx-copy" onclick="_copyTpsTx(\'' + sig + '\', this)" title="Copy signature">⧉</button>'
+           + '</div>';
     }
 
     // Human-friendly formatter for large cumulative numbers (total
@@ -28944,11 +29441,41 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const BUCKET_COUNT = 60;
       const bucketSize = Math.max(1, Math.ceil(series.length / BUCKET_COUNT));
       const buckets = [];
+      // bucketMeta — same length as buckets[]; carries time window + slot range
+      // for tooltip rendering. nowMs captured at render time, slightly stale
+      // if modal stays open for many minutes (acceptable; tps values stale too).
+      const bucketMeta = [];
+      const nowMs = Date.now();
+      const SAMPLE_MS = 60000;
+      const haveSlots = Array.isArray(tpsSlotDataCache) && tpsSlotDataCache.length === series.length;
       for (let i = 0; i < series.length; i += bucketSize) {
         const end = Math.min(i + bucketSize, series.length);
         let sum = 0;
         for (let j = i; j < end; j++) sum += series[j];
-        buckets.push(sum / (end - i));
+        const avg = sum / (end - i);
+        buckets.push(avg);
+        // Series is oldest→newest, so older index = further in the past.
+        const startMinutesAgo = series.length - 1 - i;
+        const endMinutesAgo   = series.length - 1 - (end - 1);
+        let startSlot = null, endSlot = null;
+        if (haveSlots) {
+          const firstSample = tpsSlotDataCache[i];
+          const lastSample  = tpsSlotDataCache[end - 1];
+          if (firstSample && firstSample.endSlot != null && firstSample.slotCount > 0) {
+            startSlot = firstSample.endSlot - firstSample.slotCount + 1;
+          }
+          if (lastSample && lastSample.endSlot != null) {
+            endSlot = lastSample.endSlot;
+          }
+        }
+        bucketMeta.push({
+          avgTps: avg,
+          startMs: nowMs - startMinutesAgo * SAMPLE_MS,
+          endMs:   nowMs - endMinutesAgo   * SAMPLE_MS,
+          sampleCount: end - i,
+          startSlot,
+          endSlot,
+        });
       }
       const bucketPeak = Math.max.apply(null, buckets);
       const scaleMax = Math.max(bucketPeak, 1);
@@ -28963,6 +29490,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const gap = 2;
       const n = buckets.length;
       const barW = Math.max(1, (chartW - gap * (n - 1)) / n);
+
+      // Stash bucket geom + meta for the tooltip renderer to use.
+      _tpsBucketMeta = bucketMeta;
+      _tpsBucketGeom = { barW, gap, W, bucketPeak, n };
+      // Reset interaction state when the chart is rebuilt (e.g. on poll refresh
+      // mid-modal). Leaving stale pin would point at a different bar.
+      _tpsHoveredBucket = null;
+      _tpsPinnedBucket  = null;
+      _tpsTxData        = {};
 
       // Gridlines at 25/50/75/100% of bucket peak, stopping at the
       // gutter so the label column stays clean.
@@ -28979,6 +29515,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const x = (i * (barW + gap)).toFixed(2);
         const y = (H - h).toFixed(2);
         bars += `<rect x="${x}" y="${y}" width="${barW.toFixed(2)}" height="${h.toFixed(2)}" fill="url(#tpsGradBig)" rx="1.5"/>`;
+        // Invisible full-height hit zone for hover/click. Sits over the
+        // entire column so skinny low-TPS bars are easy to target.
+        bars += `<rect x="${x}" y="0" width="${barW.toFixed(2)}" height="${H}" fill="transparent" style="cursor:pointer"`
+             + ` onmouseenter="_onTpsBarEnter(${i})" onmouseleave="_onTpsBarLeave(${i})" onclick="_onTpsBarClick(${i})"/>`;
       }
 
       chartEl.innerHTML =
@@ -28993,6 +29533,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         +   gridLines
         +   bars
         + `</svg>`;
+
+      // Clear any stale tooltip from a previous render
+      _renderTpsTooltip();
 
       // ── Axis labels — adapt to however many samples we actually got ──
       const axisEl = document.getElementById('tpsModalAxisRow');
