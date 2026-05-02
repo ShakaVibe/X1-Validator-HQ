@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-02T20:36:02.304Z",
-  "totalNodes": 1968,
-  "totalLocations": 1919,
+  "lastUpdated": "2026-05-02T22:35:43.630Z",
+  "totalNodes": 1969,
+  "totalLocations": 1920,
   "locations": {
     "162.250.121.78": {
       "country": "United States",
@@ -13435,52 +13435,55 @@
       "city": "Sheridan",
       "lat": 44.7871,
       "lon": -106.9629
+    },
+    "195.3.223.207": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 70
-    },
     "US": {
       "name": "United States",
       "count": 1539
     },
-    "FI": {
-      "name": "Finland",
-      "count": 82
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 28
-    },
-    "FR": {
-      "name": "France",
-      "count": 86
+    "PL": {
+      "name": "Poland",
+      "count": 103
     },
     "CA": {
       "name": "Canada",
       "count": 34
     },
-    "PL": {
-      "name": "Poland",
-      "count": 102
+    "FI": {
+      "name": "Finland",
+      "count": 82
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 70
     },
     "GB": {
       "name": "United Kingdom",
       "count": 6
     },
+    "FR": {
+      "name": "France",
+      "count": 86
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 28
+    },
     "SE": {
       "name": "Sweden",
       "count": 7
-    },
-    "CZ": {
-      "name": "Czechia",
-      "count": 1
     },
     "BE": {
       "name": "Belgium",
@@ -13492,6 +13495,10 @@
     },
     "PT": {
       "name": "Portugal",
+      "count": 1
+    },
+    "CZ": {
+      "name": "Czechia",
       "count": 1
     },
     "IT": {
