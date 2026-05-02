@@ -26691,13 +26691,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
       if (tpsFetching) return;
       tpsFetching = true;
       try {
-        // Full backfill (720 samples ≈ 12h) only when the cache is empty
-        // or nearly so. After that, poll with count=1 so each refresh is
-        // ~200 bytes of JSON instead of ~20 KB, and the RPC does far less
-        // work per call.
-        const needFull = tpsSamplesCache.length < 2;
-        const count = needFull ? TPS_SAMPLES : 1;
-        const raw = await rpcCall('getRecentPerformanceSamples', [count]);
+        // Always fetch the full 720 samples (12h) on every poll. This
+        // ensures the 12-hour view always reflects the RPC's current
+        // authoritative state, so any client querying at the same moment
+        // sees the same numbers (matches X1Prism's behavior).
+        //
+        // The previous incremental pattern (one full backfill, then count=1
+        // appends) saved bandwidth but produced session-dependent history:
+        // each tab's cache became a rolling tape recording specific to when
+        // that tab was opened, which drifted from the RPC's current view as
+        // the node's rolling sample buffer rotated. ~20 KB/min is fine.
+        const raw = await rpcCall('getRecentPerformanceSamples', [TPS_SAMPLES]);
         if (!Array.isArray(raw) || !raw.length) return;
         const tps = raw
           .slice()
@@ -26705,13 +26709,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           .map(s => (s && s.samplePeriodSecs > 0)
             ? (s.numTransactions / s.samplePeriodSecs)
             : 0);
-        if (needFull) {
-          tpsSamplesCache = tps;
-        } else {
-          // Incremental path — append the newest sample, trim the oldest.
-          tpsSamplesCache.push(tps[tps.length - 1]);
-          while (tpsSamplesCache.length > TPS_SAMPLES) tpsSamplesCache.shift();
-        }
+        tpsSamplesCache = tps;
 
         // Drive the shared top-of-page TPS readout from the same cache
         // (replaces the old dedicated updateNetworkTps poll).
