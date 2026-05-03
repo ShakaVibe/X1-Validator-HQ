@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-02T22:35:43.630Z",
+  "lastUpdated": "2026-05-03T01:14:30.527Z",
   "totalNodes": 1969,
   "totalLocations": 1920,
   "locations": {
@@ -359,13 +359,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "104.250.149.6": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Pleasant View",
-      "lat": 41.3072,
-      "lon": -111.992
     },
     "107.181.241.170": {
       "country": "United States",
@@ -13442,6 +13435,13 @@
       "city": "Warsaw",
       "lat": 52.2297,
       "lon": 21.0122
+    },
+    "192.154.104.234": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Salt Lake City",
+      "lat": 40.7687,
+      "lon": -111.886
     }
   },
   "countries": {
