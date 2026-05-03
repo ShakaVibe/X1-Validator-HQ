@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -20510,6 +20510,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Fetch current epoch first
         const epochInfo = await rpcCall('getEpochInfo');
         const currentEpoch = epochInfo.epoch;
+        // Cache globally so other consumers (cooldown popover, projected
+        // schedule, etc.) get correct epoch numbers even when the user
+        // hasn't visited the Calculators tab. Previously this lived only
+        // in a local var, which made the popover render epochs starting
+        // from #0 because the global was still null.
+        currentEpochData = epochInfo;
         
         // Fetch stake accounts delegated to this validator
         const response = await fetch(RPC_URL, {
@@ -20821,7 +20827,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const future = [];
       let remaining = cooling;
       let cum = cooled;
-      const projStartEpoch = currentEpoch != null ? currentEpoch : 0;
+      // Project from currentEpoch onward (the current epoch is when the
+      // next release lands, since the deactivation epoch itself doesn't
+      // produce a release). If currentEpochData hasn't loaded yet, fall
+      // back to deactivationEpoch + 1 — that's at least anchored to real
+      // chain data instead of starting from #0.
+      const projStartEpoch = currentEpoch != null
+        ? currentEpoch
+        : (stake.deactivationEpoch != null ? stake.deactivationEpoch + 1 : 0);
       for (let i = 0; i < 30 && remaining > 1; i++) {  // cap 30 epochs
         const release = Math.min(rateLamports, remaining);
         remaining -= release;
