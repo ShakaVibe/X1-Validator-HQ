@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-03T14:38:21.447Z",
-  "totalNodes": 1763,
-  "totalLocations": 1749,
+  "lastUpdated": "2026-05-03T16:36:53.551Z",
+  "totalNodes": 1735,
+  "totalLocations": 1721,
   "locations": {
     "162.250.121.78": {
       "country": "United States",
@@ -1283,13 +1283,6 @@
       "city": "Roubaix",
       "lat": 50.6977,
       "lon": 3.1786
-    },
-    "144.217.77.134": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
     },
     "168.119.194.80": {
       "country": "Germany",
@@ -8844,20 +8837,6 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "37.59.220.251": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Paris",
-      "lat": 48.8575,
-      "lon": 2.35138
-    },
-    "51.178.217.41": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "23.175.144.149": {
       "country": "United States",
       "countryCode": "US",
@@ -8914,13 +8893,6 @@
       "lat": 52.3759,
       "lon": 4.8975
     },
-    "5.135.70.186": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Strasbourg",
-      "lat": 48.5734,
-      "lon": 7.75211
-    },
     "51.210.114.29": {
       "country": "France",
       "countryCode": "FR",
@@ -8928,26 +8900,12 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "51.255.215.4": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "57.128.119.186": {
       "country": "France",
       "countryCode": "FR",
       "city": "Gravelines",
       "lat": 50.9871,
       "lon": 2.12554
-    },
-    "37.187.196.75": {
-      "country": "Belgium",
-      "countryCode": "BE",
-      "city": "Zaventem",
-      "lat": 50.871,
-      "lon": 4.47636
     },
     "162.19.72.27": {
       "country": "France",
@@ -8970,13 +8928,6 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "51.178.217.38": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "141.95.157.119": {
       "country": "France",
       "countryCode": "FR",
@@ -8984,40 +8935,12 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "46.105.88.215": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Paris",
-      "lat": 48.8575,
-      "lon": 2.35138
-    },
-    "5.196.61.130": {
-      "country": "Italy",
-      "countryCode": "IT",
-      "city": "Milan",
-      "lat": 45.5002,
-      "lon": 9.18347
-    },
     "162.19.72.121": {
       "country": "France",
       "countryCode": "FR",
       "city": "Gravelines",
       "lat": 50.9871,
       "lon": 2.12554
-    },
-    "54.36.26.227": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "37.187.196.99": {
-      "country": "Belgium",
-      "countryCode": "BE",
-      "city": "Zaventem",
-      "lat": 50.871,
-      "lon": 4.47636
     },
     "141.95.157.29": {
       "country": "France",
@@ -9040,13 +8963,6 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "51.255.215.3": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "37.187.71.95": {
       "country": "France",
       "countryCode": "FR",
@@ -9067,13 +8983,6 @@
       "city": "Gravelines",
       "lat": 50.9871,
       "lon": 2.12554
-    },
-    "51.38.221.57": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Paris",
-      "lat": 48.8575,
-      "lon": 2.35138
     },
     "37.187.71.171": {
       "country": "France",
@@ -9096,40 +9005,12 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "51.255.225.5": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Strasbourg",
-      "lat": 48.5734,
-      "lon": 7.75211
-    },
-    "5.196.139.225": {
-      "country": "Belgium",
-      "countryCode": "BE",
-      "city": "Zaventem",
-      "lat": 50.871,
-      "lon": 4.47636
-    },
     "37.59.22.59": {
       "country": "France",
       "countryCode": "FR",
       "city": "Gravelines",
       "lat": 50.9871,
       "lon": 2.12554
-    },
-    "54.36.26.225": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "5.39.48.253": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Saarbrücken",
-      "lat": 49.2432,
-      "lon": 7.00368
     },
     "104.250.159.138": {
       "country": "United States",
@@ -10244,89 +10125,12 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "51.38.159.47": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "5.135.94.56": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Strasbourg",
-      "lat": 48.5734,
-      "lon": 7.75211
-    },
-    "5.39.49.246": {
-      "country": "Czechia",
-      "countryCode": "CZ",
-      "city": "Prague",
-      "lat": 50.0794,
-      "lon": 14.4295
-    },
-    "51.38.159.108": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.147.170": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.156.155": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "5.39.48.36": {
-      "country": "Portugal",
-      "countryCode": "PT",
-      "city": "Lisbon",
-      "lat": 38.7364,
-      "lon": -9.15079
-    },
-    "5.39.57.87": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Paris",
-      "lat": 48.8575,
-      "lon": 2.35138
-    },
     "38.83.114.48": {
       "country": "United States",
       "countryCode": "US",
       "city": "Atlanta",
       "lat": 33.7489,
       "lon": -84.3879
-    },
-    "51.38.150.226": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.153.204": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.156.141": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
     },
     "216.219.91.162": {
       "country": "United States",
@@ -12248,37 +12052,37 @@
     }
   },
   "countries": {
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 64
+    },
     "US": {
       "name": "United States",
       "count": 1365
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 93
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 25
     },
     "FI": {
       "name": "Finland",
       "count": 82
     },
-    "DE": {
-      "name": "Germany",
-      "count": 67
-    },
-    "FR": {
-      "name": "France",
-      "count": 77
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 28
+    },
+    "FR": {
+      "name": "France",
+      "count": 66
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 24
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 86
     },
     "GB": {
       "name": "United Kingdom",
@@ -12288,24 +12092,8 @@
       "name": "Sweden",
       "count": 7
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 3
-    },
     "SG": {
       "name": "Singapore",
-      "count": 1
-    },
-    "PT": {
-      "name": "Portugal",
-      "count": 1
-    },
-    "CZ": {
-      "name": "Czechia",
-      "count": 1
-    },
-    "IT": {
-      "name": "Italy",
       "count": 1
     }
   }
