@@ -20827,24 +20827,36 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const future = [];
       let remaining = cooling;
       let cum = cooled;
-      // Project from currentEpoch onward (the current epoch is when the
-      // next release lands, since the deactivation epoch itself doesn't
-      // produce a release). If currentEpochData hasn't loaded yet, fall
-      // back to deactivationEpoch + 1 — that's at least anchored to real
-      // chain data instead of starting from #0.
-      const projStartEpoch = currentEpoch != null
-        ? currentEpoch
-        : (stake.deactivationEpoch != null ? stake.deactivationEpoch + 1 : 0);
+      // Anchor projection to the first epoch in which a release can actually
+      // land. The deactivation epoch itself produces no release (the stake is
+      // still active during it); the first cooldown epoch is deactivationEpoch+1.
+      // If currentEpoch is already past that — i.e. we're mid-cooldown — we
+      // start from currentEpoch (its end is the next pending release).
+      let projStartEpoch;
+      if (stake.deactivationEpoch != null) {
+        const firstCooldownEpoch = stake.deactivationEpoch + 1;
+        projStartEpoch = currentEpoch != null
+          ? Math.max(currentEpoch, firstCooldownEpoch)
+          : firstCooldownEpoch;
+      } else {
+        projStartEpoch = currentEpoch != null ? currentEpoch : 0;
+      }
       for (let i = 0; i < 30 && remaining > 1; i++) {  // cap 30 epochs
         const release = Math.min(rateLamports, remaining);
         remaining -= release;
         cum += release;
+        const epoch = projStartEpoch + i;
+        // ms from now until END of this epoch. Number of full epochs between
+        // currentEpoch and `epoch` is (epoch - currentEpoch); on top of that
+        // there's the time remaining in the current epoch itself.
+        const epochsAhead = currentEpoch != null ? (epoch - currentEpoch) : i;
+        const msFromNow = currentEpochRemainingMs + epochsAhead * epochDurationMs;
         future.push({
-          epoch: projStartEpoch + i,
+          epoch,
           released: release,
           cumulative: cum,
           remainingAfter: remaining,
-          msFromNow: currentEpochRemainingMs + i * epochDurationMs
+          msFromNow
         });
       }
       
@@ -20959,11 +20971,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
           : '';
         scheduleSection = `
           <div class="cooldown-section-label">Projected Schedule ${info.rateSource === 'estimated' ? '(estimate)' : ''}</div>
+          <div style="font-size:0.7rem; color:var(--text-dim); margin: -0.2rem 0 0.4rem;">
+            Each row shows when a chunk becomes withdrawable (at the end of that epoch).
+          </div>
           <div class="cooldown-mini-table">
             <div class="cooldown-mini-row head">
-              <span>Epoch</span>
+              <span>End of Epoch</span>
               <span>Released</span>
-              <span>~Date</span>
+              <span>Ready by</span>
             </div>
             ${rows}
             ${moreRow}
