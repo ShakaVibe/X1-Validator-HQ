@@ -7655,6 +7655,170 @@
       color: var(--text-secondary);
     }
 
+    /* ── Unstaking calculator: cooldown rate slider ─────────────────────── */
+    .unstaking-rate-slider-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .unstaking-rate-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .unstaking-rate-slider {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      background: var(--bg-secondary);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+    .unstaking-rate-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(0,212,255,0.5);
+    }
+    .unstaking-rate-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-cyan);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 8px rgba(0,212,255,0.5);
+    }
+    .unstaking-rate-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      min-width: 56px;
+      text-align: right;
+    }
+    .unstaking-rate-presets {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .unstaking-rate-preset {
+      padding: 0.3rem 0.6rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .unstaking-rate-preset:hover {
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+    .unstaking-rate-preset.active {
+      background: rgba(0, 212, 255, 0.12);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    /* ── Per-epoch release breakdown table ──────────────────────────────── */
+    .unstaking-epoch-table {
+      margin: 1rem 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .unstaking-epoch-table-header {
+      display: grid;
+      grid-template-columns: 0.7fr 1fr 1fr 1.5fr;
+      gap: 0.5rem;
+      padding: 0.65rem 0.85rem;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .unstaking-epoch-row {
+      display: grid;
+      grid-template-columns: 0.7fr 1fr 1fr 1.5fr;
+      gap: 0.5rem;
+      padding: 0.65rem 0.85rem;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .unstaking-epoch-row:last-child {
+      border-bottom: none;
+    }
+    .unstaking-epoch-row.complete {
+      background: rgba(0, 230, 118, 0.04);
+    }
+    .unstaking-epoch-num {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .unstaking-epoch-released {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--success);
+    }
+    .unstaking-epoch-cumulative {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+    }
+    .unstaking-epoch-bar {
+      position: relative;
+      height: 6px;
+      background: var(--bg-primary);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .unstaking-epoch-bar-fill {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), var(--accent-cyan));
+      border-radius: 3px;
+    }
+
+    /* ── Educational explainer box ──────────────────────────────────────── */
+    .unstaking-info-box {
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      background: rgba(0, 212, 255, 0.06);
+      border: 1px solid rgba(0, 212, 255, 0.2);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: var(--text-secondary);
+    }
+    .unstaking-info-box strong {
+      color: var(--accent-cyan);
+      display: block;
+      margin-bottom: 0.4rem;
+      font-size: 0.85rem;
+    }
+    .unstaking-info-box p { margin: 0.3rem 0; }
+    .unstaking-info-box code {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-secondary);
+      padding: 0.05rem 0.3rem;
+      border-radius: 3px;
+      font-size: 0.78rem;
+      color: var(--text-primary);
+    }
+
     /* Break-even */
     .breakeven-table {
       margin-top: 1.5rem;
@@ -10394,7 +10558,7 @@
       <div class="calculator-panel" id="calcUnstaking">
         <div class="calc-header">
           <h2>⏱️ Unstaking Timeline Calculator</h2>
-          <p class="calc-subtitle">Know exactly when your unstaked funds become available</p>
+          <p class="calc-subtitle">Model your full cooldown — including the per-epoch rate limit</p>
         </div>
         <div class="calc-body">
           <div class="calc-inputs">
@@ -10416,6 +10580,13 @@
               </div>
               <button class="calc-refresh-btn" onclick="refreshEpochInfo()">🔄 Refresh</button>
             </div>
+
+            <div class="calc-input-group">
+              <label>Amount to Unstake (XNT)</label>
+              <input type="number" id="unstakingAmount" placeholder="100" value="100" min="0" step="0.0001" oninput="calculateUnstakingTimeline()">
+              <div class="calc-input-hint">How much XNT you plan to deactivate.</div>
+            </div>
+
             <div class="calc-input-group">
               <label>When will you initiate unstaking?</label>
               <select id="unstakingWhen" onchange="calculateUnstakingTimeline()">
@@ -10425,6 +10596,22 @@
               </select>
               <input type="number" id="unstakingCustomEpoch" placeholder="Enter epoch number" style="display: none; margin-top: 0.5rem;" oninput="calculateUnstakingTimeline()">
             </div>
+
+            <div class="calc-input-group">
+              <label>Observed Cooldown Rate per Epoch</label>
+              <div class="unstaking-rate-slider-wrap">
+                <div class="unstaking-rate-row">
+                  <input type="range" min="5" max="100" value="50" step="5" id="unstakingRate" class="unstaking-rate-slider" oninput="onUnstakingRateChange()">
+                  <span class="unstaking-rate-value" id="unstakingRateValue">50%</span>
+                </div>
+                <div class="unstaking-rate-presets">
+                  <button type="button" class="unstaking-rate-preset" data-rate="100" onclick="setUnstakingRatePreset(100)">100% — No congestion</button>
+                  <button type="button" class="unstaking-rate-preset active" data-rate="50" onclick="setUnstakingRatePreset(50)">50% — Currently observed</button>
+                  <button type="button" class="unstaking-rate-preset" data-rate="25" onclick="setUnstakingRatePreset(25)">25% — Heavy congestion</button>
+                </div>
+              </div>
+              <div class="calc-input-hint">% of your <em>still-cooling</em> stake that becomes withdrawable each epoch. Depends on how much total stake the network is deactivating at once.</div>
+            </div>
           </div>
           <div class="calc-results">
             <div class="calc-result-header">Unstaking Timeline</div>
@@ -10433,6 +10620,15 @@
             </div>
             <div class="unstaking-summary" id="unstakingSummary">
               <!-- Summary populated by JS -->
+            </div>
+            <!-- Per-epoch breakdown -->
+            <div id="unstakingEpochBreakdown"></div>
+            <!-- Educational explainer -->
+            <div class="unstaking-info-box">
+              <strong>How the cooldown actually works</strong>
+              <p>X1 (and Solana) limit total network stake deactivation to <code>25%</code> of currently active stake per epoch. If only a small amount is being deactivated network-wide, your stake fully cools in a single epoch — the best case.</p>
+              <p>When many people deactivate at once, that 25% capacity is split proportionally across everyone. So for an individual account, only a fraction of the cooling stake unlocks each epoch, and the full unstake stretches across multiple epochs.</p>
+              <p>The slider above lets you model what you're observing: <code>100%</code> = ideal best case, <code>50%</code> = roughly what users are reporting on X1 right now, <code>25%</code> = heavy congestion. Once each portion has cooled, you must call withdraw to actually move the funds — they don't auto-return.</p>
             </div>
           </div>
         </div>
@@ -18326,89 +18522,195 @@
     function calculateUnstakingTimeline() {
       if (!currentEpochData) return;
       
+      // ── Read inputs ──────────────────────────────────────────────────────
       const whenSelect = document.getElementById('unstakingWhen').value;
       const customEpoch = parseInt(document.getElementById('unstakingCustomEpoch').value) || 0;
+      const stakeAmountXNT = Math.max(0, parseFloat(document.getElementById('unstakingAmount')?.value) || 0);
+      const ratePct = Math.max(1, Math.min(100, parseInt(document.getElementById('unstakingRate')?.value) || 50));
+      
+      // Toggle visibility of the custom epoch input
+      const customInput = document.getElementById('unstakingCustomEpoch');
+      if (customInput) customInput.style.display = whenSelect === 'custom' ? 'block' : 'none';
       
       const currentEpoch = currentEpochData.epoch;
       let initiateEpoch;
-      
       switch (whenSelect) {
-        case 'now':
-          initiateEpoch = currentEpoch;
-          break;
-        case 'next':
-          initiateEpoch = currentEpoch + 1;
-          break;
-        case 'custom':
-          initiateEpoch = customEpoch || currentEpoch;
-          break;
+        case 'now':    initiateEpoch = currentEpoch; break;
+        case 'next':   initiateEpoch = currentEpoch + 1; break;
+        case 'custom': initiateEpoch = customEpoch || currentEpoch; break;
       }
       
-      // X1/Solana unstaking: 
-      // 1. Initiate unstaking during current epoch
-      // 2. Deactivation begins at end of current epoch, cooldown through next epoch
-      // 3. Funds available at start of the epoch after cooldown
+      // ── Cooldown model ───────────────────────────────────────────────────
+      // X1/Solana mechanics:
+      //   - Calling deactivate() during epoch N sets delegation.deactivationEpoch = N
+      //   - Stake stays "active" through epoch N (still earns rewards)
+      //   - In epoch N+1 the cooldown begins; an amount transitions active → inactive
+      //   - The protocol caps total network deactivation at 25% of active stake per
+      //     epoch via the stake history sysvar. When more than that is in the
+      //     deactivation queue, each account gets a proportional share — which is
+      //     a fixed lamport amount per epoch (linear decay, not exponential),
+      //     because each account's fraction of the queue stays roughly constant
+      //     as the queue drains.
+      //   - We model this as: each epoch, `ratePct%` of the *original* stake
+      //     amount cools, until fully cooled.
+      const perEpochAmount = stakeAmountXNT * (ratePct / 100);
+      const cooldownEpochsRaw = ratePct >= 100 ? 1 : Math.ceil(100 / ratePct);
+      const cooldownEpochs = Math.min(cooldownEpochsRaw, 50); // safety cap
       
-      const deactivateEpoch = initiateEpoch + 1;
-      const availableEpoch = deactivateEpoch + 1;
+      // Per-epoch release schedule. Cooldown starts in epoch initiateEpoch+1.
+      const schedule = [];
+      let remaining = stakeAmountXNT;
+      let cumulative = 0;
+      for (let i = 0; i < cooldownEpochs && remaining > 1e-8; i++) {
+        const release = Math.min(perEpochAmount, remaining);
+        remaining = Math.max(0, remaining - release);
+        cumulative += release;
+        schedule.push({
+          epoch: initiateEpoch + 1 + i,
+          released: release,
+          cumulative: cumulative,
+          remaining: remaining,
+          pctOfTotal: stakeAmountXNT > 0 ? (cumulative / stakeAmountXNT) * 100 : 0
+        });
+      }
+      const completionEpoch = schedule.length > 0 ? schedule[schedule.length - 1].epoch : initiateEpoch + 1;
       
-      // Estimate dates (assuming ~1 day per epoch on X1)
-      const epochDurationMs = 1 * 24 * 60 * 60 * 1000;
-      const now = new Date();
-      
-      // Calculate remaining time in current epoch
-      const slotIndex = currentEpochData.slotIndex;
+      // ── Date math ────────────────────────────────────────────────────────
+      // Use actual slot timing instead of a hardcoded 1-day epoch.
       const slotsInEpoch = currentEpochData.slotsInEpoch;
+      const slotIndex    = currentEpochData.slotIndex;
+      const slotMs = 400; // X1 / Solana target slot time
+      const epochDurationMs = slotsInEpoch * slotMs;
       const progressRatio = slotIndex / slotsInEpoch;
       const currentEpochRemainingMs = epochDurationMs * (1 - progressRatio);
+      const now = new Date();
       
-      // initiateDate = when you click unstake (now, or future epoch)
-      const epochsUntilInitiate = initiateEpoch - currentEpoch;
-      const initiateDate = epochsUntilInitiate === 0 ? now : new Date(now.getTime() + currentEpochRemainingMs + ((epochsUntilInitiate - 1) * epochDurationMs));
+      // Time from now until the start of a target epoch
+      const msUntilEpochStart = (targetEpoch) => {
+        const delta = targetEpoch - currentEpoch;
+        if (delta <= 0) return 0;
+        return currentEpochRemainingMs + (delta - 1) * epochDurationMs;
+      };
+      // Time from now until end of a target epoch (== start of target+1)
+      const msUntilEpochEnd = (targetEpoch) => msUntilEpochStart(targetEpoch + 1);
       
-      // deactivateDate = end of current epoch (when deactivation starts)
-      const deactivateDate = new Date(now.getTime() + currentEpochRemainingMs + (epochsUntilInitiate * epochDurationMs));
+      const initiateDate    = new Date(now.getTime() + msUntilEpochStart(initiateEpoch));
+      const cooldownStarts  = new Date(now.getTime() + msUntilEpochStart(initiateEpoch + 1));
+      const fullyAvailable  = new Date(now.getTime() + msUntilEpochEnd(completionEpoch));
       
-      // availableDate = end of deactivation epoch (when funds become available)
-      const availableDate = new Date(deactivateDate.getTime() + epochDurationMs);
+      // Attach a date to each schedule entry (end of that epoch)
+      schedule.forEach(s => {
+        s.date = new Date(now.getTime() + msUntilEpochEnd(s.epoch));
+      });
       
-      // Build timeline HTML
-      const timeline = document.getElementById('unstakingTimeline');
-      timeline.innerHTML = `
+      // ── Visual timeline (top section) ────────────────────────────────────
+      const fmtXNT = (n) => formatNumber(n, 4);
+      const tl = document.getElementById('unstakingTimeline');
+      const firstRelease = schedule[0];
+      const cooldownLabel = ratePct >= 100
+        ? `Epoch ${initiateEpoch + 1} — full ${fmtXNT(stakeAmountXNT)} XNT cools in one epoch`
+        : `Epochs ${initiateEpoch + 1}${schedule.length > 1 ? '–' + completionEpoch : ''} — ~${fmtXNT(perEpochAmount)} XNT released per epoch`;
+      
+      tl.innerHTML = `
         <div class="timeline-step ${initiateEpoch === currentEpoch ? 'active' : ''}">
           <div class="timeline-icon">📝</div>
           <div class="timeline-content">
             <div class="timeline-title">Initiate Unstake</div>
-            <div class="timeline-subtitle">Epoch ${initiateEpoch}</div>
+            <div class="timeline-subtitle">Epoch ${initiateEpoch} — call deactivate() on your stake account</div>
             <div class="timeline-date">${formatDate(initiateDate)}</div>
           </div>
         </div>
         <div class="timeline-step">
-          <div class="timeline-icon">⏸️</div>
+          <div class="timeline-icon">❄️</div>
           <div class="timeline-content">
-            <div class="timeline-title">Deactivation Period</div>
-            <div class="timeline-subtitle">Epoch ${deactivateEpoch} - Stake stops earning rewards</div>
-            <div class="timeline-date">${formatDate(deactivateDate)}</div>
+            <div class="timeline-title">Cooldown ${schedule.length > 1 ? `(${schedule.length} epochs)` : ''}</div>
+            <div class="timeline-subtitle">${cooldownLabel}</div>
+            <div class="timeline-date">starts ${formatDate(cooldownStarts)}</div>
           </div>
         </div>
         <div class="timeline-step">
           <div class="timeline-icon">✅</div>
           <div class="timeline-content">
-            <div class="timeline-title">Funds Available</div>
-            <div class="timeline-subtitle">Epoch ${availableEpoch} - Withdraw anytime</div>
-            <div class="timeline-date">${formatDate(availableDate)}</div>
+            <div class="timeline-title">Fully Withdrawable</div>
+            <div class="timeline-subtitle">End of epoch ${completionEpoch} — call withdraw() to move funds</div>
+            <div class="timeline-date">${formatDate(fullyAvailable)}</div>
           </div>
         </div>
       `;
       
-      // Calculate total time
-      const totalMs = availableDate.getTime() - now.getTime();
+      // ── Summary card ─────────────────────────────────────────────────────
+      const totalMs = fullyAvailable.getTime() - now.getTime();
       const totalDays = totalMs / (1000 * 60 * 60 * 24);
+      const totalEpochs = (initiateEpoch - currentEpoch) + schedule.length;
+      let timeText;
+      if (totalDays < 1)        timeText = `~${(totalDays * 24).toFixed(1)} hours`;
+      else if (totalDays < 7)   timeText = `~${totalDays.toFixed(1)} days`;
+      else                      timeText = `~${(totalDays / 7).toFixed(1)} weeks (${totalDays.toFixed(0)} days)`;
       
       document.getElementById('unstakingSummary').innerHTML = `
-        <div class="unstaking-summary-value">~${totalDays.toFixed(1)} days</div>
-        <div class="unstaking-summary-label">Until funds are available (approximately)</div>
+        <div class="unstaking-summary-value">${timeText}</div>
+        <div class="unstaking-summary-label">
+          Until <strong>${fmtXNT(stakeAmountXNT)} XNT</strong> is fully withdrawable
+          (${schedule.length} cooldown epoch${schedule.length === 1 ? '' : 's'},
+          ${totalEpochs} total epoch${totalEpochs === 1 ? '' : 's'} from now)
+        </div>
       `;
+      
+      // ── Per-epoch breakdown table ────────────────────────────────────────
+      const breakdownEl = document.getElementById('unstakingEpochBreakdown');
+      if (schedule.length === 0 || stakeAmountXNT <= 0) {
+        breakdownEl.innerHTML = '';
+      } else {
+        const rows = schedule.map((s, i) => {
+          const isLast = i === schedule.length - 1;
+          return `
+            <div class="unstaking-epoch-row ${isLast ? 'complete' : ''}">
+              <div class="unstaking-epoch-num">#${s.epoch}</div>
+              <div class="unstaking-epoch-released">+${fmtXNT(s.released)}</div>
+              <div class="unstaking-epoch-cumulative">${fmtXNT(s.cumulative)}</div>
+              <div>
+                <div class="unstaking-epoch-bar">
+                  <div class="unstaking-epoch-bar-fill" style="width:${s.pctOfTotal.toFixed(1)}%"></div>
+                </div>
+                <div style="margin-top:0.25rem; font-size:0.7rem; color:var(--text-dim); display:flex; justify-content:space-between;">
+                  <span>${s.pctOfTotal.toFixed(1)}% cooled</span>
+                  <span>${formatDate(s.date)}</span>
+                </div>
+              </div>
+            </div>`;
+        }).join('');
+        
+        breakdownEl.innerHTML = `
+          <div class="calc-result-header" style="margin-top:1.5rem">Per-Epoch Release Schedule</div>
+          <div class="unstaking-epoch-table">
+            <div class="unstaking-epoch-table-header">
+              <div>Epoch</div>
+              <div>Released</div>
+              <div>Cumulative</div>
+              <div>Progress</div>
+            </div>
+            ${rows}
+          </div>`;
+      }
+    }
+    
+    // Update slider value label and refresh calc
+    function onUnstakingRateChange() {
+      const slider = document.getElementById('unstakingRate');
+      const v = slider ? slider.value : 50;
+      const lbl = document.getElementById('unstakingRateValue');
+      if (lbl) lbl.textContent = v + '%';
+      // Update preset highlighting
+      document.querySelectorAll('.unstaking-rate-preset').forEach(btn => {
+        btn.classList.toggle('active', parseInt(btn.dataset.rate) === parseInt(v));
+      });
+      calculateUnstakingTimeline();
+    }
+    
+    function setUnstakingRatePreset(pct) {
+      const slider = document.getElementById('unstakingRate');
+      if (slider) slider.value = pct;
+      onUnstakingRateChange();
     }
     
     function formatDate(date) {
