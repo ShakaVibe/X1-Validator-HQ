@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-03T12:37:39.201Z",
-  "totalNodes": 1762,
-  "totalLocations": 1748,
+  "lastUpdated": "2026-05-03T14:38:21.447Z",
+  "totalNodes": 1763,
+  "totalLocations": 1749,
   "locations": {
     "162.250.121.78": {
       "country": "United States",
@@ -12238,67 +12238,74 @@
       "city": "Freeland Park",
       "lat": 40.6128,
       "lon": -87.4917
+    },
+    "95.156.230.93": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Hamburg",
+      "lat": 53.6498,
+      "lon": 10.0844
     }
   },
   "countries": {
-    "FI": {
-      "name": "Finland",
-      "count": 82
-    },
     "US": {
       "name": "United States",
       "count": 1365
-    },
-    "FR": {
-      "name": "France",
-      "count": 77
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
     },
     "PL": {
       "name": "Poland",
       "count": 93
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 28
+    "CA": {
+      "name": "Canada",
+      "count": 25
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 82
     },
     "DE": {
       "name": "Germany",
-      "count": 66
+      "count": 67
+    },
+    "FR": {
+      "name": "France",
+      "count": 77
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "CA": {
-      "name": "Canada",
-      "count": 25
+    "NL": {
+      "name": "The Netherlands",
+      "count": 28
     },
     "GB": {
       "name": "United Kingdom",
       "count": 5
     },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
+    "BE": {
+      "name": "Belgium",
+      "count": 3
+    },
     "SG": {
       "name": "Singapore",
-      "count": 1
-    },
-    "IT": {
-      "name": "Italy",
       "count": 1
     },
     "PT": {
       "name": "Portugal",
       "count": 1
     },
-    "BE": {
-      "name": "Belgium",
-      "count": 3
-    },
     "CZ": {
       "name": "Czechia",
+      "count": 1
+    },
+    "IT": {
+      "name": "Italy",
       "count": 1
     }
   }
