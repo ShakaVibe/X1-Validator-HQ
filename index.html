@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7819,6 +7819,257 @@
       color: var(--text-primary);
     }
 
+    /* ── Cooldown popover (hover/tap on stake state badge) ───────────────── */
+    .cooldown-popover {
+      position: fixed;
+      z-index: 100000;
+      min-width: 320px;
+      max-width: 380px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0, 212, 255, 0.08);
+      padding: 0.95rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.12s ease, transform 0.12s ease;
+    }
+    .cooldown-popover.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .cooldown-popover.pinned {
+      box-shadow: 0 12px 32px rgba(0,0,0,0.55), 0 0 0 1px var(--accent-cyan);
+    }
+    .cooldown-popover-arrow {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+      transform: rotate(45deg);
+      top: -7px;
+      left: 24px;
+    }
+    .cooldown-popover.flipped .cooldown-popover-arrow {
+      top: auto;
+      bottom: -7px;
+      transform: rotate(225deg);
+    }
+    .cooldown-popover-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.7rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .cooldown-popover-head .cd-state {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+    .cooldown-popover-head .cd-state.deactivating {
+      background: rgba(255, 171, 0, 0.15);
+      color: var(--warning);
+    }
+    .cooldown-popover-head .cd-state.cooling {
+      background: rgba(255, 171, 0, 0.18);
+      color: var(--warning);
+    }
+    .cooldown-popover-head .cd-state.inactive {
+      background: rgba(0, 230, 118, 0.18);
+      color: var(--success);
+    }
+    .cooldown-popover-head .cd-state.active {
+      background: rgba(0, 212, 255, 0.18);
+      color: var(--accent-cyan);
+    }
+    .cooldown-popover-head .cd-state.activating {
+      background: rgba(0, 212, 255, 0.18);
+      color: var(--accent-cyan);
+    }
+    .cooldown-popover-head .cd-addr {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+    }
+    .cooldown-popover-head .cd-pin-hint {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+    .cooldown-progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.78rem;
+    }
+    .cooldown-progress-row .cd-amount {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    .cooldown-progress-row .cd-amount.cooled { color: var(--success); }
+    .cooldown-progress-row .cd-amount.cooling { color: var(--warning); }
+    .cooldown-progress-bar {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-primary);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0.3rem 0 0.7rem;
+    }
+    .cooldown-progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), var(--accent-cyan));
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+    .cooldown-section-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin: 0.7rem 0 0.4rem;
+      padding-top: 0.5rem;
+      border-top: 1px dashed var(--border);
+    }
+    .cooldown-meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.76rem;
+    }
+    .cooldown-meta-row .cd-meta-key { color: var(--text-secondary); }
+    .cooldown-meta-row .cd-meta-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+    }
+    .cooldown-mini-table {
+      margin-top: 0.4rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .cooldown-mini-row {
+      display: grid;
+      grid-template-columns: 0.75fr 1fr 1fr;
+      gap: 0.4rem;
+      padding: 0.35rem 0.55rem;
+      font-size: 0.74rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .cooldown-mini-row:last-child { border-bottom: none; }
+    .cooldown-mini-row.head {
+      background: var(--bg-secondary);
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.66rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .cooldown-mini-row.past {
+      color: var(--text-dim);
+    }
+    .cooldown-mini-row.complete {
+      background: rgba(0, 230, 118, 0.05);
+    }
+    .cooldown-mini-cell {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .cooldown-mini-cell.released { color: var(--success); }
+    .cooldown-mini-cell.epoch { color: var(--text-primary); font-weight: 600; }
+    .cooldown-mini-more {
+      padding: 0.35rem 0.55rem;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      text-align: center;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+    }
+    .cooldown-popover-foot {
+      margin-top: 0.7rem;
+      padding-top: 0.55rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+    .cooldown-popover-foot strong {
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── Cooldown progress card (in Stake Account Details panel) ────────── */
+    .cooldown-detail-box {
+      grid-column: 1 / -1;  /* span full row of the details grid */
+      padding: 0.85rem 1rem !important;
+      background: linear-gradient(135deg, rgba(255, 171, 0, 0.04), rgba(0, 212, 255, 0.04)) !important;
+      border: 1px solid rgba(255, 171, 0, 0.25) !important;
+    }
+    .cooldown-detail-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .cooldown-detail-head .detail-label {
+      margin: 0;
+    }
+    .cooldown-detail-head .cd-pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--warning);
+    }
+    .cooldown-detail-amounts {
+      display: flex;
+      gap: 1.2rem;
+      margin: 0.3rem 0 0.4rem;
+      font-size: 0.85rem;
+    }
+    .cooldown-detail-amounts > div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+    .cooldown-detail-amounts .cd-amt-label {
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .cooldown-detail-amounts .cd-amt-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+    .cooldown-detail-amounts .cd-amt-val.cooled { color: var(--success); }
+    .cooldown-detail-amounts .cd-amt-val.cooling { color: var(--warning); }
+    .cooldown-detail-summary {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 0.4rem;
+      line-height: 1.4;
+    }
+    .cooldown-detail-summary code {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+    }
+
     /* Break-even */
     .breakeven-table {
       margin-top: 1.5rem;
@@ -11194,6 +11445,34 @@
               <div class="detail-label">Liquid Balance</div>
               <div class="detail-value accent" id="selectedLiquidBalance">0.0000</div>
               <div class="detail-unit">XNT</div>
+            </div>
+            
+            <!-- Cooldown Progress (stake accounts that are deactivating only) -->
+            <div class="detail-box cooldown-detail-box" id="cooldownProgressBox" style="display: none;">
+              <div class="cooldown-detail-head">
+                <div class="detail-label">❄️ Cooldown Progress</div>
+                <div class="cd-pct" id="cooldownProgressPct">0%</div>
+              </div>
+              <div class="cooldown-progress-bar">
+                <div class="cooldown-progress-bar-fill" id="cooldownProgressBarFill" style="width:0%"></div>
+              </div>
+              <div class="cooldown-detail-amounts">
+                <div>
+                  <span class="cd-amt-label">Cooled (withdrawable)</span>
+                  <span class="cd-amt-val cooled" id="cooldownProgressCooled">0.0000 XNT</span>
+                </div>
+                <div>
+                  <span class="cd-amt-label">Still Cooling</span>
+                  <span class="cd-amt-val cooling" id="cooldownProgressCooling">0.0000 XNT</span>
+                </div>
+                <div>
+                  <span class="cd-amt-label">Total Deactivating</span>
+                  <span class="cd-amt-val" id="cooldownProgressTotal">0.0000 XNT</span>
+                </div>
+              </div>
+              <div class="cooldown-detail-summary" id="cooldownProgressSummary">
+                <!-- Populated by JS: rate observed, est. epochs remaining, est. completion date -->
+              </div>
             </div>
             
             <!-- Withdraw Authority (stake accounts only) -->
@@ -20452,7 +20731,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return `
           <div class="account-row ${selectedAccountType === 'stake-${originalIndex}' ? 'selected' : ''}" onclick="selectAccount('stake-${originalIndex}')">
             <div class="account-row-left">
-              <span class="account-type-badge ${badgeClass}">${badgeText}</span>
+              <span class="account-type-badge ${badgeClass}" data-stake-idx="${originalIndex}">${badgeText}</span>
               <span class="account-address">${shortenAddress(stake.pubkey)}</span>
               ${getCopyButtonHtml(stake.pubkey)}
               <span style="color: var(--text-dim); font-size: 0.75rem; margin-left: 0.5rem;">
@@ -20472,8 +20751,375 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </div>
         `;
       }).join('');
+      
+      // Wire up cooldown popovers on each stake-row badge after render.
+      // We do this here (rather than via inline onmouseenter on a string) so the
+      // handlers close over the correct stake index and don't have to escape
+      // through a global lookup at event time.
+      container.querySelectorAll('.account-type-badge[data-stake-idx]').forEach(badge => {
+        const idx = parseInt(badge.getAttribute('data-stake-idx'));
+        badge.addEventListener('mouseenter', () => showCooldownPopover(badge, idx));
+        badge.addEventListener('mouseleave', () => scheduleHideCooldownPopover());
+        // Click to pin/unpin (works on touch via tap; also lets desktop users
+        // keep the popover open while they read it). We stopPropagation so
+        // the click doesn't also trigger row selection.
+        badge.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (_cdPopoverPinned && _cdPopoverCurrentBadge === badge) {
+            hideCooldownPopover();
+          } else {
+            pinCooldownPopover(badge, idx);
+          }
+        });
+      });
     }
-
+    
+    // ════════════════════════════════════════════════════════════════════════
+    // COOLDOWN INFO + POPOVER ENGINE
+    // Shared across stake-list badges (hover) and the Stake Account Details
+    // panel (cooldown progress card). Computes observed cooldown rate from
+    // the stake's deactivationEpoch + activeLamports/inactiveLamports split,
+    // and projects the remaining release schedule forward.
+    // ════════════════════════════════════════════════════════════════════════
+    
+    function getStakeCooldownInfo(stake) {
+      const cooled  = stake.inactiveLamports || 0;
+      const cooling = stake.activeLamports   || 0;
+      const total   = cooled + cooling;
+      const pctCooled = total > 0 ? (cooled / total) * 100 : 0;
+      const currentEpoch = currentEpochData?.epoch ?? null;
+      const slotsInEpoch = currentEpochData?.slotsInEpoch ?? 432000;
+      const slotIndex    = currentEpochData?.slotIndex ?? 0;
+      const slotMs       = 400;
+      const epochDurationMs = slotsInEpoch * slotMs;
+      const currentEpochRemainingMs = epochDurationMs * (1 - slotIndex / slotsInEpoch);
+      const now = new Date();
+      
+      // Approximate completed cooldown epochs:
+      // - If we deactivated at epoch D and current is D, no cooldown yet (still in deactivation epoch)
+      // - If current is D+1, we're in the 1st cooldown epoch (partially complete)
+      // - If current is D+N, we've fully completed N-1 cooldown epochs
+      let completedEpochs = 0;
+      if (stake.isDeactivating && stake.deactivationEpoch != null && currentEpoch != null) {
+        completedEpochs = Math.max(0, currentEpoch - stake.deactivationEpoch - 1);
+      }
+      
+      // Estimate per-epoch rate (lamports). Prefer observation, fall back to
+      // a 50% default of the original total — that matches what users have
+      // been reporting on X1 right now and gives a reasonable "if congestion
+      // continues" projection.
+      let rateLamports, rateSource;
+      if (cooled > 0 && completedEpochs >= 1) {
+        rateLamports = cooled / completedEpochs;
+        rateSource = 'observed';
+      } else {
+        rateLamports = Math.max(1, total * 0.5);
+        rateSource = 'estimated';
+      }
+      
+      // Future schedule: project by `rateLamports` until cooling exhausted.
+      const future = [];
+      let remaining = cooling;
+      let cum = cooled;
+      const projStartEpoch = currentEpoch != null ? currentEpoch : 0;
+      for (let i = 0; i < 30 && remaining > 1; i++) {  // cap 30 epochs
+        const release = Math.min(rateLamports, remaining);
+        remaining -= release;
+        cum += release;
+        future.push({
+          epoch: projStartEpoch + i,
+          released: release,
+          cumulative: cum,
+          remainingAfter: remaining,
+          msFromNow: currentEpochRemainingMs + i * epochDurationMs
+        });
+      }
+      
+      const completionEpoch = future.length > 0 ? future[future.length - 1].epoch : null;
+      const completionMs = future.length > 0 ? future[future.length - 1].msFromNow : 0;
+      const completionDate = new Date(now.getTime() + completionMs);
+      
+      return {
+        currentEpoch, total, cooled, cooling, pctCooled,
+        completedEpochs, rateLamports, rateSource,
+        future,
+        completionEpoch, completionDate,
+        isDeactivating: stake.isDeactivating === true,
+        isFullyCooled: stake.isDeactivating && cooling === 0
+      };
+    }
+    
+    function renderCooldownPopoverHTML(stake) {
+      const fmt = (lamports, dp = 4) => formatNumber(lamports / 1e9, dp);
+      const stateLabel = (() => {
+        if (stake.state === 'deactivating' && stake.activeLamports > 0 && stake.inactiveLamports > 0) return { text: 'COOLING', cls: 'cooling' };
+        if (stake.state === 'deactivating') return { text: 'DEACTIVATING', cls: 'deactivating' };
+        if (stake.state === 'inactive')      return { text: 'INACTIVE',     cls: 'inactive' };
+        if (stake.state === 'activating')    return { text: 'ACTIVATING',   cls: 'activating' };
+        return { text: 'ACTIVE', cls: 'active' };
+      })();
+      const head = `
+        <div class="cooldown-popover-head">
+          <span class="cd-state ${stateLabel.cls}">${stateLabel.text}</span>
+          <span class="cd-addr">${shortenAddress(stake.pubkey)}</span>
+        </div>`;
+      
+      // Simple states (active, activating, fully inactive): one-liner content
+      if (stake.state === 'active') {
+        return head + `
+          <div style="font-size:0.82rem; line-height:1.55;">
+            Stake is delegated and earning rewards.<br>
+            <span style="font-size:0.74rem; color:var(--text-dim);">
+              Activated at epoch <strong style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">${stake.activationEpoch ?? '—'}</strong>.
+              To unstake, click the row → Undelegate.
+            </span>
+          </div>`;
+      }
+      if (stake.state === 'activating') {
+        return head + `
+          <div style="font-size:0.82rem; line-height:1.55;">
+            Stake is warming up.<br>
+            <span style="font-size:0.74rem; color:var(--text-dim);">
+              Becomes fully active at the start of epoch
+              <strong style="color:var(--text-primary); font-family:'JetBrains Mono', monospace;">${(stake.activationEpoch ?? 0) + 1}</strong>.
+            </span>
+          </div>`;
+      }
+      
+      const info = getStakeCooldownInfo(stake);
+      
+      if (stake.state === 'inactive' && !info.isDeactivating) {
+        return head + `
+          <div style="font-size:0.82rem; line-height:1.55;">
+            Stake is fully inactive — no active delegation.<br>
+            <span style="font-size:0.74rem; color:var(--text-dim);">
+              ${fmt(stake.lamports)} XNT is liquid and ready to withdraw.
+            </span>
+          </div>`;
+      }
+      
+      // Deactivating, cooling, or fully-cooled: full breakdown
+      const progressBar = `
+        <div class="cooldown-progress-row">
+          <span class="cd-amount cooled">${fmt(info.cooled)} XNT cooled</span>
+          <span style="font-family:'JetBrains Mono', monospace; font-weight:700; color:${info.pctCooled >= 100 ? 'var(--success)' : 'var(--warning)'};">${info.pctCooled.toFixed(1)}%</span>
+        </div>
+        <div class="cooldown-progress-bar">
+          <div class="cooldown-progress-bar-fill" style="width:${info.pctCooled.toFixed(1)}%"></div>
+        </div>
+        <div class="cooldown-progress-row">
+          <span class="cd-amount cooling">${fmt(info.cooling)} XNT still cooling</span>
+          <span style="color:var(--text-dim); font-size:0.72rem;">of ${fmt(info.total)} XNT total</span>
+        </div>`;
+      
+      const pastSection = info.isDeactivating ? `
+        <div class="cooldown-section-label">Past Activity</div>
+        <div class="cooldown-meta-row">
+          <span class="cd-meta-key">Initiated</span>
+          <span class="cd-meta-val">Epoch ${stake.deactivationEpoch ?? '—'}</span>
+        </div>
+        <div class="cooldown-meta-row">
+          <span class="cd-meta-key">Cooldown epochs elapsed</span>
+          <span class="cd-meta-val">${info.completedEpochs}</span>
+        </div>
+        <div class="cooldown-meta-row">
+          <span class="cd-meta-key">${info.rateSource === 'observed' ? 'Observed rate' : 'Assumed rate'}</span>
+          <span class="cd-meta-val">~${fmt(info.rateLamports, 2)} XNT/epoch</span>
+        </div>` : '';
+      
+      let scheduleSection = '';
+      if (info.future.length > 0) {
+        const visible = info.future.slice(0, 5);
+        const hiddenCount = info.future.length - visible.length;
+        const rows = visible.map((f, i) => {
+          const isLast = (i === visible.length - 1) && hiddenCount === 0;
+          const date = new Date(Date.now() + f.msFromNow);
+          return `
+            <div class="cooldown-mini-row ${isLast ? 'complete' : ''}">
+              <span class="cooldown-mini-cell epoch">#${f.epoch}</span>
+              <span class="cooldown-mini-cell released">+${fmt(f.released)}</span>
+              <span class="cooldown-mini-cell" style="color:var(--text-dim); font-size:0.7rem;">${date.toLocaleDateString('en-US', { month:'short', day:'numeric' })}</span>
+            </div>`;
+        }).join('');
+        const moreRow = hiddenCount > 0
+          ? `<div class="cooldown-mini-more">+ ${hiddenCount} more epoch${hiddenCount === 1 ? '' : 's'} until fully cooled</div>`
+          : '';
+        scheduleSection = `
+          <div class="cooldown-section-label">Projected Schedule ${info.rateSource === 'estimated' ? '(estimate)' : ''}</div>
+          <div class="cooldown-mini-table">
+            <div class="cooldown-mini-row head">
+              <span>Epoch</span>
+              <span>Released</span>
+              <span>~Date</span>
+            </div>
+            ${rows}
+            ${moreRow}
+          </div>`;
+      }
+      
+      let foot = '';
+      if (info.cooling > 0 && info.completionEpoch != null) {
+        const days = info.future.length > 0
+          ? (info.future[info.future.length - 1].msFromNow / (1000 * 60 * 60 * 24))
+          : 0;
+        const dateLabel = info.completionDate.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+        foot = `
+          <div class="cooldown-popover-foot">
+            Fully cooled at end of epoch <strong>${info.completionEpoch}</strong> · ~${days.toFixed(1)} days · ${dateLabel}<br>
+            <span style="opacity:0.75">Click badge again to unpin · Calculator tab lets you model other rates</span>
+          </div>`;
+      } else if (info.isFullyCooled) {
+        foot = `
+          <div class="cooldown-popover-foot" style="color:var(--success);">
+            ✓ Fully cooled — ready to withdraw.
+          </div>`;
+      }
+      
+      return head + progressBar + pastSection + scheduleSection + foot;
+    }
+    
+    // ── Popover engine state ────────────────────────────────────────────────
+    let _cdHideTimer = null;
+    let _cdPopoverPinned = false;
+    let _cdPopoverCurrentBadge = null;
+    
+    function ensureCooldownPopoverWired() {
+      const pop = document.getElementById('cooldownPopover');
+      if (!pop || pop.dataset.wired === '1') return;
+      pop.dataset.wired = '1';
+      pop.addEventListener('mouseenter', () => {
+        if (_cdHideTimer) { clearTimeout(_cdHideTimer); _cdHideTimer = null; }
+      });
+      pop.addEventListener('mouseleave', () => {
+        if (!_cdPopoverPinned) scheduleHideCooldownPopover();
+      });
+      // Click outside dismisses pinned popover
+      document.addEventListener('click', (e) => {
+        if (!_cdPopoverPinned) return;
+        if (pop.contains(e.target)) return;
+        if (e.target.classList && e.target.classList.contains('account-type-badge')) return;
+        hideCooldownPopover();
+      });
+      // Escape dismisses
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') hideCooldownPopover();
+      });
+      // Reposition on scroll/resize while shown
+      window.addEventListener('scroll', () => {
+        if (pop.classList.contains('show') && _cdPopoverCurrentBadge) {
+          positionCooldownPopover(_cdPopoverCurrentBadge);
+        }
+      }, true);
+      window.addEventListener('resize', () => {
+        if (pop.classList.contains('show') && _cdPopoverCurrentBadge) {
+          positionCooldownPopover(_cdPopoverCurrentBadge);
+        }
+      });
+    }
+    
+    function showCooldownPopover(badgeEl, stakeIndex) {
+      ensureCooldownPopoverWired();
+      if (_cdHideTimer) { clearTimeout(_cdHideTimer); _cdHideTimer = null; }
+      const stake = stakeAccounts[stakeIndex];
+      if (!stake) return;
+      const pop = document.getElementById('cooldownPopover');
+      const content = document.getElementById('cooldownPopoverContent');
+      content.innerHTML = renderCooldownPopoverHTML(stake);
+      pop.classList.remove('flipped');
+      pop.classList.add('show');
+      _cdPopoverCurrentBadge = badgeEl;
+      requestAnimationFrame(() => positionCooldownPopover(badgeEl));
+    }
+    
+    function pinCooldownPopover(badgeEl, stakeIndex) {
+      showCooldownPopover(badgeEl, stakeIndex);
+      _cdPopoverPinned = true;
+      document.getElementById('cooldownPopover').classList.add('pinned');
+    }
+    
+    function scheduleHideCooldownPopover() {
+      if (_cdPopoverPinned) return;
+      if (_cdHideTimer) clearTimeout(_cdHideTimer);
+      _cdHideTimer = setTimeout(hideCooldownPopover, 180);
+    }
+    
+    function hideCooldownPopover() {
+      const pop = document.getElementById('cooldownPopover');
+      if (pop) pop.classList.remove('show', 'pinned');
+      _cdPopoverPinned = false;
+      _cdPopoverCurrentBadge = null;
+      if (_cdHideTimer) { clearTimeout(_cdHideTimer); _cdHideTimer = null; }
+    }
+    
+    function positionCooldownPopover(anchorEl) {
+      const pop = document.getElementById('cooldownPopover');
+      if (!pop || !anchorEl) return;
+      const rect = anchorEl.getBoundingClientRect();
+      pop.style.top = '0px';
+      pop.style.left = '0px';
+      const popRect = pop.getBoundingClientRect();
+      const margin = 10;
+      let top = rect.bottom + margin;
+      let left = rect.left;
+      let flipped = false;
+      if (top + popRect.height > window.innerHeight - 8) {
+        top = rect.top - popRect.height - margin;
+        flipped = true;
+      }
+      if (left + popRect.width > window.innerWidth - 8) {
+        left = window.innerWidth - popRect.width - 8;
+      }
+      if (left < 8) left = 8;
+      pop.style.top = top + 'px';
+      pop.style.left = left + 'px';
+      pop.classList.toggle('flipped', flipped);
+      // Adjust the arrow horizontally to point at the badge center
+      const arrow = pop.querySelector('.cooldown-popover-arrow');
+      if (arrow) {
+        const badgeCenter = rect.left + rect.width / 2;
+        const arrowLeft = Math.max(12, Math.min(popRect.width - 24, badgeCenter - left - 6));
+        arrow.style.left = arrowLeft + 'px';
+      }
+    }
+    
+    // ── Update Cooldown Progress card in Stake Account Details panel ────────
+    function updateCooldownProgressCard(stake) {
+      const box = document.getElementById('cooldownProgressBox');
+      if (!box) return;
+      // Show only for deactivating stakes (any portion still cooling OR partially cooled)
+      if (!stake || !stake.isDeactivating) {
+        box.style.display = 'none';
+        return;
+      }
+      const info = getStakeCooldownInfo(stake);
+      box.style.display = 'block';
+      
+      const fmt = (l) => formatNumber(l / 1e9, 4);
+      document.getElementById('cooldownProgressPct').textContent     = info.pctCooled.toFixed(1) + '%';
+      document.getElementById('cooldownProgressBarFill').style.width = info.pctCooled.toFixed(1) + '%';
+      document.getElementById('cooldownProgressCooled').textContent  = fmt(info.cooled)  + ' XNT';
+      document.getElementById('cooldownProgressCooling').textContent = fmt(info.cooling) + ' XNT';
+      document.getElementById('cooldownProgressTotal').textContent   = fmt(info.total)   + ' XNT';
+      
+      const summary = document.getElementById('cooldownProgressSummary');
+      if (info.cooling === 0) {
+        summary.innerHTML = `<span style="color:var(--success);">✓ Fully cooled — call <code>withdraw</code> to move funds.</span>`;
+      } else if (info.completionEpoch != null) {
+        const days = info.future.length > 0 ? info.future[info.future.length - 1].msFromNow / (1000*60*60*24) : 0;
+        const dateLabel = info.completionDate.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+        const rateLabel = info.rateSource === 'observed' ? 'observed rate' : 'estimated rate';
+        summary.innerHTML = `
+          At <code>~${fmt(info.rateLamports)} XNT/epoch</code> (${rateLabel}) →
+          fully cooled at end of epoch <code>${info.completionEpoch}</code>
+          (~${days.toFixed(1)} days, ${dateLabel}).
+          <span style="display:block; margin-top:0.3rem; color:var(--text-dim); font-size:0.72rem;">
+            Hover the stake's badge above for the per-epoch projection.
+          </span>`;
+      } else {
+        summary.innerHTML = `<span style="color:var(--text-dim);">Cooldown started — first release expected next epoch.</span>`;
+      }
+    }
+    
     function toggleAuthorityLegend() {
       const legend = document.getElementById('authorityLegend');
       legend.classList.toggle('show');
@@ -20531,6 +21177,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         document.getElementById('balanceBox').style.display = 'block';
         document.getElementById('stakedBalanceBox').style.display = 'none';
         document.getElementById('liquidBalanceBox').style.display = 'none';
+        document.getElementById('cooldownProgressBox').style.display = 'none';
         document.getElementById('stakeAuthorityBox').style.display = 'none';
         document.getElementById('withdrawAuthorityBox').style.display = 'none';
         document.getElementById('voteAuthorityBox').style.display = 'block';
@@ -20597,6 +21244,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         document.getElementById('selectedStakedBalance').textContent = formatNumber(lamportsToXNT(stakedLamports), 4);
         document.getElementById('selectedLiquidBalance').textContent = formatNumber(lamportsToXNT(liquidLamports), 4);
+        
+        // Populate Cooldown Progress card (auto-hides when stake isn't deactivating)
+        updateCooldownProgressCard(stake);
         
         // Show stake-specific boxes, hide vote-specific boxes
         document.getElementById('balanceBox').style.display = 'none';
@@ -30535,6 +31185,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
       </div>
       <button class="solana-modal-close" onclick="closeSolanaModal()">Got It!</button>
     </div>
+  </div>
+  <!-- Global cooldown popover (shared across all stake state badges) -->
+  <div class="cooldown-popover" id="cooldownPopover" role="tooltip">
+    <div class="cooldown-popover-arrow"></div>
+    <div id="cooldownPopoverContent"></div>
   </div>
 </body>
 </html>
