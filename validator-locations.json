@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-03T08:57:17.333Z",
-  "totalNodes": 1765,
-  "totalLocations": 1750,
+  "lastUpdated": "2026-05-03T10:39:47.455Z",
+  "totalNodes": 1763,
+  "totalLocations": 1749,
   "locations": {
     "162.250.121.78": {
       "country": "United States",
@@ -44,13 +44,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "57.129.101.208": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "135.181.139.140": {
       "country": "Finland",
@@ -12261,7 +12254,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 68
+      "count": 67
     },
     "US": {
       "name": "United States",
@@ -12285,7 +12278,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 94
+      "count": 93
     },
     "GB": {
       "name": "United Kingdom",
