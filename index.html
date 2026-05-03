@@ -12072,12 +12072,25 @@
               <span id="withdrawStakeTotalBalance">0.0000 XNT</span>
             </div>
             <div class="breakdown-row">
-              <span>Staked (Locked):</span>
+              <span>Still Cooling:</span>
               <span id="withdrawStakeLockedBalance">0.0000 XNT</span>
             </div>
             <div class="breakdown-row available">
               <span>Available to Withdraw:</span>
               <span id="withdrawStakeAvailableBalance">0.0000 XNT</span>
+            </div>
+            <!-- Cooldown progress (visible only when partially cooled) -->
+            <div class="breakdown-row cooldown-row" id="withdrawStakeCooldownRow" style="display:none; flex-direction:column; align-items:stretch; gap:0.4rem; padding-top:0.6rem; border-top:1px solid var(--border); margin-top:0.4rem;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:0.78rem; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px;">Cooldown progress</span>
+                <span id="withdrawStakeCooldownText" style="font-size:0.78rem; color:var(--text-secondary); font-family:'JetBrains Mono', monospace;"></span>
+              </div>
+              <div style="position:relative; width:100%; height:6px; background:var(--bg-primary); border-radius:3px; overflow:hidden;">
+                <div id="withdrawStakeCooldownProgress" style="position:absolute; top:0; left:0; height:100%; background:linear-gradient(90deg, var(--success), var(--accent-cyan)); border-radius:3px; transition:width 0.4s ease; width:0%;"></div>
+              </div>
+              <div style="font-size:0.72rem; color:var(--text-dim); line-height:1.4;">
+                X1 rate-limits cooldowns per epoch — your full unstake may take several epochs to complete. Refresh after each epoch to withdraw more.
+              </div>
             </div>
           </div>
         </div>
@@ -19946,7 +19959,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         stakeAccounts = [];
         
         if (data.result && data.result.length > 0) {
-          stakeAccounts = data.result.map(acc => {
+          // First pass: build basic record + naive state from delegation epochs
+          const basicRecords = data.result.map(acc => {
             const info = acc.account.data.parsed?.info || {};
             const stake = info.stake || {};
             const delegation = stake.delegation || {};
@@ -19957,6 +19971,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             // MAX_U64 means not deactivating
             const isDeactivating = deactivationEpoch && deactivationEpoch !== '18446744073709551615';
             const deactivationEpochNum = isDeactivating ? parseInt(deactivationEpoch) : null;
+            const delegatedLamports = delegation.stake ? parseInt(delegation.stake) : 0;
             
             let state = 'active';
             if (isDeactivating) {
@@ -19976,10 +19991,70 @@ Please give me the diagnostic commands to run on my server so you can help me id
               state: state,
               activationEpoch: activationEpoch,
               deactivationEpoch: deactivationEpochNum,
+              isDeactivating: isDeactivating,
+              delegatedLamports: delegatedLamports,
+              // Will be filled in second pass via getStakeActivation:
+              activeLamports: 0,
+              inactiveLamports: 0,
+              activationDataLoaded: false,
               staker: info.meta?.authorized?.staker || null,
               withdrawer: info.meta?.authorized?.withdrawer || null
             };
-          }).sort((a, b) => b.lamports - a.lamports);
+          });
+          
+          // Second pass: for any stake that's transitioning OR appears inactive due to
+          // a past deactivation epoch, query getStakeActivation to find out how much has
+          // *actually* cooled down. Solana/X1 rate-limits deactivations per epoch via
+          // the stake history sysvar, so a stake that looks "inactive" by epoch math
+          // can still have an active (cooling) portion that is NOT yet withdrawable.
+          // This is what causes the "insufficient funds" error on withdraw attempts.
+          await Promise.all(basicRecords.map(async rec => {
+            // Only query for stakes where the active/inactive split matters.
+            // Pure 'active' stakes (never deactivated) and pure 'activating' stakes
+            // don't need this — the user can't withdraw them anyway.
+            if (rec.state !== 'deactivating' && rec.state !== 'inactive') {
+              // For active/activating stakes, the active portion is just the delegation.
+              rec.activeLamports = rec.delegatedLamports;
+              rec.inactiveLamports = 0;
+              rec.activationDataLoaded = true;
+              return;
+            }
+            try {
+              const act = await rpcCall('getStakeActivation', [rec.pubkey, { commitment: 'confirmed' }]);
+              if (act && typeof act === 'object') {
+                rec.activeLamports   = parseInt(act.active   || 0) || 0;
+                rec.inactiveLamports = parseInt(act.inactive || 0) || 0;
+                rec.activationDataLoaded = true;
+                // Reclassify: if RPC says state is something different (e.g. still
+                // 'deactivating' even though we're past deactivationEpoch), trust it.
+                if (act.state === 'deactivating' || act.state === 'inactive' ||
+                    act.state === 'activating'  || act.state === 'active') {
+                  rec.state = act.state;
+                }
+                // Belt-and-suspenders: even if RPC says 'inactive' but active>0
+                // (shouldn't happen but seen on some forks), treat as still cooling.
+                if (rec.activeLamports > 0 && rec.isDeactivating) {
+                  rec.state = 'deactivating';
+                }
+              }
+            } catch (e) {
+              // getStakeActivation is deprecated in newer Solana releases. If it fails,
+              // fall back to a conservative estimate: assume the delegated amount is
+              // still cooling unless the deactivation epoch is well in the past.
+              console.warn('getStakeActivation failed for', rec.pubkey, e.message);
+              if (rec.state === 'inactive') {
+                // Best-effort: assume fully cooled (old behavior)
+                rec.activeLamports = 0;
+                rec.inactiveLamports = rec.delegatedLamports;
+              } else {
+                rec.activeLamports = rec.delegatedLamports;
+                rec.inactiveLamports = 0;
+              }
+              rec.activationDataLoaded = false;
+            }
+          }));
+          
+          stakeAccounts = basicRecords.sort((a, b) => b.lamports - a.lamports);
           
           renderStakeAccounts();
         } else {
@@ -20030,13 +20105,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
         let badgeText = 'STAKE';
         let badgeClass = 'stake';
         
+        // A "cooling" stake is one that's deactivating but has at least some
+        // already-cooled (withdrawable) lamports — surface this distinctly so
+        // users know they can partially withdraw now.
+        const isPartiallyCooled = stake.state === 'deactivating' &&
+                                  (stake.activeLamports || 0) > 0 &&
+                                  (stake.inactiveLamports || 0) > 0;
+        
         switch (stake.state) {
           case 'activating':
             badgeText = 'ACTIVATING';
             badgeClass = 'stake activating';
             break;
           case 'deactivating':
-            badgeText = 'DEACTIVATING';
+            badgeText = isPartiallyCooled ? 'COOLING' : 'DEACTIVATING';
             badgeClass = 'stake deactivating';
             break;
           case 'inactive':
@@ -20052,6 +20134,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const hasStakeAuth = walletPublicKey && stake.staker === walletPublicKey;
         const hasWithdrawAuth = walletPublicKey && stake.withdrawer === walletPublicKey;
         
+        // Build cooldown hint shown next to the balance for partially-cooled stakes
+        let cooldownHint = '';
+        if (isPartiallyCooled) {
+          const totalDelegated = (stake.activeLamports || 0) + (stake.inactiveLamports || 0);
+          const pctCooled = totalDelegated > 0
+            ? ((stake.inactiveLamports || 0) / totalDelegated * 100)
+            : 0;
+          cooldownHint =
+            `<span title="${formatNumber((stake.inactiveLamports||0)/1e9, 4)} XNT cooled / ${formatNumber(totalDelegated/1e9, 4)} XNT total" `
+            + `style="color: var(--warning); font-size: 0.7rem; margin-left: 0.5rem; font-family: 'JetBrains Mono', monospace;">`
+            + `${pctCooled.toFixed(0)}% cooled</span>`;
+        }
+        
         return `
           <div class="account-row ${selectedAccountType === 'stake-${originalIndex}' ? 'selected' : ''}" onclick="selectAccount('stake-${originalIndex}')">
             <div class="account-row-left">
@@ -20061,6 +20156,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               <span style="color: var(--text-dim); font-size: 0.75rem; margin-left: 0.5rem;">
                 ${formatNumber(lamportsToXNT(stake.lamports), 2)} XNT
               </span>
+              ${cooldownHint}
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <div class="authority-badges">
@@ -20183,20 +20279,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Show stake account details
         document.getElementById('selectedAccountTitle').textContent = 'Stake Account Details';
         
-        // Calculate staked vs liquid balance
-        // For inactive stakes, all funds are liquid (withdrawable)
+        // Calculate staked vs liquid balance using rate-limit-aware
+        // active/inactive lamports populated by fetchStakeAccounts.
+        // (See comment in initiateWithdrawStake for full context on why the
+        // naive "state === inactive → all liquid" check is wrong on X1.)
         const totalLamports = stake.lamports;
-        let stakedLamports, liquidLamports;
-        
-        if (stake.state === 'inactive') {
-          // Inactive stakes have no active delegation - all funds are liquid
-          stakedLamports = 0;
-          liquidLamports = totalLamports;
-        } else {
-          // Active, activating, or deactivating stakes have delegated funds
-          stakedLamports = stake.data.stake?.delegation?.stake ? parseInt(stake.data.stake.delegation.stake) : 0;
-          liquidLamports = totalLamports - stakedLamports;
-        }
+        const rentExemptForStake = 2282880;
+        const activeLamports   = stake.activeLamports   ?? 0;
+        const inactiveLamports = stake.inactiveLamports ?? 0;
+        // "Locked" is the still-active/cooling portion that can't be withdrawn yet.
+        const stakedLamports = activeLamports;
+        // "Liquid" includes cooled-down stake + any un-delegated lamports
+        // (rewards or extras), minus the rent reserve.
+        const liquidLamports = Math.max(0, totalLamports - activeLamports - rentExemptForStake);
         
         document.getElementById('selectedStakedBalance').textContent = formatNumber(lamportsToXNT(stakedLamports), 4);
         document.getElementById('selectedLiquidBalance').textContent = formatNumber(lamportsToXNT(liquidLamports), 4);
@@ -21963,56 +22058,100 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       withdrawStakeData = stake;
       
-      // Get balances
-      // For inactive stakes, all funds are liquid (withdrawable)
+      // ── ACCURATE BALANCE COMPUTATION ────────────────────────────────────────
+      // Use rate-limit-aware activeLamports / inactiveLamports populated by
+      // fetchStakeAccounts via getStakeActivation. The naive approach (treating
+      // anything past deactivationEpoch as fully cooled) gave wrong numbers
+      // because Solana/X1 rate-limits cooldowns per epoch via the stake history
+      // sysvar — only ~25% of network active stake can deactivate per epoch, so
+      // a single account's cooldown can stretch over multiple epochs.
       const totalLamports = stake.lamports;
-      let stakedLamports, liquidLamports;
-      
-      if (stake.state === 'inactive') {
-        // Inactive stakes have no active delegation - all funds are liquid
-        stakedLamports = 0;
-        liquidLamports = totalLamports;
-      } else {
-        // Active, activating, or deactivating stakes have delegated funds
-        stakedLamports = stake.data.stake?.delegation?.stake ? parseInt(stake.data.stake.delegation.stake) : 0;
-        liquidLamports = totalLamports - stakedLamports;
-      }
-      
-      // Account for rent-exempt minimum (~0.00228 SOL for stake accounts)
       const rentExemptLamports = 2282880;
-      const actualAvailable = Math.max(0, liquidLamports - rentExemptLamports);
+      
+      // Fall back gracefully if activation data didn't load (older RPC, etc.)
+      const activeLamports   = stake.activeLamports   ?? 0;
+      const inactiveLamports = stake.inactiveLamports ?? 0;
+      
+      // "Locked" = the portion of the account that can't be withdrawn right now.
+      // That's the still-active/cooling stake. Anything else (inactive cooled
+      // portion + any extra lamports beyond delegation, e.g. stake rewards
+      // sitting outside the delegation) is potentially withdrawable.
+      const stakedLamports = activeLamports;
+      // Withdrawable = total balance - still-active stake - rent reserve.
+      // Equivalent to: cooled-down stake + un-delegated lamports - rent reserve.
+      const actualAvailable = Math.max(0, totalLamports - activeLamports - rentExemptLamports);
+      // Still-cooling portion (what we want to advertise to the user):
+      const stillCoolingLamports = activeLamports;
+      // Is this stake partially cooled? (deactivation started but not done)
+      const isPartiallyCooled = stake.isDeactivating && activeLamports > 0 && inactiveLamports > 0;
+      // Is it fully cooled (truly safe to close & withdraw all)?
+      const isFullyCooled = stake.isDeactivating && activeLamports === 0;
       withdrawStakeAvailableLamports = actualAvailable;
       
       // Populate modal
       document.getElementById('withdrawStakeAddress').textContent = shortenAddress(stake.pubkey);
       document.getElementById('withdrawStakeAddressCopyBtn').innerHTML = getCopyButtonHtml(stake.pubkey);
       
-      // Status badge
+      // ── STATUS BADGE ────────────────────────────────────────────────────────
       const statusBadge = document.getElementById('withdrawStakeStatus');
       const statusNote = document.getElementById('withdrawStakeStatusNote');
-      statusBadge.textContent = stake.state.charAt(0).toUpperCase() + stake.state.slice(1);
       statusBadge.className = 'status-badge';
+      statusBadge.style.background = '';
+      statusBadge.style.color = '';
       
       if (stake.state === 'active') {
+        statusBadge.textContent = 'Active';
         statusBadge.classList.add('status-active');
         statusNote.textContent = '- Stake is delegated and earning rewards';
+      } else if (stake.state === 'deactivating' && isPartiallyCooled) {
+        // Partially cooled: some can be withdrawn now, more available next epoch
+        statusBadge.textContent = 'Cooling Down';
+        statusBadge.style.background = 'rgba(255, 171, 0, 0.15)';
+        statusBadge.style.color = 'var(--warning)';
+        const cooledXnt  = formatNumber(inactiveLamports / 1e9, 4);
+        const coolingXnt = formatNumber(stillCoolingLamports / 1e9, 4);
+        statusNote.textContent = `- ${cooledXnt} XNT ready, ${coolingXnt} XNT still cooling (try again next epoch for more)`;
       } else if (stake.state === 'deactivating') {
+        // Cooldown started but nothing's cooled yet
+        statusBadge.textContent = 'Deactivating';
         statusBadge.classList.add('status-delinquent');
         statusNote.textContent = '- Stake is deactivating, wait for cooldown';
       } else if (stake.state === 'inactive') {
+        statusBadge.textContent = 'Inactive';
         statusBadge.classList.add('status-active');
         statusBadge.style.background = 'rgba(0, 230, 118, 0.15)';
         statusNote.textContent = '- Fully deactivated, ready to withdraw';
       } else if (stake.state === 'activating') {
+        statusBadge.textContent = 'Activating';
         statusBadge.style.background = 'rgba(0, 229, 255, 0.15)';
         statusBadge.style.color = 'var(--accent-cyan)';
         statusNote.textContent = '- Stake is activating';
       }
       
-      // Balance breakdown
+      // ── BALANCE BREAKDOWN ───────────────────────────────────────────────────
       document.getElementById('withdrawStakeTotalBalance').textContent = formatNumber(totalLamports / 1e9, 4) + ' XNT';
       document.getElementById('withdrawStakeLockedBalance').textContent = formatNumber(stakedLamports / 1e9, 4) + ' XNT';
       document.getElementById('withdrawStakeAvailableBalance').textContent = formatNumber(actualAvailable / 1e9, 4) + ' XNT';
+      
+      // Cooldown progress row — only visible when partially cooled
+      const cooldownRow = document.getElementById('withdrawStakeCooldownRow');
+      const cooldownProgress = document.getElementById('withdrawStakeCooldownProgress');
+      const cooldownText = document.getElementById('withdrawStakeCooldownText');
+      if (cooldownRow) {
+        if (isPartiallyCooled) {
+          const totalDelegated = activeLamports + inactiveLamports;
+          const pctCooled = totalDelegated > 0 ? (inactiveLamports / totalDelegated) * 100 : 0;
+          cooldownRow.style.display = 'block';
+          if (cooldownProgress) cooldownProgress.style.width = pctCooled.toFixed(1) + '%';
+          if (cooldownText) {
+            cooldownText.textContent =
+              `${formatNumber(inactiveLamports / 1e9, 4)} XNT cooled / ` +
+              `${formatNumber(totalDelegated / 1e9, 4)} XNT total (${pctCooled.toFixed(1)}%)`;
+          }
+        } else {
+          cooldownRow.style.display = 'none';
+        }
+      }
       
       // Get withdraw authority
       const withdrawer = stake.data.meta?.authorized?.withdrawer;
@@ -22061,12 +22200,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
       confirmBtn.onclick = confirmWithdrawFromStake;
       document.getElementById('withdrawStakeCancelBtn').textContent = 'Cancel';
       
-      // Show close account option only for inactive stakes with authority
+      // Show close account option ONLY when stake is fully cooled. Showing it
+      // for partially-cooled stakes was the original UX trap that led to the
+      // confusing "insufficient funds" error.
       const closeSection = document.getElementById('withdrawStakeCloseSection');
       const closeCheckbox = document.getElementById('withdrawStakeCloseCheckbox');
       closeCheckbox.checked = false;
       
-      if (stake.state === 'inactive' && hasWithdrawAuthority) {
+      if ((stake.state === 'inactive' || isFullyCooled) && hasWithdrawAuthority) {
         closeSection.style.display = 'block';
       } else {
         closeSection.style.display = 'none';
