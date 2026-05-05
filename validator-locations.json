@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-05T03:34:00.252Z",
-  "totalNodes": 1736,
-  "totalLocations": 1722,
+  "lastUpdated": "2026-05-05T05:24:44.453Z",
+  "totalNodes": 1734,
+  "totalLocations": 1720,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -898,13 +898,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "205.209.101.222": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "198.96.91.242": {
       "country": "United States",
@@ -12049,19 +12042,12 @@
       "city": "New York",
       "lat": 40.7128,
       "lon": -74.006
-    },
-    "205.209.101.234": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 1366
+      "count": 1364
     },
     "PL": {
       "name": "Poland",
