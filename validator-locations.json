@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-06T07:17:24.362Z",
+  "lastUpdated": "2026-05-06T09:11:11.760Z",
   "totalNodes": 1735,
   "totalLocations": 1721,
   "locations": {
@@ -10146,13 +10146,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "216.219.91.54": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
     "69.169.101.197": {
       "country": "United States",
       "countryCode": "US",
@@ -12049,48 +12042,55 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "5.9.106.211": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
+    "FI": {
+      "name": "Finland",
+      "count": 82
+    },
     "US": {
       "name": "United States",
-      "count": 1365
+      "count": 1364
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
     "PL": {
       "name": "Poland",
       "count": 86
     },
-    "CA": {
-      "name": "Canada",
-      "count": 24
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 82
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 64
-    },
     "FR": {
       "name": "France",
       "count": 66
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "NL": {
       "name": "The Netherlands",
       "count": 28
     },
+    "DE": {
+      "name": "Germany",
+      "count": 65
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 24
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
     },
     "SG": {
       "name": "Singapore",
