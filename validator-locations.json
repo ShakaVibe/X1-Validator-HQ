@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-05-08T06:58:49.772Z",
-  "totalNodes": 600,
+  "lastUpdated": "2026-05-08T08:51:58.648Z",
+  "totalNodes": 603,
   "totalLocations": 585,
   "locations": {
     "45.94.82.34": {
@@ -2138,28 +2138,7 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "135.125.6.89": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
-    "51.210.118.71": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "146.59.0.181": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "146.59.46.152": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
@@ -2221,13 +2200,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "51.83.238.112": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "51.83.239.133": {
       "country": "Poland",
@@ -4097,6 +4069,34 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "38.101.149.148": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "162.120.17.47": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7126,
+      "lon": -74.0066
+    },
+    "69.10.46.66": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "66.23.237.190": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
@@ -4110,7 +4110,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 230
+      "count": 234
     },
     "FI": {
       "name": "Finland",
@@ -4118,7 +4118,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 30
+      "count": 29
     },
     "CA": {
       "name": "Canada",
@@ -4126,11 +4126,11 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 87
+      "count": 86
     },
     "FR": {
       "name": "France",
-      "count": 67
+      "count": 68
     },
     "SE": {
       "name": "Sweden",
