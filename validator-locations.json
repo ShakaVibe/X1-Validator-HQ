@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-08T05:16:35.121Z",
+  "lastUpdated": "2026-05-08T06:58:49.772Z",
   "totalNodes": 600,
-  "totalLocations": 586,
+  "totalLocations": 585,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2068,13 +2068,6 @@
       "lat": 52.1155,
       "lon": 16.1171
     },
-    "162.120.17.47": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7126,
-      "lon": -74.0066
-    },
     "64.71.177.145": {
       "country": "United States",
       "countryCode": "US",
@@ -4117,7 +4110,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 231
+      "count": 230
     },
     "FI": {
       "name": "Finland",
@@ -4125,7 +4118,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 29
+      "count": 30
     },
     "CA": {
       "name": "Canada",
