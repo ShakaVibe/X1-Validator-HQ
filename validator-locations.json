@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-09T08:54:04.402Z",
+  "lastUpdated": "2026-05-09T10:40:07.044Z",
   "totalNodes": 606,
   "totalLocations": 593,
   "locations": {
@@ -3062,13 +3062,6 @@
       "lat": 50.1162,
       "lon": 8.6693
     },
-    "95.216.189.116": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "54.39.158.124": {
       "country": "Canada",
       "countryCode": "CA",
@@ -3076,21 +3069,7 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "78.47.42.161": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "88.198.161.202": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
-    "78.46.198.230": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
@@ -4153,12 +4132,33 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
+    },
+    "23.175.144.75": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9596,
+      "lon": -75.161
+    },
+    "23.175.146.218": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9596,
+      "lon": -75.161
+    },
+    "23.175.144.99": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9596,
+      "lon": -75.161
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 235
+      "count": 238
     },
     "PL": {
       "name": "Poland",
@@ -4174,11 +4174,11 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 78
+      "count": 77
     },
     "DE": {
       "name": "Germany",
-      "count": 61
+      "count": 59
     },
     "NL": {
       "name": "The Netherlands",
