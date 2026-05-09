@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-09T05:29:14.762Z",
-  "totalNodes": 603,
-  "totalLocations": 589,
+  "lastUpdated": "2026-05-09T07:05:26.542Z",
+  "totalNodes": 605,
+  "totalLocations": 592,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -226,13 +226,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "135.181.7.90": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "192.154.99.42": {
       "country": "United States",
@@ -765,13 +758,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "135.181.115.157": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "65.108.71.185": {
       "country": "Finland",
@@ -4125,43 +4111,78 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "193.34.212.140": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
+    },
+    "23.145.120.158": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5118,
+      "lon": -111.888
+    },
+    "185.16.39.128": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
+    },
+    "23.158.72.164": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Bluffdale",
+      "lat": 40.4797,
+      "lon": -111.905
+    },
+    "193.34.212.136": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 233
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 88
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 24
-    },
-    "FR": {
-      "name": "France",
-      "count": 67
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 81
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "DE": {
       "name": "Germany",
       "count": 61
     },
+    "US": {
+      "name": "United States",
+      "count": 235
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 78
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 29
     },
+    "CA": {
+      "name": "Canada",
+      "count": 24
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 91
+    },
+    "FR": {
+      "name": "France",
+      "count": 67
+    },
     "SE": {
       "name": "Sweden",
-      "count": 7
-    },
-    "KE": {
-      "name": "Kenya",
       "count": 7
     },
     "GB": {
