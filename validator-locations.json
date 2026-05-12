@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-12T20:53:44.328Z",
-  "totalNodes": 608,
-  "totalLocations": 594,
+  "lastUpdated": "2026-05-12T22:43:33.795Z",
+  "totalNodes": 607,
+  "totalLocations": 593,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3860,13 +3860,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "216.219.91.54": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
     "38.246.115.149": {
       "country": "United States",
       "countryCode": "US",
@@ -4133,13 +4126,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "205.209.101.222": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "209.159.153.74": {
       "country": "United States",
       "countryCode": "US",
@@ -4160,6 +4146,13 @@
       "city": "Wattrelos",
       "lat": 50.7012,
       "lon": 3.21501
+    },
+    "38.129.138.75": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
     }
   },
   "countries": {
@@ -4173,7 +4166,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 241
+      "count": 240
     },
     "FI": {
       "name": "Finland",
