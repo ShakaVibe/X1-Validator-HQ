@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-14T20:51:13.128Z",
-  "totalNodes": 611,
-  "totalLocations": 586,
+  "lastUpdated": "2026-05-14T22:41:46.619Z",
+  "totalNodes": 610,
+  "totalLocations": 585,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1416,13 +1416,6 @@
       "city": "Nuremberg",
       "lat": 49.4423,
       "lon": 11.0191
-    },
-    "104.250.143.66": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Pleasant View",
-      "lat": 41.3072,
-      "lon": -111.992
     },
     "193.34.212.186": {
       "country": "Poland",
@@ -4117,7 +4110,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 242
+      "count": 241
     },
     "FI": {
       "name": "Finland",
