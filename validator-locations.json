@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-14T07:24:48.027Z",
-  "totalNodes": 608,
-  "totalLocations": 594,
+  "lastUpdated": "2026-05-14T09:16:49.304Z",
+  "totalNodes": 609,
+  "totalLocations": 584,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3167,13 +3167,6 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "141.94.254.188": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
     "23.175.144.149": {
       "country": "United States",
       "countryCode": "US",
@@ -3194,13 +3187,6 @@
       "city": "Philadelphia",
       "lat": 39.9598,
       "lon": -75.1607
-    },
-    "141.94.138.22": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
     },
     "84.32.176.95": {
       "country": "Netherlands",
@@ -3230,21 +3216,7 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "57.128.119.186": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
     "162.19.72.27": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "57.128.119.188": {
       "country": "France",
       "countryCode": "FR",
       "city": "Gravelines",
@@ -3265,35 +3237,7 @@
       "lat": 50.9871,
       "lon": 2.12554
     },
-    "162.19.72.121": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
     "141.95.157.29": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "162.19.72.233": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "51.210.99.2": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "37.187.71.95": {
       "country": "France",
       "countryCode": "FR",
       "city": "Gravelines",
@@ -3308,27 +3252,6 @@
       "lon": 2.12554
     },
     "162.19.81.202": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "37.187.71.171": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "141.95.192.42": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "51.210.99.12": {
       "country": "France",
       "countryCode": "FR",
       "city": "Gravelines",
@@ -4160,6 +4083,13 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "46.170.40.92": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2065,
+      "lon": 21.0249
     }
   },
   "countries": {
@@ -4185,7 +4115,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 66
+      "count": 57
     },
     "CA": {
       "name": "Canada",
@@ -4193,7 +4123,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 92
+      "count": 102
     },
     "SE": {
       "name": "Sweden",
