@@ -10166,6 +10166,667 @@
       .skipmon-main  { grid-template-columns: 1fr; }
       .skipmon-header { align-items: flex-start; }
     }
+
+    /* ═══════════════════════════════════════════════════════
+       VALIDATOR TERMINAL — Bloomberg-style overlay
+       All classes prefixed .vt- to avoid clobbering site CSS
+       ═══════════════════════════════════════════════════════ */
+
+    /* Launch button — matches the .skipmon-scope-btn family below it */
+    .vt-launch-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 1.5rem 0 0;
+    }
+    /* When launch button is immediately above the scope controls, override
+       the 2rem top margin meant for spacing from the leader-schedule card. */
+    .vt-launch-wrap + .skipmon-controls { margin-top: 0.5rem; }
+    .vt-launch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.4rem;
+      background: rgba(0, 212, 255, 0.12);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 212, 255, 0.35);
+      border-radius: 10px;
+      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.15) inset,
+                  0 4px 18px rgba(0, 0, 0, 0.25);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background 0.18s, box-shadow 0.18s, transform 0.1s;
+    }
+    .vt-launch-btn:hover {
+      background: rgba(0, 212, 255, 0.18);
+      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.5) inset,
+                  0 4px 18px rgba(0, 212, 255, 0.15);
+    }
+    .vt-launch-btn:active { transform: translateY(1px); }
+
+    /* Overlay container */
+    .vt-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, #0d1a30 0%, #0a1020 50%, #060810 100%);
+      z-index: 10000;
+      display: none;
+      overflow-y: auto;
+      overflow-x: hidden;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      --vt-bg: var(--bg-primary);
+      --vt-bg-1: var(--bg-secondary);
+      --vt-bg-2: var(--bg-card);
+      --vt-panel: var(--bg-card);
+      --vt-grid: var(--border);
+      --vt-grid-2: rgba(77, 166, 255, 0.35);
+      --vt-text: var(--text-primary);
+      --vt-dim: var(--text-secondary);
+      --vt-muted: var(--text-dim);
+      --vt-hl: #ffffff;
+      --vt-amber: var(--accent-cyan);
+      --vt-amber-2: var(--accent-blue);
+      --vt-cyan: var(--accent-cyan);
+      --vt-green: var(--success);
+      --vt-red: var(--danger);
+      --vt-orange: var(--warning);
+      --vt-purple: #c39bff;
+    }
+    .vt-overlay.open { display: block; }
+    .vt-overlay ::selection { background: var(--accent-cyan); color: #0a1020; }
+    .vt-overlay a { color: var(--vt-cyan); text-decoration: none; }
+    .vt-overlay a:hover { text-decoration: underline; }
+
+    .vt-close {
+      position: fixed;
+      top: 10px;
+      right: 14px;
+      background: rgba(13, 21, 40, 0.85);
+      color: var(--accent-cyan);
+      border: 1px solid var(--border);
+      width: 34px;
+      height: 34px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 10003;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .vt-close:hover {
+      color: #fff;
+      border-color: var(--accent-cyan);
+      background: rgba(0, 212, 255, 0.12);
+    }
+
+    /* Loading + error states */
+    .vt-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      flex-direction: column;
+      gap: 1rem;
+      color: var(--vt-dim);
+      text-align: center;
+    }
+    .vt-loading-spinner {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--vt-grid-2);
+      border-top-color: var(--vt-amber);
+      border-radius: 50%;
+      animation: vt-spin 0.8s linear infinite;
+    }
+    @keyframes vt-spin { to { transform: rotate(360deg); } }
+    .vt-loading-text {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--vt-amber);
+      font-weight: 600;
+    }
+    .vt-loading-detail { font-size: 10.5px; color: var(--vt-dim); max-width: 480px; }
+    .vt-error {
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--vt-red);
+      font-size: 12px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .vt-error-title { font-size: 14px; margin-bottom: 8px; font-weight: 600; }
+    .vt-error-detail { color: var(--vt-dim); font-size: 11px; margin-bottom: 1rem; word-break: break-word; }
+    .vt-error button {
+      background: transparent;
+      color: var(--vt-amber);
+      border: 1px solid var(--vt-amber);
+      padding: 7px 16px;
+      font-family: inherit;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      font-weight: 600;
+    }
+    .vt-error button:hover { background: rgba(0, 212, 255, 0.12); }
+
+    /* Ticker */
+    .vt-ticker {
+      background: linear-gradient(180deg, rgba(13, 21, 40, 0.95) 0%, rgba(10, 16, 32, 0.95) 100%);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.72rem;
+      padding: 0.6rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.02em;
+    }
+    .vt-ticker .tk { padding: 0 0.9rem; border-right: 1px solid var(--border); white-space: nowrap; }
+    .vt-ticker .tk:last-child { border-right: none; }
+    .vt-ticker .lab { color: var(--text-secondary); margin-right: 0.4rem; }
+    .vt-ticker .val { color: var(--text-primary); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+    .vt-ticker .val.amber { color: var(--accent-cyan); }
+    .vt-ticker .val.cyan { color: var(--accent-cyan); }
+    .vt-ticker .live {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+      margin-right: 6px;
+      box-shadow: 0 0 6px var(--success);
+      animation: vt-pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes vt-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+    /* Header */
+    .vt-head {
+      display: block;
+      padding: 2rem 1.25rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+      text-align: center;
+    }
+    .vt-head h1 {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      justify-content: center;
+    }
+    .vt-head h1 .x1-logo-small {
+      width: 44px;
+      height: 44px;
+      font-size: 1.3rem;
+    }
+    .vt-head h1 .word-validator { color: #ffffff; }
+    .vt-head h1 .word-terminal {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .vt-head .meta {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .vt-head .meta b { color: var(--text-primary); font-weight: 600; }
+
+    /* KPI grid */
+    .vt-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      padding: 1.25rem 1.25rem 0.5rem;
+      background: transparent;
+      border-top: 1px solid var(--border);
+    }
+    .vt-kpi {
+      background: var(--bg-card);
+      border: 1px solid rgba(77, 166, 255, 0.35);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.05), 0 0 18px rgba(0, 212, 255, 0.04);
+    }
+    .vt-kpi::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 2px;
+      background: var(--accent-gradient);
+      opacity: 0.75;
+    }
+    .vt-kpi .lbl {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .vt-kpi .v {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+    .vt-kpi .v.amber { color: var(--accent-cyan); }
+    .vt-kpi .v.cyan { color: var(--accent-cyan); }
+    .vt-kpi .sub { color: var(--text-dim); font-size: 0.75rem; }
+    .vt-kpi .sub b { color: var(--text-primary); font-weight: 600; }
+
+    /* Percentile row */
+    .vt-pctrow {
+      display: grid;
+      grid-template-columns: 200px repeat(8, 1fr);
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid rgba(77, 166, 255, 0.35);
+      border-radius: 12px;
+      margin: 0.5rem 1.25rem 1.25rem;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.05), 0 0 18px rgba(0, 212, 255, 0.04);
+    }
+    .vt-pctrow::before {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 2px;
+      background: var(--accent-gradient);
+      opacity: 0.75;
+      z-index: 1;
+    }
+    .vt-pctrow > div {
+      background: transparent;
+      padding: 1rem 1rem 1.1rem;
+      border-right: 1px solid var(--border);
+    }
+    .vt-pctrow > div:last-child { border-right: none; }
+    .vt-pctrow .head {
+      background: rgba(0, 212, 255, 0.06);
+      color: var(--accent-cyan);
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+    }
+    .vt-pctrow .lbl {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .vt-pctrow .v {
+      color: var(--text-primary);
+      font-size: 1.2rem;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .vt-pctrow .v.hi { color: var(--accent-cyan); }
+
+    /* Toolbar */
+    .vt-tools {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(13, 21, 40, 0.95);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(8px);
+    }
+    .vt-tools .label {
+      color: var(--accent-cyan);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .vt-tools .right {
+      display: flex;
+      gap: 1rem;
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+    .vt-tools .right b { color: var(--text-primary); }
+    .vt-tools input.search {
+      background: rgba(20, 28, 46, 0.6);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.75rem;
+      font-family: inherit;
+      font-size: 0.82rem;
+      width: 280px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      border-radius: 8px;
+    }
+    .vt-tools input.search:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.08);
+    }
+    .vt-tools .seg {
+      display: inline-flex;
+      gap: 2px;
+      background: rgba(20, 28, 46, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 3px;
+      overflow: visible;
+    }
+    .vt-tools .seg button {
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      padding: 0.35rem 0.75rem;
+      font-family: inherit;
+      font-size: 0.72rem;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      font-weight: 600;
+      border-right: none;
+      border-radius: 7px;
+      transition: color 0.15s, background 0.15s;
+    }
+    .vt-tools .seg button:hover { color: var(--text-primary); }
+    .vt-tools .seg button.on {
+      background: rgba(0, 212, 255, 0.12);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.35) inset;
+    }
+    .vt-tools .btn {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.85rem;
+      font-family: inherit;
+      font-size: 0.72rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .vt-tools .btn:hover { color: var(--accent-cyan); border-color: var(--accent-cyan); }
+    .vt-tools .btn.refresh {
+      color: var(--accent-cyan);
+      border-color: rgba(0, 212, 255, 0.35);
+      background: rgba(0, 212, 255, 0.08);
+    }
+    .vt-tools .btn.refresh:hover {
+      background: rgba(0, 212, 255, 0.18);
+      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.5) inset;
+    }
+    .vt-tools .btn.refresh.spinning { pointer-events: none; opacity: 0.6; }
+    .vt-tools .btn.refresh.spinning .vt-refresh-icon { display: inline-block; animation: vt-spin 0.8s linear infinite; }
+    .vt-refresh-icon { display: inline-block; }
+    .vt-tools .kbd { color: var(--text-dim); font-size: 0.7rem; }
+    .vt-tools .kbd kbd {
+      background: rgba(20, 28, 46, 0.6);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: inherit;
+      color: var(--text-primary);
+      font-size: 0.7rem;
+    }
+
+    /* Data table */
+    .vt-tbl-wrap { overflow: visible; }
+    table.vt-data {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      table-layout: auto;
+      font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+    table.vt-data thead th {
+      position: sticky;
+      top: var(--vt-tools-h, 48px);
+      background: rgba(13, 21, 40, 0.97);
+      color: var(--accent-cyan);
+      font-weight: 600;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 10px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(77, 166, 255, 0.25);
+      z-index: 20;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      backdrop-filter: blur(8px);
+    }
+    table.vt-data thead th.r { text-align: right; }
+    table.vt-data thead th.sortable:hover { color: var(--text-primary); }
+    table.vt-data thead th .arrow { display: inline-block; margin-left: 4px; opacity: 0.35; font-size: 9px; }
+    table.vt-data thead th.sort-desc .arrow,
+    table.vt-data thead th.sort-asc .arrow { opacity: 1; color: var(--accent-cyan); }
+    table.vt-data thead th.sort-desc .arrow::after { content: '▼'; }
+    table.vt-data thead th.sort-asc .arrow::after { content: '▲'; }
+    table.vt-data thead th .arrow::after { content: '↕'; }
+    table.vt-data tbody td {
+      padding: 6px 10px;
+      border-bottom: 1px solid rgba(30, 48, 80, 0.4);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    table.vt-data tbody tr:nth-child(even) td { background: rgba(255, 255, 255, 0.015); }
+    table.vt-data tbody tr:hover td { background: rgba(0, 212, 255, 0.06); }
+    table.vt-data tbody tr.dlq td { color: #d88795; }
+    table.vt-data tbody tr.ina td { color: var(--text-dim); }
+    table.vt-data td.n,
+    table.vt-data td.r { text-align: right; font-variant-numeric: tabular-nums; }
+    table.vt-data td.dim { color: var(--text-secondary); }
+    table.vt-data td.small { font-size: 10px; }
+    table.vt-data td.m { font-size: 10.5px; cursor: pointer; }
+    table.vt-data td.m .pk { color: var(--accent-cyan); }
+    table.vt-data td.m.id .pk { color: var(--vt-purple); opacity: 0.85; }
+    table.vt-data td.m:hover .pk {
+      text-decoration: underline;
+      text-decoration-color: var(--accent-cyan);
+      text-underline-offset: 3px;
+    }
+    table.vt-data td.name { max-width: 240px; overflow: hidden; text-overflow: ellipsis; }
+    table.vt-data td.name .nm { color: var(--vt-text); font-weight: 500; }
+
+    .vt-self-cell { position: relative; }
+    .vt-self-cell .bar {
+      display: inline-block;
+      width: 48px;
+      height: 4px;
+      background: rgba(0, 212, 255, 0.08);
+      border-radius: 2px;
+      margin-right: 6px;
+      vertical-align: middle;
+      overflow: hidden;
+    }
+    .vt-self-cell .bar-fill {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+      box-shadow: 0 0 8px rgba(0, 212, 255, 0.45);
+    }
+    .vt-self-cell .self-val { color: var(--text-primary); }
+    .vt-pct-hi { color: var(--danger); font-weight: 600; }
+    .vt-pct-mid { color: var(--warning); }
+    .vt-pct-lo { color: var(--success); }
+    .vt-pct-zero { color: var(--text-dim); }
+
+    .vt-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .vt-pill.st-ok { background: rgba(0, 230, 118, 0.12); color: var(--success); }
+    .vt-pill.st-dlq { background: rgba(255, 82, 82, 0.14); color: var(--danger); }
+    .vt-pill.st-ina { background: rgba(138, 143, 152, 0.16); color: var(--text-secondary); }
+    .vt-tag-x1 {
+      display: inline-block;
+      background: var(--accent-gradient);
+      color: #0a1020;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    /* Footer */
+    .vt-footer {
+      padding: 1rem 1.25rem 2rem;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      border-top: 1px solid var(--border);
+      background: transparent;
+    }
+    .vt-footer .row { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+    .vt-footer code {
+      color: var(--accent-cyan);
+      background: rgba(0, 212, 255, 0.06);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+    }
+
+    @media (max-width: 980px) {
+      .vt-pctrow { grid-template-columns: 1fr 1fr 1fr; }
+      .vt-pctrow .head { grid-column: 1 / -1; }
+    }
+
+    /* Hover tooltip — per-validator stake breakdown */
+    .vt-tip {
+      position: absolute;
+      z-index: 10002;
+      display: none;
+      min-width: 460px;
+      max-width: 640px;
+      max-height: 360px;
+      overflow: auto;
+      background: var(--bg-card);
+      border: 1px solid rgba(77, 166, 255, 0.5);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 212, 255, 0.18), 0 0 24px rgba(0, 212, 255, 0.12);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+      font-size: 11px;
+      border-radius: 10px;
+    }
+    .vt-tip .tip-h {
+      padding: 0.65rem 0.85rem 0.55rem;
+      border-bottom: 1px solid rgba(77, 166, 255, 0.25);
+      background: linear-gradient(180deg, rgba(22, 36, 64, 0.6) 0%, rgba(17, 29, 50, 0.6) 100%);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .vt-tip .tip-h .vote { color: var(--accent-cyan); font-size: 11px; word-break: break-all; }
+    .vt-tip .tip-h .name { color: var(--text-primary); font-weight: 600; font-size: 12.5px; margin-top: 2px; font-family: 'Space Grotesk', sans-serif; }
+    .vt-tip .tip-h .totals {
+      color: var(--text-secondary);
+      font-size: 10.5px;
+      margin-top: 5px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .vt-tip .tip-h .totals b { color: var(--text-primary); }
+    .vt-tip .tip-h .totals .amber { color: var(--accent-cyan); }
+    .vt-tip .tip-h .totals .cyan { color: var(--accent-cyan); }
+    .vt-tip table.tip-tbl { width: 100%; border-collapse: collapse; font-size: 10.5px; table-layout: auto; }
+    .vt-tip table.tip-tbl th {
+      position: sticky;
+      top: 0;
+      background: rgba(13, 21, 40, 0.97);
+      color: var(--accent-cyan);
+      text-align: left;
+      font-size: 0.65rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 7px 11px;
+      border-bottom: 1px solid rgba(77, 166, 255, 0.25);
+      z-index: 1;
+    }
+    .vt-tip table.tip-tbl th.r { text-align: right; }
+    .vt-tip table.tip-tbl td { padding: 5px 11px; border-bottom: 1px solid rgba(30, 48, 80, 0.4); white-space: nowrap; }
+    .vt-tip table.tip-tbl td.n { text-align: right; font-variant-numeric: tabular-nums; }
+    .vt-tip table.tip-tbl td.pk { color: var(--accent-cyan); font-size: 10px; }
+    .vt-tip table.tip-tbl tr:hover td { background: rgba(0, 212, 255, 0.06); }
+    .vt-stk-active { color: var(--success); }
+    .vt-stk-activating { color: var(--accent-cyan); }
+    .vt-stk-deactivating { color: var(--warning); }
+    .vt-stk-inactive { color: var(--text-dim); }
+    .vt-src-pool {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 3px;
+      background: rgba(77, 166, 255, 0.15);
+      color: var(--accent-blue);
+      font-size: 0.6rem;
+      letter-spacing: 0.3px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .vt-src-direct {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 3px;
+      background: rgba(0, 212, 255, 0.15);
+      color: var(--accent-cyan);
+      font-size: 0.6rem;
+      letter-spacing: 0.3px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
   </style>
 </head>
 <body>
@@ -11006,6 +11667,10 @@
               <div class="leader-next-item">Loading...</div>
             </div>
           </div>
+        </div>
+
+        <div class="vt-launch-wrap">
+          <button class="vt-launch-btn" onclick="vtOpen()">📊 Validator Terminal</button>
         </div>
 
         <div class="skipmon-controls">
@@ -31214,10 +31879,681 @@ Please give me the diagnostic commands to run on my server so you can help me id
       <button class="solana-modal-close" onclick="closeSolanaModal()">Got It!</button>
     </div>
   </div>
-  <!-- Global cooldown popover (shared across all stake state badges) -->
-  <div class="cooldown-popover" id="cooldownPopover" role="tooltip">
-    <div class="cooldown-popover-arrow"></div>
-    <div id="cooldownPopoverContent"></div>
+  <!-- ═══════════════════════════════════════════════════════
+       VALIDATOR TERMINAL — full-screen overlay
+       ═══════════════════════════════════════════════════════ -->
+  <div class="vt-overlay" id="vtOverlay">
+    <button class="vt-close" onclick="vtClose()" title="Close (Esc)" aria-label="Close terminal">✕</button>
+    <div id="vtContent">
+      <div class="vt-loading">
+        <div class="vt-loading-spinner"></div>
+        <div class="vt-loading-text">Initializing Terminal</div>
+        <div class="vt-loading-detail">Fetching validator and stake data from api.x1.xyz…</div>
+      </div>
+    </div>
   </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════
+    // VALIDATOR TERMINAL — client-side module
+    // Bloomberg-style live view of every X1 validator, sorted
+    // by self-stake. Adapted from x1-validator-terminal repo
+    // to run in-browser as an overlay inside this site.
+    // ═══════════════════════════════════════════════════════
+    (function () {
+      const API = 'https://api.x1.xyz';
+      const PAGE = 10000;
+      const MAX_OFFSET = 5000;
+
+      let _data = null;       // { cluster, validators, stakes }
+      let _computed = null;   // { rows, stakeIndex, agg, pct, cluster, stakesCount }
+      let _sortCol = null;
+      let _sortDir = 0;       // 1 = desc, -1 = asc, 0 = default
+      let _filter = 'all';
+      let _kbBound = false;
+
+      // ── Format helpers ────────────────────────────────
+      const fmt2 = lp => (Number(lp) / 1e9).toLocaleString('en-US', { maximumFractionDigits: 2 });
+      const fmt0 = lp => (Number(lp) / 1e9).toLocaleString('en-US', { maximumFractionDigits: 0 });
+      const num  = (n, d = 2) => Number(n).toLocaleString('en-US', { maximumFractionDigits: d });
+      const esc  = s => String(s ?? '').replace(/[<>&"']/g, c =>
+        ({ '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;' }[c]));
+      const shortPk = pk => pk.slice(0,6) + '…' + pk.slice(-4);
+
+      // ── Fetch ─────────────────────────────────────────
+      async function getAll(path, q = {}) {
+        const out = [];
+        for (let offset = 0; ; offset += PAGE) {
+          const u = new URL(API + path);
+          for (const [k,v] of Object.entries({ ...q, limit: PAGE, offset })) u.searchParams.set(k, String(v));
+          const r = await fetch(u);
+          if (!r.ok) throw new Error(path + ' HTTP ' + r.status);
+          const page = await r.json();
+          out.push(...page);
+          if (page.length < PAGE || offset >= MAX_OFFSET) return out;
+        }
+      }
+
+      async function fetchAll() {
+        const [cluster, validators, stakes] = await Promise.all([
+          fetch(API + '/v1/cluster').then(r => {
+            if (!r.ok) throw new Error('cluster HTTP ' + r.status);
+            return r.json();
+          }),
+          getAll('/v1/validators'),
+          getAll('/v1/stakes', { includeInactive: true }),
+        ]);
+        return { cluster, validators, stakes };
+      }
+
+      // ── Compute breakdown + aggregates ────────────────
+      function compute(raw) {
+        const { cluster, validators, stakes } = raw;
+        const breakdown  = new Map();
+        const stakeIndex = new Map();
+
+        for (const s of stakes) {
+          const v = s.votePubkey;
+          if (!v) continue;
+          let b = breakdown.get(v);
+          if (!b) {
+            b = { fActive:0n, fDel:0n, fCount:0, sActive:0n, sDel:0n, sCount:0, biggestSelf:0n };
+            breakdown.set(v, b);
+          }
+          const amt = BigInt(s.amount || 0);
+          const del = BigInt(s.delegatedStake || 0);
+          if (s.stakePool) { b.fActive += amt; b.fDel += del; b.fCount++; }
+          else {
+            b.sActive += amt; b.sDel += del; b.sCount++;
+            if (amt > b.biggestSelf) b.biggestSelf = amt;
+          }
+          if (!stakeIndex.has(v)) stakeIndex.set(v, []);
+          stakeIndex.get(v).push({
+            p: s.stakePubkey,
+            a: String(s.amount || '0'),
+            d: String(s.delegatedStake || '0'),
+            s: String(s.status || ''),
+            x: s.stakePool ? 1 : 0,
+          });
+        }
+
+        const rows = validators.map(v => {
+          const b = breakdown.get(v.votePubkey) || { fActive:0n, fDel:0n, fCount:0, sActive:0n, sDel:0n, sCount:0, biggestSelf:0n };
+          const total = b.fActive + b.sActive;
+          const selfPct = total > 0n ? Number((b.sActive * 1000000n) / total) / 10000 : 0;
+          return { v, b, total, selfPct };
+        });
+
+        rows.sort((a, b) =>
+          b.b.sActive > a.b.sActive ? 1 :
+          b.b.sActive < a.b.sActive ? -1 :
+          (BigInt(b.v.activatedStake || 0) > BigInt(a.v.activatedStake || 0) ? 1 : -1)
+        );
+
+        const tFnd = rows.reduce((s, r) => s + r.b.fActive, 0n);
+        const tSlf = rows.reduce((s, r) => s + r.b.sActive, 0n);
+        const tAct = rows.reduce((s, r) => s + BigInt(r.v.activatedStake || 0), 0n);
+        const totalSelfPct = tAct > 0n ? Number(tSlf * 1000000n / tAct) / 10000 : 0;
+
+        const x1Rows = rows.filter(r => r.v.x1Labs);
+        const nonX1  = rows.filter(r => !r.v.x1Labs);
+        const nonX1Self      = nonX1.reduce((s, r) => s + r.b.sActive, 0n);
+        const nonX1Activated = nonX1.reduce((s, r) => s + BigInt(r.v.activatedStake || 0), 0n);
+        const nonX1SelfPct   = nonX1Activated > 0n ? Number(nonX1Self * 1000000n / nonX1Activated) / 10000 : 0;
+
+        const x1SelfActive = x1Rows.reduce((s, r) => s + r.b.sActive, 0n);
+        const x1FndActive  = x1Rows.reduce((s, r) => s + r.b.fActive, 0n);
+        const x1AllStakes  = x1SelfActive + x1FndActive;
+        const x1SelfCount  = x1Rows.reduce((s, r) => s + r.b.sCount, 0);
+        const x1FndCount   = x1Rows.reduce((s, r) => s + r.b.fCount, 0);
+        const x1SelfPct    = x1AllStakes > 0n ? Number(x1SelfActive * 1000000n / x1AllStakes) / 10000 : 0;
+
+        const delinqCount = rows.filter(r => r.v.delinquent).length;
+
+        function percentile(arr, p) {
+          if (!arr.length) return 0;
+          const idx = (p / 100) * (arr.length - 1);
+          const lo = Math.floor(idx), hi = Math.ceil(idx);
+          if (lo === hi) return arr[lo];
+          return arr[lo] + (arr[hi] - arr[lo]) * (idx - lo);
+        }
+        const sortedSelf = nonX1.map(r => Number(r.b.sActive) / 1e9).sort((a, b) => a - b);
+        const pct = {
+          p50: percentile(sortedSelf, 50),
+          p75: percentile(sortedSelf, 75),
+          p85: percentile(sortedSelf, 85),
+          p90: percentile(sortedSelf, 90),
+          p95: percentile(sortedSelf, 95),
+          p99: percentile(sortedSelf, 99),
+        };
+        const maxSelf  = sortedSelf.length ? sortedSelf[sortedSelf.length - 1] : 0;
+        const meanSelf = sortedSelf.length ? sortedSelf.reduce((a, b) => a + b, 0) / sortedSelf.length : 0;
+        const withSelf = sortedSelf.filter(v => v > 0).length;
+        const maxSelfLamports = rows.reduce((m, r) => r.b.sActive > m ? r.b.sActive : m, 0n);
+
+        const versions = new Map();
+        for (const r of rows) {
+          const k = r.v.version || 'unknown';
+          versions.set(k, (versions.get(k) || 0) + 1);
+        }
+        const topVersions = [...versions.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4);
+
+        return {
+          rows, stakeIndex, cluster,
+          stakesCount: stakes.length,
+          agg: {
+            tFnd, tSlf, tAct, totalSelfPct,
+            nonX1, nonX1Self, nonX1SelfPct,
+            x1Rows, x1AllStakes, x1SelfCount, x1FndCount, x1SelfPct,
+            delinqCount, withSelf, maxSelfLamports, meanSelf, maxSelf,
+            topVersions, versions,
+          },
+          pct: { ...pct, maxSelf, meanSelf },
+        };
+      }
+
+      // ── Render full body ──────────────────────────────
+      function render() {
+        if (!_computed) return;
+        const { rows, agg, pct, cluster, stakesCount } = _computed;
+        const isoTime = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+
+        const trs = rows.map((r, i) => {
+          const { v, b, selfPct } = r;
+          const status = v.delinquent ? 'DLQ' : v.active ? 'OK' : 'INA';
+          const cls = v.delinquent ? 'dlq' : (v.active ? '' : 'ina');
+          const x1 = v.x1Labs ? '<span class="vt-tag-x1">X1</span>' : '';
+          const selfNum = Number(b.sActive);
+          const maxNum = Number(agg.maxSelfLamports) || 1;
+          const barW = Math.max(0.5, (selfNum / maxNum) * 100);
+          const selfClass =
+            selfPct >= 50 ? 'vt-pct-hi' :
+            selfPct >= 5  ? 'vt-pct-mid' :
+            selfPct >  0  ? 'vt-pct-lo' : 'vt-pct-zero';
+          const stClass = v.delinquent ? 'st-dlq' : (v.active ? 'st-ok' : 'st-ina');
+          const stRank  = v.delinquent ? 2 : v.active ? 0 : 1;
+          const search  = (v.votePubkey + ' ' + v.nodePubkey + ' ' + (v.name || '') + ' ' +
+                          (v.country || '') + ' ' + (v.version || '') +
+                          (v.x1Labs ? ' x1 labs' : '')).toLowerCase();
+          const xntActivated = Number(BigInt(v.activatedStake || 0)) / 1e9;
+          const xntSelf      = selfNum / 1e9;
+          const xntBiggest   = Number(b.biggestSelf) / 1e9;
+          const xntFnd       = Number(b.fActive) / 1e9;
+          const nameLower    = (v.name || '').toLowerCase();
+          const nm           = v.name ? esc(v.name) : '&mdash;';
+          const voteShort    = v.votePubkey.slice(0, 6) + '…' + v.votePubkey.slice(-4);
+          const idShort      = v.nodePubkey.slice(0, 6) + '…' + v.nodePubkey.slice(-4);
+
+          return '<tr class="' + cls + '" data-search="' + esc(search) + '" data-default="' + i + '">' +
+            '<td class="r dim" data-v="' + i + '">' + (i + 1) + '</td>' +
+            '<td class="m" data-v="' + esc(v.votePubkey) + '"><span class="pk">' + esc(voteShort) + '</span></td>' +
+            '<td class="m id" data-v="' + esc(v.nodePubkey) + '" title="' + esc(v.nodePubkey) + '"><span class="pk dim">' + esc(idShort) + '</span></td>' +
+            '<td class="name" data-v="' + esc(nameLower) + '"><span class="nm">' + nm + '</span> ' + x1 + '</td>' +
+            '<td class="r dim" data-v="' + (v.commission ?? -1) + '">' + (v.commission ?? '') + '%</td>' +
+            '<td data-v="' + stRank + '"><span class="vt-pill ' + stClass + '">' + status + '</span></td>' +
+            '<td class="n" data-v="' + xntActivated + '">' + fmt2(v.activatedStake || 0) + '</td>' +
+            '<td class="n vt-self-cell" data-v="' + xntSelf + '">' +
+              '<span class="bar"><span class="bar-fill" style="width:' + barW.toFixed(2) + '%"></span></span>' +
+              '<span class="self-val">' + fmt2(b.sActive) + '</span>' +
+            '</td>' +
+            '<td class="r dim" data-v="' + b.sCount + '">' + b.sCount + '</td>' +
+            '<td class="n dim" data-v="' + xntBiggest + '">' + fmt2(b.biggestSelf) + '</td>' +
+            '<td class="n dim" data-v="' + xntFnd + '">' + fmt2(b.fActive) + '</td>' +
+            '<td class="r dim" data-v="' + b.fCount + '">' + b.fCount + '</td>' +
+            '<td class="r ' + selfClass + '" data-v="' + selfPct + '">' + selfPct.toFixed(2) + '%</td>' +
+            '<td class="dim small" data-v="' + esc(v.version || '') + '">' + esc(v.version || '?') + '</td>' +
+            '<td class="dim small" data-v="' + esc(v.country || '') + '">' + esc(v.country || '') + '</td>' +
+          '</tr>';
+        }).join('\n');
+
+        const tickerHtml =
+          '<div class="vt-ticker">' +
+            '<span class="tk"><span class="live"></span><span class="lab">LIVE</span><span class="val amber">X1 MAINNET</span></span>' +
+            '<span class="tk"><span class="lab">EPOCH</span><span class="val">' + cluster.epoch + '</span></span>' +
+            '<span class="tk"><span class="lab">SLOT</span><span class="val">' + num(cluster.currentSlot, 0) + '</span></span>' +
+            '<span class="tk"><span class="lab">VALIDATORS</span><span class="val cyan">' + num(cluster.currentValidators, 0) + '</span><span class="lab" style="margin-left:6px;">+</span><span class="val">' + num(cluster.delinquentValidators, 0) + '</span><span class="lab"> dlq</span></span>' +
+            '<span class="tk"><span class="lab">ACTIVATED</span><span class="val">' + fmt0(agg.tAct) + '</span><span class="lab">XNT</span></span>' +
+            '<span class="tk"><span class="lab">SELF (NON-X1)</span><span class="val amber">' + fmt0(agg.nonX1Self) + '</span><span class="lab">XNT</span></span>' +
+            '<span class="tk"><span class="lab">UPDATED</span><span class="val">' + isoTime + '</span></span>' +
+          '</div>';
+
+        const headHtml =
+          '<header class="vt-head">' +
+            '<h1>' +
+              '<span class="x1-logo-small"><span class="x-char">X</span><span class="one-char">1</span></span>' +
+              '<span><span class="word-validator">VALIDATOR</span> <span class="word-terminal">TERMINAL</span></span>' +
+            '</h1>' +
+            '<div class="meta">' +
+              '<span>Real-time validator stake breakdown &middot; X1 mainnet</span>' +
+              '<span><b>' + rows.length + '</b> validators</span>' +
+              '<span><b>' + num(stakesCount, 0) + '</b> stake accounts</span>' +
+            '</div>' +
+          '</header>';
+
+        const kpiHtml =
+          '<div class="vt-kpi-grid">' +
+            '<div class="vt-kpi">' +
+              '<div class="lbl">Total Activated</div>' +
+              '<div class="v">' + fmt0(agg.tAct) + ' <span style="color:var(--vt-dim);font-size:13px;font-weight:500;">XNT</span></div>' +
+              '<div class="sub">across <b>' + rows.length + '</b> validators &middot; ' + agg.delinqCount + ' delinquent</div>' +
+            '</div>' +
+            '<div class="vt-kpi">' +
+              '<div class="lbl">Foundation Pool Stake</div>' +
+              '<div class="v cyan">' + fmt0(agg.tFnd) + ' <span style="color:var(--vt-dim);font-size:13px;font-weight:500;">XNT</span></div>' +
+              '<div class="sub"><b>' + num(100 - agg.totalSelfPct, 4) + '%</b> of activated &middot; routed via X1 stake pool</div>' +
+            '</div>' +
+            '<div class="vt-kpi">' +
+              '<div class="lbl">Self-Stake (Non-X1)</div>' +
+              '<div class="v amber">' + fmt0(agg.nonX1Self) + ' <span style="color:var(--vt-dim);font-size:13px;font-weight:500;">XNT</span></div>' +
+              '<div class="sub"><b>' + agg.nonX1.length + '</b> non-X1 validators &middot; ' + agg.withSelf + ' with self &gt; 0 &middot; share <b>' + agg.nonX1SelfPct.toFixed(4) + '%</b></div>' +
+            '</div>' +
+            '<div class="vt-kpi">' +
+              '<div class="lbl">X1 Labs &middot; All Stakes</div>' +
+              '<div class="v">' + fmt0(agg.x1AllStakes) + ' <span style="color:var(--vt-dim);font-size:13px;font-weight:500;">XNT</span></div>' +
+              '<div class="sub"><b>' + agg.x1Rows.length + '</b> nodes &middot; <b>' + (agg.x1SelfCount + agg.x1FndCount) + '</b> stake accts &middot; self-share <b>' + agg.x1SelfPct.toFixed(0) + '%</b></div>' +
+            '</div>' +
+            '<div class="vt-kpi">' +
+              '<div class="lbl">Mean Self-Stake (Non-X1)</div>' +
+              '<div class="v">' + num(agg.meanSelf, 2) + ' <span style="color:var(--vt-dim);font-size:13px;font-weight:500;">XNT</span></div>' +
+              '<div class="sub">median <b>' + num(pct.p50, 2) + '</b> &middot; max <b>' + num(agg.maxSelf, 0) + '</b></div>' +
+            '</div>' +
+            '<div class="vt-kpi">' +
+              '<div class="lbl">Top Versions</div>' +
+              '<div class="v" style="font-size:13px;line-height:1.45;">' +
+                agg.topVersions.map(p => '<span style="color:var(--vt-cyan);">' + esc(p[0]) + '</span> <span style="color:var(--vt-dim);">' + p[1] + '</span>').join(' &middot; ') +
+              '</div>' +
+              '<div class="sub">' + agg.versions.size + ' distinct client versions</div>' +
+            '</div>' +
+          '</div>';
+
+        const pctHtml =
+          '<div class="vt-pctrow">' +
+            '<div class="head">SELF-STAKE PERCENTILES (NON-X1, XNT)</div>' +
+            '<div><div class="lbl">P50</div><div class="v">' + num(pct.p50, 2) + '</div></div>' +
+            '<div><div class="lbl">P75</div><div class="v hi">' + num(pct.p75, 2) + '</div></div>' +
+            '<div><div class="lbl">P85</div><div class="v hi">' + num(pct.p85, 2) + '</div></div>' +
+            '<div><div class="lbl">P90</div><div class="v hi">' + num(pct.p90, 2) + '</div></div>' +
+            '<div><div class="lbl">P95</div><div class="v">' + num(pct.p95, 2) + '</div></div>' +
+            '<div><div class="lbl">P99</div><div class="v">' + num(pct.p99, 2) + '</div></div>' +
+            '<div><div class="lbl">Max</div><div class="v">' + num(agg.maxSelf, 2) + '</div></div>' +
+            '<div><div class="lbl">Mean</div><div class="v">' + num(agg.meanSelf, 2) + '</div></div>' +
+          '</div>';
+
+        const toolsHtml =
+          '<div class="vt-tools" id="vtTools">' +
+            '<div class="label">&#9612; ALL VALIDATORS &middot; SORT &amp; FILTER</div>' +
+            '<input id="vtSearch" class="search" placeholder="filter by vote / identity / name / country / version" />' +
+            '<div class="seg" id="vtStatusFilter">' +
+              '<button data-f="all" class="on">ALL</button>' +
+              '<button data-f="ok">CURRENT</button>' +
+              '<button data-f="dlq">DELINQ</button>' +
+              '<button data-f="x1">X1 LABS</button>' +
+              '<button data-f="nox1">NON-X1</button>' +
+            '</div>' +
+            '<button class="btn refresh" id="vtRefreshBtn"><span class="vt-refresh-icon">↻</span> Refresh</button>' +
+            '<button class="btn" id="vtResetBtn">Reset</button>' +
+            '<div class="right">' +
+              '<span><b id="vtVisCount">' + rows.length + '</b> shown</span>' +
+              '<span class="kbd">Press <kbd>/</kbd> to focus search &middot; <kbd>Esc</kbd> to close</span>' +
+            '</div>' +
+          '</div>';
+
+        const tableHtml =
+          '<div class="vt-tbl-wrap">' +
+            '<table class="vt-data" id="vtTbl">' +
+              '<thead><tr>' +
+                '<th class="r sortable" data-col="0" data-type="num">#<span class="arrow"></span></th>' +
+                '<th class="sortable" data-col="1" data-type="str">Vote Account<span class="arrow"></span></th>' +
+                '<th class="sortable" data-col="2" data-type="str">Identity<span class="arrow"></span></th>' +
+                '<th class="sortable" data-col="3" data-type="str">Name<span class="arrow"></span></th>' +
+                '<th class="r sortable" data-col="4" data-type="num">Com<span class="arrow"></span></th>' +
+                '<th class="sortable" data-col="5" data-type="num">Status<span class="arrow"></span></th>' +
+                '<th class="r sortable" data-col="6" data-type="num">Activated XNT<span class="arrow"></span></th>' +
+                '<th class="r sortable" data-col="7" data-type="num">Self XNT<span class="arrow"></span></th>' +
+                '<th class="r sortable" data-col="8" data-type="num">#Self<span class="arrow"></span></th>' +
+                '<th class="r sortable" data-col="9" data-type="num">Biggest Self<span class="arrow"></span></th>' +
+                '<th class="r sortable" data-col="10" data-type="num">Foundation XNT<span class="arrow"></span></th>' +
+                '<th class="r sortable" data-col="11" data-type="num">#Fnd<span class="arrow"></span></th>' +
+                '<th class="r sortable" data-col="12" data-type="num">Self %<span class="arrow"></span></th>' +
+                '<th class="sortable" data-col="13" data-type="str">Ver<span class="arrow"></span></th>' +
+                '<th class="sortable" data-col="14" data-type="str">CC<span class="arrow"></span></th>' +
+              '</tr></thead>' +
+              '<tbody>' + trs + '</tbody>' +
+            '</table>' +
+          '</div>';
+
+        const footerHtml =
+          '<footer class="vt-footer">' +
+            '<div class="row">' +
+              '<span>Generated ' + isoTime + '</span>' +
+              '<span>API &middot; <code>' + API + '</code></span>' +
+              '<span>Definitions &middot; <b>foundation</b> = <code>stakePool &ne; null</code> &middot; <b>self</b> = direct delegations (validator self-stake + 3rd-party direct stakers)</span>' +
+            '</div>' +
+            '<div class="row" style="margin-top:6px;">' +
+              '<span>X1 Labs validators are excluded from non-X1 metrics; they are foundation-operated and have no third-party stake by design.</span>' +
+            '</div>' +
+          '</footer>' +
+          '<div class="vt-tip" id="vtTip" role="tooltip" aria-hidden="true"></div>';
+
+        document.getElementById('vtContent').innerHTML =
+          headHtml + tickerHtml + kpiHtml + pctHtml + toolsHtml + tableHtml + footerHtml;
+
+        wireUp();
+      }
+
+      // ── Wire up interactivity after render ────────────
+      function wireUp() {
+        const overlay   = document.getElementById('vtOverlay');
+        const tbody     = document.querySelector('#vtTbl tbody');
+        const ths       = document.querySelectorAll('#vtTbl thead th.sortable');
+        const search    = document.getElementById('vtSearch');
+        const counter   = document.getElementById('vtVisCount');
+        const seg       = document.getElementById('vtStatusFilter');
+        const resetBtn  = document.getElementById('vtResetBtn');
+        const refreshBtn= document.getElementById('vtRefreshBtn');
+        const tools     = document.getElementById('vtTools');
+        const tip       = document.getElementById('vtTip');
+        const allRows   = Array.from(tbody.querySelectorAll('tr'));
+        const defaultOrder = allRows.slice();
+
+        // Sticky thead offset
+        function syncToolsHeight() {
+          const h = Math.ceil(tools.getBoundingClientRect().height) || 48;
+          document.documentElement.style.setProperty('--vt-tools-h', h + 'px');
+        }
+        syncToolsHeight();
+        window.addEventListener('resize', syncToolsHeight);
+
+        // ── Sort ──
+        function compare(a, b, col, type) {
+          const ca = a.children[col], cb = b.children[col];
+          const va = ca.dataset.v ?? ca.textContent.trim();
+          const vb = cb.dataset.v ?? cb.textContent.trim();
+          if (type === 'num') {
+            const na = parseFloat(va), nb = parseFloat(vb);
+            return (isNaN(na) ? -Infinity : na) - (isNaN(nb) ? -Infinity : nb);
+          }
+          return String(va).localeCompare(String(vb));
+        }
+        function applySort() {
+          let rows;
+          if (_sortCol === null) rows = defaultOrder.slice();
+          else {
+            const type = ths[_sortCol].dataset.type;
+            rows = allRows.slice().sort((a, b) => compare(a, b, _sortCol, type) * (_sortDir === -1 ? 1 : -1));
+          }
+          const frag = document.createDocumentFragment();
+          for (const r of rows) frag.appendChild(r);
+          tbody.appendChild(frag);
+        }
+        function updateSortHeaders() {
+          ths.forEach(t => t.classList.remove('sort-asc', 'sort-desc'));
+          if (_sortCol !== null) ths[_sortCol].classList.add(_sortDir === 1 ? 'sort-desc' : 'sort-asc');
+        }
+        ths.forEach(th => {
+          const colIdx = Number(th.dataset.col);
+          th.addEventListener('click', () => {
+            if (_sortCol === colIdx) {
+              if (_sortDir === 1) _sortDir = -1;
+              else if (_sortDir === -1) { _sortCol = null; _sortDir = 0; }
+            } else {
+              _sortCol = colIdx;
+              _sortDir = (th.dataset.type === 'num') ? 1 : -1;
+            }
+            applySort();
+            updateSortHeaders();
+          });
+        });
+
+        // ── Filter ──
+        function applyFilter() {
+          const q = (search.value || '').trim().toLowerCase();
+          let n = 0;
+          for (const r of allRows) {
+            const hay = r.dataset.search || '';
+            let ok = !q || hay.includes(q);
+            if (ok && _filter !== 'all') {
+              const cls = r.className;
+              const hasX1 = hay.includes('x1 labs');
+              if (_filter === 'ok')   ok = !cls.includes('dlq') && !cls.includes('ina');
+              if (_filter === 'dlq')  ok = cls.includes('dlq');
+              if (_filter === 'x1')   ok = hasX1;
+              if (_filter === 'nox1') ok = !hasX1;
+            }
+            r.style.display = ok ? '' : 'none';
+            if (ok) n++;
+          }
+          counter.textContent = n.toLocaleString('en-US');
+        }
+        search.addEventListener('input', applyFilter);
+        search.addEventListener('keydown', e => {
+          if (e.key === 'Escape' && search.value) {
+            e.stopPropagation();
+            search.value = '';
+            applyFilter();
+          }
+        });
+        seg.addEventListener('click', e => {
+          const btn = e.target.closest('button[data-f]');
+          if (!btn) return;
+          seg.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+          btn.classList.add('on');
+          _filter = btn.dataset.f;
+          applyFilter();
+        });
+        resetBtn.addEventListener('click', () => {
+          search.value = '';
+          _filter = 'all';
+          _sortCol = null;
+          _sortDir = 0;
+          seg.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+          const allBtn = seg.querySelector('button[data-f="all"]');
+          if (allBtn) allBtn.classList.add('on');
+          applySort();
+          updateSortHeaders();
+          applyFilter();
+        });
+        refreshBtn.addEventListener('click', refresh);
+
+        // ── Hover tooltip (per-validator stake breakdown) ──
+        function fmtXNT(s, d) { return (Number(s) / 1e9).toLocaleString('en-US', { maximumFractionDigits: d ?? 2 }); }
+        function renderTip(vote) {
+          const stakes = _computed.stakeIndex.get(vote) || [];
+          const validator = (_computed.rows.find(r => r.v.votePubkey === vote) || {}).v || {};
+          const sorted = stakes.slice().sort((a, b) => {
+            const dd = Number(b.d) - Number(a.d);
+            return dd || (Number(b.a) - Number(a.a));
+          });
+          let totalActive = 0n, totalDelegated = 0n;
+          const counts = { active:0, activating:0, deactivating:0, inactive:0 };
+          let foundationCnt = 0, directCnt = 0;
+          for (const s of stakes) {
+            try { totalActive += BigInt(s.a); totalDelegated += BigInt(s.d); } catch (e) {}
+            if (counts[s.s] != null) counts[s.s]++;
+            if (s.x) foundationCnt++; else directCnt++;
+          }
+          const tbodyRows = sorted.map(s => {
+            const cls = 'vt-stk-' + (s.s || 'inactive');
+            const src = s.x ? '<span class="vt-src-pool">FND</span>' : '<span class="vt-src-direct">SELF</span>';
+            return '<tr>' +
+              '<td class="pk">' + esc(shortPk(s.p)) + '</td>' +
+              '<td class="n">' + esc(fmtXNT(s.a)) + '</td>' +
+              '<td class="n">' + esc(fmtXNT(s.d)) + '</td>' +
+              '<td class="' + cls + '">' + esc(s.s || '') + '</td>' +
+              '<td>' + src + '</td>' +
+            '</tr>';
+          }).join('');
+          const statusBits = [
+            counts.active        ? '<span class="vt-stk-active">'        + counts.active        + ' active</span>'        : '',
+            counts.activating    ? '<span class="vt-stk-activating">'    + counts.activating    + ' activating</span>'    : '',
+            counts.deactivating  ? '<span class="vt-stk-deactivating">'  + counts.deactivating  + ' deactivating</span>'  : '',
+            counts.inactive      ? '<span class="vt-stk-inactive">'      + counts.inactive      + ' inactive</span>'      : '',
+          ].filter(Boolean).join(' &middot; ');
+          const x1Tag = validator.x1Labs ? ' <span class="vt-tag-x1" style="font-size:8.5px;">X1</span>' : '';
+          return '' +
+            '<div class="tip-h">' +
+              '<div class="vote">' + esc(vote) + '</div>' +
+              '<div class="name">' + esc(validator.name || '(unnamed)') + x1Tag + '</div>' +
+              '<div class="totals">' +
+                '<span><b>' + stakes.length + '</b> stake accts</span>' +
+              '</div>' +
+              '<div class="totals">' +
+                '<span>active <b class="amber">' + esc(fmtXNT(totalActive)) + '</b> XNT</span>' +
+                '<span>delegated <b>' + esc(fmtXNT(totalDelegated)) + '</b> XNT</span>' +
+                '<span>foundation <span class="cyan">' + foundationCnt + '</span></span>' +
+                '<span>direct <span class="amber">' + directCnt + '</span></span>' +
+              '</div>' +
+              (statusBits ? '<div class="totals">' + statusBits + '</div>' : '') +
+            '</div>' +
+            '<table class="tip-tbl">' +
+              '<thead><tr><th>STAKE ACCT</th><th class="r">ACTIVE</th><th class="r">DELEGATED</th><th>STATUS</th><th>SRC</th></tr></thead>' +
+              '<tbody>' + (tbodyRows || '<tr><td colspan="5" style="text-align:center;color:var(--vt-dim);padding:14px;">no stake accounts</td></tr>') + '</tbody>' +
+            '</table>';
+        }
+        function positionTip(target) {
+          const r = target.getBoundingClientRect();
+          const tw = tip.offsetWidth, th = tip.offsetHeight;
+          const margin = 8;
+          // .vt-tip is position:absolute inside .vt-overlay (offset parent).
+          // r.top/left are viewport coords; overlay covers viewport (inset:0)
+          // and scrolls internally, so add overlay.scrollTop to map into overlay content space.
+          const sT = overlay.scrollTop, sL = overlay.scrollLeft;
+          let left = r.right + sL + 6;
+          let top  = r.top   + sT;
+          if (r.right + 6 + tw > window.innerWidth - margin) {
+            left = r.left + sL - tw - 6;
+            if (r.left - 6 - tw < margin) {
+              left = Math.max(sL + margin, Math.min(sL + window.innerWidth - tw - margin, r.left + sL));
+              top  = r.bottom + sT + 4;
+            }
+          }
+          if (r.top + th > window.innerHeight - margin) {
+            top = sT + window.innerHeight - th - margin;
+          }
+          if (r.top < margin) top = sT + margin;
+          tip.style.left = left + 'px';
+          tip.style.top  = top + 'px';
+        }
+        let hideT = null, currentVote = null;
+        function show(target) {
+          clearTimeout(hideT);
+          const vote = target && target.dataset.v;
+          if (!vote) return;
+          if (vote !== currentVote) {
+            tip.innerHTML = renderTip(vote);
+            currentVote = vote;
+          }
+          tip.style.display = 'block';
+          tip.setAttribute('aria-hidden', 'false');
+          positionTip(target);
+        }
+        function hide() {
+          hideT = setTimeout(() => {
+            tip.style.display = 'none';
+            tip.setAttribute('aria-hidden', 'true');
+            currentVote = null;
+          }, 120);
+        }
+        tbody.addEventListener('mouseover', e => {
+          const cell = e.target.closest && e.target.closest('td.m:not(.id)');
+          if (cell) show(cell);
+        });
+        tbody.addEventListener('mouseout', e => {
+          const cell = e.target.closest && e.target.closest('td.m:not(.id)');
+          if (!cell) return;
+          const to = e.relatedTarget;
+          if (to && (to === tip || tip.contains(to))) return;
+          hide();
+        });
+        tip.addEventListener('mouseenter', () => clearTimeout(hideT));
+        tip.addEventListener('mouseleave', hide);
+        overlay.addEventListener('scroll', () => {
+          if (tip.style.display === 'block') hide();
+        });
+
+        // Auto-focus search shortly after render
+        setTimeout(() => { try { search.focus(); } catch (e) {} }, 50);
+      }
+
+      // ── Refresh (re-fetch + re-render) ────────────────
+      async function refresh() {
+        const btn = document.getElementById('vtRefreshBtn');
+        if (btn) btn.classList.add('spinning');
+        try {
+          _data = await fetchAll();
+          _computed = compute(_data);
+          _sortCol = null;
+          _sortDir = 0;
+          _filter = 'all';
+          render();
+        } catch (e) {
+          showError(e);
+        } finally {
+          const btn2 = document.getElementById('vtRefreshBtn');
+          if (btn2) btn2.classList.remove('spinning');
+        }
+      }
+
+      function showError(err) {
+        document.getElementById('vtContent').innerHTML =
+          '<div class="vt-error">' +
+            '<div class="vt-error-title">Failed to load terminal data</div>' +
+            '<div class="vt-error-detail">' + esc((err && err.message) || String(err)) + '</div>' +
+            '<button onclick="vtRetry()">Retry</button>' +
+          '</div>';
+      }
+
+      // ── Open / close ──────────────────────────────────
+      async function open() {
+        const overlay = document.getElementById('vtOverlay');
+        overlay.classList.add('open');
+        overlay.scrollTop = 0;
+        document.body.style.overflow = 'hidden';
+        if (_computed) {
+          render();
+          return;
+        }
+        // Show loading state (already in DOM from initial render)
+        document.getElementById('vtContent').innerHTML =
+          '<div class="vt-loading">' +
+            '<div class="vt-loading-spinner"></div>' +
+            '<div class="vt-loading-text">Initializing Terminal</div>' +
+            '<div class="vt-loading-detail">Fetching validator and stake data from api.x1.xyz…</div>' +
+          '</div>';
+        try {
+          _data = await fetchAll();
+          _computed = compute(_data);
+          render();
+        } catch (e) {
+          showError(e);
+        }
+      }
+
+      function close() {
+        document.getElementById('vtOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      // Global Esc handler (bound once)
+      if (!_kbBound) {
+        document.addEventListener('keydown', e => {
+          if (e.key !== 'Escape') return;
+          const overlay = document.getElementById('vtOverlay');
+          if (!overlay || !overlay.classList.contains('open')) return;
+          const active = document.activeElement;
+          // If the search input has content, let its own handler clear it first.
+          if (active && active.id === 'vtSearch' && active.value) return;
+          close();
+        });
+        _kbBound = true;
+      }
+
+      // Expose globals for inline onclick attributes
+      window.vtOpen  = open;
+      window.vtClose = close;
+      window.vtRetry = refresh;
+    })();
+  </script>
+
 </body>
 </html>
