@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-14T17:04:15.417Z",
-  "totalNodes": 609,
-  "totalLocations": 584,
+  "lastUpdated": "2026-05-14T19:02:15.274Z",
+  "totalNodes": 611,
+  "totalLocations": 586,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1122,13 +1122,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "188.117.169.93": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Łaziska Górne",
-      "lat": 50.1441,
-      "lon": 18.8675
     },
     "69.164.248.198": {
       "country": "United States",
@@ -2348,13 +2341,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "188.117.169.94": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Łaziska Górne",
-      "lat": 50.1441,
-      "lon": 18.8675
-    },
     "64.20.54.154": {
       "country": "United States",
       "countryCode": "US",
@@ -2466,13 +2452,6 @@
       "city": "Wroclaw",
       "lat": 51.098,
       "lon": 17.0321
-    },
-    "188.117.169.92": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Łaziska Górne",
-      "lat": 50.1441,
-      "lon": 18.8675
     },
     "46.170.40.94": {
       "country": "Poland",
@@ -4090,21 +4069,44 @@
       "city": "Warsaw",
       "lat": 52.2065,
       "lon": 21.0249
+    },
+    "149.50.101.175": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "149.50.110.54": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "91.244.71.20": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Berlin",
+      "lat": 52.5196,
+      "lon": 13.4069
+    },
+    "149.50.110.19": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "149.50.101.176": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 57
-    },
-    "US": {
-      "name": "United States",
-      "count": 242
-    },
     "FI": {
       "name": "Finland",
       "count": 80
@@ -4113,25 +4115,37 @@
       "name": "The Netherlands",
       "count": 29
     },
-    "FR": {
-      "name": "France",
-      "count": 57
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 23
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 102
+    "DE": {
+      "name": "Germany",
+      "count": 58
     },
     "SE": {
       "name": "Sweden",
       "count": 7
     },
+    "FR": {
+      "name": "France",
+      "count": 57
+    },
+    "US": {
+      "name": "United States",
+      "count": 242
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 103
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 23
     },
     "SG": {
       "name": "Singapore",
