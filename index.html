@@ -32205,7 +32205,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
                 '<div class="lbl">Auto-refresh: every 1h</div>' +
                 '<div class="upd">Updated ' + isoTime + '</div>' +
               '</div>' +
-              '<button id="vtCornerRefresh" title="Refresh data now"><span class="vt-refresh-icon">↻</span> Refresh now</button>' +
             '</div>' +
           '</header>';
 
@@ -32269,7 +32268,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
               '<button data-f="x1">X1 LABS</button>' +
               '<button data-f="nox1">NON-X1</button>' +
             '</div>' +
-            '<button class="btn refresh" id="vtRefreshBtn"><span class="vt-refresh-icon">↻</span> Refresh</button>' +
             '<button class="btn" id="vtResetBtn">Reset</button>' +
             '<div class="right">' +
               '<span><b id="vtVisCount">' + rows.length + '</b> shown</span>' +
@@ -32329,7 +32327,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const counter   = document.getElementById('vtVisCount');
         const seg       = document.getElementById('vtStatusFilter');
         const resetBtn  = document.getElementById('vtResetBtn');
-        const refreshBtn= document.getElementById('vtRefreshBtn');
         const tools     = document.getElementById('vtTools');
         const tip       = document.getElementById('vtTip');
         const allRows   = Array.from(tbody.querySelectorAll('tr'));
@@ -32432,9 +32429,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
           updateSortHeaders();
           applyFilter();
         });
-        refreshBtn.addEventListener('click', refresh);
-        const cornerBtn = document.getElementById('vtCornerRefresh');
-        if (cornerBtn) cornerBtn.addEventListener('click', refresh);
 
         // Re-apply persisted view state (sort + filter) after a refresh re-render.
         // Search input value is restored by refresh() itself via input event.
