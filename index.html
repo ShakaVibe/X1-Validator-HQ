@@ -10434,6 +10434,19 @@
       .vt-refresh-corner { margin-top: 0.25rem; }
     }
 
+    /* Slot between the vt-head divider and the KPI grid where switchTab
+       relocates the page-level stats + epoch panel when the Validator
+       Terminal tab is active. Side padding matches the KPI grid / vt-head;
+       a small top pad gives the panel breathing room below the divider,
+       and the epoch bar's default 1.5rem bottom margin is squashed since
+       the vt-kpi-grid below already has padding-top: 1.25rem. */
+    #vtStatsSlot:not(:empty) {
+      padding: 1rem 1.25rem 0;
+    }
+    #vtStatsSlot .epoch-progress {
+      margin-bottom: 0;
+    }
+
     /* KPI grid — 6 cards laid out as 3 columns × 2 rows at desktop,
        collapsing to 2 then 1 column on narrower viewports. Always
        balanced regardless of width (no awkward leftover slots). */
@@ -11901,9 +11914,14 @@
 
     <!-- Validator Terminal Tab — sibling of the other .tab-content panels.
          switchTab('vtterminal') activates it; the bloomberg-style terminal
-         lives inside #vtOverlay (id preserved for the existing JS module). -->
+         lives inside #vtOverlay (id preserved for the existing JS module).
+         The terminal is split into three slots so the page-level stats /
+         epoch panel can be moved IN between #vtHeadSlot (title + meta) and
+         #vtContent (KPI grid + table). switchTab handles the DOM move. -->
     <div class="tab-content" id="vtterminalTab">
       <div class="vt-overlay" id="vtOverlay">
+        <div id="vtHeadSlot"></div>
+        <div id="vtStatsSlot"></div>
         <div id="vtContent">
           <div class="vt-loading">
             <div class="vt-loading-spinner"></div>
@@ -18352,6 +18370,31 @@
     const originalSelectValidatorForSearch = typeof selectValidatorForSearch === 'function' ? selectValidatorForSearch : null;
     
     function switchTab(tab) {
+      // Move the network stats + epoch panel into the Validator Terminal
+      // tab's slot (between vt-head and the KPI grid) when that tab is
+      // active, or back to its natural position above the tabs row for any
+      // other tab. The elements themselves keep their IDs, so all the live
+      // updaters (totalValidators, currentSlot, epochProgressFill, ...)
+      // keep working regardless of where the nodes currently live.
+      (function repositionStats() {
+        const main = document.querySelector('main');
+        const tabsRow = main && main.querySelector('.tabs');
+        const stats = document.getElementById('networkStats');
+        const epoch = document.getElementById('epochProgress');
+        const slot = document.getElementById('vtStatsSlot');
+        if (!main || !tabsRow || !stats || !epoch || !slot) return;
+        if (tab === 'vtterminal') {
+          // Move into the terminal's slot, in order (stats above epoch).
+          slot.appendChild(stats);
+          slot.appendChild(epoch);
+        } else {
+          // Restore to natural position above the tabs row, but only if
+          // they're not already there (avoid spurious DOM churn).
+          if (stats.parentElement !== main) main.insertBefore(stats, tabsRow);
+          if (epoch.parentElement !== main) main.insertBefore(epoch, tabsRow);
+        }
+      })();
+
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       // Tab button may not exist (e.g. skipmonitor has no visible button),
       // so guard against null.
@@ -18410,10 +18453,14 @@
       }
 
       // Validator Terminal: kick off fetch + auto-refresh on entry,
-      // stop the auto-refresh timer when the user navigates away.
+      // stop the auto-refresh timer when the user navigates away. The stats
+      // panel relocation is handled by the repositionStats IIFE at the top
+      // of switchTab; the body class is kept for any CSS hooks.
       if (tab === 'vtterminal') {
+        document.body.classList.add('active-vtterminal');
         if (typeof window.vtOpen === 'function') window.vtOpen();
       } else {
+        document.body.classList.remove('active-vtterminal');
         if (typeof window.vtClose === 'function') window.vtClose();
       }
     }
@@ -32284,8 +32331,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
           '</footer>' +
           '<div class="vt-tip" id="vtTip" role="tooltip" aria-hidden="true"></div>';
 
+        // Split the render: vt-head goes into its own slot so the stats /
+        // epoch panel (moved in by switchTab) can sit BETWEEN the head and
+        // the KPI/percentile/table/footer block that lives in vtContent.
+        document.getElementById('vtHeadSlot').innerHTML = headHtml;
         document.getElementById('vtContent').innerHTML =
-          headHtml + kpiHtml + pctHtml + toolsHtml + tableHtml + footerHtml;
+          kpiHtml + pctHtml + toolsHtml + tableHtml + footerHtml;
 
         wireUp();
       }
@@ -32581,6 +32632,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
 
       function showError(err) {
+        document.getElementById('vtHeadSlot').innerHTML = '';
         document.getElementById('vtContent').innerHTML =
           '<div class="vt-error">' +
             '<div class="vt-error-title">Failed to load terminal data</div>' +
@@ -32600,6 +32652,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           return;
         }
         // Show loading state (already in DOM from initial render)
+        document.getElementById('vtHeadSlot').innerHTML = '';
         document.getElementById('vtContent').innerHTML =
           '<div class="vt-loading">' +
             '<div class="vt-loading-spinner"></div>' +
