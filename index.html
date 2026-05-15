@@ -10322,35 +10322,6 @@
     .vt-error button:hover { background: rgba(0, 212, 255, 0.12); }
 
     /* Ticker */
-    .vt-ticker {
-      background: linear-gradient(180deg, rgba(13, 21, 40, 0.95) 0%, rgba(10, 16, 32, 0.95) 100%);
-      border-bottom: 1px solid var(--border);
-      font-size: 0.72rem;
-      padding: 0.6rem 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      letter-spacing: 0.02em;
-    }
-    .vt-ticker .tk { padding: 0 0.9rem; border-right: 1px solid var(--border); white-space: nowrap; }
-    .vt-ticker .tk:last-child { border-right: none; }
-    .vt-ticker .lab { color: var(--text-secondary); margin-right: 0.4rem; }
-    .vt-ticker .val { color: var(--text-primary); font-weight: 600; font-family: 'JetBrains Mono', monospace; }
-    .vt-ticker .val.amber { color: var(--accent-cyan); }
-    .vt-ticker .val.cyan { color: var(--accent-cyan); }
-    .vt-ticker .live {
-      display: inline-block;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--success);
-      margin-right: 6px;
-      box-shadow: 0 0 6px var(--success);
-      animation: vt-pulse 1.6s ease-in-out infinite;
-    }
-    @keyframes vt-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-
     /* Header */
     .vt-head {
       display: grid;
@@ -10364,7 +10335,7 @@
       background: transparent;
     }
     .vt-head h1 {
-      grid-column: 1 / -1;
+      grid-column: 2;
       grid-row: 1;
       justify-self: center;
       font-family: 'Space Grotesk', system-ui, sans-serif;
@@ -10390,7 +10361,7 @@
       background-clip: text;
     }
     .vt-head .meta {
-      grid-column: 2;
+      grid-column: 1 / -1;
       grid-row: 2;
       color: var(--text-secondary);
       font-size: 0.9rem;
@@ -10401,10 +10372,10 @@
     }
     .vt-head .meta b { color: var(--text-primary); font-weight: 600; }
 
-    /* Auto-refresh widget — top-right of header, aligned with subtitle row */
+    /* Auto-refresh widget — top-right of header, on the same row as the title */
     .vt-refresh-corner {
       grid-column: 3;
-      grid-row: 2;
+      grid-row: 1;
       justify-self: end;
       align-self: center;
       display: flex;
@@ -10463,14 +10434,22 @@
       .vt-refresh-corner { margin-top: 0.25rem; }
     }
 
-    /* KPI grid */
+    /* KPI grid — 6 cards laid out as 3 columns × 2 rows at desktop,
+       collapsing to 2 then 1 column on narrower viewports. Always
+       balanced regardless of width (no awkward leftover slots). */
     .vt-kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 1rem;
       padding: 1.25rem 1.25rem 0.5rem;
       background: transparent;
       border-top: 1px solid var(--border);
+    }
+    @media (max-width: 980px) {
+      .vt-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .vt-kpi-grid { grid-template-columns: 1fr; }
     }
     .vt-kpi {
       background: var(--bg-card);
@@ -10515,7 +10494,7 @@
     /* Percentile row */
     .vt-pctrow {
       display: grid;
-      grid-template-columns: 200px repeat(8, 1fr);
+      grid-template-columns: minmax(180px, 1.4fr) repeat(7, 1fr);
       gap: 0;
       background: var(--bg-card);
       border: 1px solid rgba(77, 166, 255, 0.35);
@@ -32184,13 +32163,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
           '</tr>';
         }).join('\n');
 
-        const tickerHtml =
-          '<div class="vt-ticker">' +
-            '<span class="tk"><span class="live"></span><span class="lab">LIVE</span><span class="val amber">X1 MAINNET</span></span>' +
-            '<span class="tk"><span class="lab">SELF (NON-X1)</span><span class="val amber">' + fmt0(agg.nonX1Self) + '</span><span class="lab">XNT</span></span>' +
-            '<span class="tk"><span class="lab">UPDATED</span><span class="val">' + isoTime + '</span></span>' +
-          '</div>';
-
         const headHtml =
           '<header class="vt-head">' +
             '<h1>' +
@@ -32255,7 +32227,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
             '<div><div class="lbl">P95</div><div class="v">' + num(pct.p95, 2) + '</div></div>' +
             '<div><div class="lbl">P99</div><div class="v">' + num(pct.p99, 2) + '</div></div>' +
             '<div><div class="lbl">Max</div><div class="v">' + num(agg.maxSelf, 2) + '</div></div>' +
-            '<div><div class="lbl">Mean</div><div class="v">' + num(agg.meanSelf, 2) + '</div></div>' +
           '</div>';
 
         const toolsHtml =
@@ -32314,7 +32285,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           '<div class="vt-tip" id="vtTip" role="tooltip" aria-hidden="true"></div>';
 
         document.getElementById('vtContent').innerHTML =
-          headHtml + tickerHtml + kpiHtml + pctHtml + toolsHtml + tableHtml + footerHtml;
+          headHtml + kpiHtml + pctHtml + toolsHtml + tableHtml + footerHtml;
 
         wireUp();
       }
