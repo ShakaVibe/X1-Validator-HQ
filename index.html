@@ -667,22 +667,37 @@
 
     /* Tighten the vertical rhythm on Network Live only — the default spacing
        suits the info-dense home page, but Network Live feels cramped below the
-       stats bar and breathy above the leader card. */
-    body.active-skipmonitor main > .epoch-progress  { margin-bottom: 0.75rem; }
-    body.active-skipmonitor main > .network-stats   { margin-bottom: 0.25rem; }
+       stats bar and breathy above the leader card. In this layout the epoch
+       bar sits ABOVE the stats bar, so flip the fused-panel border-radius so
+       they still read as one continuous card. */
+    body.active-skipmonitor main > .epoch-progress {
+      margin-bottom: 0;
+      border-radius: 12px 12px 0 0;
+      border-bottom: none;
+    }
+    body.active-skipmonitor main > .network-stats {
+      margin-bottom: 0.75rem;
+      border-radius: 0 0 12px 12px;
+      border-top: none;
+      border-bottom: 1px solid var(--border);
+    }
     body.active-skipmonitor #skipmonitorTab .skipmon-wrap { padding-top: 0.25rem; }
     body.active-skipmonitor .leader-schedule-section { margin-top: 0.5rem; }
 
-    /* Network Stats Bar */
+    /* Network Stats Bar — fused with the epoch progress bar below into a
+       single panel: stats sit on top with rounded top corners, epoch bar
+       sits flush below with rounded bottom corners and a 1px divider
+       between them. Looks like one continuous card. */
     .network-stats {
       display: flex;
       justify-content: center;
       gap: 0;
-      margin-bottom: 2rem;
+      margin-bottom: 0;
       padding: 1rem 1.25rem;
       background: var(--bg-secondary);
-      border-radius: 12px;
+      border-radius: 12px 12px 0 0;
       border: 1px solid var(--border);
+      border-bottom: none;
       flex-wrap: wrap;
     }
 
@@ -711,12 +726,13 @@
       margin-top: 0.25rem;
     }
 
-    /* Epoch Progress Bar - Compact */
+    /* Epoch Progress Bar — flush against the network stats box above. */
     .epoch-progress {
+      margin-top: 0;
       margin-bottom: 1.5rem;
       padding: 0.75rem 1.25rem;
       background: var(--bg-secondary);
-      border-radius: 10px;
+      border-radius: 0 0 12px 12px;
       border: 1px solid var(--border);
       display: flex;
       align-items: center;
@@ -774,25 +790,40 @@
     .tab {
       flex: 1 1 0;
       min-width: 0;
-      height: 50px;
-      padding: 0 0.6rem;
+      min-height: 72px;
+      padding: 0.55rem 0.4rem;
       background: rgba(77, 166, 255, 0.05);
       border: 1.5px solid rgba(77, 166, 255, 0.3);
       color: var(--text-secondary);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 500;
       cursor: pointer;
       transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
       font-family: 'Space Grotesk', sans-serif;
       border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      text-align: center;
+      line-height: 1.2;
+      overflow-wrap: break-word;
+    }
+
+    .tab .tab-icon {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.4rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 1.15rem;
       line-height: 1;
+      height: 24px;
+    }
+
+    .tab .tab-label {
+      display: block;
+      width: 100%;
+      line-height: 1.2;
     }
 
     .tab:hover {
@@ -827,9 +858,9 @@
       justify-content: center;
       background: #000000;
       border-radius: 50%;
-      width: 22px;
-      height: 22px;
-      font-size: 0.78rem;
+      width: 24px;
+      height: 24px;
+      font-size: 0.82rem;
       font-weight: 700;
       vertical-align: middle;
       letter-spacing: -0.5px;
@@ -840,10 +871,13 @@
       box-shadow: 0 0 8px rgba(77, 166, 255, 0.5);
     }
 
-    /* Narrower viewports — shrink the type a touch so 7 tabs still fit cleanly. */
+    /* Narrower viewports — shrink the type a touch so 7 tabs still fit cleanly.
+       Tabs use a column layout so labels wrap below the icon when needed; all
+       buttons match the tallest via flex stretch. */
     @media (max-width: 1180px) {
-      .tab { font-size: 0.78rem; padding: 0 0.4rem; gap: 0.3rem; }
-      .x1-logo-btn { width: 20px; height: 20px; font-size: 0.72rem; }
+      .tab { font-size: 0.75rem; padding: 0.5rem 0.3rem; gap: 0.3rem; }
+      .tab .tab-icon { font-size: 1.05rem; height: 22px; }
+      .x1-logo-btn { width: 22px; height: 22px; font-size: 0.75rem; }
     }
 
     /* Search section */
@@ -8334,10 +8368,17 @@
       }
 
       .tab {
-        padding: 0.6rem 1.25rem;
+        flex: 0 0 auto;
+        flex-direction: row;
+        min-height: 0;
+        padding: 0.6rem 1.1rem;
         font-size: 0.85rem;
         white-space: nowrap;
+        gap: 0.4rem;
       }
+
+      .tab .tab-icon { font-size: 1rem; height: auto; }
+      .tab .tab-label { display: inline; width: auto; }
 
       .search-section h1 {
         font-size: 1.5rem;
@@ -11013,10 +11054,6 @@
         <div class="network-stat-label">TPS</div>
       </div>
       <div class="network-stat">
-        <div class="network-stat-value" id="nakamotoCoef">--</div>
-        <div class="network-stat-label">Nakamoto</div>
-      </div>
-      <div class="network-stat">
         <div class="network-stat-value" id="activeValidators">--</div>
         <div class="network-stat-label">Active</div>
       </div>
@@ -11038,13 +11075,34 @@
 
     <!-- Tabs -->
     <div class="tabs">
-      <button class="tab" onclick="switchTab('skipmonitor')"><span class="x1-logo-btn"><span style="color: #ffffff;">X</span><span style="color: var(--accent-blue);">1</span></span> Network</button>
-      <button class="tab" onclick="switchTab('vtterminal')">📊 Validator Terminal</button>
-      <button class="tab" onclick="switchTab('lookup')">🔍 Validator Lookup</button>
-      <button class="tab" onclick="switchTab('portfolio')">🖥️ My Data Center <span id="portfolioCount"></span></button>
-      <button class="tab" onclick="switchTab('leaderboard')">🏆 Leaderboards</button>
-      <button class="tab" onclick="switchTab('compare')">⚖️ Compare <span id="compareCount"></span></button>
-      <button class="tab" onclick="switchTab('calculators')">🔢 Calculators</button>
+      <button class="tab" onclick="switchTab('skipmonitor')">
+        <span class="tab-icon"><span class="x1-logo-btn"><span style="color: #ffffff;">X</span><span style="color: var(--accent-blue);">1</span></span></span>
+        <span class="tab-label">Network</span>
+      </button>
+      <button class="tab" onclick="switchTab('vtterminal')">
+        <span class="tab-icon">📊</span>
+        <span class="tab-label">Validator Terminal</span>
+      </button>
+      <button class="tab" onclick="switchTab('lookup')">
+        <span class="tab-icon">🔍</span>
+        <span class="tab-label">Validator Lookup</span>
+      </button>
+      <button class="tab" onclick="switchTab('portfolio')">
+        <span class="tab-icon">🖥️</span>
+        <span class="tab-label">My Data Center <span id="portfolioCount"></span></span>
+      </button>
+      <button class="tab" onclick="switchTab('leaderboard')">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-label">Leaderboards</span>
+      </button>
+      <button class="tab" onclick="switchTab('compare')">
+        <span class="tab-icon">⚖️</span>
+        <span class="tab-label">Compare <span id="compareCount"></span></span>
+      </button>
+      <button class="tab" onclick="switchTab('calculators')">
+        <span class="tab-icon">🔢</span>
+        <span class="tab-label">Calculators</span>
+      </button>
     </div>
 
     <!-- X1 Network Tab -->
@@ -14558,28 +14616,12 @@
           totalStake += v.activatedStake;
         });
 
-        // Sort by stake for nakamoto calculation
-        const sortedByStake = [...allValidatorsList].sort((a, b) => b.activatedStake - a.activatedStake);
-        
-        // Calculate Nakamoto Coefficient (min validators to reach 33.33% of stake)
-        let cumulativeStake = 0;
-        let nakamotoCoef = 0;
-        const superminorityThreshold = totalStake * 0.3333;
-        for (const v of sortedByStake) {
-          cumulativeStake += v.activatedStake;
-          nakamotoCoef++;
-          if (cumulativeStake >= superminorityThreshold) {
-            break;
-          }
-        }
-
         document.getElementById('totalValidators').textContent = totalValidatorsCount;
         document.getElementById('totalStake').textContent = formatCompact(lamportsToXNT(totalStake));
         document.getElementById('currentEpoch').textContent = epochInfo.epoch;
         document.getElementById('currentSlot').textContent = formatCompact(slot);
         document.getElementById('activeValidators').textContent = currentValidators.length;
         document.getElementById('delinquentValidators').textContent = delinquentValidators.length;
-        document.getElementById('nakamotoCoef').textContent = nakamotoCoef;
         
         // Total supply
         if (supply && supply.value) {
