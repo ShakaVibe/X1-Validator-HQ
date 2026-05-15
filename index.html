@@ -31711,11 +31711,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // IMPORTANT: getLeaderSchedule returns slot indexes RELATIVE to the
       // start of the epoch (0..slotsPerEpoch-1). All UI logic (pip display,
       // slotIndex comparisons, nextSlot math) uses relative indexes.
-      // But getBlockProduction's `range` parameter expects ABSOLUTE slots.
-      // We translate relative→absolute when building the RPC batch, then
-      // store relative slots in producedSet so the renderer doesn't change.
-      // Fallback: if batching fails, producedSet stays null and the renderer
-      // reverts to all-green pips (never worse than legacy behavior).
+      // We translate relative→absolute when querying the RPC, then store
+      // relative slots in producedSet so the renderer doesn't change.
+      //
+      // We use getBlock(absSlot) per leader slot rather than
+      // getBlockProduction with a single-slot range — the latter has been
+      // observed to return [1, 1] for slots the validator actually skipped
+      // (some RPCs treat single-slot ranges as "did this validator ever
+      // produce a block in the surrounding context?"). getBlock is
+      // unambiguous: result → produced, error → skipped.
+      //
+      // Requests are chunked to keep batches under typical RPC batch-size
+      // limits (~100). Fallback: if every chunk fails, producedSet stays
+      // null and the renderer reverts to all-green pips (legacy behavior).
       let producedSet = null;
       const slotsToCheck = which === 'current'
         ? mySlots.filter(s => s <= si)   // only past slots for in-progress epoch
@@ -31723,38 +31731,47 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const epochFirstAbsoluteSlot = which === 'current'
         ? firstSlotOfCurrentEpoch
         : (firstSlotOfCurrentEpoch - slotsPerEpoch);
+      const CHUNK = 50;
       if (slotsToCheck.length > 0) {
-        const batchBody = slotsToCheck.map((relSlot, i) => {
-          const absSlot = relSlot + epochFirstAbsoluteSlot;
-          return {
+        producedSet = new Set();
+        let batchesAttempted = 0, batchesOk = 0;
+        for (let off = 0; off < slotsToCheck.length; off += CHUNK) {
+          const chunk = slotsToCheck.slice(off, off + CHUNK);
+          const batchBody = chunk.map((relSlot, i) => ({
             jsonrpc: '2.0', id: i,
-            method: 'getBlockProduction',
-            params: [{ identity: nodePubkey, range: { firstSlot: absSlot, lastSlot: absSlot } }]
-          };
-        });
-        try {
-          const batchResp = await fetch(RPC_URL, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(batchBody)
-          }).then(r => r.json());
-          if (Array.isArray(batchResp)) {
-            producedSet = new Set();
+            method: 'getBlock',
+            params: [
+              relSlot + epochFirstAbsoluteSlot,
+              { transactionDetails: 'none', rewards: false, maxSupportedTransactionVersion: 0 }
+            ]
+          }));
+          batchesAttempted++;
+          try {
+            const batchResp = await fetch(RPC_URL, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(batchBody)
+            }).then(r => r.json());
+            if (!Array.isArray(batchResp)) continue;
+            batchesOk++;
             for (const resp of batchResp) {
-              if (resp.error) continue;
-              const relSlot = slotsToCheck[resp.id];
-              const byId = resp?.result?.value?.byIdentity?.[nodePubkey];
-              // byId === [leaderSlots, blocksProduced]. 1 means produced.
-              if (byId && byId[1] === 1) {
-                producedSet.add(relSlot);   // store relative — renderer uses relative
-              }
+              if (typeof resp.id !== 'number') continue;
+              const relSlot = chunk[resp.id];
+              if (relSlot === undefined) continue;
+              // result present → block was produced; error (skipped/missing) → not produced
+              if (resp.result) producedSet.add(relSlot);
             }
-            // Sanity check: per-slot count should match aggregate (within 1 for race conditions)
-            if (Math.abs(producedSet.size - produced) > 1) {
-              console.warn(`[SlotExplorer:${which}] Reconciliation mismatch for ${nodePubkey}: aggregate says ${produced} produced, per-slot says ${producedSet.size}`);
-            }
+          } catch (e) {
+            console.warn('[SlotExplorer] getBlock chunk failed', { off, len: chunk.length, err: e });
           }
-        } catch(e) {
-          console.warn('[SlotExplorer] per-slot reconciliation failed, falling back to legacy pip coloring', e);
+        }
+        // If every chunk failed, drop back to the legacy all-green renderer
+        // rather than incorrectly showing every slot as skipped.
+        if (batchesAttempted > 0 && batchesOk === 0) {
+          console.warn('[SlotExplorer] all chunks failed — falling back to legacy pip coloring');
+          producedSet = null;
+        } else if (producedSet && Math.abs(producedSet.size - produced) > 1) {
+          // Sanity check vs the aggregate count — log only, still trust per-slot.
+          console.warn(`[SlotExplorer:${which}] Reconciliation mismatch for ${nodePubkey}: aggregate=${produced}, per-slot=${producedSet.size}`);
         }
       }
 
