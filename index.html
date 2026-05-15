@@ -29686,8 +29686,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // when rendering my-validators / lookup cards so the timeline pips
           // can be ordered chronologically with red dots at the exact slots
           // where skips happened (matching the Slot Explorer modal exactly).
-          // Shape: Map<nodePubkey, { producedSet: Set<absSlot>, fetchedAt, fetching }>
+          // Shape: Map<key, { producedSet: Set<absSlot>, fetchedAt, fetching, skippedAtFetch }>
+          // Keys: `${nodePubkey}` for current epoch, `prev:${nodePubkey}` for prev.
           perSlotCache: new Map(),
+          // Lazy-fetched leader schedule for the *previous* epoch — needed so
+          // the chronological pip rendering also works for the "Last Epoch"
+          // panel. Only loaded once per session (or once per rollover).
+          // Shape: { byIdentity: { nodePubkey: [relSlots…] }, firstAbsoluteSlot, epoch }
+          prevEpochLeaderSchedule: null,
+          _prevEpochLeaderFetching: false,
         };
       }
 
@@ -29706,7 +29713,48 @@ Please give me the diagnostic commands to run on my server so you can help me id
         state.epoch                  = epochInfo.epoch;
         state.epochStartAbsoluteSlot = epochStart;
         state.slotToLeader           = map;
+
+        // Epoch rollover wipes the prev-epoch leader schedule (whatever
+        // was cached pointed at what's now two-epochs-back). Cleared here
+        // so renderPortfolioCard lazy-fetches the new prev epoch's
+        // schedule for the chronological pip render.
+        if (state.prevEpochLeaderSchedule && state.prevEpochLeaderSchedule.epoch !== epochInfo.epoch - 1) {
+          state.prevEpochLeaderSchedule = null;
+        }
+
         return epochInfo;
+      }
+
+      // Lazy-fetch the previous epoch's leader schedule. Triggered from
+      // renderPortfolioCard the first time we render a "Last Epoch" panel
+      // for a portfolio/lookup validator. We don't keep this in the live
+      // skipmon state path (it's never needed for the network-scope grid),
+      // so loading it on demand saves an unconditional ~1-2MB RPC fetch
+      // every time the skipmon starts up.
+      async function loadPrevEpochLeaderSchedule() {
+        if (state._prevEpochLeaderFetching) return;
+        if (state.prevEpochLeaderSchedule
+            && state.prevEpochLeaderSchedule.epoch === state.epoch - 1) return;
+        state._prevEpochLeaderFetching = true;
+        try {
+          const epochInfo = await rpcCall('getEpochInfo');
+          const slotsPerEpoch = epochInfo.slotsInEpoch;
+          const firstSlotOfPrevEpoch = epochInfo.absoluteSlot - epochInfo.slotIndex - slotsPerEpoch;
+          const sched = await rpcCall('getLeaderSchedule', [firstSlotOfPrevEpoch]);
+          if (sched && typeof sched === 'object') {
+            state.prevEpochLeaderSchedule = {
+              byIdentity:        sched,
+              firstAbsoluteSlot: firstSlotOfPrevEpoch,
+              epoch:             epochInfo.epoch - 1,
+            };
+            // Re-render so the lastPanel can now use the chronological path.
+            if (state.scope === 'portfolio' || state.scope === 'lookup') renderAll();
+          }
+        } catch (e) {
+          console.warn('[SkipMonitor] prev epoch leader schedule fetch failed:', e && e.message || e);
+        } finally {
+          state._prevEpochLeaderFetching = false;
+        }
       }
 
       // Aggregate a getBlockProduction result into {assigned, produced, skipped, rate},
@@ -30742,12 +30790,60 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
         const producedSet = cacheEntry && cacheEntry.producedSet;
 
-        // ── Previous epoch (completed; aggregate only) ──
+        // ── Previous epoch (completed; aggregate + lazy per-slot) ──
         const prevPair     = (state.prevEpochProd && state.prevEpochProd.byIdentity && state.prevEpochProd.byIdentity[nodePubkey]) || null;
         const prevAssigned = prevPair ? (prevPair[0] || 0) : 0;
         const prevProduced = prevPair ? (prevPair[1] || 0) : 0;
         const prevSkipped  = prevAssigned - prevProduced;
         const prevRate     = prevAssigned > 0 ? (prevSkipped / prevAssigned) * 100 : null;
+
+        // Chronological pip data for the last-epoch panel. Needs the prev
+        // epoch's leader schedule (lazy-loaded once per epoch rollover) plus
+        // a per-slot getBlock pass cached under a `prev:` key. Prev epoch
+        // is completed so cache lifetime can be long (skipped count is
+        // stable; no confirmation lag to worry about).
+        let prevPastSlots  = null;
+        let prevProducedSet = null;
+        if (state.prevEpochLeaderSchedule
+            && typeof state.epoch === 'number'
+            && state.prevEpochLeaderSchedule.epoch === state.epoch - 1) {
+          const relSlots = state.prevEpochLeaderSchedule.byIdentity[nodePubkey] || [];
+          if (relSlots.length > 0) {
+            const firstAbs = state.prevEpochLeaderSchedule.firstAbsoluteSlot;
+            prevPastSlots = relSlots.map(rel => rel + firstAbs).sort((a, b) => a - b);
+
+            const prevKey = 'prev:' + nodePubkey;
+            const prevCache = state.perSlotCache.get(prevKey);
+            const prevStale = !prevCache
+              || (Date.now() - prevCache.fetchedAt > 300000); // 5min; prev epoch is frozen
+            if (prevStale && !(prevCache && prevCache.fetching)) {
+              const inFlight = {
+                producedSet: prevCache && prevCache.producedSet,
+                fetchedAt: prevCache ? prevCache.fetchedAt : 0,
+                fetching: true,
+              };
+              state.perSlotCache.set(prevKey, inFlight);
+              (async () => {
+                const result = await fetchProducedSlots(prevPastSlots);
+                if (result !== null) {
+                  state.perSlotCache.set(prevKey, {
+                    producedSet: result,
+                    fetchedAt: Date.now(),
+                    fetching: false,
+                  });
+                  if (state.scope === 'portfolio' || state.scope === 'lookup') renderAll();
+                } else {
+                  const cur = state.perSlotCache.get(prevKey);
+                  if (cur) cur.fetching = false;
+                }
+              })();
+            }
+            prevProducedSet = prevCache && prevCache.producedSet;
+          }
+        } else {
+          // Trigger the lazy load (only fires once per session/rollover).
+          if (typeof state.epoch === 'number') loadPrevEpochLeaderSchedule();
+        }
 
         const a = avatarFor(v);
         const delinquentBadge = v.delinquent
@@ -30764,6 +30860,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
           produced:  prevProduced,
           skipped:   prevSkipped,
           rate:      prevRate,
+          // Chronological pip data for the completed epoch. Renderer will
+          // fall back to the grouped layout until prevProducedSet lands.
+          pastSlots:  prevPastSlots,
+          producedSet: prevProducedSet,
         });
 
         const curPanel = renderEpochPanel({
@@ -30905,8 +31005,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (produced + skipped + upcoming > 0) {
           // Prefer chronological pip rendering when we have per-slot block
           // production data — same display the Slot Explorer modal uses, so
-          // red pips appear at the exact slots where skips happened. Fall
-          // back to grouped (produced→skipped→upcoming) when:
+          // red pips appear at the exact slots where skips happened. Works
+          // for both the current epoch (live data, with a confirmation-lag
+          // trust check) and the previous epoch (frozen data, lazy-loaded).
+          // Fall back to grouped (produced→skipped→upcoming) when:
           //   1. per-slot data hasn't loaded yet, or
           //   2. per-slot data shows significantly more skips than the
           //      aggregate getBlockProduction count claims exist.
@@ -30919,7 +31021,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // trust the aggregate and show grouped pips for this render.
           // Next cache refresh will retry and switch back to chronological
           // once finalization catches up.
-          const perSlotAvailable = d.isCurrent && d.producedSet && Array.isArray(d.pastSlots);
+          const perSlotAvailable = d.producedSet && Array.isArray(d.pastSlots);
           const perSlotSkipped   = perSlotAvailable ? (d.pastSlots.length - d.producedSet.size) : 0;
           const perSlotTrustworthy = perSlotAvailable && perSlotSkipped <= skipped + 1;
 
