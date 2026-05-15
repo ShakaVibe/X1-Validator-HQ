@@ -30906,10 +30906,25 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // Prefer chronological pip rendering when we have per-slot block
           // production data — same display the Slot Explorer modal uses, so
           // red pips appear at the exact slots where skips happened. Fall
-          // back to grouped (produced→skipped→upcoming) when per-slot data
-          // hasn't loaded yet.
+          // back to grouped (produced→skipped→upcoming) when:
+          //   1. per-slot data hasn't loaded yet, or
+          //   2. per-slot data shows significantly more skips than the
+          //      aggregate getBlockProduction count claims exist.
+          //
+          // (2) guards against confirmation lag: on a fresh epoch (or any
+          // time we query very recent slots) getBlock can throw for blocks
+          // that ARE produced but not yet finalized, which would otherwise
+          // paint genuinely-produced pips as red. The aggregate is ground
+          // truth for the count, so if per-slot disagrees by >1 slot we
+          // trust the aggregate and show grouped pips for this render.
+          // Next cache refresh will retry and switch back to chronological
+          // once finalization catches up.
+          const perSlotAvailable = d.isCurrent && d.producedSet && Array.isArray(d.pastSlots);
+          const perSlotSkipped   = perSlotAvailable ? (d.pastSlots.length - d.producedSet.size) : 0;
+          const perSlotTrustworthy = perSlotAvailable && perSlotSkipped <= skipped + 1;
+
           let pips;
-          if (d.isCurrent && d.producedSet && Array.isArray(d.pastSlots)) {
+          if (perSlotTrustworthy) {
             const pastPips = d.pastSlots.map(s => {
               const cls = d.producedSet.has(s) ? 'produced' : 'skipped';
               return `<div class="skipmon-pv-pip ${cls}"></div>`;
