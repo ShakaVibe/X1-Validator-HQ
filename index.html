@@ -4073,6 +4073,33 @@
       margin-bottom: 0.25rem;
     }
 
+    /* Source badges — surfaced when a stake's withdrawer matches a known
+       pool delegator (X1 Labs / Foundation or Ripper Pool). Helps users
+       quickly distinguish their own stakes from pool-delegated ones. */
+    .stake-source-badge {
+      display: inline-block;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+      line-height: 1.4;
+    }
+    .stake-source-badge.foundation {
+      background: rgba(0, 212, 255, 0.14);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 212, 255, 0.45);
+    }
+    .stake-source-badge.ripper {
+      background: rgba(240, 185, 11, 0.14);
+      color: var(--accent-gold);
+      border: 1px solid rgba(240, 185, 11, 0.45);
+    }
+
     .stake-selection-details {
       font-size: 0.75rem;
       color: var(--text-secondary);
@@ -13768,6 +13795,18 @@
     const RIPPER_POOL_DELEGATOR = 'AZhRy4DQJ9TsMiWA6NuZzFa1MWDmmgKQn6L5St7tPWBk';
     const STAKE_PROGRAM_ID      = 'Stake11111111111111111111111111111111111111';
 
+    // Classify a stake account's source by its withdrawer authority. The X1
+    // Labs / Foundation pool and the Ripper Pool each control their stakes
+    // through known authorities; everything else is a direct stake (the
+    // validator's own self-stake or a third-party stakers). Returns
+    // 'foundation' | 'ripper' | null.
+    function classifyStakeSource(withdrawer) {
+      if (!withdrawer) return null;
+      if (withdrawer === X1_LABS_DELEGATOR) return 'foundation';
+      if (withdrawer === RIPPER_POOL_DELEGATOR) return 'ripper';
+      return null;
+    }
+
     // ─────────────────────────────────────────────────────────────────────
     // Global RPC fetch throttle + retry layer
     //
@@ -20847,7 +20886,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
         </div>
         
         <div class="stake-selection-list">
-          ${stakeAccounts.map(acc => `
+          ${stakeAccounts.map(acc => {
+            const source = classifyStakeSource(acc.withdrawer);
+            const badge =
+              source === 'foundation' ? '<span class="stake-source-badge foundation" title="Stake routed via X1 Labs / Foundation pool">FOUNDATION</span>' :
+              source === 'ripper'     ? '<span class="stake-source-badge ripper" title="Stake routed via Ripper Pool">RIPPER POOL</span>' : '';
+            return `
             <div class="stake-selection-item ${selectedPubkeys.has(acc.pubkey) ? 'selected' : ''}" 
                  onclick="toggleStakeSelectionItem(this, '${acc.pubkey}')"
                  data-pubkey="${acc.pubkey}">
@@ -20857,12 +20901,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
                 </svg>
               </div>
               <div class="stake-selection-info">
-                <div class="stake-selection-address">${acc.pubkey.slice(0, 8)}...${acc.pubkey.slice(-8)}</div>
+                <div class="stake-selection-address">${acc.pubkey.slice(0, 8)}...${acc.pubkey.slice(-8)}${badge}</div>
                 <div class="stake-selection-details">Withdrawer: ${acc.withdrawer.slice(0, 8)}...${acc.withdrawer.slice(-4)}</div>
               </div>
               <div class="stake-selection-amount">${formatNumber(acc.stakeXNT, 2)} XNT</div>
             </div>
-          `).join('')}
+          `;
+          }).join('')}
         </div>
         
         <div class="stake-selection-actions">
