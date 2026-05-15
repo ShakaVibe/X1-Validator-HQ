@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-15T15:07:46.166Z",
-  "totalNodes": 589,
-  "totalLocations": 575,
+  "lastUpdated": "2026-05-15T16:59:17.962Z",
+  "totalNodes": 597,
+  "totalLocations": 583,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4027,48 +4027,104 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
+    },
+    "188.117.169.92": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
+    },
+    "146.19.24.248": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1957,
+      "lon": 20.9921
+    },
+    "188.117.169.93": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
+    },
+    "65.109.95.18": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "188.117.169.94": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
+    },
+    "216.158.229.206": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "95.216.75.138": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "146.19.24.241": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1957,
+      "lon": 20.9921
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 58
-    },
-    "US": {
-      "name": "United States",
-      "count": 240
-    },
     "FI": {
       "name": "Finland",
-      "count": 80
+      "count": 82
     },
     "NL": {
       "name": "The Netherlands",
       "count": 29
     },
-    "FR": {
-      "name": "France",
-      "count": 46
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 23
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 94
+    "DE": {
+      "name": "Germany",
+      "count": 58
     },
     "SE": {
       "name": "Sweden",
       "count": 7
     },
+    "PL": {
+      "name": "Poland",
+      "count": 99
+    },
+    "FR": {
+      "name": "France",
+      "count": 46
+    },
+    "US": {
+      "name": "United States",
+      "count": 241
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 23
     },
     "SG": {
       "name": "Singapore",
