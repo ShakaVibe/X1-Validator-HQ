@@ -10353,23 +10353,29 @@
 
     /* Header */
     .vt-head {
-      display: block;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      grid-template-rows: auto auto;
+      align-items: center;
+      column-gap: 1rem;
+      row-gap: 0.5rem;
       padding: 2rem 1.25rem 1.25rem;
       border-bottom: 1px solid var(--border);
       background: transparent;
-      text-align: center;
     }
     .vt-head h1 {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      justify-self: center;
       font-family: 'Space Grotesk', system-ui, sans-serif;
       font-size: 2rem;
       font-weight: 700;
-      margin: 0 0 0.5rem;
+      margin: 0;
       letter-spacing: -0.01em;
       color: var(--text-primary);
       display: inline-flex;
       align-items: center;
       gap: 14px;
-      justify-content: center;
     }
     .vt-head h1 .x1-logo-small {
       width: 44px;
@@ -10384,6 +10390,8 @@
       background-clip: text;
     }
     .vt-head .meta {
+      grid-column: 2;
+      grid-row: 2;
       color: var(--text-secondary);
       font-size: 0.9rem;
       display: flex;
@@ -10392,6 +10400,68 @@
       justify-content: center;
     }
     .vt-head .meta b { color: var(--text-primary); font-weight: 600; }
+
+    /* Auto-refresh widget — top-right of header, aligned with subtitle row */
+    .vt-refresh-corner {
+      grid-column: 3;
+      grid-row: 2;
+      justify-self: end;
+      align-self: center;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .vt-refresh-corner .info {
+      text-align: right;
+      line-height: 1.3;
+    }
+    .vt-refresh-corner .info .lbl {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      letter-spacing: 0.3px;
+    }
+    .vt-refresh-corner .info .upd {
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+    }
+    .vt-refresh-corner button {
+      background: rgba(0, 212, 255, 0.08);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 212, 255, 0.35);
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .vt-refresh-corner button:hover {
+      background: rgba(0, 212, 255, 0.18);
+      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.5) inset;
+    }
+    .vt-refresh-corner button.spinning {
+      pointer-events: none;
+      opacity: 0.65;
+    }
+    .vt-refresh-corner button.spinning .vt-refresh-icon {
+      animation: vt-spin 0.8s linear infinite;
+    }
+    @media (max-width: 980px) {
+      .vt-head { grid-template-columns: 1fr; }
+      .vt-head h1, .vt-head .meta, .vt-refresh-corner {
+        grid-column: 1;
+        justify-self: center;
+      }
+      .vt-refresh-corner { margin-top: 0.25rem; }
+    }
 
     /* KPI grid */
     .vt-kpi-grid {
@@ -31911,6 +31981,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       let _sortDir = 0;       // 1 = desc, -1 = asc, 0 = default
       let _filter = 'all';
       let _kbBound = false;
+      let _autoTimer = null;  // setInterval handle for 1h auto-refresh
+      const AUTO_REFRESH_MS = 60 * 60 * 1000;  // 1 hour
 
       // ── Format helpers ────────────────────────────────
       const fmt2 = lp => (Number(lp) / 1e9).toLocaleString('en-US', { maximumFractionDigits: 2 });
@@ -32127,6 +32199,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
               '<span>Real-time validator stake breakdown &middot; X1 mainnet</span>' +
               '<span><b>' + rows.length + '</b> validators</span>' +
               '<span><b>' + num(stakesCount, 0) + '</b> stake accounts</span>' +
+            '</div>' +
+            '<div class="vt-refresh-corner">' +
+              '<div class="info">' +
+                '<div class="lbl">Auto-refresh: every 1h</div>' +
+                '<div class="upd">Updated ' + isoTime + '</div>' +
+              '</div>' +
+              '<button id="vtCornerRefresh" title="Refresh data now"><span class="vt-refresh-icon">↻</span> Refresh now</button>' +
             '</div>' +
           '</header>';
 
@@ -32354,6 +32433,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
           applyFilter();
         });
         refreshBtn.addEventListener('click', refresh);
+        const cornerBtn = document.getElementById('vtCornerRefresh');
+        if (cornerBtn) cornerBtn.addEventListener('click', refresh);
+
+        // Re-apply persisted view state (sort + filter) after a refresh re-render.
+        // Search input value is restored by refresh() itself via input event.
+        if (_filter !== 'all') {
+          seg.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+          const segBtn = seg.querySelector('button[data-f="' + _filter + '"]');
+          if (segBtn) segBtn.classList.add('on');
+        }
+        if (_sortCol !== null) {
+          applySort();
+          updateSortHeaders();
+        }
 
         // ── Hover tooltip (per-validator stake breakdown) ──
         function fmtXNT(s, d) { return (Number(s) / 1e9).toLocaleString('en-US', { maximumFractionDigits: d ?? 2 }); }
@@ -32475,22 +32568,49 @@ Please give me the diagnostic commands to run on my server so you can help me id
         setTimeout(() => { try { search.focus(); } catch (e) {} }, 50);
       }
 
+      // ── Auto-refresh timer ────────────────────────────
+      function startAutoRefresh() {
+        stopAutoRefresh();
+        _autoTimer = setInterval(refresh, AUTO_REFRESH_MS);
+      }
+      function stopAutoRefresh() {
+        if (_autoTimer) { clearInterval(_autoTimer); _autoTimer = null; }
+      }
+
       // ── Refresh (re-fetch + re-render) ────────────────
+      // Preserves the user's current sort / filter / search across the refresh.
       async function refresh() {
-        const btn = document.getElementById('vtRefreshBtn');
-        if (btn) btn.classList.add('spinning');
+        startAutoRefresh();  // reset the 1h timer on every refresh (manual or auto)
+
+        // Capture search input value before render() wipes the DOM
+        const searchEl = document.getElementById('vtSearch');
+        const prevQuery = searchEl ? searchEl.value : '';
+
+        // Mark both refresh buttons (toolbar + corner) as spinning
+        ['vtRefreshBtn', 'vtCornerRefresh'].forEach(id => {
+          const b = document.getElementById(id);
+          if (b) b.classList.add('spinning');
+        });
+
         try {
           _data = await fetchAll();
           _computed = compute(_data);
-          _sortCol = null;
-          _sortDir = 0;
-          _filter = 'all';
           render();
+          // Restore search query (wireUp recreated the input)
+          if (prevQuery) {
+            const newSearch = document.getElementById('vtSearch');
+            if (newSearch) {
+              newSearch.value = prevQuery;
+              newSearch.dispatchEvent(new Event('input'));
+            }
+          }
         } catch (e) {
           showError(e);
         } finally {
-          const btn2 = document.getElementById('vtRefreshBtn');
-          if (btn2) btn2.classList.remove('spinning');
+          ['vtRefreshBtn', 'vtCornerRefresh'].forEach(id => {
+            const b = document.getElementById(id);
+            if (b) b.classList.remove('spinning');
+          });
         }
       }
 
@@ -32511,6 +32631,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         document.body.style.overflow = 'hidden';
         if (_computed) {
           render();
+          startAutoRefresh();
           return;
         }
         // Show loading state (already in DOM from initial render)
@@ -32524,6 +32645,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           _data = await fetchAll();
           _computed = compute(_data);
           render();
+          startAutoRefresh();
         } catch (e) {
           showError(e);
         }
@@ -32532,6 +32654,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       function close() {
         document.getElementById('vtOverlay').classList.remove('open');
         document.body.style.overflow = '';
+        stopAutoRefresh();
       }
 
       // Global Esc handler (bound once)
