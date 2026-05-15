@@ -14481,6 +14481,44 @@
       return data.result;
     }
 
+    // Fetch which of the given ABSOLUTE leader slots actually had blocks
+    // produced. Used by both the Slot Explorer modal and the Network Live
+    // "My Validators" timeline so they show identical chronological data.
+    // Returns a Promise<Set<absoluteSlot>> of slots where getBlock returned
+    // a result, or null if every chunk failed (caller should fall back to
+    // a non-chronological display).
+    async function fetchProducedSlots(absoluteLeaderSlots) {
+      if (!absoluteLeaderSlots || absoluteLeaderSlots.length === 0) return new Set();
+      const CHUNK = 50;
+      const producedSet = new Set();
+      let anyChunkOk = false;
+      for (let off = 0; off < absoluteLeaderSlots.length; off += CHUNK) {
+        const chunk = absoluteLeaderSlots.slice(off, off + CHUNK);
+        const batchBody = chunk.map((absSlot, i) => ({
+          jsonrpc: '2.0', id: i,
+          method: 'getBlock',
+          params: [absSlot, { transactionDetails: 'none', rewards: false, maxSupportedTransactionVersion: 0 }]
+        }));
+        try {
+          const batchResp = await fetch(RPC_URL, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(batchBody)
+          }).then(r => r.json());
+          if (!Array.isArray(batchResp)) continue;
+          anyChunkOk = true;
+          for (const resp of batchResp) {
+            if (typeof resp.id !== 'number') continue;
+            const absSlot = chunk[resp.id];
+            if (absSlot === undefined) continue;
+            if (resp.result) producedSet.add(absSlot);
+          }
+        } catch (e) {
+          console.warn('[fetchProducedSlots] chunk failed', { off, len: chunk.length, err: e });
+        }
+      }
+      return anyChunkOk ? producedSet : null;
+    }
+
     // Fetch rewards history from tracker API
     async function fetchRewardsHistory() {
       if (!REWARDS_API_URL) return null;
@@ -29644,6 +29682,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
           gridLastMaxSlot: null,     // highest slot # already rendered into the grid (for "new cell" animation)
           topExpanded: false,      // top-skippers panel collapsed by default
           lookupVotePubkey: null,  // Validator Lookup scope: vote address of the currently selected validator
+          // Per-validator per-slot block-production cache. Populated lazily
+          // when rendering my-validators / lookup cards so the timeline pips
+          // can be ordered chronologically with red dots at the exact slots
+          // where skips happened (matching the Slot Explorer modal exactly).
+          // Shape: Map<nodePubkey, { producedSet: Set<absSlot>, fetchedAt, fetching }>
+          perSlotCache: new Map(),
         };
       }
 
@@ -30649,18 +30693,54 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
         let curUpcoming = 0;
         const upcomingSlots = [];
+        const pastSlots     = [];
         for (const slotStr in state.slotToLeader) {
           if (state.slotToLeader[slotStr] === nodePubkey) {
             const slot = +slotStr;
             if (slot > head) { curUpcoming++; upcomingSlots.push(slot); }
+            else pastSlots.push(slot);
           }
         }
         upcomingSlots.sort((a, b) => a - b);
+        pastSlots.sort((a, b) => a - b);
         const curAssignedTotal = curElapsed + curUpcoming;
         const curRate          = curElapsed > 0 ? (curSkipped / curElapsed) * 100 : null;
         const nextSlot         = upcomingSlots[0];
         const nextSlotsAway    = nextSlot !== undefined ? nextSlot - head : null;
         const nextMs           = nextSlotsAway !== null ? nextSlotsAway * 420 : null;
+
+        // Kick off (or refresh) the per-slot block-production cache for this
+        // validator so the current-epoch timeline can render red dots at the
+        // exact slots where skips happened — same data the Slot Explorer
+        // modal shows. The fetch is async, debounced via the `fetching` flag,
+        // and re-runs every 60s OR whenever curSkipped changes since the
+        // last fetch. When it completes it triggers a re-render.
+        const cacheEntry = state.perSlotCache.get(nodePubkey);
+        const cacheStale = !cacheEntry
+          || (Date.now() - cacheEntry.fetchedAt > 60000)
+          || cacheEntry.skippedAtFetch !== curSkipped;
+        if (pastSlots.length > 0 && cacheStale && !(cacheEntry && cacheEntry.fetching)) {
+          const inFlight = { producedSet: cacheEntry && cacheEntry.producedSet, fetchedAt: cacheEntry ? cacheEntry.fetchedAt : 0, fetching: true, skippedAtFetch: cacheEntry ? cacheEntry.skippedAtFetch : null };
+          state.perSlotCache.set(nodePubkey, inFlight);
+          (async () => {
+            const result = await fetchProducedSlots(pastSlots);
+            if (result !== null) {
+              state.perSlotCache.set(nodePubkey, {
+                producedSet: result,
+                fetchedAt: Date.now(),
+                fetching: false,
+                skippedAtFetch: curSkipped,
+              });
+              // Only re-render if we're still on a scope that needs this data.
+              if (state.scope === 'portfolio' || state.scope === 'lookup') renderAll();
+            } else {
+              // Mark not-fetching so a later render can retry.
+              const cur = state.perSlotCache.get(nodePubkey);
+              if (cur) cur.fetching = false;
+            }
+          })();
+        }
+        const producedSet = cacheEntry && cacheEntry.producedSet;
 
         // ── Previous epoch (completed; aggregate only) ──
         const prevPair     = (state.prevEpochProd && state.prevEpochProd.byIdentity && state.prevEpochProd.byIdentity[nodePubkey]) || null;
@@ -30705,6 +30785,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
           rate:      curRate,
           nextMs,
           nextSlot,
+          // Chronological pip data — when producedSet is available, the
+          // renderer walks pastSlots in order and marks each as produced or
+          // skipped accordingly (matches the Slot Explorer's timeline).
+          pastSlots,
+          upcomingSlots,
+          producedSet,
         });
 
         return `<div class="${cardCls}">`
@@ -30817,10 +30903,27 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const skipped  = d.skipped || 0;
         const upcoming = d.isCurrent ? (d.upcoming || 0) : 0;
         if (produced + skipped + upcoming > 0) {
-          const pips =
-              '<div class="skipmon-pv-pip produced"></div>'.repeat(produced)
-            + '<div class="skipmon-pv-pip skipped"></div>'.repeat(skipped)
-            + '<div class="skipmon-pv-pip upcoming"></div>'.repeat(upcoming);
+          // Prefer chronological pip rendering when we have per-slot block
+          // production data — same display the Slot Explorer modal uses, so
+          // red pips appear at the exact slots where skips happened. Fall
+          // back to grouped (produced→skipped→upcoming) when per-slot data
+          // hasn't loaded yet.
+          let pips;
+          if (d.isCurrent && d.producedSet && Array.isArray(d.pastSlots)) {
+            const pastPips = d.pastSlots.map(s => {
+              const cls = d.producedSet.has(s) ? 'produced' : 'skipped';
+              return `<div class="skipmon-pv-pip ${cls}"></div>`;
+            }).join('');
+            const upcomingPips = (d.upcomingSlots || []).map(() =>
+              '<div class="skipmon-pv-pip upcoming"></div>'
+            ).join('');
+            pips = pastPips + upcomingPips;
+          } else {
+            pips =
+                '<div class="skipmon-pv-pip produced"></div>'.repeat(produced)
+              + '<div class="skipmon-pv-pip skipped"></div>'.repeat(skipped)
+              + '<div class="skipmon-pv-pip upcoming"></div>'.repeat(upcoming);
+          }
           const legends = [
             produced > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip produced"></span> Produced</span>' : '',
             skipped  > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip skipped"></span> Skipped</span>' : '',
@@ -31719,15 +31822,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // We translate relative→absolute when querying the RPC, then store
       // relative slots in producedSet so the renderer doesn't change.
       //
-      // We use getBlock(absSlot) per leader slot rather than
-      // getBlockProduction with a single-slot range — the latter has been
-      // observed to return [1, 1] for slots the validator actually skipped
-      // (some RPCs treat single-slot ranges as "did this validator ever
-      // produce a block in the surrounding context?"). getBlock is
-      // unambiguous: result → produced, error → skipped.
-      //
-      // Requests are chunked to keep batches under typical RPC batch-size
-      // limits (~100). Fallback: if every chunk fails, producedSet stays
+      // Uses the shared fetchProducedSlots helper so this view and the
+      // Network Live "My Validators" timeline agree on which past slots
+      // were produced vs skipped. If every chunk fails, producedSet stays
       // null and the renderer reverts to all-green pips (legacy behavior).
       let producedSet = null;
       const slotsToCheck = which === 'current'
@@ -31736,47 +31833,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const epochFirstAbsoluteSlot = which === 'current'
         ? firstSlotOfCurrentEpoch
         : (firstSlotOfCurrentEpoch - slotsPerEpoch);
-      const CHUNK = 50;
       if (slotsToCheck.length > 0) {
-        producedSet = new Set();
-        let batchesAttempted = 0, batchesOk = 0;
-        for (let off = 0; off < slotsToCheck.length; off += CHUNK) {
-          const chunk = slotsToCheck.slice(off, off + CHUNK);
-          const batchBody = chunk.map((relSlot, i) => ({
-            jsonrpc: '2.0', id: i,
-            method: 'getBlock',
-            params: [
-              relSlot + epochFirstAbsoluteSlot,
-              { transactionDetails: 'none', rewards: false, maxSupportedTransactionVersion: 0 }
-            ]
-          }));
-          batchesAttempted++;
-          try {
-            const batchResp = await fetch(RPC_URL, {
-              method: 'POST', headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(batchBody)
-            }).then(r => r.json());
-            if (!Array.isArray(batchResp)) continue;
-            batchesOk++;
-            for (const resp of batchResp) {
-              if (typeof resp.id !== 'number') continue;
-              const relSlot = chunk[resp.id];
-              if (relSlot === undefined) continue;
-              // result present → block was produced; error (skipped/missing) → not produced
-              if (resp.result) producedSet.add(relSlot);
-            }
-          } catch (e) {
-            console.warn('[SlotExplorer] getBlock chunk failed', { off, len: chunk.length, err: e });
+        const absoluteLeaderSlots = slotsToCheck.map(rel => rel + epochFirstAbsoluteSlot);
+        const absProducedSet = await fetchProducedSlots(absoluteLeaderSlots);
+        if (absProducedSet !== null) {
+          // Convert absolute slots in the returned Set back to relative
+          // (renderer uses relative indexes).
+          producedSet = new Set();
+          for (const abs of absProducedSet) producedSet.add(abs - epochFirstAbsoluteSlot);
+          if (Math.abs(producedSet.size - produced) > 1) {
+            console.warn(`[SlotExplorer:${which}] Reconciliation mismatch for ${nodePubkey}: aggregate=${produced}, per-slot=${producedSet.size}`);
           }
-        }
-        // If every chunk failed, drop back to the legacy all-green renderer
-        // rather than incorrectly showing every slot as skipped.
-        if (batchesAttempted > 0 && batchesOk === 0) {
-          console.warn('[SlotExplorer] all chunks failed — falling back to legacy pip coloring');
-          producedSet = null;
-        } else if (producedSet && Math.abs(producedSet.size - produced) > 1) {
-          // Sanity check vs the aggregate count — log only, still trust per-slot.
-          console.warn(`[SlotExplorer:${which}] Reconciliation mismatch for ${nodePubkey}: aggregate=${produced}, per-slot=${producedSet.size}`);
         }
       }
 
