@@ -16364,11 +16364,11 @@
               <div class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}"></div>
             </div>
             
-            <div class="stat-item clickable-stat" onclick="openStakeSelection('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}')" title="Click to manage self-stake vs delegated classification">
+            <div class="stat-item clickable-stat" onclick="openStakeSelection('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}')" title="Click to manage your stake classification (self-stake vs delegated)">
               <div class="stat-label">Active<br>Stake</div>
               <div class="stat-value">${formatXntCompact(validator.activatedStake)}</div>
               <div class="stat-subtext">XNT</div>
-              <div class="stat-subtext" style="color: var(--accent-cyan); font-size: 0.65rem;">Click to manage</div>
+              <div class="stat-subtext" style="color: var(--accent-cyan); font-size: 0.65rem;">Stake Classification</div>
             </div>
             
             <div class="stat-item epoch-credits-card" style="position:relative;" title="Epoch credits represent the validator's voting activity. More credits generally means better uptime and participation in consensus.">
@@ -21561,6 +21561,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
             + `${pctCooled.toFixed(0)}% cooled</span>`;
         }
         
+        // Classify the stake by its withdrawer authority. If it matches a
+        // known pool delegator (X1 Labs / Foundation or Ripper Pool), surface
+        // it as a badge next to the Stake/Withdraw authority badges so the
+        // user can spot pool-delegated stakes at a glance.
+        const stakeSource = classifyStakeSource(stake.withdrawer);
+        const sourceBadgeHtml =
+          stakeSource === 'foundation' ? '<span class="stake-source-badge foundation" title="Stake routed via X1 Labs / Foundation pool">FOUNDATION</span>' :
+          stakeSource === 'ripper'     ? '<span class="stake-source-badge ripper" title="Stake routed via Ripper Pool">RIPPER POOL</span>' : '';
+
         return `
           <div class="account-row ${selectedAccountType === 'stake-${originalIndex}' ? 'selected' : ''}" onclick="selectAccount('stake-${originalIndex}')">
             <div class="account-row-left">
@@ -21573,6 +21582,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               ${cooldownHint}
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem;">
+              ${sourceBadgeHtml}
               <div class="authority-badges">
                 <span class="auth-badge ${hasStakeAuth ? 'has-auth' : 'no-auth'}">Stake</span>
                 <span class="auth-badge ${hasWithdrawAuth ? 'has-auth' : 'no-auth'}">Withdraw</span>
