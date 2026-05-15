@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-15T07:31:03.911Z",
-  "totalNodes": 608,
-  "totalLocations": 584,
+  "lastUpdated": "2026-05-15T09:25:01.512Z",
+  "totalNodes": 589,
+  "totalLocations": 575,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3125,13 +3125,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "162.19.72.10": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
     "23.175.144.149": {
       "country": "United States",
       "countryCode": "US",
@@ -3173,62 +3166,6 @@
       "city": "Amsterdam",
       "lat": 52.3759,
       "lon": 4.8975
-    },
-    "51.210.114.29": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "162.19.72.27": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "162.19.89.155": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "141.95.157.119": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "141.95.157.29": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "141.94.199.121": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "162.19.81.202": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
-    },
-    "37.59.22.59": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Gravelines",
-      "lat": 50.9871,
-      "lon": 2.12554
     },
     "104.250.159.138": {
       "country": "United States",
@@ -4093,37 +4030,33 @@
     }
   },
   "countries": {
+    "FI": {
+      "name": "Finland",
+      "count": 80
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 29
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 58
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
+    "FR": {
+      "name": "France",
+      "count": 46
+    },
     "US": {
       "name": "United States",
       "count": 240
     },
     "PL": {
       "name": "Poland",
-      "count": 102
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 23
-    },
-    "FR": {
-      "name": "France",
-      "count": 57
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 80
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 58
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 29
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
+      "count": 94
     },
     "KE": {
       "name": "Kenya",
@@ -4132,6 +4065,10 @@
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 23
     },
     "SG": {
       "name": "Singapore",
