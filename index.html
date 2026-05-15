@@ -765,36 +765,52 @@
     /* Tabs */
     .tabs {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.6rem;
       margin-bottom: 2rem;
       border-bottom: none;
       padding: 0;
-      gap: 0.75rem;
     }
 
     .tab {
-      padding: 0.75rem 1.75rem;
-      background: transparent;
-      border: 2px solid var(--accent-blue);
+      flex: 1 1 0;
+      min-width: 0;
+      height: 50px;
+      padding: 0 0.6rem;
+      background: rgba(77, 166, 255, 0.05);
+      border: 1.5px solid rgba(77, 166, 255, 0.3);
       color: var(--text-secondary);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
       font-family: 'Space Grotesk', sans-serif;
-      border-radius: 8px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1;
     }
 
     .tab:hover {
       color: var(--text-primary);
-      background: rgba(77, 166, 255, 0.1);
+      background: rgba(77, 166, 255, 0.12);
+      border-color: rgba(77, 166, 255, 0.6);
+    }
+
+    .tab:active {
+      transform: translateY(1px);
     }
 
     .tab.active {
       color: #000000;
       background: var(--accent-gradient);
-      border: 2px solid transparent;
+      border-color: transparent;
       box-shadow: 0 4px 15px rgba(77, 166, 255, 0.3);
+      font-weight: 600;
     }
 
     .tab-content {
@@ -811,17 +827,23 @@
       justify-content: center;
       background: #000000;
       border-radius: 50%;
-      width: 38px;
-      height: 38px;
-      font-size: 1.3rem;
+      width: 22px;
+      height: 22px;
+      font-size: 0.78rem;
       font-weight: 700;
-      margin-right: 6px;
       vertical-align: middle;
-      letter-spacing: -1px;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
     }
-    
+
     .tab.active .x1-logo-btn {
       box-shadow: 0 0 8px rgba(77, 166, 255, 0.5);
+    }
+
+    /* Narrower viewports — shrink the type a touch so 7 tabs still fit cleanly. */
+    @media (max-width: 1180px) {
+      .tab { font-size: 0.78rem; padding: 0 0.4rem; gap: 0.3rem; }
+      .x1-logo-btn { width: 20px; height: 20px; font-size: 0.72rem; }
     }
 
     /* Search section */
@@ -10172,49 +10194,12 @@
        All classes prefixed .vt- to avoid clobbering site CSS
        ═══════════════════════════════════════════════════════ */
 
-    /* Launch button — matches the .skipmon-scope-btn family below it */
-    .vt-launch-wrap {
-      display: flex;
-      justify-content: center;
-      margin: 1.5rem 0 0;
-    }
-    /* When launch button is immediately above the scope controls, override
-       the 2rem top margin meant for spacing from the leader-schedule card. */
-    .vt-launch-wrap + .skipmon-controls { margin-top: 0.5rem; }
-    .vt-launch-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.55rem 1.4rem;
-      background: rgba(0, 212, 255, 0.12);
-      color: var(--accent-cyan);
-      border: 1px solid rgba(0, 212, 255, 0.35);
-      border-radius: 10px;
-      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.15) inset,
-                  0 4px 18px rgba(0, 0, 0, 0.25);
-      font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 600;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: background 0.18s, box-shadow 0.18s, transform 0.1s;
-    }
-    .vt-launch-btn:hover {
-      background: rgba(0, 212, 255, 0.18);
-      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.5) inset,
-                  0 4px 18px rgba(0, 212, 255, 0.15);
-    }
-    .vt-launch-btn:active { transform: translateY(1px); }
-
-    /* Overlay container */
+    /* Validator Terminal panel — lives inside a .tab-content wrapper so it
+       flows with the page like every other tab. Kept as the offset parent
+       for legacy descendants, though the tooltip is now position:fixed and
+       doesn't depend on it. */
     .vt-overlay {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at center, #0d1a30 0%, #0a1020 50%, #060810 100%);
-      z-index: 10000;
-      display: none;
-      overflow-y: auto;
-      overflow-x: hidden;
+      position: relative;
       font-family: 'Space Grotesk', system-ui, sans-serif;
       font-size: 12px;
       line-height: 1.45;
@@ -10238,35 +10223,9 @@
       --vt-orange: var(--warning);
       --vt-purple: #c39bff;
     }
-    .vt-overlay.open { display: block; }
     .vt-overlay ::selection { background: var(--accent-cyan); color: #0a1020; }
     .vt-overlay a { color: var(--vt-cyan); text-decoration: none; }
     .vt-overlay a:hover { text-decoration: underline; }
-
-    .vt-close {
-      position: fixed;
-      top: 10px;
-      right: 14px;
-      background: rgba(13, 21, 40, 0.85);
-      color: var(--accent-cyan);
-      border: 1px solid var(--border);
-      width: 34px;
-      height: 34px;
-      font-size: 16px;
-      cursor: pointer;
-      z-index: 10003;
-      font-family: inherit;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 8px;
-      transition: all 0.15s;
-    }
-    .vt-close:hover {
-      color: #fff;
-      border-color: var(--accent-cyan);
-      background: rgba(0, 212, 255, 0.12);
-    }
 
     /* Loading + error states */
     .vt-loading {
@@ -10816,7 +10775,7 @@
 
     /* Hover tooltip — per-validator stake breakdown */
     .vt-tip {
-      position: absolute;
+      position: fixed;
       z-index: 10002;
       display: none;
       min-width: 460px;
@@ -11080,6 +11039,7 @@
     <!-- Tabs -->
     <div class="tabs">
       <button class="tab" onclick="switchTab('skipmonitor')"><span class="x1-logo-btn"><span style="color: #ffffff;">X</span><span style="color: var(--accent-blue);">1</span></span> Network</button>
+      <button class="tab" onclick="switchTab('vtterminal')">📊 Validator Terminal</button>
       <button class="tab" onclick="switchTab('lookup')">🔍 Validator Lookup</button>
       <button class="tab" onclick="switchTab('portfolio')">🖥️ My Data Center <span id="portfolioCount"></span></button>
       <button class="tab" onclick="switchTab('leaderboard')">🏆 Leaderboards</button>
@@ -11739,10 +11699,6 @@
           </div>
         </div>
 
-        <div class="vt-launch-wrap">
-          <button class="vt-launch-btn" onclick="vtOpen()">📊 Validator Terminal</button>
-        </div>
-
         <div class="skipmon-controls">
           <div class="skipmon-scope">
             <button class="skipmon-scope-btn active" id="skipmonScopeNetwork"
@@ -11901,6 +11857,21 @@
           </div>
           <div class="skipmon-portfolio-grid" id="skipmonLookupGrid">
             <div class="skipmon-lookup-hint">Type a validator name or vote address above to see their live skip stats.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Validator Terminal Tab — sibling of the other .tab-content panels.
+         switchTab('vtterminal') activates it; the bloomberg-style terminal
+         lives inside #vtOverlay (id preserved for the existing JS module). -->
+    <div class="tab-content" id="vtterminalTab">
+      <div class="vt-overlay" id="vtOverlay">
+        <div id="vtContent">
+          <div class="vt-loading">
+            <div class="vt-loading-spinner"></div>
+            <div class="vt-loading-text">Initializing Terminal</div>
+            <div class="vt-loading-detail">Fetching validator and stake data from api.x1.xyz…</div>
           </div>
         </div>
       </div>
@@ -18415,6 +18386,14 @@
       } else {
         document.body.classList.remove('active-skipmonitor');
         if (typeof SkipMonitor !== 'undefined') SkipMonitor.stop();
+      }
+
+      // Validator Terminal: kick off fetch + auto-refresh on entry,
+      // stop the auto-refresh timer when the user navigates away.
+      if (tab === 'vtterminal') {
+        if (typeof window.vtOpen === 'function') window.vtOpen();
+      } else {
+        if (typeof window.vtClose === 'function') window.vtClose();
       }
     }
 
@@ -31949,20 +31928,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
       <button class="solana-modal-close" onclick="closeSolanaModal()">Got It!</button>
     </div>
   </div>
-  <!-- ═══════════════════════════════════════════════════════
-       VALIDATOR TERMINAL — full-screen overlay
-       ═══════════════════════════════════════════════════════ -->
-  <div class="vt-overlay" id="vtOverlay">
-    <button class="vt-close" onclick="vtClose()" title="Close (Esc)" aria-label="Close terminal">✕</button>
-    <div id="vtContent">
-      <div class="vt-loading">
-        <div class="vt-loading-spinner"></div>
-        <div class="vt-loading-text">Initializing Terminal</div>
-        <div class="vt-loading-detail">Fetching validator and stake data from api.x1.xyz…</div>
-      </div>
-    </div>
-  </div>
-
   <script>
     // ═══════════════════════════════════════════════════════
     // VALIDATOR TERMINAL — client-side module
@@ -31980,7 +31945,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
       let _sortCol = null;
       let _sortDir = 0;       // 1 = desc, -1 = asc, 0 = default
       let _filter = 'all';
-      let _kbBound = false;
       let _autoTimer = null;  // setInterval handle for 1h auto-refresh
       const AUTO_REFRESH_MS = 60 * 60 * 1000;  // 1 hour
 
@@ -32501,23 +32465,21 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const r = target.getBoundingClientRect();
           const tw = tip.offsetWidth, th = tip.offsetHeight;
           const margin = 8;
-          // .vt-tip is position:absolute inside .vt-overlay (offset parent).
-          // r.top/left are viewport coords; overlay covers viewport (inset:0)
-          // and scrolls internally, so add overlay.scrollTop to map into overlay content space.
-          const sT = overlay.scrollTop, sL = overlay.scrollLeft;
-          let left = r.right + sL + 6;
-          let top  = r.top   + sT;
+          // .vt-tip is position:fixed, so it's anchored to the viewport.
+          // r.top/left are already viewport coords — no scroll offset needed.
+          let left = r.right + 6;
+          let top  = r.top;
           if (r.right + 6 + tw > window.innerWidth - margin) {
-            left = r.left + sL - tw - 6;
+            left = r.left - tw - 6;
             if (r.left - 6 - tw < margin) {
-              left = Math.max(sL + margin, Math.min(sL + window.innerWidth - tw - margin, r.left + sL));
-              top  = r.bottom + sT + 4;
+              left = Math.max(margin, Math.min(window.innerWidth - tw - margin, r.left));
+              top  = r.bottom + 4;
             }
           }
           if (r.top + th > window.innerHeight - margin) {
-            top = sT + window.innerHeight - th - margin;
+            top = window.innerHeight - th - margin;
           }
-          if (r.top < margin) top = sT + margin;
+          if (r.top < margin) top = margin;
           tip.style.left = left + 'px';
           tip.style.top  = top + 'px';
         }
@@ -32554,9 +32516,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
         });
         tip.addEventListener('mouseenter', () => clearTimeout(hideT));
         tip.addEventListener('mouseleave', hide);
-        overlay.addEventListener('scroll', () => {
+        // Hide the tooltip when the page scrolls (the page is the scroller now
+        // that the terminal is an in-flow tab panel rather than a fixed overlay).
+        window.addEventListener('scroll', () => {
           if (tip.style.display === 'block') hide();
-        });
+        }, { passive: true });
 
         // Auto-focus search shortly after render
         setTimeout(() => { try { search.focus(); } catch (e) {} }, 50);
@@ -32618,11 +32582,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
 
       // ── Open / close ──────────────────────────────────
+      // Visibility is now driven by .tab-content.active (set by switchTab),
+      // so open() just handles data loading + auto-refresh, and close()
+      // just halts the timer. No more body-overflow hijacking.
       async function open() {
-        const overlay = document.getElementById('vtOverlay');
-        overlay.classList.add('open');
-        overlay.scrollTop = 0;
-        document.body.style.overflow = 'hidden';
         if (_computed) {
           render();
           startAutoRefresh();
@@ -32646,26 +32609,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
 
       function close() {
-        document.getElementById('vtOverlay').classList.remove('open');
-        document.body.style.overflow = '';
         stopAutoRefresh();
       }
 
-      // Global Esc handler (bound once)
-      if (!_kbBound) {
-        document.addEventListener('keydown', e => {
-          if (e.key !== 'Escape') return;
-          const overlay = document.getElementById('vtOverlay');
-          if (!overlay || !overlay.classList.contains('open')) return;
-          const active = document.activeElement;
-          // If the search input has content, let its own handler clear it first.
-          if (active && active.id === 'vtSearch' && active.value) return;
-          close();
-        });
-        _kbBound = true;
-      }
-
-      // Expose globals for inline onclick attributes
+      // Expose globals for switchTab + inline onclick attributes
       window.vtOpen  = open;
       window.vtClose = close;
       window.vtRetry = refresh;
