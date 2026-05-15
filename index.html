@@ -31702,10 +31702,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const skipped = assigned - produced;
       const skipPct = assigned > 0 ? (skipped / assigned * 100) : 0;
 
-      // Next slot (only meaningful for current epoch)
-      const si       = which === 'current' ? epochInfo.slotIndex : slotsPerEpoch; // past end for last
-      const nextSlot = which === 'current' ? (mySlots.find(s => s > si) ?? null) : null;
-      const msUntil  = nextSlot !== null ? (nextSlot - si) * SM_SLOT_MS : null;
+      // Next slot (only meaningful for current epoch). Compute the
+      // RELATIVE next leader slot first so the countdown math stays in
+      // epoch-indexed units, then convert to ABSOLUTE before returning so
+      // the displayed "Slot #" matches the Network Live view (which uses
+      // absolute slot numbers throughout).
+      const si              = which === 'current' ? epochInfo.slotIndex : slotsPerEpoch;
+      const nextSlotRel     = which === 'current' ? (mySlots.find(s => s > si) ?? null) : null;
+      const msUntil         = nextSlotRel !== null ? (nextSlotRel - si) * SM_SLOT_MS : null;
+      const nextSlot        = nextSlotRel !== null ? nextSlotRel + firstSlotOfCurrentEpoch : null;
 
       // ── Per-slot produced/skipped reconciliation ──────────
       // IMPORTANT: getLeaderSchedule returns slot indexes RELATIVE to the
