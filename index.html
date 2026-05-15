@@ -32187,10 +32187,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const tickerHtml =
           '<div class="vt-ticker">' +
             '<span class="tk"><span class="live"></span><span class="lab">LIVE</span><span class="val amber">X1 MAINNET</span></span>' +
-            '<span class="tk"><span class="lab">EPOCH</span><span class="val">' + cluster.epoch + '</span></span>' +
-            '<span class="tk"><span class="lab">SLOT</span><span class="val">' + num(cluster.currentSlot, 0) + '</span></span>' +
-            '<span class="tk"><span class="lab">VALIDATORS</span><span class="val cyan">' + num(cluster.currentValidators, 0) + '</span><span class="lab" style="margin-left:6px;">+</span><span class="val">' + num(cluster.delinquentValidators, 0) + '</span><span class="lab"> dlq</span></span>' +
-            '<span class="tk"><span class="lab">ACTIVATED</span><span class="val">' + fmt0(agg.tAct) + '</span><span class="lab">XNT</span></span>' +
             '<span class="tk"><span class="lab">SELF (NON-X1)</span><span class="val amber">' + fmt0(agg.nonX1Self) + '</span><span class="lab">XNT</span></span>' +
             '<span class="tk"><span class="lab">UPDATED</span><span class="val">' + isoTime + '</span></span>' +
           '</div>';
@@ -32203,7 +32199,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
             '</h1>' +
             '<div class="meta">' +
               '<span>Real-time validator stake breakdown &middot; X1 mainnet</span>' +
-              '<span><b>' + rows.length + '</b> validators</span>' +
               '<span><b>' + num(stakesCount, 0) + '</b> stake accounts</span>' +
             '</div>' +
             '<div class="vt-refresh-corner">' +
