@@ -3306,7 +3306,9 @@
       border-radius: 16px;
       width: 100%;
       max-width: 500px;
-      overflow: hidden;
+      max-height: 90vh;
+      overflow-y: auto;
+      overflow-x: hidden;
       animation: slotModalIn 0.2s ease-out;
       transition: max-width 0.25s ease;
     }
@@ -3471,7 +3473,7 @@
     }
     .sm-pip:hover { transform: scale(1.5); }
     .sm-pip.produced { background: var(--success); }
-    .sm-pip.skipped  { background: var(--danger); }
+    .sm-pip.skipped  { background: var(--danger); box-shadow: 0 0 5px rgba(255, 82, 82, 0.7); }
     .sm-pip.upcoming { background: transparent; border: 1px solid var(--accent-blue); }
 
     .sm-body-inner { padding: 1.1rem 1.25rem; }
@@ -31772,14 +31774,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const pct        = d.assigned > 0 ? (d.produced / d.assigned * 100) : 0;
       const skippedPct = d.assigned > 0 ? (d.skipped  / d.assigned * 100) : 0;
 
-      // For current: show past 40 + upcoming 40
-      // For last: all slots are "past" — show all up to 80
+      // Show ALL past slots so any skipped ones are visible even when they
+      // happened earlier in the epoch. Upcoming is still capped at 40 to
+      // avoid a wall of empty pips at the start of a fresh epoch.
       let pastSlots, upcomingSlots;
       if (d.isCurrent) {
-        pastSlots     = d.mySlots.filter(s => s <= d.slotIndex).slice(-40);
+        pastSlots     = d.mySlots.filter(s => s <= d.slotIndex);
         upcomingSlots = d.mySlots.filter(s => s >  d.slotIndex).slice(0, 40);
       } else {
-        pastSlots     = d.mySlots.slice(0, 80);
+        pastSlots     = d.mySlots.slice();
         upcomingSlots = [];
       }
 
