@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-15T01:15:08.298Z",
-  "totalNodes": 610,
-  "totalLocations": 585,
+  "lastUpdated": "2026-05-15T03:35:00.433Z",
+  "totalNodes": 609,
+  "totalLocations": 584,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1990,13 +1990,6 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
-    },
-    "104.250.128.58": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Pleasant View",
-      "lat": 41.3072,
-      "lon": -111.992
     },
     "174.138.182.94": {
       "country": "United States",
@@ -4102,7 +4095,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 241
+      "count": 240
     },
     "PL": {
       "name": "Poland",
