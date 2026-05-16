@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-16T12:43:26.485Z",
-  "totalNodes": 598,
-  "totalLocations": 584,
+  "lastUpdated": "2026-05-16T14:42:34.667Z",
+  "totalNodes": 604,
+  "totalLocations": 590,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4090,16 +4090,58 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "45.90.151.3": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
+    },
+    "74.50.72.22": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "65.109.107.138": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "149.50.116.166": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "149.50.116.164": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "45.90.151.6": {
+      "country": "The Netherlands",
+      "countryCode": "NL",
+      "city": "Amsterdam",
+      "lat": 52.3676,
+      "lon": 4.90414
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 241
+      "count": 242
     },
     "PL": {
       "name": "Poland",
-      "count": 99
+      "count": 101
     },
     "CA": {
       "name": "Canada",
@@ -4111,7 +4153,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 82
+      "count": 83
     },
     "DE": {
       "name": "Germany",
@@ -4119,7 +4161,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 29
+      "count": 31
     },
     "SE": {
       "name": "Sweden",
