@@ -31003,39 +31003,51 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const skipped  = d.skipped || 0;
         const upcoming = d.isCurrent ? (d.upcoming || 0) : 0;
         if (produced + skipped + upcoming > 0) {
-          // Prefer chronological pip rendering when we have per-slot block
-          // production data — same display the Slot Explorer modal uses, so
-          // red pips appear at the exact slots where skips happened. Works
-          // for both the current epoch (live data, with a confirmation-lag
-          // trust check) and the previous epoch (frozen data, lazy-loaded).
-          // Fall back to grouped (produced→skipped→upcoming) when:
-          //   1. per-slot data hasn't loaded yet, or
-          //   2. per-slot data shows significantly more skips than the
-          //      aggregate getBlockProduction count claims exist.
+          // RENDERING STRATEGY:
+          // Aggregate getBlockProduction is the ONLY ground truth for how
+          // many slots were produced vs skipped. Per-slot getBlock data is
+          // used purely to position red pips at the right chronological
+          // location — it must NEVER override the aggregate count.
           //
-          // (2) guards against confirmation lag: on a fresh epoch (or any
-          // time we query very recent slots) getBlock can throw for blocks
-          // that ARE produced but not yet finalized, which would otherwise
-          // paint genuinely-produced pips as red. The aggregate is ground
-          // truth for the count, so if per-slot disagrees by >1 slot we
-          // trust the aggregate and show grouped pips for this render.
-          // Next cache refresh will retry and switch back to chronological
-          // once finalization catches up.
+          // Why: getBlock returns null/errors for two indistinguishable
+          // cases — (a) the block was genuinely skipped, and (b) the block
+          // was produced but isn't yet finalized (current epoch) or has
+          // been pruned from RPC history (previous epoch). A naïve "not
+          // in producedSet → skipped" rule paints lag/pruned slots red.
+          //
+          // Fix: walk pastSlots chronologically with a `redBudget` capped
+          // at the aggregate `skipped` count. Slots missing from
+          // producedSet consume budget; once exhausted, further missing
+          // slots are rendered green (treated as confirmation-lag false
+          // positives, not real skips). This guarantees the timeline can
+          // never show more red than the stats panel says exist.
+          //
+          // When aggregate skipped is 0, no per-slot data can produce red
+          // pips at all — equivalent to the grouped fallback, so we just
+          // take that path directly.
           const perSlotAvailable = d.producedSet && Array.isArray(d.pastSlots);
-          const perSlotSkipped   = perSlotAvailable ? (d.pastSlots.length - d.producedSet.size) : 0;
-          const perSlotTrustworthy = perSlotAvailable && perSlotSkipped <= skipped + 1;
 
           let pips;
-          if (perSlotTrustworthy) {
+          if (perSlotAvailable && skipped > 0) {
+            let redBudget = skipped;
             const pastPips = d.pastSlots.map(s => {
-              const cls = d.producedSet.has(s) ? 'produced' : 'skipped';
-              return `<div class="skipmon-pv-pip ${cls}"></div>`;
+              if (d.producedSet.has(s)) {
+                return '<div class="skipmon-pv-pip produced"></div>';
+              }
+              if (redBudget > 0) {
+                redBudget--;
+                return '<div class="skipmon-pv-pip skipped"></div>';
+              }
+              return '<div class="skipmon-pv-pip produced"></div>';
             }).join('');
             const upcomingPips = (d.upcomingSlots || []).map(() =>
               '<div class="skipmon-pv-pip upcoming"></div>'
             ).join('');
             pips = pastPips + upcomingPips;
           } else {
+            // No per-slot data yet, OR aggregate says zero skips (timeline
+            // is entirely green/upcoming — no chronological detail to
+            // preserve). Grouped fallback is guaranteed to match aggregate.
             pips =
                 '<div class="skipmon-pv-pip produced"></div>'.repeat(produced)
               + '<div class="skipmon-pv-pip skipped"></div>'.repeat(skipped)
@@ -31994,16 +32006,32 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       const hasProducedData = d.producedSet != null;
 
+      // Reconcile per-slot data with the aggregate `skipped` count from
+      // getBlockProduction (the ground truth). Confirmation lag and
+      // pruned-block history can both make getBlock return null/error
+      // for blocks that were actually produced, which would otherwise
+      // paint those slots red. We cap the number of red pips at exactly
+      // `d.skipped`, preferring earlier chronological positions for the
+      // red placement (later-missing slots are more likely lag artifacts).
+      const skippedBudget0 = d.skipped || 0;
+      let redBudget = skippedBudget0;
+
       const pips = [
         ...pastSlots.map(s => {
           if (!hasProducedData) {
             // Legacy fallback (getBlocks unavailable): keep old behavior
             return `<div class="sm-pip produced" title="Slot ${s.toLocaleString()}"></div>`;
           }
-          const wasProduced = d.producedSet.has(s);
-          const cls   = wasProduced ? 'produced' : 'skipped';
-          const label = wasProduced ? 'Produced' : 'Skipped';
-          return `<div class="sm-pip ${cls}" title="Slot ${s.toLocaleString()} — ${label}"></div>`;
+          if (d.producedSet.has(s)) {
+            return `<div class="sm-pip produced" title="Slot ${s.toLocaleString()} — Produced"></div>`;
+          }
+          if (redBudget > 0) {
+            redBudget--;
+            return `<div class="sm-pip skipped" title="Slot ${s.toLocaleString()} — Skipped"></div>`;
+          }
+          // Per-slot says missing, but the aggregate's skip budget is
+          // exhausted — this slot is a confirmation-lag false positive.
+          return `<div class="sm-pip produced" title="Slot ${s.toLocaleString()} — Produced (pending finalization)"></div>`;
         }),
         ...upcomingSlots.map((s, i) => {
           const ms = (s - d.slotIndex) * SM_SLOT_MS;
