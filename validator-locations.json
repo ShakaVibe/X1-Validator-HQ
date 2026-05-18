@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-18T09:37:00.305Z",
+  "lastUpdated": "2026-05-18T11:36:52.078Z",
   "totalNodes": 619,
   "totalLocations": 605,
   "locations": {
@@ -3391,13 +3391,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "146.59.68.196": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "51.210.3.234": {
       "country": "France",
       "countryCode": "FR",
@@ -4237,6 +4230,13 @@
       "city": "Pleasant View",
       "lat": 41.3072,
       "lon": -111.992
+    },
+    "51.38.156.141": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
     }
   },
   "countries": {
