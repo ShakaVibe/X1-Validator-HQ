@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-18T01:20:41.340Z",
-  "totalNodes": 617,
-  "totalLocations": 603,
+  "lastUpdated": "2026-05-18T03:35:18.086Z",
+  "totalNodes": 619,
+  "totalLocations": 605,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4223,9 +4223,35 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
+    },
+    "104.250.128.58": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Pleasant View",
+      "lat": 41.3072,
+      "lon": -111.992
+    },
+    "104.250.143.66": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Pleasant View",
+      "lat": 41.3072,
+      "lon": -111.992
     }
   },
   "countries": {
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 59
+    },
+    "US": {
+      "name": "United States",
+      "count": 249
+    },
     "FI": {
       "name": "Finland",
       "count": 84
@@ -4234,37 +4260,25 @@
       "name": "The Netherlands",
       "count": 31
     },
-    "DE": {
-      "name": "Germany",
-      "count": 59
+    "FR": {
+      "name": "France",
+      "count": 46
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
+    "CA": {
+      "name": "Canada",
+      "count": 23
     },
     "PL": {
       "name": "Poland",
       "count": 108
     },
-    "FR": {
-      "name": "France",
-      "count": 46
-    },
-    "US": {
-      "name": "United States",
-      "count": 247
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "SE": {
+      "name": "Sweden",
+      "count": 7
     },
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 23
     },
     "SG": {
       "name": "Singapore",
