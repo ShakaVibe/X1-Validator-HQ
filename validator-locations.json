@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-19T01:20:54.718Z",
-  "totalNodes": 618,
-  "totalLocations": 604,
+  "lastUpdated": "2026-05-19T03:35:03.536Z",
+  "totalNodes": 619,
+  "totalLocations": 605,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4230,12 +4230,19 @@
       "city": "Wroclaw",
       "lat": 51.098,
       "lon": 17.0321
+    },
+    "64.71.177.141": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Los Angeles",
+      "lat": 34.0479,
+      "lon": -118.256
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 248
+      "count": 249
     },
     "PL": {
       "name": "Poland",
