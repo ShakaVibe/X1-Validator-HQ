@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-19T15:34:59.556Z",
-  "totalNodes": 634,
-  "totalLocations": 620,
+  "lastUpdated": "2026-05-19T17:22:15.527Z",
+  "totalNodes": 635,
+  "totalLocations": 621,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4342,12 +4342,19 @@
       "city": "Philadelphia",
       "lat": 39.9598,
       "lon": -75.1607
+    },
+    "102.210.25.132": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
     }
   },
   "countries": {
     "KE": {
       "name": "Kenya",
-      "count": 6
+      "count": 7
     },
     "DE": {
       "name": "Germany",
