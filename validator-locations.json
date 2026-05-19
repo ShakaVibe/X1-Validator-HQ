@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-19T07:36:44.026Z",
-  "totalNodes": 619,
-  "totalLocations": 605,
+  "lastUpdated": "2026-05-19T09:35:55.516Z",
+  "totalNodes": 633,
+  "totalLocations": 619,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2530,13 +2530,6 @@
       "lat": 45.4995,
       "lon": -73.5848
     },
-    "103.167.235.160": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Hamburg",
-      "lat": 53.645,
-      "lon": 10.0782
-    },
     "205.209.113.190": {
       "country": "United States",
       "countryCode": "US",
@@ -4237,48 +4230,153 @@
       "city": "Los Angeles",
       "lat": 34.0479,
       "lon": -118.256
+    },
+    "38.147.106.143": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "38.147.106.161": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "193.34.212.22": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
+    },
+    "148.251.208.73": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4754,
+      "lon": 12.3683
+    },
+    "23.175.144.29": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9596,
+      "lon": -75.161
+    },
+    "38.147.106.142": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "81.169.159.224": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Berlin",
+      "lat": 52.5234,
+      "lon": 13.3224
+    },
+    "38.246.112.150": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "65.21.227.110": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.108.229.162": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "38.97.61.76": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "38.97.61.77": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "38.58.176.31": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "23.175.144.186": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9596,
+      "lon": -75.161
+    },
+    "23.175.144.166": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9596,
+      "lon": -75.161
     }
   },
   "countries": {
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 60
+    },
+    "US": {
+      "name": "United States",
+      "count": 259
+    },
     "FI": {
       "name": "Finland",
-      "count": 84
+      "count": 86
     },
     "NL": {
       "name": "The Netherlands",
       "count": 31
     },
-    "DE": {
-      "name": "Germany",
-      "count": 59
+    "FR": {
+      "name": "France",
+      "count": 46
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 23
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 109
     },
     "SE": {
       "name": "Sweden",
       "count": 7
     },
-    "PL": {
-      "name": "Poland",
-      "count": 108
-    },
-    "FR": {
-      "name": "France",
-      "count": 46
-    },
-    "US": {
-      "name": "United States",
-      "count": 249
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 23
     },
     "SG": {
       "name": "Singapore",
