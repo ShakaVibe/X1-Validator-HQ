@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-21T20:57:34.890Z",
+  "lastUpdated": "2026-05-21T22:49:23.626Z",
   "totalNodes": 637,
   "totalLocations": 632,
   "locations": {
@@ -3993,13 +3993,6 @@
       "lat": 52.2297,
       "lon": 21.0122
     },
-    "146.19.24.248": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1957,
-      "lon": 20.9921
-    },
     "188.117.169.93": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4034,13 +4027,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "146.19.24.241": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1957,
-      "lon": 20.9921
     },
     "74.50.72.22": {
       "country": "United States",
@@ -4426,6 +4412,20 @@
       "city": "Stockholm",
       "lat": 59.3287,
       "lon": 18.0717
+    },
+    "185.16.39.96": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
+    },
+    "185.16.39.50": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
     }
   },
   "countries": {
