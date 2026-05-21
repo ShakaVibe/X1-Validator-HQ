@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-21T11:33:19.981Z",
-  "totalNodes": 640,
-  "totalLocations": 635,
+  "lastUpdated": "2026-05-21T13:30:12.969Z",
+  "totalNodes": 638,
+  "totalLocations": 633,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4056,13 +4056,6 @@
       "lat": 52.1957,
       "lon": 20.9921
     },
-    "45.90.151.3": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
     "74.50.72.22": {
       "country": "United States",
       "countryCode": "US",
@@ -4090,13 +4083,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "45.90.151.6": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "38.97.62.18": {
       "country": "United States",
@@ -4450,45 +4436,45 @@
     }
   },
   "countries": {
-    "FI": {
-      "name": "Finland",
-      "count": 86
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 31
-    },
     "US": {
       "name": "United States",
       "count": 262
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 7
     },
     "PL": {
       "name": "Poland",
       "count": 113
     },
-    "FR": {
-      "name": "France",
-      "count": 46
+    "CA": {
+      "name": "Canada",
+      "count": 23
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
+    "FI": {
+      "name": "Finland",
+      "count": 86
     },
     "DE": {
       "name": "Germany",
       "count": 59
     },
+    "FR": {
+      "name": "France",
+      "count": 46
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 29
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 7
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 23
     },
     "SG": {
       "name": "Singapore",
