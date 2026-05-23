@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-22T22:42:01.667Z",
-  "totalNodes": 636,
-  "totalLocations": 631,
+  "lastUpdated": "2026-05-23T01:16:32.407Z",
+  "totalNodes": 639,
+  "totalLocations": 634,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3650,13 +3650,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "173.249.26.21": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "45.90.151.218": {
       "country": "The Netherlands",
       "countryCode": "NL",
@@ -3852,13 +3845,6 @@
       "city": "Atherton",
       "lat": 37.4595,
       "lon": -122.196
-    },
-    "65.21.225.247": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "185.16.39.101": {
       "country": "Poland",
@@ -4419,48 +4405,83 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "148.251.208.75": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4754,
+      "lon": 12.3683
+    },
+    "37.187.27.209": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "75.119.156.130": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
+    },
+    "148.251.208.74": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4754,
+      "lon": 12.3683
+    },
+    "65.19.133.254": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Atherton",
+      "lat": 37.4595,
+      "lon": -122.196
     }
   },
   "countries": {
+    "FI": {
+      "name": "Finland",
+      "count": 85
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 29
+    },
+    "US": {
+      "name": "United States",
+      "count": 261
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 8
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 112
+    },
+    "FR": {
+      "name": "France",
+      "count": 47
+    },
     "KE": {
       "name": "Kenya",
       "count": 6
     },
     "DE": {
       "name": "Germany",
-      "count": 59
-    },
-    "US": {
-      "name": "United States",
-      "count": 260
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 86
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 29
-    },
-    "FR": {
-      "name": "France",
-      "count": 46
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 23
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 112
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 8
+      "count": 61
     },
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 23
     },
     "SG": {
       "name": "Singapore",
