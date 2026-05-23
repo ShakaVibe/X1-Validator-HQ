@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-23T03:34:30.797Z",
-  "totalNodes": 639,
-  "totalLocations": 634,
+  "lastUpdated": "2026-05-23T05:35:56.158Z",
+  "totalNodes": 638,
+  "totalLocations": 633,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -93,13 +93,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "159.195.20.72": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
     },
     "38.58.178.93": {
       "country": "United States",
@@ -3335,13 +3328,6 @@
       "lat": 50.7012,
       "lon": 3.21501
     },
-    "57.128.117.196": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "146.59.82.106": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3362,13 +3348,6 @@
       "city": "Wattrelos",
       "lat": 50.7012,
       "lon": 3.21501
-    },
-    "146.59.54.26": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "141.95.172.91": {
       "country": "France",
@@ -3427,13 +3406,6 @@
       "lon": 21.0283
     },
     "146.59.71.33": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "146.59.71.15": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
@@ -4440,44 +4412,65 @@
       "city": "Atherton",
       "lat": 37.4595,
       "lon": -122.196
+    },
+    "5.39.57.87": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Paris",
+      "lat": 48.8575,
+      "lon": 2.35138
+    },
+    "51.68.131.42": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "5.135.83.195": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 61
-    },
     "US": {
       "name": "United States",
       "count": 261
     },
-    "FI": {
-      "name": "Finland",
-      "count": 85
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 29
-    },
-    "FR": {
-      "name": "France",
-      "count": 47
+    "PL": {
+      "name": "Poland",
+      "count": 111
     },
     "CA": {
       "name": "Canada",
       "count": 23
     },
-    "PL": {
-      "name": "Poland",
-      "count": 112
+    "FI": {
+      "name": "Finland",
+      "count": 85
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 60
+    },
+    "FR": {
+      "name": "France",
+      "count": 48
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 29
     },
     "SE": {
       "name": "Sweden",
       "count": 8
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "GB": {
       "name": "United Kingdom",
