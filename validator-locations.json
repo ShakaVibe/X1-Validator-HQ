@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-23T18:42:29.435Z",
-  "totalNodes": 637,
-  "totalLocations": 632,
+  "lastUpdated": "2026-05-23T20:37:10.623Z",
+  "totalNodes": 636,
+  "totalLocations": 631,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1808,13 +1808,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "173.214.163.242": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "69.10.34.34": {
       "country": "United States",
@@ -4429,41 +4422,41 @@
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 61
-    },
     "US": {
       "name": "United States",
-      "count": 261
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 84
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 29
-    },
-    "FR": {
-      "name": "France",
-      "count": 47
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 22
+      "count": 260
     },
     "PL": {
       "name": "Poland",
       "count": 113
     },
+    "CA": {
+      "name": "Canada",
+      "count": 22
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 84
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 61
+    },
+    "FR": {
+      "name": "France",
+      "count": 47
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 29
+    },
     "SE": {
       "name": "Sweden",
       "count": 8
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "GB": {
       "name": "United Kingdom",
