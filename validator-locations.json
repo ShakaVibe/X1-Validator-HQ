@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-24T18:44:44.080Z",
+  "lastUpdated": "2026-05-24T20:38:31.773Z",
   "totalNodes": 710,
   "totalLocations": 705,
   "locations": {
@@ -1053,13 +1053,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "167.235.3.81": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "178.63.170.31": {
       "country": "Germany",
       "countryCode": "DE",
@@ -1073,13 +1066,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "167.235.3.123": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "213.136.82.92": {
       "country": "France",
@@ -4937,6 +4923,20 @@
       "city": "Freeland Park",
       "lat": 40.6128,
       "lon": -87.4917
+    },
+    "146.19.24.241": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1957,
+      "lon": 20.9921
+    },
+    "146.19.24.248": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1957,
+      "lon": 20.9921
     }
   },
   "countries": {
@@ -4946,7 +4946,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 61
+      "count": 59
     },
     "US": {
       "name": "United States",
@@ -4970,7 +4970,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 114
+      "count": 116
     },
     "SE": {
       "name": "Sweden",
