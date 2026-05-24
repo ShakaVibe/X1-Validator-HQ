@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-24T03:35:16.260Z",
-  "totalNodes": 633,
-  "totalLocations": 628,
+  "lastUpdated": "2026-05-24T05:44:51.888Z",
+  "totalNodes": 631,
+  "totalLocations": 626,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -646,13 +646,6 @@
       "city": "Los Angeles",
       "lat": 34.0549,
       "lon": -118.243
-    },
-    "57.129.101.110": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
     },
     "66.23.227.246": {
       "country": "United States",
@@ -3195,13 +3188,6 @@
       "lat": 39.9598,
       "lon": -75.1607
     },
-    "205.209.115.118": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "146.59.84.129": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3677,13 +3663,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "209.159.149.50": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "193.34.212.140": {
       "country": "Poland",
@@ -4398,9 +4377,28 @@
       "city": "Freeland Park",
       "lat": 40.6128,
       "lon": -87.4917
+    },
+    "149.50.127.24": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 61
+    },
+    "US": {
+      "name": "United States",
+      "count": 258
+    },
     "FI": {
       "name": "Finland",
       "count": 82
@@ -4409,37 +4407,25 @@
       "name": "The Netherlands",
       "count": 29
     },
-    "US": {
-      "name": "United States",
-      "count": 260
+    "FR": {
+      "name": "France",
+      "count": 47
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 20
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 114
     },
     "SE": {
       "name": "Sweden",
       "count": 8
     },
-    "FR": {
-      "name": "France",
-      "count": 47
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 113
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 62
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 20
     },
     "SG": {
       "name": "Singapore",
