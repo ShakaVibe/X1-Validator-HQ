@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-24T05:44:51.888Z",
+  "lastUpdated": "2026-05-24T07:29:01.642Z",
   "totalNodes": 631,
   "totalLocations": 626,
   "locations": {
@@ -4371,19 +4371,19 @@
       "lat": 50.4754,
       "lon": 12.3683
     },
-    "216.23.80.81": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Freeland Park",
-      "lat": 40.6128,
-      "lon": -87.4917
-    },
     "149.50.127.24": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
+    },
+    "216.23.80.179": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Freeland Park",
+      "lat": 40.6128,
+      "lon": -87.4917
     }
   },
   "countries": {
