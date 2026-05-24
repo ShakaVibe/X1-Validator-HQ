@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-23T22:37:54.802Z",
-  "totalNodes": 634,
-  "totalLocations": 629,
+  "lastUpdated": "2026-05-24T01:22:12.134Z",
+  "totalNodes": 633,
+  "totalLocations": 628,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2859,13 +2859,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "144.217.73.226": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Beauharnois",
-      "lat": 45.3161,
-      "lon": -73.8736
-    },
     "144.217.73.231": {
       "country": "Canada",
       "countryCode": "CA",
@@ -2928,13 +2921,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "158.69.54.196": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.4995,
-      "lon": -73.5848
     },
     "102.210.25.131": {
       "country": "Kenya",
@@ -3860,13 +3846,6 @@
       "lat": 40.7128,
       "lon": -74.006
     },
-    "205.209.101.222": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "46.170.40.92": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4405,6 +4384,20 @@
       "city": "Nuremberg",
       "lat": 49.405,
       "lon": 11.1617
+    },
+    "148.251.208.76": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4754,
+      "lon": 12.3683
+    },
+    "216.23.80.81": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Freeland Park",
+      "lat": 40.6128,
+      "lon": -87.4917
     }
   },
   "countries": {
@@ -4414,7 +4407,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 61
+      "count": 62
     },
     "US": {
       "name": "United States",
@@ -4434,7 +4427,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 22
+      "count": 20
     },
     "PL": {
       "name": "Poland",
