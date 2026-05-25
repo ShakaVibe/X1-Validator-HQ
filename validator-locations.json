@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-25T07:57:05.782Z",
+  "lastUpdated": "2026-05-25T09:40:15.958Z",
   "totalNodes": 719,
   "totalLocations": 714,
   "locations": {
@@ -4987,19 +4987,19 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "146.19.24.248": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1957,
-      "lon": 20.9921
+    "65.108.71.178": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     },
-    "146.19.24.241": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1957,
-      "lon": 20.9921
+    "65.108.71.173": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -5009,7 +5009,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 116
+      "count": 114
     },
     "CA": {
       "name": "Canada",
@@ -5017,7 +5017,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 85
+      "count": 87
     },
     "DE": {
       "name": "Germany",
