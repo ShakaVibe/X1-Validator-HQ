@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-27T09:36:15.778Z",
+  "lastUpdated": "2026-05-27T11:35:45.510Z",
   "totalNodes": 725,
   "totalLocations": 720,
   "locations": {
@@ -3755,20 +3755,6 @@
       "lat": 50.7012,
       "lon": 3.21501
     },
-    "38.129.138.75": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
-    "216.219.91.54": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
     "46.170.40.92": {
       "country": "Poland",
       "countryCode": "PL",
@@ -5042,6 +5028,20 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "38.97.62.151": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "38.58.177.98": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
     }
   },
   "countries": {
