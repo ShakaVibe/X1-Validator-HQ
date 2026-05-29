@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-29T21:05:34.084Z",
+  "lastUpdated": "2026-05-29T22:50:12.563Z",
   "totalNodes": 736,
   "totalLocations": 730,
   "locations": {
@@ -1984,26 +1984,12 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "146.59.1.185": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "141.94.133.214": {
       "country": "France",
       "countryCode": "FR",
       "city": "Wattrelos",
       "lat": 50.7012,
       "lon": 3.21501
-    },
-    "146.59.1.186": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "152.53.246.12": {
       "country": "Germany",
@@ -5112,6 +5098,20 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "161.97.94.64": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
+    },
+    "161.97.176.165": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
     }
   },
   "countries": {
@@ -5137,7 +5137,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 49
+      "count": 51
     },
     "CA": {
       "name": "Canada",
@@ -5145,7 +5145,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 125
+      "count": 123
     },
     "SE": {
       "name": "Sweden",
