@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-05-30T10:54:22.257Z",
+  "lastUpdated": "2026-05-30T12:47:00.152Z",
   "totalNodes": 742,
   "totalLocations": 737,
   "locations": {
@@ -3538,27 +3538,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "51.83.238.112": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "135.125.6.89": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
-    "51.210.118.71": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "149.50.116.43": {
       "country": "Poland",
       "countryCode": "PL",
@@ -5161,44 +5140,65 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "185.209.228.42": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
+    },
+    "75.119.132.216": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
+    },
+    "156.67.31.218": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 346
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 123
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 21
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 89
+    "KE": {
+      "name": "Kenya",
+      "count": 6
     },
     "DE": {
       "name": "Germany",
       "count": 63
     },
-    "FR": {
-      "name": "France",
-      "count": 51
+    "US": {
+      "name": "United States",
+      "count": 346
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 89
     },
     "NL": {
       "name": "The Netherlands",
       "count": 29
     },
+    "FR": {
+      "name": "France",
+      "count": 52
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 21
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 122
+    },
     "SE": {
       "name": "Sweden",
       "count": 8
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 6
     },
     "GB": {
       "name": "United Kingdom",
