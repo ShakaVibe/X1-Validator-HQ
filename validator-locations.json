@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-30T07:23:23.765Z",
-  "totalNodes": 736,
-  "totalLocations": 730,
+  "lastUpdated": "2026-05-30T09:07:29.170Z",
+  "totalNodes": 742,
+  "totalLocations": 737,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -5112,48 +5112,97 @@
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
+    },
+    "23.239.108.30": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Ogden",
+      "lat": 41.2632,
+      "lon": -111.993
+    },
+    "38.97.61.214": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "144.217.73.230": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "64.20.34.78": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "38.46.220.85": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
+    },
+    "65.109.106.122": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "144.217.73.231": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 63
-    },
-    "US": {
-      "name": "United States",
-      "count": 342
-    },
     "FI": {
       "name": "Finland",
-      "count": 88
+      "count": 89
     },
     "NL": {
       "name": "The Netherlands",
       "count": 29
     },
-    "FR": {
-      "name": "France",
-      "count": 51
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 19
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 123
+    "US": {
+      "name": "United States",
+      "count": 346
     },
     "SE": {
       "name": "Sweden",
       "count": 8
     },
+    "FR": {
+      "name": "France",
+      "count": 51
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 123
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 63
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 21
     },
     "SG": {
       "name": "Singapore",
