@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-31T05:51:05.287Z",
-  "totalNodes": 743,
-  "totalLocations": 738,
+  "lastUpdated": "2026-05-31T07:36:56.715Z",
+  "totalNodes": 746,
+  "totalLocations": 741,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -5168,9 +5168,42 @@
       "city": "Bad Soden am Taunus",
       "lat": 50.1592,
       "lon": 8.48174
+    },
+    "37.187.29.209": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "37.187.157.218": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "89.144.55.13": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Bad Soden am Taunus",
+      "lat": 50.1592,
+      "lon": 8.48174
     }
   },
   "countries": {
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 143
+    },
+    "US": {
+      "name": "United States",
+      "count": 267
+    },
     "FI": {
       "name": "Finland",
       "count": 89
@@ -5179,37 +5212,25 @@
       "name": "The Netherlands",
       "count": 29
     },
-    "US": {
-      "name": "United States",
-      "count": 267
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 8
-    },
     "FR": {
       "name": "France",
-      "count": 54
+      "count": 56
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 21
     },
     "PL": {
       "name": "Poland",
       "count": 120
     },
-    "DE": {
-      "name": "Germany",
-      "count": 142
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "SE": {
+      "name": "Sweden",
+      "count": 8
     },
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 21
     },
     "SG": {
       "name": "Singapore",
