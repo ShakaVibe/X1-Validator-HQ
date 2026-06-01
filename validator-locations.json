@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-01T08:13:39.547Z",
-  "totalNodes": 755,
-  "totalLocations": 751,
+  "lastUpdated": "2026-06-01T10:08:17.053Z",
+  "totalNodes": 747,
+  "totalLocations": 743,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -611,13 +611,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "51.83.238.238": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "108.66.213.104": {
       "country": "United States",
@@ -1977,13 +1970,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "141.94.133.214": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "152.53.246.12": {
       "country": "Germany",
       "countryCode": "DE",
@@ -2012,40 +1998,12 @@
       "lat": 49.4423,
       "lon": 11.0191
     },
-    "141.94.74.3": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "147.135.130.108": {
       "country": "France",
       "countryCode": "FR",
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "51.83.239.133": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "51.83.239.80": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "51.83.239.84": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "23.239.109.22": {
       "country": "United States",
@@ -3664,13 +3622,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "141.94.101.10": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "46.170.40.92": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4454,13 +4405,6 @@
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
-    },
-    "146.59.0.181": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "195.3.223.238": {
       "country": "Poland",
@@ -5280,11 +5224,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 55
+      "count": 52
     },
     "PL": {
       "name": "Poland",
-      "count": 129
+      "count": 124
     },
     "DE": {
       "name": "Germany",
