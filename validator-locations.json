@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-01T21:34:48.871Z",
-  "totalNodes": 749,
-  "totalLocations": 745,
+  "lastUpdated": "2026-06-01T23:03:51.195Z",
+  "totalNodes": 750,
+  "totalLocations": 746,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -5217,6 +5217,13 @@
       "city": "Warsaw",
       "lat": 52.2297,
       "lon": 21.0122
+    },
+    "135.125.109.224": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Wattrelos",
+      "lat": 50.7012,
+      "lon": 3.21501
     }
   },
   "countries": {
@@ -5250,7 +5257,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 53
+      "count": 54
     },
     "SE": {
       "name": "Sweden",
