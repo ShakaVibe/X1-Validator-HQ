@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-01T03:35:59.036Z",
-  "totalNodes": 744,
-  "totalLocations": 740,
+  "lastUpdated": "2026-06-01T06:04:42.903Z",
+  "totalNodes": 755,
+  "totalLocations": 751,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -5182,36 +5182,117 @@
       "city": "Hamburg",
       "lat": 53.6498,
       "lon": 10.0844
+    },
+    "188.117.169.89": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
+    },
+    "51.38.150.225": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "149.86.227.144": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "95.217.114.31": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "51.38.150.243": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "51.38.144.158": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "51.38.158.10": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "51.38.147.170": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "51.38.159.47": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "51.68.131.132": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
+    },
+    "51.38.156.155": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wroclaw",
+      "lat": 51.098,
+      "lon": 17.0321
     }
   },
   "countries": {
-    "FI": {
-      "name": "Finland",
-      "count": 89
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 29
-    },
     "US": {
       "name": "United States",
       "count": 266
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 8
+    "PL": {
+      "name": "Poland",
+      "count": 129
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 21
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 90
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 144
     },
     "FR": {
       "name": "France",
       "count": 55
     },
-    "PL": {
-      "name": "Poland",
-      "count": 119
+    "NL": {
+      "name": "The Netherlands",
+      "count": 29
     },
-    "DE": {
-      "name": "Germany",
-      "count": 144
+    "SE": {
+      "name": "Sweden",
+      "count": 8
     },
     "KE": {
       "name": "Kenya",
@@ -5220,10 +5301,6 @@
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 21
     },
     "SG": {
       "name": "Singapore",
