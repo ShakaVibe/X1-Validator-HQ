@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-02T06:01:13.447Z",
-  "totalNodes": 750,
-  "totalLocations": 746,
+  "lastUpdated": "2026-06-02T08:02:28.253Z",
+  "totalNodes": 751,
+  "totalLocations": 747,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -5224,6 +5224,13 @@
       "city": "Wattrelos",
       "lat": 50.7012,
       "lon": 3.21501
+    },
+    "37.187.250.239": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -5257,7 +5264,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 54
+      "count": 55
     },
     "SE": {
       "name": "Sweden",
