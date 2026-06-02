@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-02T13:42:38.576Z",
-  "totalNodes": 750,
-  "totalLocations": 746,
+  "lastUpdated": "2026-06-02T15:44:52.893Z",
+  "totalNodes": 752,
+  "totalLocations": 748,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -5224,6 +5224,20 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "81.169.159.224": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Berlin",
+      "lat": 52.5234,
+      "lon": 13.3224
+    },
+    "95.156.230.93": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Hamburg",
+      "lat": 53.6498,
+      "lon": 10.0844
     }
   },
   "countries": {
@@ -5245,7 +5259,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 143
+      "count": 145
     },
     "FR": {
       "name": "France",
