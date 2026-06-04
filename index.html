@@ -31698,34 +31698,25 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const pctOf = (x) => data.earned > 0 ? (x / data.earned * 100) : 0;
       const acct = (n) => n + ' account' + (n === 1 ? '' : 's');
 
-      // Build the children that decompose the voting commission by the stake
-      // source it came from. Shown nested under the Commission · Voting bar so
-      // nothing is double-counted in the total.
-      function childRow(color, label, val) {
-        const share = data.voting > 0 ? (val / data.voting * 100) : 0;
-        return '<div class="rb-child">' +
-          '<span class="rb-child-label"><span class="rb-dot" style="background:' + color + '"></span>' + label + '</span>' +
-          '<span class="rb-child-amt">' + fmt(val) + ' XNT' +
-            '<span class="rb-child-pct">' + share.toFixed(1) + '%</span>' +
-          '</span>' +
-        '</div>';
-      }
-
-      const commChildren = data.attributed
-        ? '<div class="rb-children">' +
-            '<div class="rb-children-cap">commission by source</div>' +
-            childRow('var(--accent-cyan)', 'X1 Foundation · ' + acct(data.counts.foundation), data.commFoundation) +
-            childRow('#8b7cf6',            'Community / Pool · ' + acct(data.counts.community), data.commCommunity) +
-            childRow('#c9a227',            'Your self-stake', data.commSelf) +
-          '</div>'
-        : '';
-
-      // Two earning bars that sum to the card value: self-stake + voting commission.
-      const bars = [
+      // Four flat bars, identical styling, that sum to the card value.
+      //   Self-Stake Rewards        = net reward on the validator's own stake
+      //   Voting Rewards            = the commission earned on that own self-stake
+      //   Commission · X1 Foundation= commission earned from X1 Foundation delegators
+      //   Commission · Community    = commission earned from community / pool delegators
+      const bars = data.attributed ? [
+        { label: 'Self-Stake Rewards',         sub: 'net reward on your own stake · ' + acct(data.counts.self),
+          color: 'var(--success)',     val: data.self },
+        { label: 'Voting Rewards',             sub: 'commission on your own self-stake',
+          color: 'var(--accent-gold)', val: data.commSelf },
+        { label: 'Commission · X1 Foundation', sub: acct(data.counts.foundation),
+          color: 'var(--accent-cyan)', val: data.commFoundation },
+        { label: 'Commission · Community',     sub: acct(data.counts.community) + ' · incl. pools',
+          color: '#8b7cf6',            val: data.commCommunity },
+      ] : [
         { label: 'Self-Stake Rewards', sub: 'net reward on your own stake · ' + acct(data.counts.self),
-          color: 'var(--success)', val: data.self, children: '' },
-        { label: 'Commission · Voting', sub: 'validator fee across all delegated stake',
-          color: 'var(--accent-gold)', val: data.voting, children: commChildren },
+          color: 'var(--success)',     val: data.self },
+        { label: 'Voting Rewards',     sub: 'validator commission',
+          color: 'var(--accent-gold)', val: data.voting },
       ];
 
       const rowsHtml = bars.map(r => {
@@ -31737,7 +31728,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
           '</div>' +
           '<div class="rb-bar"><div class="rb-bar-fill" style="width:' + p.toFixed(2) + '%;background:' + r.color + '"></div></div>' +
           '<div class="rb-row-foot"><span class="rb-sub">' + r.sub + '</span><span class="rb-pct">' + p.toFixed(1) + '%</span></div>' +
-          r.children +
         '</div>';
       }).join('');
 
@@ -31749,7 +31739,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         '<div class="rb-rows">' + rowsHtml + '</div>' +
         '<div class="rb-divider"></div>' +
         '<div class="rb-line rb-total"><span>Total earned this epoch</span><span class="rb-amt">' + fmt(data.earned) + ' XNT</span></div>' +
-        '<div class="rb-note">' + scopeNote + 'This is what the validator <strong>earned</strong>: its voting commission plus the net reward on its own self-stake. The commission is broken out by the stake source it came from. Rewards paid to delegators are their own — not counted here — so the bars sum to the figure shown on the card.</div>';
+        '<div class="rb-note">' + scopeNote + 'This is what the validator <strong>earned</strong> — its self-stake reward, the voting commission on its own stake, and the commission from X1 Foundation and community delegators. Rewards paid to delegators are their own, so the bars sum to the figure shown on the card.</div>';
     }
 
     // Portfolio-wide breakdown: sums the per-validator earnings breakdown
