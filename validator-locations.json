@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-04T15:34:06.685Z",
-  "totalNodes": 756,
-  "totalLocations": 754,
+  "lastUpdated": "2026-06-04T17:24:34.147Z",
+  "totalNodes": 754,
+  "totalLocations": 752,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1935,13 +1935,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "74.50.65.194": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Teterboro",
-      "lat": 40.866,
-      "lon": -74.0544
-    },
     "45.94.81.250": {
       "country": "The Netherlands",
       "countryCode": "NL",
@@ -2291,13 +2284,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "216.158.235.162": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Paterson",
-      "lat": 40.9117,
-      "lon": -74.1786
     },
     "51.77.43.192": {
       "country": "Poland",
@@ -5293,7 +5279,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 269
+      "count": 267
     },
     "FI": {
       "name": "Finland",
