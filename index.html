@@ -3023,6 +3023,26 @@
       line-height: 1.45;
       color: var(--text-secondary);
     }
+    /* Nested "commission by source" detail under the Voting Commission bar */
+    .rb-children {
+      margin: 0.5rem 0 0 0.35rem;
+      padding-left: 0.8rem;
+      border-left: 2px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .rb-children-cap {
+      font-size: 0.6rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .rb-child { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+    .rb-child-label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.74rem; color: var(--text-secondary); }
+    .rb-child .rb-dot { width: 7px; height: 7px; }
+    .rb-child-amt { font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; color: var(--text-primary); white-space: nowrap; }
+    .rb-child-amt .rb-child-pct { color: var(--text-dim); font-size: 0.64rem; margin-left: 0.35rem; }
 
     /* Performance score bar */
     .perf-bar-container {
@@ -11333,6 +11353,7 @@
             <div class="portfolio-stat">
               <div class="portfolio-stat-value" id="portfolioLastEpochRewards" style="color: var(--success);">0.00</div>
               <div class="portfolio-stat-label">Rewards Last Epoch (XNT)</div>
+              <div class="rb-open-link" style="margin-top:0.3rem;" onclick="openPortfolioRewardBreakdown()">Breakdown</div>
             </div>
             <div class="portfolio-stat">
               <div class="portfolio-stat-value" id="avgPortfolioPerf">0.0</div>
@@ -16513,7 +16534,7 @@
             <div class="stat-item" title="What the validator earned in the last completed epoch — its voting commission plus the rewards on its own self-stake. Click Breakdown to see this split by source." id="lastEpoch-${validator.voteAccount.slice(0,8)}">
               <div class="stat-label">Last Epoch<br>Earned</div>
               <div class="last-epoch-value-row">
-                <span class="stat-value" style="color: var(--success);">--</span>
+                <span class="stat-value" style="color: var(--success);">Loading...</span>
                 <span class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}"></span>
               </div>
               <div class="stat-subtext">XNT</div>
@@ -17052,10 +17073,20 @@
                   changeEl.innerHTML = `<span style="color: var(--text-dim);">→ 0%</span>`;
                 }
               }
+            } else {
+              // RPC hasn't indexed any recent epoch yet — clear the loading text.
+              const sv = cardEl.querySelector('.stat-value');
+              if (sv) sv.textContent = '—';
             }
+          } else if (cardEl) {
+            const sv = cardEl.querySelector('.stat-value');
+            if (sv) sv.textContent = '—';
           }
         } catch (e) {
           console.error(`Error fetching last epoch for ${v.voteAccount}:`, e);
+          const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
+          const sv = cardEl && cardEl.querySelector('.stat-value');
+          if (sv && sv.textContent === 'Loading...') sv.textContent = '—';
         }
       }
     }
@@ -31661,38 +31692,43 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
 
     function renderRewardBreakdown(body, sub, data, name) {
-      if (sub) sub.textContent = (name ? name + ' · ' : '') + 'Epoch #' + data.epoch;
+      const epochText = data.epochLabel || ('Epoch #' + data.epoch);
+      if (sub) sub.textContent = (name ? name + ' · ' : '') + epochText;
       const fmt = (x) => formatNumber(x, 4);
       const pctOf = (x) => data.earned > 0 ? (x / data.earned * 100) : 0;
       const acct = (n) => n + ' account' + (n === 1 ? '' : 's');
 
-      // Rows decompose what the validator EARNED (= card value). Self-stake is
-      // the net reward on the operator's own stake; the rest is the voting
-      // commission attributed to the stake source it came from.
-      let rows;
-      if (data.attributed) {
-        rows = [
-          { label: 'Self-Stake Rewards',          sub: 'net reward on your own stake · ' + acct(data.counts.self),
-            color: 'var(--success)',     val: data.self },
-          { label: 'Commission · X1 Foundation',  sub: 'your fee on ' + fmt(data.grossFoundation) + ' XNT · ' + acct(data.counts.foundation),
-            color: 'var(--accent-cyan)', val: data.commFoundation },
-          { label: 'Commission · Community',       sub: 'your fee on ' + fmt(data.grossCommunity) + ' XNT · ' + acct(data.counts.community) + ' · incl. pools',
-            color: '#8b7cf6',            val: data.commCommunity },
-          { label: 'Commission · Self-Stake',      sub: 'your fee on your own stake',
-            color: 'var(--accent-gold)', val: data.commSelf },
-        ];
-      } else {
-        // No delegated-stake rewards to attribute against — show the two raw
-        // earning sources straight from chain.
-        rows = [
-          { label: 'Voting Commission',  sub: data.commission != null ? (data.commission + '% fee') : 'validator fee',
-            color: 'var(--accent-gold)', val: data.voting },
-          { label: 'Self-Stake Rewards', sub: 'net reward on your own stake · ' + acct(data.counts.self),
-            color: 'var(--success)',     val: data.self },
-        ];
+      // Build the children that decompose the voting commission by the stake
+      // source it came from. Shown nested under the Commission · Voting bar so
+      // nothing is double-counted in the total.
+      function childRow(color, label, val) {
+        const share = data.voting > 0 ? (val / data.voting * 100) : 0;
+        return '<div class="rb-child">' +
+          '<span class="rb-child-label"><span class="rb-dot" style="background:' + color + '"></span>' + label + '</span>' +
+          '<span class="rb-child-amt">' + fmt(val) + ' XNT' +
+            '<span class="rb-child-pct">' + share.toFixed(1) + '%</span>' +
+          '</span>' +
+        '</div>';
       }
 
-      const rowsHtml = rows.map(r => {
+      const commChildren = data.attributed
+        ? '<div class="rb-children">' +
+            '<div class="rb-children-cap">commission by source</div>' +
+            childRow('var(--accent-cyan)', 'X1 Foundation · ' + acct(data.counts.foundation), data.commFoundation) +
+            childRow('#8b7cf6',            'Community / Pool · ' + acct(data.counts.community), data.commCommunity) +
+            childRow('#c9a227',            'Your self-stake', data.commSelf) +
+          '</div>'
+        : '';
+
+      // Two earning bars that sum to the card value: self-stake + voting commission.
+      const bars = [
+        { label: 'Self-Stake Rewards', sub: 'net reward on your own stake · ' + acct(data.counts.self),
+          color: 'var(--success)', val: data.self, children: '' },
+        { label: 'Commission · Voting', sub: 'validator fee across all delegated stake',
+          color: 'var(--accent-gold)', val: data.voting, children: commChildren },
+      ];
+
+      const rowsHtml = bars.map(r => {
         const p = pctOf(r.val);
         return '<div class="rb-row">' +
           '<div class="rb-row-head">' +
@@ -31701,19 +31737,88 @@ Please give me the diagnostic commands to run on my server so you can help me id
           '</div>' +
           '<div class="rb-bar"><div class="rb-bar-fill" style="width:' + p.toFixed(2) + '%;background:' + r.color + '"></div></div>' +
           '<div class="rb-row-foot"><span class="rb-sub">' + r.sub + '</span><span class="rb-pct">' + p.toFixed(1) + '%</span></div>' +
+          r.children +
         '</div>';
       }).join('');
 
-      const commissionLine = data.attributed
-        ? '<div class="rb-line rb-subtle"><span>of which voting commission</span><span class="rb-amt">' + fmt(data.voting) + ' XNT</span></div>'
+      const scopeNote = data.isPortfolio
+        ? 'Totals across all ' + data.validatorCount + ' validators in your Data Center. '
         : '';
 
       body.innerHTML =
         '<div class="rb-rows">' + rowsHtml + '</div>' +
         '<div class="rb-divider"></div>' +
-        commissionLine +
         '<div class="rb-line rb-total"><span>Total earned this epoch</span><span class="rb-amt">' + fmt(data.earned) + ' XNT</span></div>' +
-        '<div class="rb-note">This is what the validator <strong>earned</strong>: its voting commission plus the net reward on its own self-stake. The commission is split by the stake source it came from. Rewards paid to delegators are their own — not counted here — so the bars sum to the figure shown on the card.</div>';
+        '<div class="rb-note">' + scopeNote + 'This is what the validator <strong>earned</strong>: its voting commission plus the net reward on its own self-stake. The commission is broken out by the stake source it came from. Rewards paid to delegators are their own — not counted here — so the bars sum to the figure shown on the card.</div>';
+    }
+
+    // Portfolio-wide breakdown: sums the per-validator earnings breakdown
+    // across every validator in My Data Center. Opened from the Breakdown
+    // link under the "Rewards Last Epoch" grand total.
+    async function openPortfolioRewardBreakdown() {
+      const modal = document.getElementById('rewardBreakdownModal');
+      const body  = document.getElementById('rewardBreakdownBody');
+      const sub   = document.getElementById('rewardBreakdownSub');
+      if (!modal || !body) return;
+      modal.style.display = 'flex';
+      if (sub) sub.textContent = 'All validators';
+      body.innerHTML =
+        '<div class="rb-loading"><div class="loading-spinner-small"></div>' +
+        '<span>Computing portfolio reward distribution…</span></div>';
+
+      const validators = (typeof myPortfolio !== 'undefined' && Array.isArray(myPortfolio)) ? myPortfolio : [];
+      if (!validators.length) {
+        body.innerHTML = '<div class="rb-error">No validators in your Data Center yet.' +
+          '<button onclick="closeRewardBreakdown()">Close</button></div>';
+        return;
+      }
+
+      try {
+        const results = [];
+        for (const v of validators) {
+          try {
+            results.push(await computeRewardBreakdown(v.voteAccount, v.commission || 0));
+          } catch (e) {
+            console.warn('[portfolio-breakdown] skip', v.voteAccount, (e && e.message) || e);
+          }
+        }
+        if (!results.length) throw new Error('No indexed reward data available yet');
+
+        const agg = {
+          isPortfolio: true,
+          validatorCount: results.length,
+          voting: 0, self: 0, foundation: 0, community: 0,
+          commFoundation: 0, commCommunity: 0, commSelf: 0,
+          grossFoundation: 0, grossCommunity: 0,
+          counts: { self: 0, foundation: 0, community: 0 },
+        };
+        const epochs = new Set();
+        for (const d of results) {
+          agg.voting += d.voting;          agg.self += d.self;
+          agg.foundation += d.foundation;  agg.community += d.community;
+          agg.commFoundation += d.commFoundation;
+          agg.commCommunity  += d.commCommunity;
+          agg.commSelf       += d.commSelf;
+          agg.grossFoundation += d.grossFoundation;
+          agg.grossCommunity  += d.grossCommunity;
+          agg.counts.self += d.counts.self;
+          agg.counts.foundation += d.counts.foundation;
+          agg.counts.community += d.counts.community;
+          epochs.add(d.epoch);
+        }
+        agg.attributed = (agg.self + agg.foundation + agg.community) > 0;
+        agg.earned = agg.voting + agg.self;
+        agg.epochLabel = epochs.size === 1
+          ? ('Epoch #' + Array.from(epochs)[0])
+          : 'latest epoch · per validator';
+
+        renderRewardBreakdown(body, sub, agg, 'All Validators');
+      } catch (e) {
+        console.error('[portfolio-breakdown] failed:', e);
+        body.innerHTML = '<div class="rb-error">Could not compute the portfolio breakdown.' +
+          '<span>' + rbEsc((e && e.message) || String(e)) + '</span>' +
+          '<button onclick="openPortfolioRewardBreakdown()">Retry</button></div>';
+      }
     }
 
     // ── Hover / click-to-pin tooltip state ──────────────────────
