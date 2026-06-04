@@ -16510,7 +16510,7 @@
               <div class="stat-subtext">XNT</div>
             </div>
             
-            <div class="stat-item" title="Your operator earnings (voting commission + self-stake) in the last completed epoch. Click Breakdown to see the full reward distribution across all stake delegated to this validator." id="lastEpoch-${validator.voteAccount.slice(0,8)}">
+            <div class="stat-item" title="What the validator earned in the last completed epoch — its voting commission plus the rewards on its own self-stake. Click Breakdown to see this split by source." id="lastEpoch-${validator.voteAccount.slice(0,8)}">
               <div class="stat-label">Last Epoch<br>Earned</div>
               <div class="last-epoch-value-row">
                 <span class="stat-value" style="color: var(--success);">--</span>
@@ -31625,16 +31625,36 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const data = {
         epoch: targetEpoch,
         commission: commission,
-        voting:     toX(votingLamports),
-        self:       toX(sums.self),
-        foundation: toX(sums.foundation),
-        community:  toX(sums.community),
+        voting:     toX(votingLamports),   // total voting commission collected (on-chain vote reward)
+        self:       toX(sums.self),         // net reward on the validator's own self-stake
+        foundation: toX(sums.foundation),   // net reward paid to X1 Foundation delegators
+        community:  toX(sums.community),    // net reward paid to community / pool delegators
         counts:     counts,
         stakeCount: stakeAccts.length,
       };
-      data.operator  = data.voting + data.self;
-      data.delegated = data.foundation + data.community;
-      data.total     = data.voting + data.self + data.foundation + data.community;
+
+      // Attribute the voting commission to the stake source it was earned from.
+      // commission_i = voting × (net_i / totalNet). This uses the ACTUAL on-chain
+      // vote reward (no commission-rate assumption) and sums back to `voting`
+      // exactly. grossSource = the total rewards that source's stake generated
+      // (delegator's net share + the validator's commission cut).
+      const totalNet = data.self + data.foundation + data.community;
+      data.attributed = totalNet > 0;
+      if (data.attributed) {
+        data.commFoundation = data.voting * (data.foundation / totalNet);
+        data.commCommunity  = data.voting * (data.community  / totalNet);
+        data.commSelf       = data.voting * (data.self       / totalNet);
+      } else {
+        data.commFoundation = 0;
+        data.commCommunity  = 0;
+        data.commSelf       = 0;
+      }
+      data.grossFoundation = data.foundation + data.commFoundation;
+      data.grossCommunity  = data.community  + data.commCommunity;
+
+      // What the validator actually EARNED = its commission + its own stake's
+      // net reward. (Delegators keep their own rewards; those are not earnings.)
+      data.earned = data.voting + data.self;
 
       _rewardBreakdownCache[voteAccount] = { ts: Date.now(), data };
       return data;
@@ -31643,18 +31663,34 @@ Please give me the diagnostic commands to run on my server so you can help me id
     function renderRewardBreakdown(body, sub, data, name) {
       if (sub) sub.textContent = (name ? name + ' · ' : '') + 'Epoch #' + data.epoch;
       const fmt = (x) => formatNumber(x, 4);
-      const pctOf = (x) => data.total > 0 ? (x / data.total * 100) : 0;
+      const pctOf = (x) => data.earned > 0 ? (x / data.earned * 100) : 0;
+      const acct = (n) => n + ' account' + (n === 1 ? '' : 's');
 
-      const rows = [
-        { label: 'Voting Commission',        sub: data.commission != null ? (data.commission + '% fee') : 'Validator fee',
-          color: 'var(--accent-gold)', val: data.voting },
-        { label: 'Self-Stake Rewards',       sub: data.counts.self + ' account' + (data.counts.self === 1 ? '' : 's'),
-          color: 'var(--success)', val: data.self },
-        { label: 'X1 Foundation Delegation', sub: data.counts.foundation + ' account' + (data.counts.foundation === 1 ? '' : 's'),
-          color: 'var(--accent-cyan)', val: data.foundation },
-        { label: 'Community Delegation',     sub: data.counts.community + ' account' + (data.counts.community === 1 ? '' : 's') + ' · incl. pools',
-          color: '#8b7cf6', val: data.community },
-      ];
+      // Rows decompose what the validator EARNED (= card value). Self-stake is
+      // the net reward on the operator's own stake; the rest is the voting
+      // commission attributed to the stake source it came from.
+      let rows;
+      if (data.attributed) {
+        rows = [
+          { label: 'Self-Stake Rewards',          sub: 'net reward on your own stake · ' + acct(data.counts.self),
+            color: 'var(--success)',     val: data.self },
+          { label: 'Commission · X1 Foundation',  sub: 'your fee on ' + fmt(data.grossFoundation) + ' XNT · ' + acct(data.counts.foundation),
+            color: 'var(--accent-cyan)', val: data.commFoundation },
+          { label: 'Commission · Community',       sub: 'your fee on ' + fmt(data.grossCommunity) + ' XNT · ' + acct(data.counts.community) + ' · incl. pools',
+            color: '#8b7cf6',            val: data.commCommunity },
+          { label: 'Commission · Self-Stake',      sub: 'your fee on your own stake',
+            color: 'var(--accent-gold)', val: data.commSelf },
+        ];
+      } else {
+        // No delegated-stake rewards to attribute against — show the two raw
+        // earning sources straight from chain.
+        rows = [
+          { label: 'Voting Commission',  sub: data.commission != null ? (data.commission + '% fee') : 'validator fee',
+            color: 'var(--accent-gold)', val: data.voting },
+          { label: 'Self-Stake Rewards', sub: 'net reward on your own stake · ' + acct(data.counts.self),
+            color: 'var(--success)',     val: data.self },
+        ];
+      }
 
       const rowsHtml = rows.map(r => {
         const p = pctOf(r.val);
@@ -31668,13 +31704,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
         '</div>';
       }).join('');
 
+      const commissionLine = data.attributed
+        ? '<div class="rb-line rb-subtle"><span>of which voting commission</span><span class="rb-amt">' + fmt(data.voting) + ' XNT</span></div>'
+        : '';
+
       body.innerHTML =
         '<div class="rb-rows">' + rowsHtml + '</div>' +
         '<div class="rb-divider"></div>' +
-        '<div class="rb-line rb-subtotal"><span>Your operator take <span class="rb-hint">(matches the card)</span></span><span class="rb-amt">' + fmt(data.operator) + ' XNT</span></div>' +
-        '<div class="rb-line rb-subtle"><span>Distributed to delegators</span><span class="rb-amt">' + fmt(data.delegated) + ' XNT</span></div>' +
-        '<div class="rb-line rb-total"><span>Total rewards this epoch</span><span class="rb-amt">' + fmt(data.total) + ' XNT</span></div>' +
-        '<div class="rb-note">Total = voting commission + the inflation reward earned by every stake account delegated to this validator (your self-stake, X1 Foundation, and community/pool delegations). The four bars above sum exactly to this total. <strong>Your operator take</strong> is the commission plus your self-stake — the figure shown on the card.</div>';
+        commissionLine +
+        '<div class="rb-line rb-total"><span>Total earned this epoch</span><span class="rb-amt">' + fmt(data.earned) + ' XNT</span></div>' +
+        '<div class="rb-note">This is what the validator <strong>earned</strong>: its voting commission plus the net reward on its own self-stake. The commission is split by the stake source it came from. Rewards paid to delegators are their own — not counted here — so the bars sum to the figure shown on the card.</div>';
     }
 
     // ── Hover / click-to-pin tooltip state ──────────────────────
