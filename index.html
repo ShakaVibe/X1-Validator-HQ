@@ -11353,7 +11353,6 @@
             <div class="portfolio-stat">
               <div class="portfolio-stat-value" id="portfolioLastEpochRewards" style="color: var(--success);">0.00</div>
               <div class="portfolio-stat-label">Rewards Last Epoch (XNT)</div>
-              <div class="rb-open-link" style="margin-top:0.3rem;" onclick="openPortfolioRewardBreakdown()">Breakdown</div>
             </div>
             <div class="portfolio-stat">
               <div class="portfolio-stat-value" id="avgPortfolioPerf">0.0</div>
@@ -31710,7 +31709,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           color: 'var(--accent-gold)', val: data.commSelf },
         { label: 'Commission · X1 Foundation', sub: acct(data.counts.foundation),
           color: 'var(--accent-cyan)', val: data.commFoundation },
-        { label: 'Commission · Community',     sub: acct(data.counts.community) + ' · incl. pools',
+        { label: 'Commission · Community Stakes', sub: acct(data.counts.community) + ' · incl. pools',
           color: '#8b7cf6',            val: data.commCommunity },
       ] : [
         { label: 'Self-Stake Rewards', sub: 'net reward on your own stake · ' + acct(data.counts.self),
