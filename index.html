@@ -2934,6 +2934,96 @@
       font-weight: 500;
     }
 
+    /* Last Epoch Earned: keep the up/down % inline to the right of the
+       number so the card stays the same height while we add a Breakdown
+       link at the bottom (mirrors the Epoch Credits card layout). */
+    .last-epoch-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .last-epoch-value-row .stat-change {
+      margin-top: 0;
+    }
+    .rb-open-link {
+      color: var(--accent-cyan);
+      font-size: 0.65rem;
+      cursor: pointer;
+    }
+    .rb-open-link:hover {
+      text-decoration: underline;
+    }
+
+    /* ===== Reward Breakdown modal ===== */
+    .rb-loading,
+    .rb-error {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 2.5rem 1rem;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+    .rb-error span {
+      color: var(--text-dim);
+      font-size: 0.75rem;
+    }
+    .rb-error button,
+    .rb-loading button {
+      margin-top: 0.4rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--accent-blue);
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.8rem;
+    }
+    .rb-error button:hover { border-color: var(--accent-blue); }
+
+    .rb-rows { display: flex; flex-direction: column; gap: 0.85rem; padding: 0.35rem 0.4rem 0.2rem; }
+    .rb-row { display: flex; flex-direction: column; gap: 0.3rem; }
+    .rb-row-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+    .rb-label { display: flex; align-items: center; gap: 0.45rem; font-size: 0.82rem; color: var(--text-primary); font-weight: 500; }
+    .rb-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+    .rb-amt { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--text-primary); white-space: nowrap; }
+    .rb-unit { color: var(--text-dim); font-size: 0.7rem; }
+    .rb-bar { height: 6px; background: var(--bg-primary); border-radius: 3px; overflow: hidden; }
+    .rb-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; min-width: 2px; }
+    .rb-row-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+    .rb-sub { font-size: 0.65rem; color: var(--text-dim); }
+    .rb-pct { font-size: 0.7rem; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; }
+
+    .rb-divider { border-top: 1px solid var(--border); margin: 0.9rem 0.4rem 0.6rem; }
+    .rb-line { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; padding: 0.28rem 0.4rem; font-size: 0.82rem; }
+    .rb-subtotal { color: var(--text-primary); font-weight: 600; }
+    .rb-subtle { color: var(--text-secondary); }
+    .rb-hint { color: var(--text-dim); font-weight: 400; font-size: 0.68rem; }
+    .rb-total {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-top: 1px solid var(--border);
+      margin-top: 0.3rem;
+      padding-top: 0.6rem;
+    }
+    .rb-total .rb-amt { font-size: 0.95rem; color: var(--accent-cyan); }
+    .rb-note {
+      margin: 0.85rem 0.4rem 0.3rem;
+      padding: 0.7rem 0.8rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.68rem;
+      line-height: 1.45;
+      color: var(--text-secondary);
+    }
+
     /* Performance score bar */
     .perf-bar-container {
       margin-top: 0.5rem;
@@ -12055,6 +12145,29 @@
     </div>
   </div>
 
+  <!-- Reward Breakdown modal — decomposes the last completed epoch's rewards
+       distributed through a validator into Voting Commission, Self-Stake,
+       X1 Foundation Delegation, and Community Delegation (Ripper + third
+       parties). The four pieces sum exactly to the grand total. Opened from
+       the "Breakdown" link on the Last Epoch Earned stat card. -->
+  <div class="modal-overlay" id="rewardBreakdownModal" onclick="if(event.target===this)closeRewardBreakdown()">
+    <div class="modal" style="max-width: 540px;">
+      <div class="modal-header">
+        <div class="modal-brand-head">
+          <div class="x1-logo-brand"><span class="x-char">X</span><span class="one-char">1</span></div>
+          <div class="brand-title">
+            <div class="brand-title-main">Reward Breakdown</div>
+            <div class="brand-title-sub" id="rewardBreakdownSub">Last completed epoch</div>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeRewardBreakdown()">&times;</button>
+      </div>
+      <div class="modal-body" id="rewardBreakdownBody">
+        <div class="rb-loading"><div class="loading-spinner-small"></div><span>Computing reward distribution…</span></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Validator scorecard modal — opens from any slot/feed/top-skipper
        click on Network Live and shows the same wide "Last Epoch / Current
        Epoch" scorecard that the Validator Lookup scope renders inline. -->
@@ -16397,11 +16510,14 @@
               <div class="stat-subtext">XNT</div>
             </div>
             
-            <div class="stat-item" title="Total validator rewards (vote + self-stake) earned in the last completed epoch." id="lastEpoch-${validator.voteAccount.slice(0,8)}">
+            <div class="stat-item" title="Your operator earnings (voting commission + self-stake) in the last completed epoch. Click Breakdown to see the full reward distribution across all stake delegated to this validator." id="lastEpoch-${validator.voteAccount.slice(0,8)}">
               <div class="stat-label">Last Epoch<br>Earned</div>
-              <div class="stat-value" style="color: var(--success);">--</div>
+              <div class="last-epoch-value-row">
+                <span class="stat-value" style="color: var(--success);">--</span>
+                <span class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}"></span>
+              </div>
               <div class="stat-subtext">XNT</div>
-              <div class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}"></div>
+              <div class="stat-subtext rb-open-link" onclick="event.stopPropagation();openRewardBreakdown('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}', ${validator.commission})">Breakdown</div>
             </div>
             
             <div class="stat-item clickable-stat" onclick="openStakeSelection('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}')" title="Click to manage your stake classification (self-stake vs delegated)">
@@ -31366,6 +31482,199 @@ Please give me the diagnostic commands to run on my server so you can help me id
       _tpsTxData        = {};
       _tpsBucketMeta    = null;
       _tpsBucketGeom    = null;
+    }
+
+    // ===========================================================
+    // REWARD BREAKDOWN MODAL
+    // Decomposes the last completed epoch's rewards distributed
+    // through a validator into four pieces that sum exactly to the
+    // grand total:
+    //   • Voting Commission      — the validator's vote-account reward
+    //   • Self-Stake             — stake whose withdrawer == the vote
+    //                              account's withdrawer (or user-flagged)
+    //   • X1 Foundation          — stake whose withdrawer == X1 Labs
+    //   • Community Delegation   — everything else (Ripper pool + third
+    //                              parties)
+    // Classification mirrors classifyStakeSource() (withdrawer-based) so
+    // it stays consistent with the Delegations leaderboard and stake
+    // breakdown. Computed lazily on click (one getProgramAccounts + a
+    // chunked getInflationReward over every delegated stake account), so
+    // it never runs on page/card load.
+    // ===========================================================
+    const _rewardBreakdownCache = {};
+
+    function rbEsc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+        { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
+      ));
+    }
+
+    function closeRewardBreakdown() {
+      const m = document.getElementById('rewardBreakdownModal');
+      if (m) m.style.display = 'none';
+    }
+
+    async function openRewardBreakdown(voteAccount, name, commission) {
+      const modal = document.getElementById('rewardBreakdownModal');
+      const body  = document.getElementById('rewardBreakdownBody');
+      const sub   = document.getElementById('rewardBreakdownSub');
+      if (!modal || !body) return;
+      modal.style.display = 'flex';
+      if (sub) sub.textContent = name ? name : 'Last completed epoch';
+      body.innerHTML =
+        '<div class="rb-loading"><div class="loading-spinner-small"></div>' +
+        '<span>Computing reward distribution…</span></div>';
+      try {
+        const data = await computeRewardBreakdown(voteAccount, commission);
+        renderRewardBreakdown(body, sub, data, name);
+      } catch (e) {
+        console.error('[reward-breakdown] failed:', e);
+        const retry = "openRewardBreakdown('" + voteAccount + "', '" +
+          String(name || '').replace(/'/g, "\\'") + "', " + (commission || 0) + ")";
+        body.innerHTML =
+          '<div class="rb-error">Could not compute the breakdown.' +
+          '<span>' + rbEsc((e && e.message) || String(e)) + '</span>' +
+          '<button onclick="' + retry + '">Retry</button></div>';
+      }
+    }
+
+    async function computeRewardBreakdown(voteAccount, commission) {
+      const cached = _rewardBreakdownCache[voteAccount];
+      if (cached && cached.ts > Date.now() - 300000) return cached.data; // 5 min
+
+      // 1) Current epoch
+      const epochInfo = await rpcCall('getEpochInfo');
+      const curEpoch = epochInfo.epoch;
+
+      // 2) Newest indexed epoch for the vote account (same determinant the
+      //    card uses) + its voting (commission) reward.
+      let targetEpoch = null, votingLamports = 0;
+      for (let i = 1; i <= 4 && (curEpoch - i) >= 0; i++) {
+        const ep = curEpoch - i;
+        const res = await rpcCall('getInflationReward', [[voteAccount], { epoch: ep }]);
+        const entry = res && res[0];
+        if (entry && entry.amount != null) {
+          targetEpoch = ep;
+          votingLamports = entry.amount || 0;
+          break;
+        }
+      }
+      if (targetEpoch === null) {
+        throw new Error('No indexed epoch yet — RPC may still be catching up');
+      }
+
+      // 3) Vote account withdrawer (for self-stake matching)
+      let voteWithdrawer = null;
+      try {
+        const va = await rpcCall('getAccountInfo', [voteAccount, { encoding: 'jsonParsed' }]);
+        voteWithdrawer = va?.value?.data?.parsed?.info?.authorizedWithdrawer || null;
+      } catch (e) { /* non-fatal: self-stake just folds into community */ }
+
+      // 4) Every stake account delegated to this validator
+      const stakeAccts = await rpcCall('getProgramAccounts', [
+        STAKE_PROGRAM_ID,
+        { encoding: 'jsonParsed', filters: [{ memcmp: { offset: 124, bytes: voteAccount } }] }
+      ]) || [];
+
+      // 5) Honor any manual self-stake classification the user set
+      const userSel = typeof getSelfStakeSelections === 'function'
+        ? getSelfStakeSelections(voteAccount) : null;
+      const userSelfSet = new Set((userSel && userSel.pubkeys) || []);
+      const hasUserSel = userSelfSet.size > 0;
+
+      // 6) Classify each stake account into exactly one bucket
+      const catOf  = new Map();
+      const counts = { self: 0, foundation: 0, community: 0 };
+      for (const acc of stakeAccts) {
+        const pk = acc.pubkey;
+        const wd = acc.account?.data?.parsed?.info?.meta?.authorized?.withdrawer || null;
+        let cat;
+        if (hasUserSel) {
+          // User override is authoritative for the self bucket.
+          if (userSelfSet.has(pk)) cat = 'self';
+          else cat = (classifyStakeSource(wd) === 'foundation') ? 'foundation' : 'community';
+        } else if (wd && voteWithdrawer && wd === voteWithdrawer) {
+          cat = 'self';
+        } else if (classifyStakeSource(wd) === 'foundation') {
+          cat = 'foundation';
+        } else {
+          cat = 'community';
+        }
+        catOf.set(pk, cat);
+        counts[cat]++;
+      }
+
+      // 7) Inflation rewards for ALL stake accounts at targetEpoch.
+      //    getInflationReward returns a positional array aligned to input,
+      //    so we attribute each result to its account's bucket by index.
+      const allPk = Array.from(catOf.keys());
+      const sums = { self: 0, foundation: 0, community: 0 };
+      const CHUNK = 100;
+      for (let i = 0; i < allPk.length; i += CHUNK) {
+        const slice = allPk.slice(i, i + CHUNK);
+        const res = await rpcCall('getInflationReward', [slice, { epoch: targetEpoch }]);
+        if (Array.isArray(res)) {
+          for (let j = 0; j < slice.length; j++) {
+            const r = res[j];
+            if (r && r.amount != null) sums[catOf.get(slice[j])] += r.amount;
+          }
+        }
+      }
+
+      const toX = (l) => l / 1e9;
+      const data = {
+        epoch: targetEpoch,
+        commission: commission,
+        voting:     toX(votingLamports),
+        self:       toX(sums.self),
+        foundation: toX(sums.foundation),
+        community:  toX(sums.community),
+        counts:     counts,
+        stakeCount: stakeAccts.length,
+      };
+      data.operator  = data.voting + data.self;
+      data.delegated = data.foundation + data.community;
+      data.total     = data.voting + data.self + data.foundation + data.community;
+
+      _rewardBreakdownCache[voteAccount] = { ts: Date.now(), data };
+      return data;
+    }
+
+    function renderRewardBreakdown(body, sub, data, name) {
+      if (sub) sub.textContent = (name ? name + ' · ' : '') + 'Epoch #' + data.epoch;
+      const fmt = (x) => formatNumber(x, 4);
+      const pctOf = (x) => data.total > 0 ? (x / data.total * 100) : 0;
+
+      const rows = [
+        { label: 'Voting Commission',        sub: data.commission != null ? (data.commission + '% fee') : 'Validator fee',
+          color: 'var(--accent-gold)', val: data.voting },
+        { label: 'Self-Stake Rewards',       sub: data.counts.self + ' account' + (data.counts.self === 1 ? '' : 's'),
+          color: 'var(--success)', val: data.self },
+        { label: 'X1 Foundation Delegation', sub: data.counts.foundation + ' account' + (data.counts.foundation === 1 ? '' : 's'),
+          color: 'var(--accent-cyan)', val: data.foundation },
+        { label: 'Community Delegation',     sub: data.counts.community + ' account' + (data.counts.community === 1 ? '' : 's') + ' · incl. pools',
+          color: '#8b7cf6', val: data.community },
+      ];
+
+      const rowsHtml = rows.map(r => {
+        const p = pctOf(r.val);
+        return '<div class="rb-row">' +
+          '<div class="rb-row-head">' +
+            '<span class="rb-label"><span class="rb-dot" style="background:' + r.color + '"></span>' + r.label + '</span>' +
+            '<span class="rb-amt">' + fmt(r.val) + ' <span class="rb-unit">XNT</span></span>' +
+          '</div>' +
+          '<div class="rb-bar"><div class="rb-bar-fill" style="width:' + p.toFixed(2) + '%;background:' + r.color + '"></div></div>' +
+          '<div class="rb-row-foot"><span class="rb-sub">' + r.sub + '</span><span class="rb-pct">' + p.toFixed(1) + '%</span></div>' +
+        '</div>';
+      }).join('');
+
+      body.innerHTML =
+        '<div class="rb-rows">' + rowsHtml + '</div>' +
+        '<div class="rb-divider"></div>' +
+        '<div class="rb-line rb-subtotal"><span>Your operator take <span class="rb-hint">(matches the card)</span></span><span class="rb-amt">' + fmt(data.operator) + ' XNT</span></div>' +
+        '<div class="rb-line rb-subtle"><span>Distributed to delegators</span><span class="rb-amt">' + fmt(data.delegated) + ' XNT</span></div>' +
+        '<div class="rb-line rb-total"><span>Total rewards this epoch</span><span class="rb-amt">' + fmt(data.total) + ' XNT</span></div>' +
+        '<div class="rb-note">Total = voting commission + the inflation reward earned by every stake account delegated to this validator (your self-stake, X1 Foundation, and community/pool delegations). The four bars above sum exactly to this total. <strong>Your operator take</strong> is the commission plus your self-stake — the figure shown on the card.</div>';
     }
 
     // ── Hover / click-to-pin tooltip state ──────────────────────
