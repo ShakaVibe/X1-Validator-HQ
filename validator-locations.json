@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-05T15:27:34.970Z",
-  "totalNodes": 751,
-  "totalLocations": 749,
+  "lastUpdated": "2026-06-05T17:07:01.947Z",
+  "totalNodes": 752,
+  "totalLocations": 750,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -5245,44 +5245,51 @@
       "city": "San Jose",
       "lat": 37.3387,
       "lon": -121.885
+    },
+    "74.50.65.194": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Teterboro",
+      "lat": 40.866,
+      "lon": -74.0544
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 264
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 121
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 21
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 90
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "DE": {
       "name": "Germany",
       "count": 145
     },
-    "FR": {
-      "name": "France",
-      "count": 59
+    "US": {
+      "name": "United States",
+      "count": 265
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 90
     },
     "NL": {
       "name": "The Netherlands",
       "count": 30
     },
+    "CA": {
+      "name": "Canada",
+      "count": 21
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 121
+    },
+    "FR": {
+      "name": "France",
+      "count": 59
+    },
     "SE": {
       "name": "Sweden",
       "count": 8
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "GB": {
       "name": "United Kingdom",
