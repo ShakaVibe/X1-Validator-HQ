@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-05T17:07:01.947Z",
-  "totalNodes": 752,
-  "totalLocations": 750,
+  "lastUpdated": "2026-06-05T19:03:06.229Z",
+  "totalNodes": 756,
+  "totalLocations": 754,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -5252,6 +5252,34 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
+    },
+    "213.25.37.211": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Skórcz",
+      "lat": 53.7941,
+      "lon": 18.5156
+    },
+    "66.23.232.22": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "213.25.37.214": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Skórcz",
+      "lat": 53.7941,
+      "lon": 18.5156
+    },
+    "213.25.37.212": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Skórcz",
+      "lat": 53.7941,
+      "lon": 18.5156
     }
   },
   "countries": {
@@ -5265,7 +5293,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 265
+      "count": 266
     },
     "FI": {
       "name": "Finland",
@@ -5281,7 +5309,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 121
+      "count": 124
     },
     "FR": {
       "name": "France",
