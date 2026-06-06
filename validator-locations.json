@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-06T03:35:04.690Z",
-  "totalNodes": 755,
-  "totalLocations": 753,
+  "lastUpdated": "2026-06-06T05:41:00.112Z",
+  "totalNodes": 753,
+  "totalLocations": 751,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1221,13 +1221,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "152.53.168.122": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
-    },
     "45.131.114.130": {
       "country": "The Netherlands",
       "countryCode": "NL",
@@ -1255,13 +1248,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "152.53.170.34": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
     },
     "209.159.157.50": {
       "country": "United States",
@@ -5276,37 +5262,33 @@
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 266
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 124
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 21
-    },
     "FI": {
       "name": "Finland",
       "count": 90
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 144
-    },
-    "FR": {
-      "name": "France",
-      "count": 59
     },
     "NL": {
       "name": "The Netherlands",
       "count": 30
     },
+    "US": {
+      "name": "United States",
+      "count": 264
+    },
     "SE": {
       "name": "Sweden",
       "count": 8
+    },
+    "FR": {
+      "name": "France",
+      "count": 59
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 124
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 144
     },
     "KE": {
       "name": "Kenya",
@@ -5315,6 +5297,10 @@
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 21
     },
     "SG": {
       "name": "Singapore",
