@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-09T09:35:53.107Z",
-  "totalNodes": 755,
-  "totalLocations": 753,
+  "lastUpdated": "2026-06-09T11:29:15.952Z",
+  "totalNodes": 757,
+  "totalLocations": 755,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -5273,12 +5273,26 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "167.114.210.161": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5063,
+      "lon": -73.5794
+    },
+    "65.109.63.242": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
     "FI": {
       "name": "Finland",
-      "count": 91
+      "count": 92
     },
     "NL": {
       "name": "The Netherlands",
@@ -5314,7 +5328,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 22
+      "count": 23
     },
     "SG": {
       "name": "Singapore",
