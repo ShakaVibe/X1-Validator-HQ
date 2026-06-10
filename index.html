@@ -14070,6 +14070,42 @@
       }
     }
 
+    // ─────────────────────────────────────────────────────────────────────
+    // SAFE u64 LAMPORTS SERIALIZATION
+    // Several hand-built instructions (Stake Split, Vote Withdraw) encode a
+    // lamports amount as a little-endian u64. The previous code did this with
+    // bitwise/Math.floor tricks (`amount & 0xffffffff`, `Math.floor(amount /
+    // 0x100000000)`). That happens to produce correct bytes up to
+    // Number.MAX_SAFE_INTEGER (2^53 lamports ≈ 9,007,199 XNT), but ABOVE that
+    // a JavaScript Number has already silently lost integer precision — so the
+    // bytes signed would not match the amount the user intended.
+    //
+    // writeU64LE centralizes this and converts that silent-corruption risk
+    // into a LOUD, SAFE failure: if the amount is not a clean non-negative
+    // integer within the precise range, it throws BEFORE any transaction is
+    // built or signed, so the user can never sign a wrong-amount transaction.
+    // Within the safe range it writes the exact u64 via setBigUint64.
+    // ─────────────────────────────────────────────────────────────────────
+    function writeU64LE(dataView, offset, amountLamports) {
+      // Reject anything that isn't a finite, non-negative, integer Number that
+      // is exactly representable. This is intentionally strict.
+      if (typeof amountLamports !== 'number' || !Number.isFinite(amountLamports)) {
+        throw new Error('Invalid amount: not a finite number.');
+      }
+      if (!Number.isInteger(amountLamports)) {
+        throw new Error('Invalid amount: lamports must be a whole number.');
+      }
+      if (amountLamports < 0) {
+        throw new Error('Invalid amount: cannot be negative.');
+      }
+      if (amountLamports > Number.MAX_SAFE_INTEGER) {
+        // ~9,007,199 XNT. Above this, JS Number precision is unreliable, so we
+        // refuse rather than risk signing a transaction for the wrong amount.
+        throw new Error('Amount too large to process safely in this interface. Please use a smaller amount or a dedicated CLI tool.');
+      }
+      dataView.setBigUint64(offset, BigInt(amountLamports), true); // little-endian
+    }
+
     const RPC_URL = 'https://rpc.mainnet.x1.xyz';
     const REWARDS_API_URL = null; // Set to your API URL when rewards tracker is running
 
@@ -23559,9 +23595,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const splitData = new Uint8Array(12);
         const view = new DataView(splitData.buffer);
         view.setUint32(0, 3, true); // instruction index 3 = Split
-        // Write u64 lamports as two u32s (little-endian)
-        view.setUint32(4, amountLamports >>> 0, true); // low 32 bits
-        view.setUint32(8, Math.floor(amountLamports / 0x100000000), true); // high 32 bits
+        // Write u64 lamports (little-endian) with range-safety guard
+        writeU64LE(view, 4, amountLamports);
         
         const splitIx = new TransactionInstruction({
           keys: [
@@ -26076,11 +26111,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const data = new Uint8Array(12);
         const dataView = new DataView(data.buffer);
         dataView.setUint32(0, 3, true); // Withdraw instruction index
-        // Write lamports as 64-bit LE
-        const low = amountLamports & 0xffffffff;
-        const high = Math.floor(amountLamports / 0x100000000);
-        dataView.setUint32(4, low, true);
-        dataView.setUint32(8, high, true);
+        // Write lamports as 64-bit LE with range-safety guard
+        writeU64LE(dataView, 4, amountLamports);
         
         // Create the withdraw instruction
         const withdrawInstruction = new TransactionInstruction({
