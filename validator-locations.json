@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-10T11:35:46.618Z",
-  "totalNodes": 756,
-  "totalLocations": 754,
+  "lastUpdated": "2026-06-10T13:34:38.114Z",
+  "totalNodes": 755,
+  "totalLocations": 753,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2929,13 +2929,6 @@
       "lat": 53.7941,
       "lon": 18.5156
     },
-    "162.246.18.130": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "192.64.82.62": {
       "country": "United States",
       "countryCode": "US",
@@ -5293,7 +5286,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 263
+      "count": 262
     },
     "SE": {
       "name": "Sweden",
