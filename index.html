@@ -13929,6 +13929,33 @@
 
   <script>
     // ─────────────────────────────────────────────────────────────────────
+    // PRODUCTION LOGGING GATE
+    // The app logs operational detail — including the connected wallet address
+    // and transaction metadata — to the browser console. On a live finance
+    // site that is more exposure than necessary, so verbose logging is OFF by
+    // default. console.error and console.warn are KEPT so real problems are
+    // still diagnosable in production. To re-enable full logging for
+    // troubleshooting, load the page with ?debug=1 in the URL, or run
+    //   localStorage.setItem('x1hq_debug','1')
+    // in the console and reload. Nothing here logs secret keys (verified).
+    // ─────────────────────────────────────────────────────────────────────
+    (function() {
+      var debugOn = false;
+      try {
+        var qs = new URLSearchParams(window.location.search);
+        debugOn = qs.get('debug') === '1' ||
+                  (window.localStorage && localStorage.getItem('x1hq_debug') === '1');
+      } catch (e) { /* storage/URL access can throw in rare contexts; stay quiet */ }
+      if (!debugOn) {
+        var noop = function() {};
+        // Silence verbose channels only. Leave error/warn intact.
+        console.log = noop;
+        console.debug = noop;
+        console.info = noop;
+      }
+    })();
+
+    // ─────────────────────────────────────────────────────────────────────
     // SECURITY HELPERS (XSS defense)
     // Validator names, icon URLs, and websites come from on-chain config
     // accounts that ANY participant can write arbitrary data into. They must
