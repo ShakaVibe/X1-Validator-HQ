@@ -17618,8 +17618,8 @@
             );
             
             marker.bindPopup(`
-              <div class="popup-validator-name">${loc.city}</div>
-              <div class="popup-validator-location">${loc.country}</div>
+              <div class="popup-validator-name">${escHtml(loc.city)}</div>
+              <div class="popup-validator-location">${escHtml(loc.country)}</div>
             `);
             
             markerGroup.addLayer(marker);
@@ -17718,8 +17718,8 @@
             
             marker.bindPopup(`
               <div class="popup-validator-name">${escHtml(m.name)}</div>
-              <div class="popup-validator-location">${m.city}, ${m.country}</div>
-              <div class="popup-validator-location" style="margin-top: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;">v${m.version || 'unknown'}${versionWarning}</div>
+              <div class="popup-validator-location">${escHtml(m.city)}, ${escHtml(m.country)}</div>
+              <div class="popup-validator-location" style="margin-top: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;">v${escHtml(m.version || 'unknown')}${versionWarning}</div>
             `);
             
             markerGroup.addLayer(marker);
