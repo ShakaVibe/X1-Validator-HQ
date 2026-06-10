@@ -13928,6 +13928,51 @@
   </footer>
 
   <script>
+    // ─────────────────────────────────────────────────────────────────────
+    // SECURITY HELPERS (XSS defense)
+    // Validator names, icon URLs, and websites come from on-chain config
+    // accounts that ANY participant can write arbitrary data into. They must
+    // never be placed into the DOM as raw HTML. Use these helpers at every
+    // injection point.
+    //
+    //   escHtml(s)  -> safe for text content AND double-quoted attribute values
+    //   escAttrJs(s)-> safe to embed inside a single-quoted JS string that is
+    //                  itself inside an HTML attribute (the onclick="fn('...')"
+    //                  double-context case). Prefer NOT building inline handlers
+    //                  from data at all, but where unavoidable this blocks
+    //                  breakout via quotes, angle brackets, and backslashes.
+    //   safeUrl(u)  -> returns the URL only if it is a safe http(s) (or
+    //                  protocol-relative) URL; otherwise returns '' so that
+    //                  javascript:, data:, vbscript: etc. cannot execute.
+    // ─────────────────────────────────────────────────────────────────────
+    function escHtml(s) {
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+    function escAttrJs(s) {
+      // Escape for a single-quoted JS string sitting inside an HTML attribute.
+      // Order matters: backslash first, then the characters that could break
+      // out of either the JS string or the surrounding HTML attribute.
+      return String(s == null ? '' : s)
+        .replace(/\\/g, '\\\\')
+        .replace(/'/g, '\\&#39;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\r?\n/g, ' ');
+    }
+    function safeUrl(u) {
+      const v = String(u == null ? '' : u).trim();
+      if (v === '') return '';
+      // Allow only http(s) and protocol-relative URLs. Reject anything else,
+      // including javascript:, data:, vbscript:, and control-char tricks.
+      if (/^https?:\/\//i.test(v)) return v;
+      if (/^\/\//.test(v)) return v;          // protocol-relative //host/...
+      if (/^\//.test(v) && !/^\/\//.test(v)) return v; // site-relative /path
+      return '';
+    }
+
     const RPC_URL = 'https://rpc.mainnet.x1.xyz';
     const REWARDS_API_URL = null; // Set to your API URL when rewards tracker is running
 
@@ -16378,7 +16423,7 @@
       // Generate logo or placeholder
       const firstLetter = validator.name.charAt(0).toUpperCase();
       const logoHtml = validator.iconUrl 
-        ? `<img class="validator-logo" src="${validator.iconUrl}" alt="${validator.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        ? `<img class="validator-logo" src="${safeUrl(validator.iconUrl)}" alt="${escHtml(validator.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
            <div class="validator-logo-placeholder" style="display:none;">${firstLetter}</div>`
         : `<div class="validator-logo-placeholder">${firstLetter}</div>`;
 
@@ -16500,7 +16545,7 @@
               ${logoHtml}
               <div>
                 <div class="validator-name">
-                  ${validator.name}${validator.isZombie ? '' : getTierBadge(validator.rank, validator.totalValidators)}
+                  ${escHtml(validator.name)}${validator.isZombie ? '' : getTierBadge(validator.rank, validator.totalValidators)}
                   <span class="validator-rank" title="${validator.isZombie ? 'This validator is not in the active set — its activated stake has dropped to zero. It is hidden from the main list by default.' : 'Stake rank: Position among all validators sorted by total stake'}">${validator.isZombie ? 'Unranked' : `#${validator.rank} of ${validator.totalValidators}`}</span>
                 </div>
                 <div class="validator-meta">
@@ -16516,7 +16561,7 @@
               </div>
             </div>
             <div class="manage-validator-btn-wrapper">
-              <button class="manage-validator-btn" onclick="openManageValidator('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}', ${validator.rewardsBalance}, ${validator.commission}, '${validator.nodePubkey || ''}', '${validator.iconUrl || ''}')">
+              <button class="manage-validator-btn" onclick="openManageValidator('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.rewardsBalance}, ${validator.commission}, '${validator.nodePubkey || ''}', '${validator.iconUrl || ''}')">
                 ⚙️ Manage Validator
               </button>
             </div>
@@ -16550,10 +16595,10 @@
                 <span class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}"></span>
               </div>
               <div class="stat-subtext">XNT</div>
-              <div class="stat-subtext rb-open-link" onclick="event.stopPropagation();openRewardBreakdown('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}', ${validator.commission})">Breakdown</div>
+              <div class="stat-subtext rb-open-link" onclick="event.stopPropagation();openRewardBreakdown('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.commission})">Breakdown</div>
             </div>
             
-            <div class="stat-item clickable-stat" onclick="openStakeSelection('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}')" title="Click to manage your stake classification (self-stake vs delegated)">
+            <div class="stat-item clickable-stat" onclick="openStakeSelection('${validator.voteAccount}', '${escAttrJs(validator.name)}')" title="Click to manage your stake classification (self-stake vs delegated)">
               <div class="stat-label">Active<br>Stake</div>
               <div class="stat-value">${formatXntCompact(validator.activatedStake)}</div>
               <div class="stat-subtext">XNT</div>
@@ -16574,7 +16619,7 @@
               <div class="stat-subtext">Fee rate</div>
             </div>
             
-            <div class="stat-item clickable-stat" onclick="openSlotModal('${validator.nodePubkey}', '${validator.name.replace(/'/g, "\\'")}', '${validator.voteAccount}')" title="Skip rate = % of leader slots where no block was produced. When showing a multi-epoch average, we use the slot-weighted method: (total skipped slots across epochs) / (total leader slots across epochs) — the same method the Solana CLI uses. This avoids small-sample epochs dominating the average. Click to view slot-by-slot assignment details.">
+            <div class="stat-item clickable-stat" onclick="openSlotModal('${validator.nodePubkey}', '${escAttrJs(validator.name)}', '${validator.voteAccount}')" title="Skip rate = % of leader slots where no block was produced. When showing a multi-epoch average, we use the slot-weighted method: (total skipped slots across epochs) / (total leader slots across epochs) — the same method the Solana CLI uses. This avoids small-sample epochs dominating the average. Click to view slot-by-slot assignment details.">
               <div class="stat-label">Skip<br>Rate</div>
               <div class="stat-value ${skipColor}">${skipRateDisplay}</div>
               <div class="stat-subtext">${skipLabel}</div>
@@ -16601,7 +16646,7 @@
           </div>
 
           <div class="validator-action-buttons">
-            <button class="validator-expand-btn stake-details-btn" onclick="toggleStakeDetails('${validator.voteAccount}', '${validator.name.replace(/'/g, "\\'")}', ${validator.activatedStake}, ${validator.commission}, this)">
+            <button class="validator-expand-btn stake-details-btn" onclick="toggleStakeDetails('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.activatedStake}, ${validator.commission}, this)">
               <span>Stake Details</span>
               <span class="arrow">▼</span>
             </button>
@@ -17383,7 +17428,7 @@
               <div class="country-item">
                 <div class="country-info">
                   <span class="country-flag">${countryFlags[code] || '🌍'}</span>
-                  <span class="country-name">${data.name}</span>
+                  <span class="country-name">${escHtml(data.name)}</span>
                 </div>
                 <span class="country-count">${data.count}</span>
               </div>
@@ -17503,7 +17548,7 @@
             const versionWarning = versionOutdated ? ' <span style="color: #ffc107;">⚠️ Update</span>' : '';
             
             marker.bindPopup(`
-              <div class="popup-validator-name">${m.name}</div>
+              <div class="popup-validator-name">${escHtml(m.name)}</div>
               <div class="popup-validator-location">${m.city}, ${m.country}</div>
               <div class="popup-validator-location" style="margin-top: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;">v${m.version || 'unknown'}${versionWarning}</div>
             `);
@@ -17523,7 +17568,7 @@
             <div class="country-item">
               <div class="country-info">
                 <span class="country-flag">${countryFlags[code] || '🌍'}</span>
-                <span class="country-name">${data.name}</span>
+                <span class="country-name">${escHtml(data.name)}</span>
               </div>
               <span class="country-count">${data.count}</span>
             </div>
@@ -17892,7 +17937,7 @@
                 // Logo
                 let logoHtml;
                 if (v.iconUrl) {
-                  logoHtml = `<img class="leaderboard-logo" src="${v.iconUrl}" alt="${v.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                  logoHtml = `<img class="leaderboard-logo" src="${safeUrl(v.iconUrl)}" alt="${escHtml(v.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                               <div class="leaderboard-logo-placeholder" style="display:none;">${v.name.charAt(0).toUpperCase()}</div>`;
                 } else {
                   logoHtml = `<div class="leaderboard-logo-placeholder">${v.name.charAt(0).toUpperCase()}</div>`;
@@ -17903,7 +17948,7 @@
                     <div class="newest-badge">🆕</div>
                     <div class="leaderboard-validator">
                       ${logoHtml}
-                      <div class="leaderboard-name">${v.name}</div>
+                      <div class="leaderboard-name">${escHtml(v.name)}</div>
                     </div>
                     <div class="leaderboard-stats">
                       <div class="leaderboard-stat">
@@ -17944,7 +17989,7 @@
         // Logo
         let logoHtml;
         if (v.iconUrl) {
-          logoHtml = `<img class="leaderboard-logo" src="${v.iconUrl}" alt="${v.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          logoHtml = `<img class="leaderboard-logo" src="${safeUrl(v.iconUrl)}" alt="${escHtml(v.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                       <div class="leaderboard-logo-placeholder" style="display:none;">${v.name.charAt(0).toUpperCase()}</div>`;
         } else {
           logoHtml = `<div class="leaderboard-logo-placeholder">${v.name.charAt(0).toUpperCase()}</div>`;
@@ -18044,7 +18089,7 @@
             <div class="leaderboard-rank ${rankClass}">${rankDisplay}</div>
             <div class="leaderboard-validator">
               ${logoHtml}
-              <div class="leaderboard-name">${v.name}</div>
+              <div class="leaderboard-name">${escHtml(v.name)}</div>
             </div>
             <div class="leaderboard-stats">
               ${statsHtml}
@@ -18181,7 +18226,7 @@
         // Logo (matches existing leaderboard logo treatment)
         let logoHtml;
         if (r.iconUrl) {
-          logoHtml = `<img class="leaderboard-logo" src="${r.iconUrl}" alt="${r.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          logoHtml = `<img class="leaderboard-logo" src="${safeUrl(r.iconUrl)}" alt="${escHtml(r.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                       <div class="leaderboard-logo-placeholder" style="display:none;">${r.name.charAt(0).toUpperCase()}</div>`;
         } else {
           logoHtml = `<div class="leaderboard-logo-placeholder">${r.name.charAt(0).toUpperCase()}</div>`;
@@ -18218,7 +18263,7 @@
             <div class="leaderboard-rank ${rankClass}">${rankDisplay}</div>
             <div class="leaderboard-validator">
               ${logoHtml}
-              <div class="leaderboard-name">${r.name}</div>
+              <div class="leaderboard-name">${escHtml(r.name)}</div>
             </div>
             <div class="leaderboard-stats">
               ${statsHtml}
@@ -18263,7 +18308,7 @@
         } else {
           resultsContainer.innerHTML = matches.map(v => {
             const logoHtml = v.iconUrl
-              ? `<img class="compare-search-result-logo" src="${v.iconUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              ? `<img class="compare-search-result-logo" src="${safeUrl(v.iconUrl)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                  <div class="compare-search-result-logo-placeholder" style="display:none;">${v.name.charAt(0).toUpperCase()}</div>`
               : `<div class="compare-search-result-logo-placeholder">${v.name.charAt(0).toUpperCase()}</div>`;
 
@@ -18271,7 +18316,7 @@
               <div class="compare-search-result" onclick="addToComparison('${v.votePubkey}')">
                 ${logoHtml}
                 <div class="compare-search-result-info">
-                  <div class="compare-search-result-name">${v.name}</div>
+                  <div class="compare-search-result-name">${escHtml(v.name)}</div>
                   <div class="compare-search-result-address">${v.votePubkey.slice(0, 8)}...${v.votePubkey.slice(-6)}</div>
                 </div>
               </div>
@@ -18382,7 +18427,7 @@
 
         if (validator) {
           const logoHtml = validator.iconUrl
-            ? `<img class="compare-slot-logo" src="${validator.iconUrl}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            ? `<img class="compare-slot-logo" src="${safeUrl(validator.iconUrl)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                <div class="compare-slot-logo-placeholder" style="display:none;">${validator.name.charAt(0).toUpperCase()}</div>`
             : `<div class="compare-slot-logo-placeholder">${validator.name.charAt(0).toUpperCase()}</div>`;
 
@@ -18394,7 +18439,7 @@
             <button class="compare-slot-remove" onclick="removeFromComparison('${validator.votePubkey}')">&times;</button>
             <div class="compare-slot-header">
               ${logoHtml}
-              <div class="compare-slot-name">${validator.name}</div>
+              <div class="compare-slot-name">${escHtml(validator.name)}</div>
             </div>
             <div class="compare-slot-score" style="color: ${scoreColor}">${validator.performanceScore.toFixed(2)}</div>
             <div class="compare-slot-score-label">Performance Score</div>
@@ -18571,7 +18616,7 @@
       // Header row with validator names
       html += `<div class="compare-row compare-row-header">
         <div class="compare-cell compare-cell-label">Metric</div>
-        ${compareValidators.map(v => `<div class="compare-cell compare-cell-value">${v.name}</div>`).join('')}
+        ${compareValidators.map(v => `<div class="compare-cell compare-cell-value">${escHtml(v.name)}</div>`).join('')}
       </div>`;
 
       // Metric rows
@@ -18773,7 +18818,7 @@
       }
       
       const portfolioOptionsHtml = portfolioOptions.map(opt => 
-        `<option value="${opt.voteAccount}">${opt.name}</option>`
+        `<option value="${opt.voteAccount}">${escHtml(opt.name)}</option>`
       ).join('');
       
       // Populate staking calculator validator dropdown
@@ -20328,7 +20373,7 @@
         const initial = v.name ? v.name.charAt(0).toUpperCase() : 'V';
         let logoHtml;
         if (v.iconUrl) {
-          logoHtml = `<img src="${v.iconUrl}" alt="${initial}" onerror="this.style.display='none';this.parentElement.textContent='${initial}';">`;
+          logoHtml = `<img src="${safeUrl(v.iconUrl)}" alt="${initial}" onerror="this.style.display='none';this.parentElement.textContent='${escAttrJs(initial)}';">`;
         } else {
           logoHtml = initial;
         }
@@ -20337,7 +20382,7 @@
           <div class="validator-list-item">
             <div class="validator-list-item-logo">${logoHtml}</div>
             <div class="validator-list-item-info" onclick="selectValidatorForSearch('${v.votePubkey}')">
-              <div class="validator-list-item-name">#${v.rank} - ${v.name}${tierBadge}</div>
+              <div class="validator-list-item-name">#${v.rank} - ${escHtml(v.name)}${tierBadge}</div>
               <div class="validator-list-item-address">${v.votePubkey}</div>
             </div>
             ${actionButton}
@@ -20437,7 +20482,7 @@
       const logoEl = document.getElementById('manageValidatorLogo');
       const firstLetter = name.charAt(0).toUpperCase();
       if (iconUrl) {
-        logoEl.innerHTML = `<img src="${iconUrl}" alt="${name}" style="width:100%;height:100%;border-radius:10px;" onerror="this.parentElement.textContent='${firstLetter}'">`;
+        logoEl.innerHTML = `<img src="${safeUrl(iconUrl)}" alt="${escHtml(name)}" style="width:100%;height:100%;border-radius:10px;" onerror="this.parentElement.textContent='${escAttrJs(firstLetter)}'">`;
       } else {
         logoEl.textContent = firstLetter;
       }
@@ -20588,7 +20633,7 @@
       // Generate logo HTML
       const firstLetter = validatorName.charAt(0).toUpperCase();
       const logoHtml = validatorIcon 
-        ? `<img class="perf-breakdown-logo" src="${validatorIcon}" alt="${validatorName}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        ? `<img class="perf-breakdown-logo" src="${validatorIcon}" alt="${escHtml(validatorName)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
            <div class="perf-breakdown-logo-placeholder" style="display:none;">${firstLetter}</div>`
         : `<div class="perf-breakdown-logo-placeholder">${firstLetter}</div>`;
       
@@ -20641,7 +20686,7 @@
             </div>
           </div>
           <div class="ask-claude-divider"><span>Need Help?</span></div>
-          <button class="ask-claude-btn" onclick="askClaudeForHelp('${voteAccount}', '${validatorName.replace(/'/g, "\\'")}', ${totalScore.toFixed(2)}, '${breakdown.skipRate.details.replace(/'/g, "\\'")}')">
+          <button class="ask-claude-btn" onclick="askClaudeForHelp('${voteAccount}', '${escAttrJs(validatorName)}', ${totalScore.toFixed(2)}, '${escAttrJs(breakdown.skipRate.details)}')">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
             Ask Claude to Help Optimize My Validator
           </button>
@@ -21338,7 +21383,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
       const firstLetter = (displayName || 'V').charAt(0).toUpperCase();
       if (validatorInfoCache[voteAccount] && validatorInfoCache[voteAccount].iconUrl) {
-        iconHtml = `<img class="stake-breakdown-header-logo" src="${validatorInfoCache[voteAccount].iconUrl}" alt="${displayName}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        iconHtml = `<img class="stake-breakdown-header-logo" src="${safeUrl(validatorInfoCache[voteAccount].iconUrl)}" alt="${escHtml(displayName)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                     <div class="stake-breakdown-header-placeholder" style="display:none;">${firstLetter}</div>`;
       } else {
         iconHtml = `<div class="stake-breakdown-header-placeholder">${firstLetter}</div>`;
@@ -23893,7 +23938,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
       
       resultsContainer.innerHTML = matches.map(v => `
-        <div class="redelegate-search-item" onclick="selectRedelegateValidator('${v.voteAccount}', '${(v.name || shortenAddress(v.voteAccount)).replace(/'/g, "\\'")}')">
+        <div class="redelegate-search-item" onclick="selectRedelegateValidator('${v.voteAccount}', '${escAttrJs((v.name || shortenAddress(v.voteAccount)))}')">
           <div>
             <div class="redelegate-search-item-name">${v.name || shortenAddress(v.voteAccount)}${v.isDelinquent ? ' ⚠️' : ''}</div>
             <div class="redelegate-search-item-address">${shortenAddress(v.voteAccount)}</div>
@@ -27339,7 +27384,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           
           <div class="stake-inline-footer">
             <div class="stake-inline-note">${detectionNote} • Cached 5 min</div>
-            <button class="stake-manage-btn" onclick="event.stopPropagation(); openStakeSelection('${voteAccount}', '${validatorName.replace(/'/g, "\\'")}')">
+            <button class="stake-manage-btn" onclick="event.stopPropagation(); openStakeSelection('${voteAccount}', '${escAttrJs(validatorName)}')">
               ⚙️ Manage Classification
             </button>
           </div>
@@ -27897,7 +27942,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           legendHtml.push(`
             <div class="chart-legend-item">
               <div class="chart-legend-color" style="background: ${color.border}"></div>
-              <span>${validator.name}</span>
+              <span>${escHtml(validator.name)}</span>
             </div>
           `);
         });
@@ -28290,7 +28335,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               return `
               <div class="stake-inline-delegator" style="flex-direction: column; align-items: flex-start; gap: 0.25rem;">
                 <div style="display: flex; justify-content: space-between; width: 100%;">
-                  <span style="font-weight: 500; color: var(--text-primary);">${v.name}</span>
+                  <span style="font-weight: 500; color: var(--text-primary);">${escHtml(v.name)}</span>
                   <span style="font-weight: 600; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">${formatNumber(vAPY, 1)}%</span>
                 </div>
                 <div style="display: flex; gap: 1rem; font-size: 0.7rem;">
@@ -28566,7 +28611,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         legendHtml.push(`
           <div class="chart-legend-item">
             <div class="chart-legend-color" style="background: ${color.border}"></div>
-            <span>${validator.name}</span>
+            <span>${escHtml(validator.name)}</span>
           </div>
         `);
       });
@@ -28734,7 +28779,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         legendHtml.push(`
           <div class="chart-legend-item">
             <div class="chart-legend-color" style="background: ${color.border}"></div>
-            <span>${validator.name}</span>
+            <span>${escHtml(validator.name)}</span>
           </div>
         `);
       });
@@ -29369,7 +29414,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
           const logoEl = document.getElementById('currentLeaderLogo');
           if (currentLeaderInfo.iconUrl) {
-            logoEl.innerHTML = `<img src="${currentLeaderInfo.iconUrl}" alt="${currentLeaderInfo.name.charAt(0)}" onerror="this.style.display='none';this.parentElement.textContent='${currentLeaderInfo.name.charAt(0).toUpperCase()}';">`;
+            logoEl.innerHTML = `<img src="${safeUrl(currentLeaderInfo.iconUrl)}" alt="${escHtml(currentLeaderInfo.name.charAt(0))}" onerror="this.style.display='none';this.parentElement.textContent='${escAttrJs(currentLeaderInfo.name.charAt(0).toUpperCase())}';">`;
           } else {
             logoEl.textContent = currentLeaderInfo.name.charAt(0).toUpperCase();
           }
@@ -29401,7 +29446,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const initial = fullName.charAt(0).toUpperCase();
             let logoHtml;
             if (info && info.iconUrl) {
-              logoHtml = `<div class="leader-next-logo"><img src="${info.iconUrl}" alt="${initial}" onerror="this.style.display='none';this.parentElement.textContent='${initial}';"></div>`;
+              logoHtml = `<div class="leader-next-logo"><img src="${safeUrl(info.iconUrl)}" alt="${initial}" onerror="this.style.display='none';this.parentElement.textContent='${escAttrJs(initial)}';"></div>`;
             } else {
               logoHtml = `<div class="leader-next-logo">${initial}</div>`;
             }
@@ -29800,7 +29845,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           return {
             style: `background:${bg};color:#fff;`,
             inner: initial
-                 + `<img src="${esc(info.iconUrl)}" alt="${initial}" `
+                 + `<img src="${safeUrl(esc(info.iconUrl))}" alt="${initial}" `
                  +      `style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" `
                  +      `onerror="this.remove()">`
           };
@@ -31573,7 +31618,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       } catch (e) {
         console.error('[reward-breakdown] failed:', e);
         const retry = "openRewardBreakdown('" + voteAccount + "', '" +
-          String(name || '').replace(/'/g, "\\'") + "', " + (commission || 0) + ")";
+          escAttrJs(name) + "', " + (commission || 0) + ")";
         body.innerHTML =
           '<div class="rb-error">Could not compute the breakdown.' +
           '<span>' + rbEsc((e && e.message) || String(e)) + '</span>' +
@@ -32650,7 +32695,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const vInfo = allValidators?.find(v => v.nodePubkey === nodePubkey);
       const logoEl = document.getElementById('slotModalLogo');
       if (vInfo?.iconUrl) {
-        logoEl.innerHTML = `<img class="slot-modal-logo" src="${vInfo.iconUrl}" alt=""
+        logoEl.innerHTML = `<img class="slot-modal-logo" src="${safeUrl(vInfo.iconUrl)}" alt=""
           onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=slot-modal-logo-ph>${name.charAt(0).toUpperCase()}</div>')">`;
       } else {
         logoEl.innerHTML = `<div class="slot-modal-logo-ph">${name.charAt(0).toUpperCase()}</div>`;
