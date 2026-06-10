@@ -2,6 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- ─────────────────────────────────────────────────────────────────────
+       CONTENT-SECURITY-POLICY (Issue #2 — defense-in-depth backstop)
+
+       This policy locks down WHERE code can load from and WHERE the page may
+       send data, which blocks two major attack classes even if some other
+       defense fails: (1) a hacker can't load their own external script, and
+       (2) the page can't exfiltrate data to an attacker-controlled server.
+
+       NOTE on 'unsafe-inline' in script-src: this app uses ~300 inline event
+       handlers (onclick/oninput/etc.) that run core functionality, so inline
+       script execution must remain allowed for the site to work. The XSS
+       injection path those would otherwise expose is already closed upstream
+       by escaping all on-chain data before it reaches the DOM (Issue #3).
+       Removing 'unsafe-inline' here would require migrating every inline
+       handler to addEventListener first — a separate, larger effort.
+
+       Every allowed origin below was mapped from actual usage in this file:
+         script  : self + cdnjs (Chart.js) + unpkg (Leaflet)
+         style   : self + Google Fonts + unpkg (leaflet.css) + inline
+         font    : self + Google Fonts (gstatic)
+         img     : self + data: (favicon/webp) + keybase (icons) + carto (tiles)
+         connect : self + X1 RPC + api.x1.xyz + ipwho.is + api.github.com
+       If you add a new external resource, add its origin to the right line
+       or the browser will block it. -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com;
+    font-src 'self' https://fonts.gstatic.com;
+    img-src 'self' data: https://keybase.io https://*.basemaps.cartocdn.com;
+    connect-src 'self' https://rpc.mainnet.x1.xyz https://api.x1.xyz https://ipwho.is https://api.github.com;
+    object-src 'none';
+    base-uri 'self';
+    frame-ancestors 'self';
+    form-action 'self';
+    upgrade-insecure-requests;
+  ">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>X1 Validator Headquarters</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%2300d4ff' width='32' height='32' rx='6'/><text x='50%' y='55%' font-family='Arial' font-size='18' font-weight='bold' fill='%23001029' text-anchor='middle' dominant-baseline='middle'>X1</text></svg>">
