@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-10T05:52:00.360Z",
-  "totalNodes": 755,
-  "totalLocations": 753,
+  "lastUpdated": "2026-06-10T07:50:45.922Z",
+  "totalNodes": 756,
+  "totalLocations": 754,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -5232,13 +5232,6 @@
       "lat": 45.5063,
       "lon": -73.5794
     },
-    "65.109.70.9": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "149.50.110.18": {
       "country": "Poland",
       "countryCode": "PL",
@@ -5273,48 +5266,62 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "109.238.10.15": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Boulogne-Billancourt",
+      "lat": 48.8356,
+      "lon": 2.23832
+    },
+    "38.101.149.88": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5084,
+      "lon": -111.8838
     }
   },
   "countries": {
-    "FI": {
-      "name": "Finland",
-      "count": 92
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 30
-    },
-    "US": {
-      "name": "United States",
-      "count": 262
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 8
-    },
-    "FR": {
-      "name": "France",
-      "count": 60
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 123
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "DE": {
       "name": "Germany",
       "count": 144
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "US": {
+      "name": "United States",
+      "count": 263
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
+    "FI": {
+      "name": "Finland",
+      "count": 91
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 30
     },
     "CA": {
       "name": "Canada",
       "count": 23
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 123
+    },
+    "FR": {
+      "name": "France",
+      "count": 61
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 8
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 5
     },
     "SG": {
       "name": "Singapore",
