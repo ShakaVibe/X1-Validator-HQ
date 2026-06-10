@@ -17078,8 +17078,15 @@
         document.getElementById('portfolioResultCount').textContent = validators.length;
         document.getElementById('portfolioUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
 
-        // Fetch last epoch rewards for all validators (async)
-        fetchPortfolioLastEpochRewards(validators);
+        // Fetch last epoch rewards for all validators (async).
+        // We deliberately chain the two reward passes: the portfolio-summary
+        // pass runs first and populates totalRewardsCache, then the per-card
+        // pass runs and hits that warm cache instead of re-fetching every
+        // validator. Both use a 6-epoch window so the cache keys match. This
+        // roughly halves RPC load on a portfolio open, which is what was
+        // tripping the public RPC's rate limit (429s). Card rendering below is
+        // NOT blocked by this — only the secondary card-reward fill waits.
+        const _portfolioRewardsPass = fetchPortfolioLastEpochRewards(validators);
 
         // Sort validators alphabetically (natural sort for numbers)
         const sortedValidators = [...validators].sort((a, b) => {
@@ -17098,8 +17105,12 @@
         // Render validator cards (also sorted alphabetically)
         document.getElementById('portfolioValidatorResults').innerHTML = sortedValidators.map(v => renderValidatorCard(v, false, true)).join('');
 
-        // Fetch last epoch rewards for each card
-        fetchLastEpochForCards(sortedValidators);
+        // Fetch last epoch rewards for each card — but only AFTER the
+        // portfolio pass above has finished populating the cache, so this
+        // pass mostly reads from cache rather than re-hitting the RPC.
+        // .finally() (not .then()) so it still runs even if the first pass
+        // errored — a failed first pass shouldn't leave the cards blank.
+        _portfolioRewardsPass.finally(() => fetchLastEpochForCards(sortedValidators));
 
         loading.style.display = 'none';
         results.style.display = 'block';
@@ -17212,9 +17223,14 @@
     async function fetchLastEpochForCards(validators) {
       for (const v of validators) {
         try {
-          // Fetch 3 epochs so we can fall back if the most recent isn't indexed
-          // yet, and still calculate a change % against the prior indexed epoch
-          const rewards = await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 3);
+          // Request 6 epochs (not 3) so this call shares the SAME cache key as
+          // fetchPortfolioLastEpochRewards (which also uses 6). Because
+          // fetchTotalValidatorRewards caches by `${voteAccount}_total_${numEpochs}`,
+          // matching the epoch count means this pass hits the cache the first
+          // pass just populated instead of re-fetching every validator from
+          // scratch — roughly halving total RPC calls on a portfolio load.
+          // We still only use the most recent 3 below; the extra epochs are free.
+          const rewards = await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 6);
           const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
           const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
 
