@@ -13973,6 +13973,29 @@
       return '';
     }
 
+    // ─────────────────────────────────────────────────────────────────────
+    // ADDRESS VALIDATION
+    // Length-only checks (e.g. "32–44 chars") accept non-base58 garbage and
+    // typos that happen to be the right length. For irreversible actions like
+    // changing a stake/vote authority or choosing a withdraw destination, that
+    // is dangerous. isValidPubkey() defers to solanaWeb3's own base58 +
+    // on-curve parser, which is the authoritative definition of a valid key.
+    // Returns true only if the string parses to a real PublicKey.
+    // ─────────────────────────────────────────────────────────────────────
+    function isValidPubkey(addr) {
+      const v = String(addr == null ? '' : addr).trim();
+      if (v.length < 32 || v.length > 44) return false; // cheap pre-filter
+      try {
+        // Throws on invalid base58 or wrong byte length.
+        const pk = new solanaWeb3.PublicKey(v);
+        // Round-trip guard: the parsed key must serialize back to the same
+        // string, rejecting inputs base58 accepts but that aren't canonical.
+        return pk.toBase58() === v;
+      } catch (e) {
+        return false;
+      }
+    }
+
     const RPC_URL = 'https://rpc.mainnet.x1.xyz';
     const REWARDS_API_URL = null; // Set to your API URL when rewards tracker is running
 
@@ -24357,7 +24380,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         const destination = document.getElementById('withdrawStakeDestInput').value.trim();
         
-        if (!destination || destination.length < 32) {
+        if (!destination || !isValidPubkey(destination)) {
           throw new Error('Please enter a valid destination address.');
         }
         
@@ -25164,8 +25187,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const btn = document.getElementById('setWithdrawAuthorityBtn');
       const withdrawer = currentAuthorityStake?.data.meta?.authorized?.withdrawer;
       
-      // Validate address is 32-44 chars (base58 pubkey)
-      if (newAuthority.length >= 32 && newAuthority.length <= 44 && withdrawer === walletPublicKey) {
+      // Validate address is a real base58 pubkey (not just length)
+      if (isValidPubkey(newAuthority) && withdrawer === walletPublicKey) {
         btn.disabled = false;
       } else {
         btn.disabled = true;
@@ -25177,6 +25200,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       if (!newAuthority || !currentAuthorityStake) {
         showSetWithdrawAuthorityMessage('Please enter a valid public key.', 'error');
+        return;
+      }
+
+      if (!isValidPubkey(newAuthority)) {
+        showSetWithdrawAuthorityMessage('That is not a valid address. Double-check the public key — this action is irreversible.', 'error');
         return;
       }
       
@@ -25341,7 +25369,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const btn = document.getElementById('setStakeAuthorityBtn');
       const staker = currentAuthorityStake?.data.meta?.authorized?.staker;
       
-      if (newAuthority.length >= 32 && newAuthority.length <= 44 && staker === walletPublicKey) {
+      if (isValidPubkey(newAuthority) && staker === walletPublicKey) {
         btn.disabled = false;
       } else {
         btn.disabled = true;
@@ -25353,6 +25381,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       if (!newAuthority || !currentAuthorityStake) {
         showSetStakeAuthorityMessage('Please enter a valid public key.', 'error');
+        return;
+      }
+
+      if (!isValidPubkey(newAuthority)) {
+        showSetStakeAuthorityMessage('That is not a valid address. Double-check the public key — this action is irreversible.', 'error');
         return;
       }
       
@@ -25906,7 +25939,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       const destinationAddress = document.getElementById('withdrawDestinationInput').value.trim();
       
-      if (!destinationAddress || destinationAddress.length < 32) {
+      if (!destinationAddress || !isValidPubkey(destinationAddress)) {
         showWithdrawMessage('Please enter a valid destination address.', 'error');
         return;
       }
@@ -26656,8 +26689,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const currentAuthority = voteAuthorityType === 'vote' ? voteAccountAuthorities.vote : voteAccountAuthorities.withdraw;
       const hasAuthority = currentAuthority === walletPublicKey;
       
-      // Validate: must have authority, input must be valid pubkey length, and different from current
-      const isValidInput = input.length >= 32 && input.length <= 44;
+      // Validate: must have authority, input must be a real pubkey, and different from current
+      const isValidInput = isValidPubkey(input);
       const isDifferent = input !== currentAuthority;
       
       btn.disabled = !(hasAuthority && isValidInput && isDifferent);
@@ -26674,6 +26707,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const newAuthority = document.getElementById('newVoteAuthorityInput').value.trim();
       
       if (!newAuthority || !walletPublicKey || !currentManageValidator) return;
+
+      if (!isValidPubkey(newAuthority)) {
+        showChangeVoteAuthorityMessage('That is not a valid address. Double-check the public key — this action is irreversible.', 'error');
+        return;
+      }
       
       // If changing vote authority, show scary confirmation first
       if (voteAuthorityType === 'vote') {
