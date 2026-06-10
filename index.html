@@ -3,6 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <!-- ─────────────────────────────────────────────────────────────────────
+       CLICKJACKING STOPGAP (frame-buster)
+
+       This host (GitHub Pages) cannot send a real `frame-ancestors` /
+       `X-Frame-Options` header, and `frame-ancestors` is ignored when CSP is
+       delivered via <meta>. So this script is the only clickjacking defense
+       that can ship here. It refuses to run inside an iframe: if the page is
+       framed it tries to break out, and if a hostile/sandboxed parent blocks
+       that, it blanks the document so there is nothing to click through.
+
+       NOTE: this is a band-aid, not a real header. A sandboxed iframe can
+       neutralize it. The proper fix is to serve real security headers from a
+       host that supports them (Cloudflare/Netlify _headers, or Cloudflare in
+       front of Pages). Track that as Issue #5. -->
+  <script>
+    (function () {
+      try {
+        if (window.top !== window.self) {
+          // We are framed. Try to escape to the top.
+          try {
+            window.top.location = window.self.location;
+          } catch (e) {
+            // Cross-origin parent blocked the redirect — blank the page so
+            // there is no clickable UI to hijack.
+            document.documentElement.innerHTML = '';
+          }
+        }
+      } catch (e) {
+        // Never let this stopgap break normal (unframed) page loads.
+      }
+    })();
+  </script>
+  <!-- ─────────────────────────────────────────────────────────────────────
        CONTENT-SECURITY-POLICY (Issue #2 — defense-in-depth backstop)
 
        This policy locks down WHERE code can load from and WHERE the page may
