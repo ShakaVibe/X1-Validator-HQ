@@ -11,7 +11,20 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+  <!-- @solana/web3.js v1.98.4 — SELF-HOSTED + pinned with Subresource Integrity (SRI).
+       This file is the verified npm package build (extracted from the official
+       registry tarball). Hosting it yourself removes trust in any third-party CDN,
+       which is the strongest fix for the supply-chain risk that an unpinned
+       "@latest" CDN script carries — that library builds the transactions users sign.
+
+       Deployment: upload ./vendor/solana-web3.js-1.98.4.iife.min.js to your server
+       at the same relative path as this index.html (so the src below resolves).
+
+       If you ever replace this file, you MUST recompute the integrity hash below
+       (sha384 of the file, base64-encoded) or the browser will refuse to load it. -->
+  <script src="vendor/solana-web3.js-1.98.4.iife.min.js"
+          integrity="sha384-I45YF+S0YGWIolUyTksLk9TNtTqaDgZg8e6T1OoBoJvvFmphqYNIPZw3Kl0TkZNN"
+          crossorigin="anonymous"></script>
   <style>
     :root {
       --bg-primary: #0a1020;
