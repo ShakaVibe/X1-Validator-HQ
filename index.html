@@ -24108,7 +24108,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       resultsContainer.innerHTML = matches.map(v => `
         <div class="redelegate-search-item" onclick="selectRedelegateValidator('${v.voteAccount}', '${escAttrJs((v.name || shortenAddress(v.voteAccount)))}')">
           <div>
-            <div class="redelegate-search-item-name">${v.name || shortenAddress(v.voteAccount)}${v.isDelinquent ? ' ⚠️' : ''}</div>
+            <div class="redelegate-search-item-name">${escHtml(v.name || shortenAddress(v.voteAccount))}${v.isDelinquent ? ' ⚠️' : ''}</div>
             <div class="redelegate-search-item-address">${shortenAddress(v.voteAccount)}</div>
           </div>
           <div class="redelegate-search-item-stake">${formatCompact(v.activatedStake)} XNT</div>
