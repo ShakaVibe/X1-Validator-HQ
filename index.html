@@ -14115,11 +14115,15 @@
     // (both rpcCall() and the many direct fetch(RPC_URL, ...) sites).
     // ─────────────────────────────────────────────────────────────────────
     (function installRpcThrottle() {
-      const MAX_CONCURRENT    = 4;   // max simultaneous in-flight RPC requests
-      const MAX_RETRIES_429   = 3;   // rate-limited: retry a few times with backoff
+      const MAX_CONCURRENT    = 3;   // max simultaneous in-flight RPC requests
+                                     // (lowered from 4 — the public X1 RPC
+                                     // rate-limits aggressively; fewer in flight
+                                     // means fewer 429s and less retry churn)
+      const MAX_RETRIES_429   = 5;   // rate-limited: be patient, the server is
+                                     // alive and just asking us to slow down
       const MAX_RETRIES_NET   = 1;   // network / CORS: fail fast, don't hammer
       const BASE_BACKOFF      = 500; // ms
-      const MAX_BACKOFF       = 5000;
+      const MAX_BACKOFF       = 8000;
 
       // ── Circuit breaker ───────────────────────────────────────
       // When the RPC is unreachable (CORS blocked, DNS failing, server
@@ -14213,7 +14217,23 @@
               // will trigger harmlessly.
               if (response.status === 429) {
                 if (attempt < MAX_RETRIES_429) {
-                  await new Promise(r => setTimeout(r, backoffDelay(attempt)));
+                  // Honor the server's Retry-After hint if it sends one
+                  // (seconds, or an HTTP date). Otherwise fall back to our
+                  // own exponential backoff. We cap the honored delay so a
+                  // misbehaving header can't stall the UI indefinitely.
+                  let delay = backoffDelay(attempt);
+                  const ra = response.headers.get('Retry-After');
+                  if (ra) {
+                    let raMs = 0;
+                    if (/^\d+$/.test(ra.trim())) {
+                      raMs = parseInt(ra.trim(), 10) * 1000;
+                    } else {
+                      const when = Date.parse(ra);
+                      if (!isNaN(when)) raMs = when - Date.now();
+                    }
+                    if (raMs > 0) delay = Math.min(raMs, 15000); // cap at 15s
+                  }
+                  await new Promise(r => setTimeout(r, delay));
                   continue;
                 }
                 return response; // give up this request, let caller see 429
