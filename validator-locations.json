@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-11T03:36:04.352Z",
-  "totalNodes": 754,
-  "totalLocations": 752,
+  "lastUpdated": "2026-06-11T06:02:22.867Z",
+  "totalNodes": 738,
+  "totalLocations": 736,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -751,13 +751,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "162.216.114.194": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Paterson",
-      "lat": 40.9117,
-      "lon": -74.1786
     },
     "45.94.82.26": {
       "country": "The Netherlands",
@@ -2152,13 +2145,6 @@
       "lat": 40.8207,
       "lon": -74.4231
     },
-    "149.50.116.114": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "51.89.65.27": {
       "country": "United Kingdom",
       "countryCode": "GB",
@@ -3013,13 +2999,6 @@
       "lat": 52.2372,
       "lon": 21.0123
     },
-    "146.59.84.206": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "146.59.84.202": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3706,13 +3685,6 @@
       "lat": 41.3072,
       "lon": -111.992
     },
-    "51.38.156.141": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
     "64.71.177.141": {
       "country": "United States",
       "countryCode": "US",
@@ -3888,20 +3860,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.38.153.204": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.150.226": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
     "38.92.25.206": {
       "country": "United States",
       "countryCode": "US",
@@ -3985,48 +3943,6 @@
       "city": "Atherton",
       "lat": 37.4595,
       "lon": -122.196
-    },
-    "5.39.57.87": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Paris",
-      "lat": 48.8575,
-      "lon": 2.35138
-    },
-    "51.68.131.42": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "5.135.83.195": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "51.38.147.239": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.146.170": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.144.37": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
     },
     "159.195.20.72": {
       "country": "Germany",
@@ -5008,21 +4924,7 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "95.217.114.31": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "51.38.150.243": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.144.158": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Wroclaw",
@@ -5037,13 +4939,6 @@
       "lon": 17.0321
     },
     "51.38.147.170": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.159.47": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Wroclaw",
@@ -5239,13 +5134,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "167.114.210.161": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5063,
-      "lon": -73.5794
-    },
     "65.109.63.242": {
       "country": "Finland",
       "countryCode": "FI",
@@ -5269,33 +5157,37 @@
     }
   },
   "countries": {
+    "US": {
+      "name": "United States",
+      "count": 261
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 111
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 22
+    },
     "FI": {
       "name": "Finland",
-      "count": 91
+      "count": 90
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 144
+    },
+    "FR": {
+      "name": "France",
+      "count": 59
     },
     "NL": {
       "name": "The Netherlands",
       "count": 30
     },
-    "US": {
-      "name": "United States",
-      "count": 262
-    },
     "SE": {
       "name": "Sweden",
       "count": 8
-    },
-    "FR": {
-      "name": "France",
-      "count": 61
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 122
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 144
     },
     "KE": {
       "name": "Kenya",
@@ -5304,10 +5196,6 @@
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 23
     },
     "SG": {
       "name": "Singapore",
