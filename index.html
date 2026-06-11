@@ -5026,6 +5026,64 @@
       opacity: 0.7;
     }
 
+    /* Action Groups (Wallet / Validator / Stake) */
+    .action-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .action-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .action-group-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .action-group-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .action-group-context {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .action-group-context.unlock-hint {
+      color: var(--accent-blue);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* Pulse highlight for the account list (used by locked-action explainers) */
+    @keyframes accountsListPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(77, 166, 255, 0); }
+      50% { box-shadow: 0 0 0 4px rgba(77, 166, 255, 0.45); }
+    }
+
+    .accounts-list.pulse-highlight {
+      animation: accountsListPulse 1.2s ease-in-out 2;
+      border-radius: 10px;
+    }
+
+    /* Address shown next to section titles (e.g. "Vote Account Details") */
+    .details-title-address {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--accent-blue);
+      font-family: 'JetBrains Mono', monospace;
+      margin-left: 0.5rem;
+    }
+
     /* Action Explainer Modal */
     .explainer-steps {
       margin: 1rem 0;
@@ -12558,38 +12616,28 @@
             <h3>Actions</h3>
           </div>
           
-          <div class="manage-actions-grid">
-            <button class="manage-action-btn" id="withdrawBtn" onclick="initiateWithdraw()">
-              <span class="action-icon">💸</span>
-              <span class="action-text">
-                <span class="action-title" id="withdrawBtnTitle">Withdraw XNT</span>
-                <span class="action-desc">Withdraw rewards to your wallet</span>
-              </span>
-            </button>
-            
-            <button class="manage-action-btn" id="commissionBtn" onclick="initiateChangeCommission()">
-              <span class="action-icon">📝</span>
-              <span class="action-text">
-                <span class="action-title">Change Commission</span>
-                <span class="action-desc">Update validator commission rate</span>
-              </span>
-            </button>
-            
-            <button class="manage-action-btn" id="authorityBtn" onclick="initiateChangeAuthority()">
-              <span class="action-icon">🔐</span>
-              <span class="action-text">
-                <span class="action-title">Change Authority</span>
-                <span class="action-desc">Transfer withdraw authority</span>
-              </span>
-            </button>
-            
-            <button class="manage-action-btn" id="identityBtn" onclick="initiateUpdateIdentity()">
-              <span class="action-icon">🏷️</span>
-              <span class="action-text">
-                <span class="action-title">Update Identity</span>
-                <span class="action-desc">Change on-chain validator info</span>
-              </span>
-            </button>
+          <div class="action-group">
+            <div class="action-group-header">
+              <span class="action-group-title">Wallet Actions</span>
+              <span class="action-group-context">Always available</span>
+            </div>
+            <div class="manage-actions-grid" id="walletActionsGrid"></div>
+          </div>
+          
+          <div class="action-group">
+            <div class="action-group-header">
+              <span class="action-group-title">Validator Actions</span>
+              <span class="action-group-context" id="validatorActionsContext"></span>
+            </div>
+            <div class="manage-actions-grid" id="validatorActionsGrid"></div>
+          </div>
+          
+          <div class="action-group">
+            <div class="action-group-header">
+              <span class="action-group-title">Stake Actions</span>
+              <span class="action-group-context" id="stakeActionsContext"></span>
+            </div>
+            <div class="manage-actions-grid" id="stakeActionsGrid"></div>
           </div>
         </div>
       </div>
@@ -20668,6 +20716,7 @@
     let currentManageValidator = null;
     let selectedAccountType = 'vote';
     let stakeAccounts = [];
+    let manageVoteWithdrawAuthority = null; // cached from fetchVoteAccountAuthoritiesForDisplay, used for action locks
 
     function openManageValidator(voteAccount, name, rewardsBalance, commission, identityPubkey, iconUrl) {
       currentManageValidator = {
@@ -20696,6 +20745,9 @@
       
       // Reset stake accounts container
       document.getElementById('stakeAccountsContainer').innerHTML = '<div class="loading-text">Loading stake accounts...</div>';
+      
+      // Reset cached vote withdraw authority (re-fetched on selection)
+      manageVoteWithdrawAuthority = null;
       
       // Update wallet status display
       updateManageWalletDisplay();
@@ -20746,6 +20798,11 @@
         // Set badge to no wallet state (clickable)
         authorityBadge.className = 'authority-badge clickable';
         authorityBadge.innerHTML = '<span class="authority-badge-icon">🔗</span><span class="authority-badge-text">No wallet connected</span>';
+      }
+      
+      // Action locks depend on the connected wallet, so refresh them
+      if (typeof renderActions === 'function') {
+        renderActions();
       }
     }
 
@@ -22478,8 +22535,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         document.getElementById('voteSelectBtn').classList.add('selected');
         document.getElementById('voteSelectBtn').textContent = '● Selected';
         
-        // Show vote account details
-        document.getElementById('selectedAccountTitle').textContent = 'Vote Account Details';
+        // Show vote account details (with address next to the title)
+        document.getElementById('selectedAccountTitle').innerHTML = 
+          `Vote Account Details<span class="details-title-address">${shortenAddress(currentManageValidator.voteAccount)}</span>${getCopyButtonHtml(currentManageValidator.voteAccount)}`;
         document.getElementById('selectedBalance').textContent = formatNumber(currentManageValidator.rewardsBalance, 4);
         document.getElementById('selectedCommission').textContent = currentManageValidator.commission + '%';
         
@@ -22504,8 +22562,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Fetch vote account authorities
         fetchVoteAccountAuthoritiesForDisplay();
         
-        // Show vote account actions
-        updateActionsForVote();
+        // Re-render all action groups for vote selection
+        renderActions();
         
         // Re-fetch credits
         fetchManageValidatorData(currentManageValidator.voteAccount);
@@ -22535,8 +22593,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
           stakeBtn.textContent = '● Selected';
         }
         
-        // Show stake account details
-        document.getElementById('selectedAccountTitle').textContent = 'Stake Account Details';
+        // Show stake account details (with address next to the title)
+        document.getElementById('selectedAccountTitle').innerHTML = 
+          `Stake Account Details<span class="details-title-address">${shortenAddress(stake.pubkey)}</span>${getCopyButtonHtml(stake.pubkey)}`;
         
         // Calculate staked vs liquid balance using rate-limit-aware
         // active/inactive lamports populated by fetchStakeAccounts.
@@ -22571,8 +22630,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         document.getElementById('creditsBox').style.display = 'none';
         document.getElementById('commissionBox').style.display = 'none';
         
-        // Show stake account actions
-        updateActionsForStake(stake.state);
+        // Re-render all action groups for stake selection
+        renderActions();
         
         // Update stake authority for stake account
         const staker = stake.data.meta?.authorized?.staker;
@@ -22724,6 +22783,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const voteAuthority = voteData.authorizedVoters?.[0]?.authorizedVoter || voteData.authorizedVoter;
           const withdrawAuthority = voteData.authorizedWithdrawer;
           
+          // Cache withdraw authority and refresh action locks now that it's known
+          manageVoteWithdrawAuthority = withdrawAuthority || null;
+          renderActions();
+          
           // Display Vote Authority
           const voteAuthorityIndicator = document.getElementById('voteAuthorityIndicator');
           if (voteAuthority) {
@@ -22773,11 +22836,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
             `;
           }
         } else {
+          manageVoteWithdrawAuthority = null; // unknown - fail open, no locks
           document.getElementById('selectedVoteAuthority').textContent = 'Unable to fetch';
           document.getElementById('selectedVoteWithdrawAuthority').textContent = 'Unable to fetch';
         }
       } catch (e) {
         console.error('Error fetching vote account authorities:', e);
+        manageVoteWithdrawAuthority = null; // unknown - fail open, no locks
         document.getElementById('selectedVoteAuthority').textContent = 'Error';
         document.getElementById('selectedVoteWithdrawAuthority').textContent = 'Error';
       }
@@ -22814,92 +22879,22 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
 
-    // Update actions grid for vote account
-    function updateActionsForVote() {
-      const actionsGrid = document.querySelector('.manage-actions-grid');
-      if (!actionsGrid) {
-        console.error('Actions grid not found');
-        return;
-      }
-      actionsGrid.innerHTML = `
-        <button class="manage-action-btn" onclick="initiateCreateStake()">
-          <span class="action-icon" style="color: #ffc107; font-weight: bold; font-size: 1.8rem;">+</span>
-          <span class="action-text">
-            <span class="action-title">Create & Delegate Stake</span>
-            <span class="action-desc">Create new stake account</span>
-          </span>
-        </button>
-        
-        <button class="manage-action-btn" onclick="initiateWithdraw()">
-          <span class="action-icon">💸</span>
-          <span class="action-text">
-            <span class="action-title">Withdraw XNT</span>
-            <span class="action-desc">Withdraw rewards to your wallet</span>
-          </span>
-        </button>
-        
-        <button class="manage-action-btn" onclick="initiateSendToIdentity()">
-          <span class="action-icon">📤</span>
-          <span class="action-text">
-            <span class="action-title">Send XNT to ID Wallet</span>
-            <span class="action-desc">Transfer to validator identity wallet</span>
-          </span>
-        </button>
-        
-        <button class="manage-action-btn" onclick="initiateChangeCommission()">
-          <span class="action-icon">📝</span>
-          <span class="action-text">
-            <span class="action-title">Change Commission</span>
-            <span class="action-desc">Update validator commission rate</span>
-          </span>
-        </button>
-        
-        <button class="manage-action-btn" onclick="initiateUpdateIdentity()">
-          <span class="action-icon">🏷️</span>
-          <span class="action-text">
-            <span class="action-title">Update Identity</span>
-            <span class="action-desc">Change on-chain validator info</span>
-          </span>
-        </button>
-        
-        <button class="manage-action-btn" onclick="initiateChangeAuthority()">
-          <span class="action-icon">🔐</span>
-          <span class="action-text">
-            <span class="action-title">Change Authority</span>
-            <span class="action-desc">Transfer withdraw authority</span>
-          </span>
-        </button>
-      `;
-    }
-
-    // Update actions grid for stake account based on state
-    function updateActionsForStake(stakeState = 'active') {
-      const actionsGrid = document.querySelector('.manage-actions-grid');
-      if (!actionsGrid) {
-        console.error('Actions grid not found');
-        return;
-      }
+    // Render all action groups (Wallet / Validator / Stake) based on current context.
+    // Replaces the old updateActionsForVote/updateActionsForStake innerHTML swap so
+    // every available action is always visible, with contextual locks + explainers.
+    function renderActions() {
+      const walletGrid = document.getElementById('walletActionsGrid');
+      const validatorGrid = document.getElementById('validatorActionsGrid');
+      const stakeGrid = document.getElementById('stakeActionsGrid');
+      if (!walletGrid || !validatorGrid || !stakeGrid) return;
       
-      // Define which actions are enabled for each state
-      const actionAvailability = {
-        'createDelegate': true, // Always available
-        'sendToId': true, // Always available - transfers from wallet
-        'delegate': stakeState === 'inactive',
-        'undelegate': stakeState === 'active' || stakeState === 'activating',
-        'split': stakeState === 'active',
-        'merge': stakeState === 'active' || stakeState === 'inactive',
-        'withdraw': stakeState === 'inactive',
-        'close': stakeState === 'inactive',
-        'setStakeAuth': true, // Always available
-        'setWithdrawAuth': true // Always available
-      };
-      
-      // Helper to create button HTML
-      const createBtn = (id, icon, title, desc, onclick, iconStyle = '') => {
-        const isEnabled = actionAvailability[id];
+      // Helper to create button HTML. opts: { enabled, lockedClick, iconStyle }
+      const createBtn = (icon, title, desc, onclick, opts = {}) => {
+        const isEnabled = opts.enabled !== false;
         const disabledClass = isEnabled ? '' : 'disabled';
-        const clickHandler = isEnabled ? onclick : `showActionExplainer('${id}', '${stakeState}')`;
+        const clickHandler = isEnabled ? onclick : (opts.lockedClick || '');
         const lockIcon = isEnabled ? '' : '<span class="action-lock">🔒</span>';
+        const iconStyle = opts.iconStyle || '';
         
         return `
           <button class="manage-action-btn ${disabledClass}" onclick="${clickHandler}">
@@ -22912,18 +22907,99 @@ Please give me the diagnostic commands to run on my server so you can help me id
         `;
       };
       
-      // Buttons ordered by category: Stake Management → Restructure → Exit → Admin
-      actionsGrid.innerHTML = 
-        createBtn('createDelegate', '+', 'Create & Delegate Stake', 'Create new stake account', 'initiateCreateStake()', 'style="color: #ffc107; font-weight: bold; font-size: 1.8rem;"') +
-        createBtn('sendToId', '📤', 'Send XNT to ID Wallet', 'Transfer to validator identity', 'initiateSendToIdentity()') +
-        createBtn('delegate', '🔄', 'Delegate Stake', 'Delegate to a validator', 'initiateRedelegate()') +
-        createBtn('undelegate', '🔓', 'Undelegate Stake', 'Begin deactivation process', 'initiateUndelegate()') +
-        createBtn('split', '✂️', 'Split Stake', 'Divide into two accounts', 'initiateSplitStake()') +
-        createBtn('merge', '🔗', 'Merge Stakes', 'Combine multiple stake accounts', 'initiateMergeStakes()') +
-        createBtn('withdraw', '💸', 'Withdraw from Stake', 'Withdraw XNT to wallet', 'initiateWithdrawStake()') +
-        createBtn('close', '🗑️', 'Close Stake Account', 'Withdraw all & close account', 'initiateCloseStakeAccount()') +
-        createBtn('setStakeAuth', '🔐', 'Set Stake Authority', 'Change who can delegate', 'initiateSetStakeAuthority()') +
-        createBtn('setWithdrawAuth', '🔑', 'Set Withdraw Authority', 'Change who can withdraw', 'initiateSetWithdrawAuthority()');
+      // ===== Wallet Actions (never depend on selection) =====
+      walletGrid.innerHTML = 
+        createBtn('+', 'Create & Delegate Stake', 'Create new stake account', 'initiateCreateStake()', { iconStyle: 'style="color: #ffc107; font-weight: bold; font-size: 1.8rem;"' }) +
+        createBtn('📤', 'Send XNT to ID Wallet', 'Transfer to validator identity wallet', 'initiateSendToIdentity()');
+      
+      // ===== Validator Actions (vote account level, independent of selection) =====
+      const voteCtx = document.getElementById('validatorActionsContext');
+      if (voteCtx) {
+        voteCtx.textContent = (currentManageValidator && currentManageValidator.voteAccount)
+          ? shortenAddress(currentManageValidator.voteAccount) : '';
+        voteCtx.classList.remove('unlock-hint');
+      }
+      
+      // Authority gate: fail OPEN when authority is unknown / not yet fetched,
+      // so we never wrongly block an action. Each action's own modal still
+      // performs its full authority check at runtime.
+      const voteAuthKnown = !!(walletPublicKey && manageVoteWithdrawAuthority);
+      const hasVoteWithdrawAuth = !voteAuthKnown || manageVoteWithdrawAuthority === walletPublicKey;
+      const voteAuthOpts = hasVoteWithdrawAuth ? {} : { enabled: false, lockedClick: "showActionExplainer('voteWithdraw', 'noVoteWithdrawAuth')" };
+      
+      validatorGrid.innerHTML = 
+        createBtn('💸', 'Withdraw XNT', 'Withdraw rewards to your wallet', 'initiateWithdraw()', voteAuthOpts) +
+        createBtn('📝', 'Change Commission', 'Update validator commission rate', 'initiateChangeCommission()', voteAuthOpts) +
+        createBtn('🏷️', 'Update Identity', 'Change on-chain validator info', 'initiateUpdateIdentity()') +
+        createBtn('🔐', 'Change Authority', 'Transfer withdraw authority', 'initiateChangeAuthority()', voteAuthOpts);
+      
+      // ===== Stake Actions (depend on selected stake account + its state + authority) =====
+      const stakeCtx = document.getElementById('stakeActionsContext');
+      let stake = null;
+      if (selectedAccountType && selectedAccountType.startsWith('stake-')) {
+        const idx = parseInt(selectedAccountType.split('-')[1]);
+        stake = stakeAccounts[idx] || null;
+      }
+      
+      const stakeActionDefs = [
+        { id: 'delegate', icon: '🔄', title: 'Delegate Stake', desc: 'Delegate to a validator', onclick: 'initiateRedelegate()' },
+        { id: 'undelegate', icon: '🔓', title: 'Undelegate Stake', desc: 'Begin deactivation process', onclick: 'initiateUndelegate()' },
+        { id: 'split', icon: '✂️', title: 'Split Stake', desc: 'Divide into two accounts', onclick: 'initiateSplitStake()' },
+        { id: 'merge', icon: '🔗', title: 'Merge Stakes', desc: 'Combine multiple stake accounts', onclick: 'initiateMergeStakes()' },
+        { id: 'withdraw', icon: '💸', title: 'Withdraw from Stake', desc: 'Withdraw XNT to wallet', onclick: 'initiateWithdrawStake()' },
+        { id: 'close', icon: '🗑️', title: 'Close Stake Account', desc: 'Withdraw all & close account', onclick: 'initiateCloseStakeAccount()' },
+        { id: 'setStakeAuth', icon: '🔐', title: 'Set Stake Authority', desc: 'Change who can delegate', onclick: 'initiateSetStakeAuthority()' },
+        { id: 'setWithdrawAuth', icon: '🔑', title: 'Set Withdraw Authority', desc: 'Change who can withdraw', onclick: 'initiateSetWithdrawAuthority()' }
+      ];
+      
+      if (!stake) {
+        // No stake selected: show all stake actions locked, with a hint in the header
+        if (stakeCtx) {
+          stakeCtx.textContent = 'No stake selected — choose one from the list above to unlock';
+          stakeCtx.classList.add('unlock-hint');
+        }
+        stakeGrid.innerHTML = stakeActionDefs.map(d => 
+          createBtn(d.icon, d.title, d.desc, '', { enabled: false, lockedClick: `showActionExplainer('${d.id}', 'new')` })
+        ).join('');
+      } else {
+        const stakeState = stake.state || 'active';
+        if (stakeCtx) {
+          stakeCtx.textContent = shortenAddress(stake.pubkey);
+          stakeCtx.classList.remove('unlock-hint');
+        }
+        
+        // Which actions each stake state allows (same rules as before)
+        const stateAvailability = {
+          'delegate': stakeState === 'inactive',
+          'undelegate': stakeState === 'active' || stakeState === 'activating',
+          'split': stakeState === 'active',
+          'merge': stakeState === 'active' || stakeState === 'inactive',
+          'withdraw': stakeState === 'inactive',
+          'close': stakeState === 'inactive',
+          'setStakeAuth': true,
+          'setWithdrawAuth': true
+        };
+        
+        // Authority gates: stake authority signs delegate/undelegate/split/merge/setStakeAuth;
+        // withdraw authority signs withdraw/close/setWithdrawAuth. Fail OPEN when unknown.
+        const staker = stake.data?.meta?.authorized?.staker;
+        const withdrawer = stake.data?.meta?.authorized?.withdrawer;
+        const hasStakeAuth = !(walletPublicKey && staker) || staker === walletPublicKey;
+        const hasWithdrawAuth = !(walletPublicKey && withdrawer) || withdrawer === walletPublicKey;
+        const usesWithdrawAuth = { 'withdraw': true, 'close': true, 'setWithdrawAuth': true };
+        
+        stakeGrid.innerHTML = stakeActionDefs.map(d => {
+          const authOk = usesWithdrawAuth[d.id] ? hasWithdrawAuth : hasStakeAuth;
+          const stateOk = stateAvailability[d.id];
+          if (authOk && stateOk) {
+            return createBtn(d.icon, d.title, d.desc, d.onclick);
+          }
+          const reason = !authOk
+            ? (usesWithdrawAuth[d.id] ? 'noWithdrawAuth' : 'noStakeAuth')
+            : stakeState;
+          return createBtn(d.icon, d.title, d.desc, '', { enabled: false, lockedClick: `showActionExplainer('${d.id}', '${reason}')` });
+        }).join('');
+      }
     }
     
     // Show explainer for disabled actions
@@ -23091,7 +23167,38 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
       };
       
-      const info = explainers[action]?.[stakeState];
+      // Authority-based locks share generic explainers regardless of action
+      const authorityExplainers = {
+        noStakeAuth: {
+          title: 'Wallet Lacks Stake Authority',
+          message: 'Your connected wallet does not hold the Stake Authority for this stake account, so it cannot sign this action.',
+          steps: ['The current Stake Authority is shown in the account details above', 'Connect the wallet that holds the Stake Authority to perform this action'],
+          action: null
+        },
+        noWithdrawAuth: {
+          title: 'Wallet Lacks Withdraw Authority',
+          message: 'Your connected wallet does not hold the Withdraw Authority for this stake account, so it cannot sign this action.',
+          steps: ['The current Withdraw Authority is shown in the account details above', 'Connect the wallet that holds the Withdraw Authority to perform this action'],
+          action: null
+        },
+        noVoteWithdrawAuth: {
+          title: 'Wallet Lacks Withdraw Authority',
+          message: 'Your connected wallet does not hold the Withdraw Authority for this vote account, so it cannot sign validator-level actions like withdrawing rewards, changing commission, or transferring authority.',
+          steps: ['The current Withdraw Authority is shown in the vote account details', 'Connect the wallet that holds the Withdraw Authority to perform these actions'],
+          action: null
+        }
+      };
+      
+      let info;
+      if (authorityExplainers[stakeState]) {
+        info = authorityExplainers[stakeState];
+      } else {
+        info = explainers[action]?.[stakeState];
+        // "No stake selected" case: point the user at the account list instead
+        if (info && stakeState === 'new') {
+          info = { ...info, action: { text: 'Select a Stake Account', onclick: 'highlightAccountList()' } };
+        }
+      }
       if (!info) {
         showToast('This action is not available for the current stake state');
         return;
@@ -23126,6 +23233,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
     function closeActionExplainerModal() {
       document.getElementById('actionExplainerModal').style.display = 'none';
       document.body.style.overflow = '';
+    }
+    
+    // Scroll to the account list and pulse it (used by locked stake actions
+    // when no stake account is selected)
+    function highlightAccountList() {
+      const list = document.getElementById('accountsList');
+      if (!list) return;
+      if (typeof list.scrollIntoView === 'function') {
+        list.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      list.classList.remove('pulse-highlight');
+      void list.offsetWidth; // force reflow so the animation can restart
+      list.classList.add('pulse-highlight');
+      setTimeout(() => list.classList.remove('pulse-highlight'), 2600);
     }
 
     // =========================================
