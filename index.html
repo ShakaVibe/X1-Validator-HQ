@@ -4997,7 +4997,7 @@
 
     .manage-action-btn .action-desc {
       font-size: 0.7rem;
-      color: var(--text-dim);
+      color: var(--text-secondary);
     }
 
     .manage-action-btn.disabled {
@@ -5037,7 +5037,7 @@
 
     .action-group-header {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       gap: 0.6rem;
       flex-wrap: wrap;
       margin-bottom: 0.6rem;
@@ -5053,10 +5053,29 @@
       color: var(--text-secondary);
     }
 
+    .action-group-title.wallet {
+      color: var(--accent-gold);
+    }
+
+    .action-group-title.validator {
+      color: var(--accent-blue);
+    }
+
+    .action-group-title.stake {
+      color: var(--success);
+    }
+
     .action-group-context {
       font-size: 0.7rem;
       color: var(--text-dim);
       font-family: 'JetBrains Mono', monospace;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .action-group-context .action-group-address {
+      color: var(--accent-blue);
     }
 
     .action-group-context.unlock-hint {
@@ -12618,7 +12637,7 @@
           
           <div class="action-group">
             <div class="action-group-header">
-              <span class="action-group-title">Wallet Actions</span>
+              <span class="action-group-title wallet">Wallet Actions</span>
               <span class="action-group-context">Always available</span>
             </div>
             <div class="manage-actions-grid" id="walletActionsGrid"></div>
@@ -12626,7 +12645,7 @@
           
           <div class="action-group">
             <div class="action-group-header">
-              <span class="action-group-title">Validator Actions</span>
+              <span class="action-group-title validator">Validator Actions</span>
               <span class="action-group-context" id="validatorActionsContext"></span>
             </div>
             <div class="manage-actions-grid" id="validatorActionsGrid"></div>
@@ -12634,7 +12653,7 @@
           
           <div class="action-group">
             <div class="action-group-header">
-              <span class="action-group-title">Stake Actions</span>
+              <span class="action-group-title stake">Stake Actions</span>
               <span class="action-group-context" id="stakeActionsContext"></span>
             </div>
             <div class="manage-actions-grid" id="stakeActionsGrid"></div>
@@ -22915,8 +22934,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // ===== Validator Actions (vote account level, independent of selection) =====
       const voteCtx = document.getElementById('validatorActionsContext');
       if (voteCtx) {
-        voteCtx.textContent = (currentManageValidator && currentManageValidator.voteAccount)
-          ? shortenAddress(currentManageValidator.voteAccount) : '';
+        if (currentManageValidator && currentManageValidator.voteAccount) {
+          voteCtx.innerHTML = `<span class="action-group-address">${shortenAddress(currentManageValidator.voteAccount)}</span>${getCopyButtonHtml(currentManageValidator.voteAccount)}`;
+        } else {
+          voteCtx.innerHTML = '';
+        }
         voteCtx.classList.remove('unlock-hint');
       }
       
@@ -22964,7 +22986,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       } else {
         const stakeState = stake.state || 'active';
         if (stakeCtx) {
-          stakeCtx.textContent = shortenAddress(stake.pubkey);
+          stakeCtx.innerHTML = `<span class="action-group-address">${shortenAddress(stake.pubkey)}</span>${getCopyButtonHtml(stake.pubkey)}`;
           stakeCtx.classList.remove('unlock-hint');
         }
         
