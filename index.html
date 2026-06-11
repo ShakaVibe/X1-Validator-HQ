@@ -5029,6 +5029,24 @@
     /* Action Groups (Wallet / Validator / Stake) */
     .action-group {
       margin-bottom: 1.25rem;
+      padding: 0.85rem 1rem;
+      border-left: 3px solid transparent;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .action-group.wallet-group {
+      border-left-color: var(--accent-gold);
+      background: rgba(240, 185, 11, 0.05);
+    }
+
+    .action-group.validator-group {
+      border-left-color: var(--accent-blue);
+      background: rgba(77, 166, 255, 0.05);
+    }
+
+    .action-group.stake-group {
+      border-left-color: var(--success);
+      background: rgba(0, 230, 118, 0.04);
     }
 
     .action-group:last-child {
@@ -12635,7 +12653,7 @@
             <h3>Actions</h3>
           </div>
           
-          <div class="action-group">
+          <div class="action-group wallet-group">
             <div class="action-group-header">
               <span class="action-group-title wallet">Wallet Actions</span>
               <span class="action-group-context">Always available</span>
@@ -12643,7 +12661,7 @@
             <div class="manage-actions-grid" id="walletActionsGrid"></div>
           </div>
           
-          <div class="action-group">
+          <div class="action-group validator-group">
             <div class="action-group-header">
               <span class="action-group-title validator">Validator Actions</span>
               <span class="action-group-context" id="validatorActionsContext"></span>
@@ -12651,7 +12669,7 @@
             <div class="manage-actions-grid" id="validatorActionsGrid"></div>
           </div>
           
-          <div class="action-group">
+          <div class="action-group stake-group">
             <div class="action-group-header">
               <span class="action-group-title stake">Stake Actions</span>
               <span class="action-group-context" id="stakeActionsContext"></span>
