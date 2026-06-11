@@ -5028,29 +5028,24 @@
 
     /* Action Groups (Wallet / Validator / Stake) */
     .action-group {
-      margin-bottom: 1.25rem;
-      padding: 0.85rem 1rem;
-      border-left: 3px solid transparent;
-      border-radius: 0 10px 10px 0;
-    }
-
-    .action-group.wallet-group {
-      border-left-color: var(--accent-gold);
-      background: rgba(240, 185, 11, 0.05);
-    }
-
-    .action-group.validator-group {
-      border-left-color: var(--accent-blue);
-      background: rgba(77, 166, 255, 0.05);
-    }
-
-    .action-group.stake-group {
-      border-left-color: var(--success);
-      background: rgba(0, 230, 118, 0.04);
+      margin-bottom: 1.5rem;
     }
 
     .action-group:last-child {
       margin-bottom: 0;
+    }
+
+    /* Colored section rule under each group header */
+    .action-group.wallet-group .action-group-header {
+      border-bottom-color: rgba(240, 185, 11, 0.35);
+    }
+
+    .action-group.validator-group .action-group-header {
+      border-bottom-color: rgba(77, 166, 255, 0.35);
+    }
+
+    .action-group.stake-group .action-group-header {
+      border-bottom-color: rgba(0, 230, 118, 0.3);
     }
 
     .action-group-header {
