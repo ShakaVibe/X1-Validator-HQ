@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-12T11:36:41.392Z",
+  "lastUpdated": "2026-06-12T13:33:41.810Z",
   "totalNodes": 739,
   "totalLocations": 736,
   "locations": {
@@ -5169,10 +5169,6 @@
       "name": "Canada",
       "count": 22
     },
-    "FR": {
-      "name": "France",
-      "count": 60
-    },
     "FI": {
       "name": "Finland",
       "count": 90
@@ -5180,6 +5176,10 @@
     "DE": {
       "name": "Germany",
       "count": 145
+    },
+    "FR": {
+      "name": "France",
+      "count": 60
     },
     "NL": {
       "name": "The Netherlands",
