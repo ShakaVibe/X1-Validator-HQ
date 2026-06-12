@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-12T13:33:41.810Z",
+  "lastUpdated": "2026-06-12T15:33:43.903Z",
   "totalNodes": 739,
   "totalLocations": 736,
   "locations": {
@@ -5057,13 +5057,6 @@
       "lat": 37.3387,
       "lon": -121.885
     },
-    "213.25.37.211": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Skórcz",
-      "lat": 53.7941,
-      "lon": 18.5156
-    },
     "213.25.37.214": {
       "country": "Poland",
       "countryCode": "PL",
@@ -5154,6 +5147,13 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
+    },
+    "46.170.40.91": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2065,
+      "lon": 21.0249
     }
   },
   "countries": {
