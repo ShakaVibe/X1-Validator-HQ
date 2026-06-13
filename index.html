@@ -26277,6 +26277,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return;
       }
       
+      // Declared outside try so the catch block can verify the tx on a false expiry
+      let connection = null;
+      let signature = null;
+
       try {
         const btn = document.getElementById('withdrawConfirmBtn');
         btn.disabled = true;
@@ -26286,7 +26290,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         const { Connection, PublicKey, Transaction, TransactionInstruction } = solanaWeb3;
         
-        const connection = new Connection(RPC_URL, 'confirmed');
+        connection = new Connection(RPC_URL, 'confirmed');
         const voteAccountPubkey = new PublicKey(currentManageValidator.voteAccount);
         const withdrawAuthorityPubkey = new PublicKey(walletPublicKey);
         const destinationPubkey = new PublicKey(destinationAddress);
@@ -26316,8 +26320,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Create transaction
         const transaction = new Transaction().add(withdrawInstruction);
         
-        // Get recent blockhash
-        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
+        // Get recent blockhash (use 'confirmed' for the full ~150-block validity
+        // window — 'finalized' is already ~30+ slots old and shrinks the window)
+        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = withdrawAuthorityPubkey;
         
@@ -26326,7 +26331,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         // Sign and send
         if (connectedWallet && connectedWallet.provider) {
-          let signature;
           
           // Try signAndSendTransaction first
           try {
@@ -26382,6 +26386,47 @@ Please give me the diagnostic commands to run on my server so you can help me id
         console.error('Withdraw transaction error:', e);
         
         const btn = document.getElementById('withdrawConfirmBtn');
+
+        // "Block height exceeded" / "expired" is often a FALSE failure: confirmTransaction
+        // stopped waiting, but the tx may have actually landed. Verify before reporting failure.
+        const looksExpired = e.message && (
+          e.message.includes('block height exceeded') ||
+          e.message.includes('expired') ||
+          e.message.includes('TransactionExpired')
+        );
+
+        if (looksExpired && connection && signature) {
+          try {
+            btn.textContent = 'Verifying...';
+            showWithdrawMessage('Confirmation timed out — verifying on-chain...', 'info');
+
+            // Give the network a moment, then check the signature status directly
+            await new Promise(r => setTimeout(r, 3000));
+            const status = await connection.getSignatureStatus(signature, { searchTransactionHistory: true });
+            const confStatus = status && status.value ? status.value.confirmationStatus : null;
+
+            if (confStatus === 'confirmed' || confStatus === 'finalized') {
+              if (status.value.err) {
+                throw new Error('Transaction failed on-chain: ' + JSON.stringify(status.value.err));
+              }
+              btn.textContent = 'Success!';
+              btn.onclick = closeWithdrawXntModal;
+              btn.disabled = false;
+              document.getElementById('withdrawXntCancelBtn').textContent = 'Close';
+              showWithdrawMessage(`Withdrawal confirmed! Signature: ${signature.slice(0, 16)}...`, 'success');
+
+              setTimeout(() => {
+                fetchManageValidatorData(currentManageValidator.voteAccount);
+                fetchWithdrawModalData();
+              }, 2000);
+              return;
+            }
+          } catch (verifyErr) {
+            console.error('Verification check failed:', verifyErr);
+            // fall through to normal error handling below
+          }
+        }
+
         btn.disabled = false;
         btn.textContent = 'Withdraw XNT';
         
@@ -26389,6 +26434,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
           showWithdrawMessage('Transaction cancelled by user.', 'error');
         } else if (e.message && e.message.includes('Plugin Closed')) {
           showWithdrawMessage('Wallet closed unexpectedly. Please try again.', 'error');
+        } else if (looksExpired) {
+          showWithdrawMessage('Could not confirm in time. Your withdrawal may still have gone through — please check your balance before retrying.', 'error');
         } else {
           showWithdrawMessage(`Transaction failed: ${e.message || 'Unknown error'}`, 'error');
         }
