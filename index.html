@@ -17027,14 +17027,12 @@
               </div>`.replace(/\n\s*/g, '');
 
             credPctHtml = `
-              <div class="cred-pct-badge" 
-                onmouseenter="document.getElementById('${tooltipId}').classList.add('show')"
-                onmouseleave="document.getElementById('${tooltipId}').classList.remove('show')"
+              <span class="cred-pct-badge" 
                 onclick="event.stopPropagation(); toggleCredTooltip('${tooltipId}')"
-                style="position:relative;font-size:0.68rem;font-weight:700;color:${pctColor};line-height:1;cursor:help;border-bottom:1px dotted ${pctColor};padding-bottom:1px;white-space:nowrap;">
+                style="position:relative;font-size:0.65rem;font-weight:600;color:var(--accent-cyan);line-height:1;cursor:pointer;white-space:nowrap;">
                 ${paceScore.toFixed(1)}%
                 ${tooltipHtml}
-              </div>`;
+              </span>`;
           }
         }
       }
@@ -17114,7 +17112,7 @@
               </div>
               <div class="stat-sub-row">
                 <span class="stat-subtext">XNT</span>
-                <span class="rb-open-link" onclick="event.stopPropagation();openRewardBreakdown('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.commission})">Breakdown</span>
+                <span class="rb-open-link" onclick="event.stopPropagation();openRewardBreakdown('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.commission})">Breakdown ›</span>
               </div>
             </div>
             
@@ -17344,22 +17342,38 @@
         loading.style.display = 'none';
         results.style.display = 'block';
 
-        matches.forEach(m => {
-          getValidatorInfo(m.votePubkey)
-            .then(info => {
-              if (isStale() || !info) return;
-              const slot = document.getElementById('lkslot-' + m.votePubkey.slice(0, 8));
-              if (!slot) return;
+        // Hydrate cards with a small concurrency cap. Firing all matches at
+        // once would enqueue ~200 RPC calls into the shared 3-slot queue and
+        // starve whatever the user does next (e.g. opening the Data Center).
+        // The cap keeps the queue shallow; leaving the tab / a newer search
+        // cancels the rest via isStale(). Last-epoch is awaited per card so a
+        // worker holds at most one card's worth of in-flight requests.
+        let nextIdx = 0;
+        const HYDRATE_CONCURRENCY = 4;
+        async function hydrateWorker() {
+          while (nextIdx < matches.length) {
+            if (isStale()) return;
+            const m = matches[nextIdx++];
+            const slotId = 'lkslot-' + m.votePubkey.slice(0, 8);
+            try {
+              const info = await getValidatorInfo(m.votePubkey);
+              if (isStale()) return;
+              const slot = document.getElementById(slotId);
+              if (!slot) continue;
+              if (!info) { slot.remove(); continue; }
               slot.outerHTML = renderValidatorCard(info, true, false);
-              fetchLastEpochForCards([info]);
-            })
-            .catch(err => {
+              await fetchLastEpochForCards([info]);
+            } catch (err) {
               console.warn('[performSearch] hydrate skip', m.votePubkey, err && err.message || err);
               if (isStale()) return;
-              const slot = document.getElementById('lkslot-' + m.votePubkey.slice(0, 8));
+              const slot = document.getElementById(slotId);
               if (slot) slot.remove();
-            });
-        });
+            }
+          }
+        }
+        for (let w = 0; w < Math.min(HYDRATE_CONCURRENCY, matches.length); w++) {
+          hydrateWorker();
+        }
 
       } catch (err) {
         if (isStale()) return; // newer search in flight — drop silently
@@ -19267,6 +19281,15 @@
 
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.getElementById(tab + 'Tab').classList.add('active');
+
+      // Leaving the Lookup tab cancels any in-flight result hydration. Those
+      // calls share one global 3-slot RPC queue with everything else; if we let
+      // them keep draining, the tab the user just opened (e.g. Data Center)
+      // would stall behind the backlog. Bumping the search id makes pending
+      // hydration workers bail before launching more requests.
+      if (tab !== 'lookup') {
+        _searchRequestId++;
+      }
 
       if (tab === 'portfolio') {
         loadPortfolio();
