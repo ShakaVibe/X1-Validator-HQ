@@ -3743,14 +3743,14 @@
 
     .sm-next-box { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
     .sm-next-cell {
-      flex: 1; background: var(--bg-secondary); border-radius: 10px; padding: 0.7rem 0.75rem;
+      flex: 1; min-width: 0; background: var(--bg-secondary); border-radius: 10px; padding: 0.7rem 0.75rem;
     }
     .sm-next-cell-label {
       font-size: 0.6rem; text-transform: uppercase;
       letter-spacing: 0.5px; color: var(--text-dim); margin-bottom: 0.25rem;
     }
     .sm-next-cell-value {
-      font-size: 0.95rem; font-weight: 700;
+      font-size: 0.95rem; font-weight: 700; white-space: nowrap;
       font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan);
     }
 
@@ -33530,7 +33530,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             </div>
             <div class="sm-next-cell">
               <div class="sm-next-cell-label">Slot #</div>
-              <div class="sm-next-cell-value" style="font-size:0.9rem">${d.nextSlot!==null ? d.nextSlot.toLocaleString() : '—'}</div>
+              <div class="sm-next-cell-value" style="font-size:0.82rem">${d.nextSlot!==null ? d.nextSlot.toLocaleString() : '—'}</div>
             </div>` : `
             <div class="sm-next-cell" style="flex:2">
               <div class="sm-next-cell-label">Status</div>
@@ -33538,7 +33538,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             </div>`}
             <div class="sm-next-cell">
               <div class="sm-next-cell-label">Elapsed</div>
-              <div class="sm-next-cell-value" style="font-size:0.9rem">${d.assigned.toLocaleString()} / ${d.assignedTotal.toLocaleString()}</div>
+              <div class="sm-next-cell-value" style="font-size:0.82rem">${d.assigned.toLocaleString()} / ${d.assignedTotal.toLocaleString()}</div>
             </div>
           </div>
 
