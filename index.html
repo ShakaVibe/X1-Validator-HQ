@@ -2982,6 +2982,12 @@
     .lookup-slot-rank { color: var(--text-secondary); font-size: 0.8rem; font-weight: 400; margin-left: 0.4rem; }
     .lookup-slot-sub { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem; }
     .lookup-slot-spinner { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.8rem; flex-shrink: 0; }
+    .lookup-slot-selectable { cursor: pointer; transition: border-color 0.12s, background 0.12s, transform 0.06s; }
+    .lookup-slot-selectable:hover { border-color: var(--accent-blue); background: var(--bg-hover, #16243d); }
+    .lookup-slot-selectable:active { transform: scale(0.995); }
+    .lookup-slot-action { display: flex; align-items: center; gap: 0.5rem; color: var(--accent-blue); font-size: 0.85rem; font-weight: 600; flex-shrink: 0; white-space: nowrap; }
+    .lookup-slot-selectable:hover .lookup-slot-action { color: var(--accent-cyan); }
+    .lookup-results-hint { font-size: 0.82rem; color: var(--text-secondary); margin: 0 0 0.85rem; }
     .lookup-spin {
       width: 16px; height: 16px;
       border: 2px solid var(--border);
@@ -16951,7 +16957,7 @@
       if (showRemoveBtn) {
         actionBtn = `<button class="remove-btn" onclick="removeFromPortfolio('${validator.voteAccount}')">Remove</button>`;
       } else if (showAddBtn && !isInPortfolio) {
-        actionBtn = `<button class="add-btn" onclick="addToPortfolio('${validator.voteAccount}')">+ Add</button>`;
+        actionBtn = `<button class="add-btn" data-add-vote="${validator.voteAccount}" onclick="addToPortfolio('${validator.voteAccount}')">+ Add</button>`;
       } else if (showAddBtn && isInPortfolio) {
         actionBtn = `<button class="add-btn" style="opacity: 0.5;" disabled>Added</button>`;
       }
@@ -17367,49 +17373,30 @@
 
         if (matches.length === 0) { showError(); return; }
 
-        // Instant render: drop in lightweight placeholder rows (name, stake,
-        // commission, rank — all from cached data) in best-match order, then
-        // hydrate each into a full card as its data arrives. Results stream in
-        // rather than waiting on the slowest fetch, and last-epoch fills are
-        // issued per-card so they run in parallel through the RPC queue.
-        container.innerHTML = matches.map(lookupSlotHtml).join('');
+        // Single unambiguous match → just show its full card directly.
+        if (matches.length === 1) {
+          const info = await getValidatorInfo(matches[0].votePubkey).catch(() => null);
+          if (isStale()) return;
+          if (!info) { showError(); return; }
+          container.innerHTML = renderValidatorCard(info, true, false);
+          document.getElementById('resultCount').textContent = '1';
+          document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+          fetchLastEpochForCards([info]);
+          loading.style.display = 'none';
+          results.style.display = 'block';
+          return;
+        }
+
+        // Multiple matches → show a lightweight, selectable list (all from cached
+        // data, zero RPC). The user picks the one they want and ONLY that card is
+        // loaded — instead of hydrating dozens of full cards on every search,
+        // which was slow and flooded the RPC queue.
+        const hint = `<div class="lookup-results-hint">${matches.length} matches — select one to load its full card.</div>`;
+        container.innerHTML = hint + matches.map(lookupSlotHtml).join('');
         document.getElementById('resultCount').textContent = matches.length;
         document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
         loading.style.display = 'none';
         results.style.display = 'block';
-
-        // Hydrate cards with a small concurrency cap. Firing all matches at
-        // once would enqueue ~200 RPC calls into the shared 3-slot queue and
-        // starve whatever the user does next (e.g. opening the Data Center).
-        // The cap keeps the queue shallow; leaving the tab / a newer search
-        // cancels the rest via isStale(). Last-epoch is awaited per card so a
-        // worker holds at most one card's worth of in-flight requests.
-        let nextIdx = 0;
-        const HYDRATE_CONCURRENCY = 4;
-        async function hydrateWorker() {
-          while (nextIdx < matches.length) {
-            if (isStale()) return;
-            const m = matches[nextIdx++];
-            const slotId = 'lkslot-' + m.votePubkey.slice(0, 8);
-            try {
-              const info = await getValidatorInfo(m.votePubkey);
-              if (isStale()) return;
-              const slot = document.getElementById(slotId);
-              if (!slot) continue;
-              if (!info) { slot.remove(); continue; }
-              slot.outerHTML = renderValidatorCard(info, true, false);
-              await fetchLastEpochForCards([info]);
-            } catch (err) {
-              console.warn('[performSearch] hydrate skip', m.votePubkey, err && err.message || err);
-              if (isStale()) return;
-              const slot = document.getElementById(slotId);
-              if (slot) slot.remove();
-            }
-          }
-        }
-        for (let w = 0; w < Math.min(HYDRATE_CONCURRENCY, matches.length); w++) {
-          hydrateWorker();
-        }
 
       } catch (err) {
         if (isStale()) return; // newer search in flight — drop silently
@@ -17454,8 +17441,9 @@
       return byNode ? byNode.votePubkey : key;
     }
 
-    // Compact placeholder shown immediately for each result while its full card
-    // hydrates. Built purely from cached list data — no RPC.
+    // Compact, selectable result row built purely from cached list data (no RPC).
+    // Clicking it hydrates *just that one* validator into a full card, instead of
+    // eagerly loading every match.
     function lookupSlotHtml(v) {
       const id = 'lkslot-' + v.votePubkey.slice(0, 8);
       const letter = (v.name || '?').charAt(0).toUpperCase();
@@ -17463,15 +17451,46 @@
         ? `<img class="validator-logo" src="${safeUrl(v.iconUrl)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="validator-logo-placeholder" style="display:none;">${letter}</div>`
         : `<div class="validator-logo-placeholder">${letter}</div>`;
       const stake = formatXntCompact(lamportsToXNT(v.activatedStake));
-      return `<div id="${id}" class="lookup-slot">
+      const status = v.delinquent
+        ? ' · <span style="color:var(--danger);">Delinquent</span>'
+        : '';
+      return `<div id="${id}" class="lookup-slot lookup-slot-selectable" onclick="selectLookupValidator('${v.votePubkey}')" title="Click to view this validator">
         <div class="lookup-slot-main">${logo}
           <div style="min-width:0;">
             <div class="lookup-slot-name">${escHtml(v.name)}<span class="lookup-slot-rank">#${v.rank} of ${v.totalValidators}</span></div>
-            <div class="lookup-slot-sub">${stake} XNT · ${v.commission}% commission</div>
+            <div class="lookup-slot-sub">${stake} XNT · ${v.commission}% commission${status}</div>
           </div>
         </div>
-        <div class="lookup-slot-spinner"><span class="lookup-spin"></span> loading…</div>
+        <div class="lookup-slot-action">View ›</div>
       </div>`;
+    }
+
+    // Hydrate a single chosen result row into a full validator card on demand.
+    async function selectLookupValidator(votePubkey) {
+      const id = 'lkslot-' + votePubkey.slice(0, 8);
+      const slot = document.getElementById(id);
+      if (!slot || slot.dataset.loading === '1') return;
+      slot.dataset.loading = '1';
+      slot.classList.remove('lookup-slot-selectable');
+      slot.style.cursor = 'default';
+      slot.onclick = null;
+      const action = slot.querySelector('.lookup-slot-action');
+      if (action) action.innerHTML = '<span class="lookup-spin"></span>';
+      try {
+        const info = await getValidatorInfo(votePubkey);
+        if (!slot.isConnected) return; // a newer search replaced the list
+        if (!info) { slot.remove(); return; }
+        slot.outerHTML = renderValidatorCard(info, true, false);
+        fetchLastEpochForCards([info]);
+      } catch (err) {
+        console.warn('[selectLookupValidator]', votePubkey, err && err.message || err);
+        if (!slot.isConnected) return;
+        slot.dataset.loading = '';
+        slot.classList.add('lookup-slot-selectable');
+        slot.style.cursor = 'pointer';
+        slot.onclick = () => selectLookupValidator(votePubkey);
+        if (action) action.innerHTML = '<span style="color:var(--danger);">Retry ›</span>';
+      }
     }
 
     // Portfolio management
@@ -17493,9 +17512,16 @@
       if (!myPortfolio.includes(voteAccount)) {
         myPortfolio.push(voteAccount);
         savePortfolio();
-        
-        // Re-render current results to update button
-        performSearch();
+
+        // Flip any visible "+ Add" buttons for this validator to "Added" in
+        // place. Re-running performSearch() would collapse a card the user is
+        // viewing back to the results list, so we update the button directly.
+        document.querySelectorAll('button.add-btn[data-add-vote="' + voteAccount + '"]').forEach(btn => {
+          btn.textContent = 'Added';
+          btn.style.opacity = '0.5';
+          btn.disabled = true;
+          btn.onclick = null;
+        });
       }
     }
 
