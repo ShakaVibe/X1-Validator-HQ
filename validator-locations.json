@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-14T09:34:49.079Z",
+  "lastUpdated": "2026-06-14T11:15:25.792Z",
   "totalNodes": 683,
-  "totalLocations": 681,
+  "totalLocations": 680,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3307,13 +3307,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "149.50.101.175": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "91.244.71.20": {
       "country": "Germany",
       "countryCode": "DE",
@@ -3334,13 +3327,6 @@
       "city": "Warsaw",
       "lat": 52.2297,
       "lon": 21.0122
-    },
-    "216.158.229.206": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "74.50.72.22": {
       "country": "United States",
@@ -4749,26 +4735,33 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "46.170.40.91": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2065,
-      "lon": 21.0249
-    },
-    "46.170.40.92": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2065,
-      "lon": 21.0249
-    },
     "46.170.40.94": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
       "lat": 52.2065,
       "lon": 21.0249
+    },
+    "149.86.227.157": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "213.25.37.211": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Skórcz",
+      "lat": 53.7941,
+      "lon": 18.5156
+    },
+    "213.25.37.214": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Skórcz",
+      "lat": 53.7941,
+      "lon": 18.5156
     }
   },
   "countries": {
