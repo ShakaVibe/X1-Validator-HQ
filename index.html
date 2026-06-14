@@ -14474,6 +14474,20 @@
     let inflationRewardsCache = {}; // Cache for inflation rewards by vote account
     let currentEpochNumber = null;
 
+    // Live epoch length (slots), refreshed whenever getEpochInfo is fetched.
+    // Used to annualize per-epoch rewards correctly: X1 epochs are ~2 days
+    // (Solana-style), so assuming 365 epochs/year roughly doubled every APY
+    // and annual figure. epochsPerYear() derives the true factor from the
+    // live epoch length so it self-corrects to whatever the network runs.
+    let currentSlotsInEpoch = null;
+    const EPOCH_CALC_SLOT_MS = 400; // target slot time (matches unstaking-timeline math)
+    function epochsPerYear() {
+      if (!currentSlotsInEpoch || currentSlotsInEpoch <= 0) return 365; // safe fallback
+      const epochMs = currentSlotsInEpoch * EPOCH_CALC_SLOT_MS;
+      const yearMs  = 365.25 * 24 * 60 * 60 * 1000;
+      return yearMs / epochMs;
+    }
+
     // Persistent cache for self-stake account pubkeys (survives page reloads and epoch transitions)
     const SELF_STAKE_SELECTIONS_KEY = 'x1SelfStakeSelections';
     
@@ -14563,7 +14577,7 @@
       try {
         // Always fetch fresh epoch info to ensure we have the current epoch
         const epochInfo = await rpcCall('getEpochInfo');
-        currentEpochNumber = epochInfo.epoch;
+        currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
         
         // Fetch all epochs (starting from currentEpoch - 1)
         const epochsToFetch = [];
@@ -14648,7 +14662,7 @@
       try {
         // Always fetch fresh epoch info to ensure we have the current epoch
         const epochInfo = await rpcCall('getEpochInfo');
-        currentEpochNumber = epochInfo.epoch;
+        currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
 
         // Step 1: Fetch vote account rewards (commission) in parallel
         // Start from currentEpoch - 1 to exclude the current incomplete epoch
@@ -19358,7 +19372,7 @@
           const avgEpochRewardsXNT = totalRewardsXNT / rewards.length;
           
           // Calculate actual APY from real data
-          const actualAPY = currentStake > 0 ? (avgEpochRewardsXNT * 365 / currentStake) * 100 : 0;
+          const actualAPY = currentStake > 0 ? (avgEpochRewardsXNT * epochsPerYear() / currentStake) * 100 : 0;
           
           stakingRealRewardsData = {
             avgEpoch: avgEpochRewardsXNT,
@@ -19596,7 +19610,7 @@
       
       let baseAPY = 8; // Default network base APY
       if (hasBreakdown && stakingRealRewardsData && selfStake > 0) {
-        const totalAnnualRewards = stakingRealRewardsData.avgEpoch * 365;
+        const totalAnnualRewards = stakingRealRewardsData.avgEpoch * epochsPerYear();
         // totalRewards = selfStake * baseAPY + delegatedStake * baseAPY * (commission/100)
         // totalRewards = baseAPY * (selfStake + delegatedStake * commission/100)
         const divisor = selfStake + (delegatedStake * commission / 100);
@@ -19850,29 +19864,30 @@
           if (rewards && rewards.length > 0) {
             // Convert from lamports to XNT (divide by 1e9)
             const totalRewardsXNT = rewards.reduce((sum, r) => sum + r.amount, 0) / 1e9;
-            const avgDailyRewardsXNT = totalRewardsXNT / rewards.length;
-            
+            const avgEpochRewardsXNT = totalRewardsXNT / rewards.length;
+
             // Calculate validator's effective APY using derived base APY
             // totalRewards = selfStake * baseAPY + delegatedStake * baseAPY * (commission/100)
             // totalRewards = baseAPY * (selfStake + delegatedStake * commission/100)
             // Solve for baseAPY:
-            const totalAnnualRewards = avgDailyRewardsXNT * 365;
+            const totalAnnualRewards = avgEpochRewardsXNT * epochsPerYear();
             const divisor = selfStake + (delegatedStake * commission / 100);
             let baseAPY = 8; // Default
             if (divisor > 0) {
               baseAPY = (totalAnnualRewards / divisor) * 100;
             }
-            
+
             // Now calculate earnings with derived baseAPY
             const selfStakeEarnings = selfStake * (baseAPY / 100);
             const commissionEarnings = delegatedStake * (baseAPY / 100) * (commission / 100);
             const totalValidatorEarnings = selfStakeEarnings + commissionEarnings;
-            
+
             // Effective APY = total earnings / self-stake (their investment)
             const validatorAPY = selfStake > 0 ? (totalValidatorEarnings / selfStake) * 100 : baseAPY;
-            
+
             compoundRealRewardsData = {
-              avgDaily: avgDailyRewardsXNT,
+              avgDaily: totalAnnualRewards / 365.25,
+              avgAnnual: totalAnnualRewards,
               validatorAPY: validatorAPY,
               baseAPY: baseAPY,
               selfStake: selfStake,
@@ -19967,9 +19982,11 @@
       // Show actual current earnings if we have real data
       let earningsHtml = '';
       if (compoundRealRewardsData && validatorSelect.value !== 'custom') {
-        const avgDaily = compoundRealRewardsData.avgDaily;
-        const avgMonthly = avgDaily * 30;
-        const avgAnnual = avgDaily * 365;
+        const avgAnnual = compoundRealRewardsData.avgAnnual != null
+          ? compoundRealRewardsData.avgAnnual
+          : compoundRealRewardsData.avgDaily * 365.25;
+        const avgDaily = avgAnnual / 365.25;
+        const avgMonthly = avgAnnual / 12;
         const selfStake = compoundRealRewardsData.selfStake || 0;
         const delegatedStake = compoundRealRewardsData.delegatedStake || 0;
         const commission = compoundRealRewardsData.commission || 0;
@@ -20460,11 +20477,13 @@
           if (rewards && rewards.length > 0) {
             // Convert from lamports to XNT (divide by 1e9)
             const totalRewardsXNT = rewards.reduce((sum, r) => sum + r.amount, 0) / 1e9;
-            const avgDailyRewardsXNT = totalRewardsXNT / rewards.length;
-            const realAPY = stake > 0 ? (avgDailyRewardsXNT * 365 / stake) * 100 : 0;
-            
+            const avgEpochRewardsXNT = totalRewardsXNT / rewards.length;
+            const avgAnnualRewardsXNT = avgEpochRewardsXNT * epochsPerYear();
+            const realAPY = stake > 0 ? (avgAnnualRewardsXNT / stake) * 100 : 0;
+
             breakevenRealRewardsData = {
-              avgDaily: avgDailyRewardsXNT,
+              avgDaily: avgAnnualRewardsXNT / 365.25,
+              avgAnnual: avgAnnualRewardsXNT,
               realAPY: realAPY,
               epochs: rewards.length
             };
@@ -20539,9 +20558,11 @@
       
       // Show actual data
       if (breakevenRealRewardsData) {
-        const avgDaily = breakevenRealRewardsData.avgDaily;
-        const avgMonthly = avgDaily * 30;
-        const avgAnnual = avgDaily * 365;
+        const avgAnnual = breakevenRealRewardsData.avgAnnual != null
+          ? breakevenRealRewardsData.avgAnnual
+          : breakevenRealRewardsData.avgDaily * 365.25;
+        const avgDaily = avgAnnual / 365.25;
+        const avgMonthly = avgAnnual / 12;
         const displayRewards = isMonthly ? avgMonthly : avgAnnual;
         const profit = displayRewards - displayCost;
         
@@ -21164,7 +21185,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         // Always get fresh epoch info to ensure we use the last COMPLETED epoch
         const epochInfo = await rpcCall('getEpochInfo');
-        currentEpochNumber = epochInfo.epoch;
+        currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
         
         // Fetch inflation rewards for stake accounts (last completed epoch)
         const stakeAccountPubkeys = data.result.map(acc => acc.pubkey);
@@ -21316,8 +21337,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const validatorRewards = await fetchTotalValidatorRewards(voteAccount, commission, 7);
           if (validatorRewards && validatorRewards.length > 0) {
             const totalRewardsXNT = validatorRewards.reduce((sum, r) => sum + r.amount, 0) / 1e9;
-            const avgDailyRewardsXNT = totalRewardsXNT / validatorRewards.length;
-            const totalAnnualRewards = avgDailyRewardsXNT * 365;
+            const avgEpochRewardsXNT = totalRewardsXNT / validatorRewards.length;
+            const totalAnnualRewards = avgEpochRewardsXNT * epochsPerYear();
             
             // Derive baseAPY: totalRewards = baseAPY * (selfStake + delegatedStake * commission%)
             const divisor = selfStake + (delegatedStake * commission / 100);
@@ -27436,7 +27457,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           
           // Always get fresh epoch info to ensure we use the last COMPLETED epoch
           const epochInfo = await rpcCall('getEpochInfo');
-          currentEpochNumber = epochInfo.epoch;
+          currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
           
           // Fetch rewards from last COMPLETED epoch (currentEpoch - 1)
           let rewards = [];
@@ -27630,8 +27651,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
                 if (periodRewards.length < days * 0.8) return null; // Need at least 80% of expected data
                 
                 const totalRewardsXNT = periodRewards.reduce((sum, r) => sum + r.amount, 0) / 1e9;
-                const avgDailyRewardsXNT = totalRewardsXNT / periodRewards.length;
-                const annualizedRewards = avgDailyRewardsXNT * 365;
+                const avgEpochRewardsXNT = totalRewardsXNT / periodRewards.length;
+                const annualizedRewards = avgEpochRewardsXNT * epochsPerYear();
                 
                 // Derive baseAPY: annualRewards = baseAPY * (selfStake + delegatedStake * commission%)
                 const baseAPY = divisor > 0 ? (annualizedRewards / divisor) * 100 : 8;
@@ -27647,7 +27668,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
                 return {
                   earnings: totalRewardsXNT,
                   epochCount: periodRewards.length,
-                  avgDaily: avgDailyRewardsXNT,
+                  avgDaily: annualizedRewards / 365.25,
                   validatorAPY: validatorAPY,
                   baseAPY: baseAPY
                 };
@@ -28525,7 +28546,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           
           // Always get fresh epoch info to ensure we use the last COMPLETED epoch
           const epochInfo = await rpcCall('getEpochInfo');
-          currentEpochNumber = epochInfo.epoch;
+          currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
           
           for (const voteAccount of portfolioValidators) {
             // Check cache first
@@ -29430,6 +29451,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const info = await rpcCall('getEpochInfo');
           epochSlotIndex = info.slotIndex;
           slotsInEpoch   = info.slotsInEpoch;
+          currentSlotsInEpoch = info.slotsInEpoch;
           syncedAt       = Date.now();
           if (leaderScheduleEpoch !== info.epoch || !leaderScheduleCache) {
             const sched = await rpcCall('getLeaderSchedule');
