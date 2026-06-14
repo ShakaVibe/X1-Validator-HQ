@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-13T22:44:08.806Z",
-  "totalNodes": 734,
-  "totalLocations": 729,
+  "lastUpdated": "2026-06-14T01:31:25.555Z",
+  "totalNodes": 684,
+  "totalLocations": 681,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -724,13 +724,6 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "161.129.67.218": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "161.129.66.90": {
       "country": "United States",
       "countryCode": "US",
@@ -884,13 +877,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "149.50.101.55": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "64.20.46.78": {
       "country": "United States",
@@ -1249,13 +1235,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "149.86.227.35": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "157.180.9.120": {
       "country": "Finland",
       "countryCode": "FI",
@@ -1466,13 +1445,6 @@
       "lat": 41.2627,
       "lon": -111.9837
     },
-    "149.86.227.5": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "65.109.65.58": {
       "country": "Finland",
       "countryCode": "FI",
@@ -1537,13 +1509,6 @@
       "lon": 8.07958
     },
     "149.50.108.187": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
-    "149.50.108.49": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
@@ -1907,13 +1872,6 @@
       "lat": 49.0291,
       "lon": 8.35696
     },
-    "54.37.82.188": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "213.109.162.0": {
       "country": "Germany",
       "countryCode": "DE",
@@ -2102,13 +2060,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "38.147.104.84": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
     },
     "45.131.114.170": {
       "country": "The Netherlands",
@@ -2495,13 +2446,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "65.108.126.165": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "66.23.239.186": {
       "country": "United States",
       "countryCode": "US",
@@ -2845,13 +2789,6 @@
       "lat": 40.7687,
       "lon": -111.886
     },
-    "51.254.198.143": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "23.175.145.109": {
       "country": "United States",
       "countryCode": "US",
@@ -2936,35 +2873,7 @@
       "lat": 39.9598,
       "lon": -75.1607
     },
-    "146.59.84.129": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "146.59.84.204": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "146.59.84.111": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "146.59.84.241": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "146.59.84.240": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
@@ -2985,40 +2894,12 @@
       "lat": 52.2372,
       "lon": 21.0123
     },
-    "146.59.84.202": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
     "146.59.84.132": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "146.59.84.133": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "57.128.117.211": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
-    "141.94.197.5": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
     },
     "146.59.82.106": {
       "country": "Poland",
@@ -3055,20 +2936,6 @@
       "lat": 50.7012,
       "lon": 3.21501
     },
-    "146.59.82.109": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "141.95.171.16": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "146.59.71.153": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3091,13 +2958,6 @@
       "lon": 21.0283
     },
     "146.59.71.156": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "146.59.71.33": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
@@ -3328,13 +3188,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "162.120.17.47": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7126,
-      "lon": -74.0066
-    },
     "69.10.46.66": {
       "country": "United States",
       "countryCode": "US",
@@ -3447,13 +3300,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "162.250.125.210": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "38.46.218.83": {
       "country": "United States",
       "countryCode": "US",
@@ -3517,20 +3363,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "149.50.116.166": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
-    "149.50.116.164": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "38.97.62.18": {
       "country": "United States",
       "countryCode": "US",
@@ -3572,13 +3404,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "149.50.108.105": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "149.50.101.107": {
       "country": "Poland",
@@ -3776,28 +3601,7 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "135.181.11.136": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "135.181.11.137": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "135.181.11.132": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "135.181.11.135": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
@@ -3853,33 +3657,12 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "148.251.208.75": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4754,
-      "lon": 12.3683
-    },
-    "37.187.27.209": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "75.119.156.130": {
       "country": "France",
       "countryCode": "FR",
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
-    },
-    "148.251.208.74": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4754,
-      "lon": 12.3683
     },
     "65.19.133.254": {
       "country": "United States",
@@ -3895,13 +3678,6 @@
       "lat": 49.405,
       "lon": 11.1617
     },
-    "148.251.208.76": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4754,
-      "lon": 12.3683
-    },
     "149.50.127.24": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3915,13 +3691,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "135.181.11.138": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "167.235.3.78": {
       "country": "Germany",
@@ -3937,54 +3706,12 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "135.181.11.141": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "205.209.101.222": {
       "country": "United States",
       "countryCode": "US",
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "135.181.11.139": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "148.251.208.78": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4754,
-      "lon": 12.3683
-    },
-    "135.181.11.140": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "148.251.208.77": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4754,
-      "lon": 12.3683
-    },
-    "135.181.11.142": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "65.108.71.178": {
       "country": "Finland",
@@ -3999,27 +3726,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "149.50.116.93": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
-    "149.50.110.21": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
-    "149.50.108.76": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "209.159.149.50": {
       "country": "United States",
@@ -4070,20 +3776,6 @@
       "lat": 52.2297,
       "lon": 21.0122
     },
-    "64.20.53.214": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "149.86.227.157": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "149.86.227.158": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4097,13 +3789,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "95.214.54.88": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1783,
-      "lon": 21.0602
     },
     "161.97.71.4": {
       "country": "France",
@@ -4224,21 +3909,7 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "156.67.31.218": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "81.17.96.53": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
-    "178.18.242.0": {
       "country": "France",
       "countryCode": "FR",
       "city": "Lauterbourg",
@@ -4812,13 +4483,6 @@
       "lat": 50.1592,
       "lon": 8.48174
     },
-    "37.187.29.209": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "37.187.157.218": {
       "country": "France",
       "countryCode": "FR",
@@ -5078,13 +4742,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "149.50.116.114": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "195.3.223.207": {
       "country": "Poland",
       "countryCode": "PL",
@@ -5105,44 +4762,51 @@
       "city": "Skórcz",
       "lat": 53.7941,
       "lon": 18.5156
+    },
+    "5.135.136.13": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 258
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 113
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 22
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 86
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "DE": {
       "name": "Germany",
-      "count": 145
+      "count": 140
     },
-    "FR": {
-      "name": "France",
-      "count": 60
+    "US": {
+      "name": "United States",
+      "count": 253
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 77
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 90
     },
     "NL": {
       "name": "The Netherlands",
       "count": 29
     },
+    "CA": {
+      "name": "Canada",
+      "count": 22
+    },
+    "FR": {
+      "name": "France",
+      "count": 52
+    },
     "SE": {
       "name": "Sweden",
       "count": 8
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "GB": {
       "name": "United Kingdom",
