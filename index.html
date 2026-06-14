@@ -2994,15 +2994,13 @@
     /* Credit Pace Badge & Tooltip */
     .cred-tooltip {
       display: none;
-      position: absolute;
-      bottom: calc(100% + 8px);
-      right: 0;
+      position: fixed;
       width: 230px;
       background: #0d1a2e;
       border: 1px solid var(--accent-blue);
       border-radius: 10px;
       padding: 0.85rem;
-      z-index: 999;
+      z-index: 1000;
       box-shadow: 0 8px 24px rgba(0,0,0,0.6);
       font-weight: 400;
       cursor: default;
@@ -14683,7 +14681,23 @@
       if (!el) return;
       const wasOpen = el.classList.contains('show');
       document.querySelectorAll('.cred-tooltip.show').forEach(t => t.classList.remove('show'));
-      if (!wasOpen) el.classList.add('show');
+      if (wasOpen) return;
+
+      el.classList.add('show');
+      // Position as a fixed popover anchored above the badge (or below if there
+      // isn't room above), clamped to the viewport — so the box is always fully
+      // on-screen and self-contained, never spilling outside the card layout.
+      const badge = el.parentElement;
+      if (!badge) return;
+      const r = badge.getBoundingClientRect();
+      const tw = el.offsetWidth || 230;
+      const th = el.offsetHeight || 0;
+      let left = r.right - tw;                 // right-align to the badge
+      left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+      let top = r.top - th - 8;                // above the badge by default
+      if (top < 8) top = r.bottom + 8;         // not enough room above → below
+      el.style.left = left + 'px';
+      el.style.top = top + 'px';
     }
     if (!window._credTooltipOutsideBound) {
       window._credTooltipOutsideBound = true;
@@ -17112,7 +17126,7 @@
               </div>
               <div class="stat-sub-row">
                 <span class="stat-subtext">XNT</span>
-                <span class="rb-open-link" onclick="event.stopPropagation();openRewardBreakdown('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.commission})">Breakdown ›</span>
+                <span class="rb-open-link" onclick="event.stopPropagation();openRewardBreakdown('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.commission})">Breakdown</span>
               </div>
             </div>
             
@@ -17121,7 +17135,7 @@
               <div class="stat-value">${formatXntCompact(validator.activatedStake)}</div>
               <div class="stat-sub-row">
                 <span class="stat-subtext">XNT</span>
-                <span style="color: var(--accent-cyan); font-size: 0.65rem;">Classify ›</span>
+                <span style="color: var(--accent-cyan); font-size: 0.65rem;">Classify</span>
               </div>
             </div>
             
