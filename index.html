@@ -2729,6 +2729,57 @@
       margin-left: 0.5rem;
     }
 
+    /* ── Header utility chips: live next-leader countdown + Slot Explorer ── */
+    .vh-chip-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+    .vh-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      line-height: 1.2;
+      border-radius: 20px;
+      padding: 4px 11px;
+      white-space: nowrap;
+      user-select: none;
+    }
+    /* Next-leader countdown — default (upcoming) state is amber */
+    .vh-next-leader {
+      color: var(--warning);
+      background: rgba(255, 171, 0, 0.10);
+      border: 1px solid rgba(255, 171, 0, 0.30);
+    }
+    /* This validator is the current leader */
+    .vh-next-leader.is-leader {
+      color: #0a1322;
+      background: var(--success);
+      border-color: var(--success);
+    }
+    /* No more leader slots remaining this epoch */
+    .vh-next-leader.is-none {
+      color: var(--text-secondary);
+      background: rgba(138, 143, 152, 0.08);
+      border-color: rgba(138, 143, 152, 0.25);
+    }
+    /* Slot Explorer entry point */
+    .vh-slot-explorer {
+      color: var(--accent-cyan);
+      background: rgba(0, 212, 255, 0.10);
+      border: 1px solid rgba(0, 212, 255, 0.35);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .vh-slot-explorer:hover {
+      background: rgba(0, 212, 255, 0.18);
+      border-color: var(--accent-cyan);
+    }
+
     .tier-badge {
       display: inline-flex;
       align-items: center;
@@ -16803,6 +16854,22 @@
         }
       }
 
+      // ── Header utility strip: live "time to next leader slot" + Slot Explorer ──
+      // The next-leader chip is updated in place once per second by
+      // LeaderCountdown (reads the shared leaderScheduleCache). The Slot
+      // Explorer chip opens the same modal the Skip Rate box used to.
+      const _vhVa   = validator.voteAccount;
+      const _vhNode = validator.nodePubkey || '';
+      const nextLeaderChip = _vhNode
+        ? `<span class="vh-chip vh-next-leader" data-node="${_vhNode}">⏱ …</span>`
+        : '';
+      const slotExplorerChip = _vhNode
+        ? `<span class="vh-chip vh-slot-explorer" onclick="event.stopPropagation(); openSlotModal('${_vhNode}', '${escAttrJs(validator.name)}', '${_vhVa}')" title="View slot-by-slot leader assignment and block production">🔍 Slot Explorer</span>`
+        : '';
+      const chipStripHtml = (nextLeaderChip || slotExplorerChip)
+        ? `<div class="vh-chip-strip">${nextLeaderChip}${slotExplorerChip}</div>`
+        : '';
+
       return `
         <div class="validator-card">
           <div class="validator-header">
@@ -16823,6 +16890,7 @@
                   </button>
                   ${versionHtml}
                 </div>
+                ${chipStripHtml}
               </div>
             </div>
             <div class="manage-validator-btn-wrapper">
@@ -16884,11 +16952,10 @@
               <div class="stat-subtext">Fee rate</div>
             </div>
             
-            <div class="stat-item clickable-stat" onclick="openSlotModal('${validator.nodePubkey}', '${escAttrJs(validator.name)}', '${validator.voteAccount}')" title="Skip rate = % of leader slots where no block was produced. When showing a multi-epoch average, we use the slot-weighted method: (total skipped slots across epochs) / (total leader slots across epochs) — the same method the Solana CLI uses. This avoids small-sample epochs dominating the average. Click to view slot-by-slot assignment details.">
+            <div class="stat-item" title="Skip rate = % of leader slots where no block was produced. When showing a multi-epoch average, we use the slot-weighted method: (total skipped slots across epochs) / (total leader slots across epochs) — the same method the Solana CLI uses. This avoids small-sample epochs dominating the average.">
               <div class="stat-label">Skip<br>Rate</div>
               <div class="stat-value ${skipColor}">${skipRateDisplay}</div>
               <div class="stat-subtext">${skipLabel}</div>
-              <div class="stat-subtext" style="color: var(--accent-cyan); font-size: 0.65rem;">Slot Explorer</div>
             </div>
             
             <div class="stat-item perf-score-wrapper" onclick="openPerfExplainerModal(event, '${validator.voteAccount}')">
@@ -25153,6 +25220,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
     // Add event listeners for form inputs
     document.addEventListener('DOMContentLoaded', function() {
+      // Live next-leader countdown chips on validator cards (self-guards
+      // against running RPCs when no chips are visible).
+      LeaderCountdown.start();
+
       const sendAmountInput = document.getElementById('sendAmountInput');
       if (sendAmountInput) {
         sendAmountInput.addEventListener('input', updateSendSummary);
@@ -29308,6 +29379,125 @@ Please give me the diagnostic commands to run on my server so you can help me id
     
     let leaderScheduleCache = null;
     let leaderScheduleEpoch = null;
+
+    // ───────────────────────────────────────────────────────────
+    // LeaderCountdown — live "time to next leader slot" chips.
+    //
+    // Each validator card renders a <span class="vh-next-leader"
+    // data-node="<nodePubkey>"> chip. This module updates every such
+    // chip once per second:
+    //   • upcoming  → "⏱ Next slot ~3m 12s"
+    //   • leader    → "● Leader now"          (same chip, green)
+    //   • none      → "⏱ No upcoming slots"   (muted)
+    //
+    // It reads the shared leaderScheduleCache (nodePubkey -> [relative
+    // slot indices within the current epoch]) and interpolates the
+    // current epoch slot index between getEpochInfo syncs, so the
+    // countdown ticks smoothly without an RPC every second. A sync is
+    // only issued when at least one chip is on screen, so idle tabs
+    // make no network calls.
+    // ───────────────────────────────────────────────────────────
+    const LeaderCountdown = (() => {
+      const SLOT_MS = 420;     // X1 slot time — matches the Validator Terminal
+      const SYNC_MS = 12000;   // re-sync epoch slot index / schedule
+      let epochSlotIndex = null;  // slotIndex at last sync
+      let slotsInEpoch   = null;
+      let syncedAt       = 0;
+      let syncing        = false;
+      let started        = false;
+
+      function estIndex() {
+        if (epochSlotIndex === null) return null;
+        const adv = Math.floor((Date.now() - syncedAt) / SLOT_MS);
+        const idx = epochSlotIndex + adv;
+        return slotsInEpoch ? Math.min(idx, slotsInEpoch - 1) : idx;
+      }
+
+      function fmt(ms) {
+        const s = Math.max(0, Math.round(ms / 1000));
+        if (s < 60) return `~${s}s`;
+        const m = Math.floor(s / 60), rs = s % 60;
+        if (m < 60) return `~${m}m ${rs}s`;
+        const h = Math.floor(m / 60), rm = m % 60;
+        return `~${h}h ${rm}m`;
+      }
+
+      async function sync() {
+        if (syncing) return;
+        if (!document.querySelector('.vh-next-leader')) return; // no chips → no RPC
+        syncing = true;
+        try {
+          const info = await rpcCall('getEpochInfo');
+          epochSlotIndex = info.slotIndex;
+          slotsInEpoch   = info.slotsInEpoch;
+          syncedAt       = Date.now();
+          if (leaderScheduleEpoch !== info.epoch || !leaderScheduleCache) {
+            const sched = await rpcCall('getLeaderSchedule');
+            if (sched) { leaderScheduleCache = sched; leaderScheduleEpoch = info.epoch; }
+          }
+        } catch (e) {
+          // keep last-known values; interpolation continues
+        } finally {
+          syncing = false;
+        }
+      }
+
+      function tick() {
+        const chips = document.querySelectorAll('.vh-next-leader');
+        if (chips.length === 0) return;
+        // Lazily (re)sync when chips appear or our snapshot is stale.
+        if (epochSlotIndex === null || Date.now() - syncedAt > SYNC_MS) sync();
+
+        const idx = estIndex();
+        chips.forEach(chip => {
+          const node = chip.dataset.node;
+          if (idx === null || !leaderScheduleCache || !node) {
+            chip.textContent = '⏱ …';
+            chip.classList.remove('is-leader', 'is-none');
+            return;
+          }
+          const slots = leaderScheduleCache[node];
+          if (!slots || slots.length === 0) {
+            chip.textContent = '⏱ No upcoming slots';
+            chip.classList.add('is-none');
+            chip.classList.remove('is-leader');
+            return;
+          }
+          // Leader for the current slot?
+          if (slots.indexOf(idx) !== -1) {
+            chip.textContent = '● Leader now';
+            chip.classList.add('is-leader');
+            chip.classList.remove('is-none');
+            return;
+          }
+          // Smallest upcoming slot index (schedule isn't guaranteed sorted).
+          let next = Infinity;
+          for (let i = 0; i < slots.length; i++) {
+            const s = slots[i];
+            if (s > idx && s < next) next = s;
+          }
+          if (next === Infinity) {
+            chip.textContent = '⏱ No upcoming slots';
+            chip.classList.add('is-none');
+            chip.classList.remove('is-leader');
+          } else {
+            chip.textContent = '⏱ Next slot ' + fmt((next - idx) * SLOT_MS);
+            chip.classList.remove('is-leader', 'is-none');
+          }
+        });
+      }
+
+      function start() {
+        if (started) return;
+        started = true;
+        sync();
+        tick();
+        setInterval(tick, 1000);
+        setInterval(sync, SYNC_MS);
+      }
+
+      return { start, sync, tick };
+    })();
     
     async function loadLeaderSchedule() {
       try {
