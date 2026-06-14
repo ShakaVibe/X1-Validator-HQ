@@ -14750,6 +14750,20 @@
     }
 
     // Fetch inflation rewards for a vote account across recent epochs
+    // Short-lived getEpochInfo cache. Per-validator reward fetches each called
+    // getEpochInfo independently — on a portfolio open that was N identical
+    // round-trips. This dedupes them (and coalesces concurrent callers) so a
+    // burst of reward fetches shares a single getEpochInfo round-trip.
+    let _epochInfoData = null, _epochInfoTs = 0, _epochInfoPromise = null;
+    async function getEpochInfoCached(maxAgeMs = 10000) {
+      if (_epochInfoData && Date.now() - _epochInfoTs < maxAgeMs) return _epochInfoData;
+      if (_epochInfoPromise) return _epochInfoPromise;
+      _epochInfoPromise = rpcCall('getEpochInfo')
+        .then(d => { _epochInfoData = d; _epochInfoTs = Date.now(); _epochInfoPromise = null; return d; })
+        .catch(e => { _epochInfoPromise = null; throw e; });
+      return _epochInfoPromise;
+    }
+
     async function fetchInflationRewards(voteAccount, numEpochs = 30) {
       // Check cache first - include numEpochs in cache key
       const cacheKey = `${voteAccount}-${numEpochs}`;
@@ -14759,8 +14773,8 @@
       }
       
       try {
-        // Always fetch fresh epoch info to ensure we have the current epoch
-        const epochInfo = await rpcCall('getEpochInfo');
+        // Epoch info — deduped/coalesced across concurrent reward fetches
+        const epochInfo = await getEpochInfoCached();
         currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
         
         // Fetch all epochs (starting from currentEpoch - 1)
@@ -14844,8 +14858,8 @@
       }
 
       try {
-        // Always fetch fresh epoch info to ensure we have the current epoch
-        const epochInfo = await rpcCall('getEpochInfo');
+        // Epoch info — deduped/coalesced across concurrent reward fetches
+        const epochInfo = await getEpochInfoCached();
         currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
 
         // Step 1: Fetch vote account rewards (commission) in parallel
@@ -17491,6 +17505,32 @@
       }
     }
 
+    // Refresh just active-stake / rank / delinquency for all validators from a
+    // single getVoteAccounts. `allValidators` is otherwise only built at page
+    // load, so after the page has been open a while its stake figures go stale —
+    // which showed up as some Data Center cards displaying lower-than-actual
+    // active stake until a manual refresh. One cheap call corrects them.
+    async function refreshValidatorStakes() {
+      try {
+        const va = await rpcCall('getVoteAccounts');
+        const all = [...(va.current || []), ...(va.delinquent || [])];
+        if (!all.length || !allValidators.length) return;
+        const stakeMap = new Map(all.map(v => [v.votePubkey, v.activatedStake]));
+        const delinquentSet = new Set((va.delinquent || []).map(v => v.votePubkey));
+        allValidators.forEach(v => {
+          if (stakeMap.has(v.votePubkey)) {
+            v.activatedStake = stakeMap.get(v.votePubkey);
+            v.delinquent = delinquentSet.has(v.votePubkey);
+          }
+        });
+        allValidators.sort((a, b) => b.activatedStake - a.activatedStake);
+        allValidators.forEach((v, i) => { v.rank = i + 1; });
+        allValidatorsFetchedAt = Date.now();
+      } catch (e) {
+        console.warn('[refreshValidatorStakes] failed:', e && e.message || e);
+      }
+    }
+
     async function loadPortfolio() {
       const loading = document.getElementById('portfolioLoading');
       const results = document.getElementById('portfolioResults');
@@ -17508,6 +17548,17 @@
       results.style.display = 'none';
 
       try {
+        // Active stake (and rank) come from `allValidators`, which is only built
+        // at page load. After the page has been open a while that snapshot goes
+        // stale — which showed up as some cards displaying lower-than-actual
+        // active stake until a manual refresh. Refresh those figures from a
+        // single getVoteAccounts first (skipped if the list was just loaded, so a
+        // fresh page load doesn't double-fetch). An empty list needs no refresh —
+        // getValidatorInfo fetches fresh per-validator in that case.
+        if (allValidators.length > 0 && Date.now() - (allValidatorsFetchedAt || 0) > 30000) {
+          await refreshValidatorStakes();
+        }
+
         // Fetch all portfolio validators IN PARALLEL, not sequentially.
         // The previous `for (...) await` loop made each user wait for
         // N × getValidatorInfo() round-trips back-to-back. Promise.all
@@ -17555,16 +17606,6 @@
         document.getElementById('portfolioResultCount').textContent = validators.length;
         document.getElementById('portfolioUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
 
-        // Fetch last epoch rewards for all validators (async).
-        // We deliberately chain the two reward passes: the portfolio-summary
-        // pass runs first and populates totalRewardsCache, then the per-card
-        // pass runs and hits that warm cache instead of re-fetching every
-        // validator. Both use a 6-epoch window so the cache keys match. This
-        // roughly halves RPC load on a portfolio open, which is what was
-        // tripping the public RPC's rate limit (429s). Card rendering below is
-        // NOT blocked by this — only the secondary card-reward fill waits.
-        const _portfolioRewardsPass = fetchPortfolioLastEpochRewards(validators);
-
         // Sort validators alphabetically (natural sort for numbers)
         const sortedValidators = [...validators].sort((a, b) => {
           return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
@@ -17582,12 +17623,12 @@
         // Render validator cards (also sorted alphabetically)
         document.getElementById('portfolioValidatorResults').innerHTML = sortedValidators.map(v => renderValidatorCard(v, false, true)).join('');
 
-        // Fetch last epoch rewards for each card — but only AFTER the
-        // portfolio pass above has finished populating the cache, so this
-        // pass mostly reads from cache rather than re-hitting the RPC.
-        // .finally() (not .then()) so it still runs even if the first pass
-        // errored — a failed first pass shouldn't leave the cards blank.
-        _portfolioRewardsPass.finally(() => fetchLastEpochForCards(sortedValidators));
+        // Now that the cards exist, fetch each validator's rewards ONCE and
+        // stream the result into its card the moment it arrives (and compute the
+        // portfolio "Rewards Last Epoch" summary when all are in). Single pass —
+        // no separate summary + per-card passes — and no card waits on the
+        // slowest validator. Fire-and-forget; rendering isn't blocked on it.
+        fetchPortfolioLastEpochRewards(sortedValidators);
 
         loading.style.display = 'none';
         results.style.display = 'block';
@@ -17623,12 +17664,17 @@
         // a recent epoch where every validator has data.
         const EPOCH_BUFFER = 6;
         const rewardPromises = validators.map(async (v) => {
+          let list = [];
           try {
-            return await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, EPOCH_BUFFER);
+            list = await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, EPOCH_BUFFER);
           } catch (e) {
             console.warn(`[rewards] fetch failed for ${v.voteAccount}:`, e && e.message || e);
-            return [];
+            list = [];
           }
+          // Stream: fill THIS card's "Last Epoch Earned" the moment its own data
+          // arrives, instead of waiting for the whole batch (and the summary).
+          fillCardLastEpoch(v, list);
+          return list;
         });
 
         const allRewards = await Promise.all(rewardPromises);
@@ -17697,57 +17743,53 @@
     }
 
     // Fetch last epoch rewards for each validator card
+    // Fill a single card's "Last Epoch Earned" stat from a rewards list.
+    // Extracted so both the portfolio streaming pass and the lookup hydration
+    // can reuse identical fill logic.
+    function fillCardLastEpoch(v, rewards) {
+      const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
+      if (!cardEl) return;
+      const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
+      const sv = cardEl.querySelector('.stat-value');
+
+      if (rewards && rewards.length > 0) {
+        const indexedRewards = rewards.filter(r => r.indexed);
+        if (indexedRewards.length > 0) {
+          const latest = indexedRewards[0];
+          const lastEpochAmount = (latest.amount || 0) / 1e9;
+          if (sv) sv.textContent = formatNumber(lastEpochAmount, 2);
+
+          const subtextEl = cardEl.querySelector('.stat-subtext');
+          if (subtextEl) {
+            subtextEl.innerHTML = `XNT <span style="opacity:0.6;">· #${latest.epoch}</span>`;
+          }
+
+          if (changeEl && indexedRewards.length >= 2 && indexedRewards[1].amount > 0) {
+            const priorEpochAmount = (indexedRewards[1].amount || 0) / 1e9;
+            const changePercent = ((lastEpochAmount - priorEpochAmount) / priorEpochAmount) * 100;
+            if (changePercent > 0) {
+              changeEl.innerHTML = `<span style="color: var(--success);">↑ ${formatNumber(changePercent, 2)}%</span>`;
+            } else if (changePercent < 0) {
+              changeEl.innerHTML = `<span style="color: var(--danger);">↓ ${formatNumber(Math.abs(changePercent), 2)}%</span>`;
+            } else {
+              changeEl.innerHTML = `<span style="color: var(--text-dim);">→ 0%</span>`;
+            }
+          }
+        } else if (sv) {
+          sv.textContent = '—';
+        }
+      } else if (sv) {
+        sv.textContent = '—';
+      }
+    }
+
     async function fetchLastEpochForCards(validators) {
       for (const v of validators) {
         try {
-          // Request 6 epochs (not 3) so this call shares the SAME cache key as
-          // fetchPortfolioLastEpochRewards (which also uses 6). Because
-          // fetchTotalValidatorRewards caches by `${voteAccount}_total_${numEpochs}`,
-          // matching the epoch count means this pass hits the cache the first
-          // pass just populated instead of re-fetching every validator from
-          // scratch — roughly halving total RPC calls on a portfolio load.
-          // We still only use the most recent 3 below; the extra epochs are free.
+          // 6-epoch window matches fetchTotalValidatorRewards' cache key used
+          // elsewhere, so this mostly hits the warm cache.
           const rewards = await fetchTotalValidatorRewards(v.voteAccount, v.commission || 0, 6);
-          const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
-          const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
-
-          if (cardEl && rewards && rewards.length > 0) {
-            // Use only epochs with real indexed data
-            const indexedRewards = rewards.filter(r => r.indexed);
-
-            if (indexedRewards.length > 0) {
-              const latest = indexedRewards[0];
-              const lastEpochAmount = (latest.amount || 0) / 1e9;
-              cardEl.querySelector('.stat-value').textContent = formatNumber(lastEpochAmount, 2);
-
-              // Update the subtext to show which epoch this is from
-              const subtextEl = cardEl.querySelector('.stat-subtext');
-              if (subtextEl) {
-                subtextEl.innerHTML = `XNT <span style="opacity:0.6;">· #${latest.epoch}</span>`;
-              }
-
-              // Calculate change vs. the next-most-recent indexed epoch
-              if (changeEl && indexedRewards.length >= 2 && indexedRewards[1].amount > 0) {
-                const priorEpochAmount = (indexedRewards[1].amount || 0) / 1e9;
-                const changePercent = ((lastEpochAmount - priorEpochAmount) / priorEpochAmount) * 100;
-
-                if (changePercent > 0) {
-                  changeEl.innerHTML = `<span style="color: var(--success);">↑ ${formatNumber(changePercent, 2)}%</span>`;
-                } else if (changePercent < 0) {
-                  changeEl.innerHTML = `<span style="color: var(--danger);">↓ ${formatNumber(Math.abs(changePercent), 2)}%</span>`;
-                } else {
-                  changeEl.innerHTML = `<span style="color: var(--text-dim);">→ 0%</span>`;
-                }
-              }
-            } else {
-              // RPC hasn't indexed any recent epoch yet — clear the loading text.
-              const sv = cardEl.querySelector('.stat-value');
-              if (sv) sv.textContent = '—';
-            }
-          } else if (cardEl) {
-            const sv = cardEl.querySelector('.stat-value');
-            if (sv) sv.textContent = '—';
-          }
+          fillCardLastEpoch(v, rewards);
         } catch (e) {
           console.error(`Error fetching last epoch for ${v.voteAccount}:`, e);
           const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
@@ -21692,17 +21734,44 @@ Please give me the diagnostic commands to run on my server so you can help me id
           return;
         }
         
-        // Parse stake accounts
+        // Current epoch — used to classify each delegation as active /
+        // activating / deactivating / inactive so the category totals reflect
+        // the validator's *active* stake (matching the card's Active Stake),
+        // not raw account balances. Cheap + deduped.
+        let curEpoch = (typeof currentEpochNumber === 'number') ? currentEpochNumber : 0;
+        try { const ei = await getEpochInfoCached(); if (ei && typeof ei.epoch === 'number') curEpoch = ei.epoch; } catch (e) { /* fall back to cached epoch */ }
+
+        // Parse stake accounts. We surface the DELEGATED stake (delegation.stake),
+        // not the account balance (lamports): balance also holds the rent reserve
+        // and any un-redelegated rewards, which inflated the number and is what
+        // made these totals disagree with the card's Active Stake.
         const stakeAccounts = data.result.map(acc => {
           const stakeInfo = acc.account.data.parsed?.info;
           const meta = stakeInfo?.meta;
+          const delegation = stakeInfo?.stake?.delegation || null;
+          const delegatedLamports = (delegation && delegation.stake) ? parseInt(delegation.stake) : 0;
+          const actEpoch = delegation ? parseInt(delegation.activationEpoch) : NaN;
+          const deactRaw = delegation ? delegation.deactivationEpoch : null;
+          const isDeact = deactRaw && deactRaw !== '18446744073709551615';
+          const deactEpoch = isDeact ? parseInt(deactRaw) : null;
+          let state = 'active';
+          if (!delegation || delegatedLamports === 0) state = 'inactive';
+          else if (isDeact) state = (deactEpoch >= curEpoch) ? 'deactivating' : 'inactive';
+          else if (!isNaN(actEpoch) && actEpoch >= curEpoch) state = 'activating';
+          // Counts toward the validator's active stake this epoch: fully-active
+          // plus still-cooling (deactivating) delegations. Excludes fully-cooled
+          // (inactive) and not-yet-warm (activating) stake.
+          const countsActive = (state === 'active' || state === 'deactivating');
           return {
             pubkey: acc.pubkey,
-            stakeXNT: acc.account.lamports / 1e9,
+            stakeXNT: delegatedLamports / 1e9,      // delegated stake (not balance)
+            balanceXNT: acc.account.lamports / 1e9, // raw balance, kept for reference
+            state,
+            countsActive,
             withdrawer: meta?.authorized?.withdrawer || 'Unknown',
             staker: meta?.authorized?.staker || 'Unknown'
           };
-        }).sort((a, b) => b.stakeXNT - a.stakeXNT);
+        }).sort((a, b) => (b.countsActive - a.countsActive) || (b.stakeXNT - a.stakeXNT));
         
         currentStakeSelectionData = stakeAccounts;
         currentStakeSelectionName = validatorName;
@@ -21755,12 +21824,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
     
     function renderStakeSelection(body, stakeAccounts, cats, validatorName, voteAccount) {
-      // 4-way totals by category
+      // 4-way totals by category — sum only stake that's currently ACTIVE
+      // (active + cooling), so the grand total reconciles with the card's
+      // Active Stake. Inactive / activating delegations are listed but excluded.
       const sums = { self: 0, foundation: 0, ripper: 0, community: 0 };
       stakeAccounts.forEach(acc => {
+        if (!acc.countsActive) return;
         const c = cats.get(acc.pubkey) || 'community';
         sums[c] += acc.stakeXNT;
       });
+      const inactiveTotal = stakeAccounts.reduce((s, a) => s + (a.countsActive ? 0 : a.stakeXNT), 0);
 
       const metric = (val, label, color) => `
         <div class="stake-cat-metric">
@@ -21784,14 +21857,22 @@ Please give me the diagnostic commands to run on my server so you can help me id
           ${metric(sums.community, 'Community', 'var(--accent-blue)')}
         </div>
 
+        <div style="font-size:0.72rem;color:var(--text-secondary);margin:-0.2rem 0 0.6rem;text-align:center;">
+          Totals reflect <strong style="color:var(--text-secondary);">active</strong> stake (delegated &amp; earning) — matching the card's Active Stake.${inactiveTotal > 0 ? ` Inactive / activating accounts (${formatNumber(inactiveTotal, 0)} XNT) are shown dimmed and excluded.` : ''}
+        </div>
+
         <div class="stake-selection-list">
           ${stakeAccounts.map(acc => {
             const cat = cats.get(acc.pubkey) || 'community';
+            const dim = acc.countsActive ? '' : 'opacity:0.5;';
+            const stateLabel = acc.countsActive
+              ? (acc.state === 'deactivating' ? ' · <span style="color:var(--warning);">cooling</span>' : '')
+              : ` · <span style="color:var(--text-secondary);">${acc.state}</span>`;
             return `
-            <div class="stake-selection-item" data-pubkey="${acc.pubkey}">
+            <div class="stake-selection-item" data-pubkey="${acc.pubkey}" style="${dim}">
               <div class="stake-selection-info">
                 <div class="stake-selection-address">${acc.pubkey.slice(0, 8)}...${acc.pubkey.slice(-8)} ${stakeCatBadge(acc.pubkey, cat)}</div>
-                <div class="stake-selection-details">Withdrawer: ${acc.withdrawer.slice(0, 8)}...${acc.withdrawer.slice(-4)}</div>
+                <div class="stake-selection-details">Withdrawer: ${acc.withdrawer.slice(0, 8)}...${acc.withdrawer.slice(-4)}${stateLabel}</div>
               </div>
               <div class="stake-selection-amount">${formatNumber(acc.stakeXNT, 2)} XNT</div>
             </div>
@@ -22497,8 +22578,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
               <span class="account-type-badge ${badgeClass}" data-stake-idx="${originalIndex}">${badgeText}</span>
               <span class="account-address">${shortenAddress(stake.pubkey)}</span>
               ${getCopyButtonHtml(stake.pubkey)}
-              <span style="color: var(--text-dim); font-size: 0.75rem; margin-left: 0.5rem;">
-                ${formatNumber(lamportsToXNT(stake.lamports), 2)} XNT
+              <span style="color: var(--text-dim); font-size: 0.75rem; margin-left: 0.5rem;"
+                    title="Delegated stake (account balance: ${formatNumber(lamportsToXNT(stake.lamports), 2)} XNT)">
+                ${formatNumber(lamportsToXNT(stake.delegatedLamports ?? stake.lamports), 2)} XNT
               </span>
               ${cooldownHint}
             </div>
