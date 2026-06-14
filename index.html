@@ -21734,18 +21734,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
           return;
         }
         
-        // Current epoch — used to classify each delegation as active /
-        // activating / deactivating / inactive so the category totals reflect
-        // the validator's *active* stake (matching the card's Active Stake),
-        // not raw account balances. Cheap + deduped.
+        // Current epoch — fallback classifier if getStakeActivation is
+        // unavailable on this RPC (it's deprecated in newer Solana releases).
         let curEpoch = (typeof currentEpochNumber === 'number') ? currentEpochNumber : 0;
         try { const ei = await getEpochInfoCached(); if (ei && typeof ei.epoch === 'number') curEpoch = ei.epoch; } catch (e) { /* fall back to cached epoch */ }
 
-        // Parse stake accounts. We surface the DELEGATED stake (delegation.stake),
-        // not the account balance (lamports): balance also holds the rent reserve
-        // and any un-redelegated rewards, which inflated the number and is what
-        // made these totals disagree with the card's Active Stake.
-        const stakeAccounts = data.result.map(acc => {
+        // Resolve each account's *active* stake from the chain itself
+        // (getStakeActivation) rather than its balance or its full delegation
+        // amount. This is the same accounting that feeds the validator's
+        // Active Stake on the card, so the category totals reconcile exactly:
+        // stake that's still warming up (activating) or cooling down
+        // (deactivating) is split out and not counted as active. One call per
+        // account, on-demand (only when Classify is opened), queue-throttled.
+        const parsed = data.result.map(acc => {
           const stakeInfo = acc.account.data.parsed?.info;
           const meta = stakeInfo?.meta;
           const delegation = stakeInfo?.stake?.delegation || null;
@@ -21754,24 +21755,49 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const deactRaw = delegation ? delegation.deactivationEpoch : null;
           const isDeact = deactRaw && deactRaw !== '18446744073709551615';
           const deactEpoch = isDeact ? parseInt(deactRaw) : null;
-          let state = 'active';
-          if (!delegation || delegatedLamports === 0) state = 'inactive';
-          else if (isDeact) state = (deactEpoch >= curEpoch) ? 'deactivating' : 'inactive';
-          else if (!isNaN(actEpoch) && actEpoch >= curEpoch) state = 'activating';
-          // Counts toward the validator's active stake this epoch: fully-active
-          // plus still-cooling (deactivating) delegations. Excludes fully-cooled
-          // (inactive) and not-yet-warm (activating) stake.
-          const countsActive = (state === 'active' || state === 'deactivating');
           return {
             pubkey: acc.pubkey,
-            stakeXNT: delegatedLamports / 1e9,      // delegated stake (not balance)
-            balanceXNT: acc.account.lamports / 1e9, // raw balance, kept for reference
-            state,
-            countsActive,
+            delegatedLamports,
+            actEpoch, isDeact, deactEpoch,
             withdrawer: meta?.authorized?.withdrawer || 'Unknown',
             staker: meta?.authorized?.staker || 'Unknown'
           };
-        }).sort((a, b) => (b.countsActive - a.countsActive) || (b.stakeXNT - a.stakeXNT));
+        });
+
+        const stakeAccounts = (await Promise.all(parsed.map(async p => {
+          // Authoritative path: ask the chain for the exact active / inactive
+          // split. active = what the validator's Active Stake actually counts.
+          let activeLamports = null, inactiveLamports = 0, state = null;
+          try {
+            const act = await rpcCall('getStakeActivation', [p.pubkey, { commitment: 'confirmed' }]);
+            if (act && act.state) {
+              state = act.state; // active | inactive | activating | deactivating
+              activeLamports = parseInt(act.active) || 0;
+              inactiveLamports = parseInt(act.inactive) || 0;
+            }
+          } catch (e) { /* deprecated/unsupported — fall through to epoch math */ }
+
+          // Fallback if getStakeActivation isn't available: derive from epochs
+          // (can't see partial warmup/cooldown, but excludes fully in/activating).
+          if (activeLamports === null) {
+            if (!p.delegatedLamports) { state = 'inactive'; activeLamports = 0; }
+            else if (p.isDeact) { state = (p.deactEpoch >= curEpoch) ? 'deactivating' : 'inactive'; activeLamports = (state === 'deactivating') ? p.delegatedLamports : 0; }
+            else if (!isNaN(p.actEpoch) && p.actEpoch >= curEpoch) { state = 'activating'; activeLamports = 0; }
+            else { state = 'active'; activeLamports = p.delegatedLamports; }
+            inactiveLamports = Math.max(0, p.delegatedLamports - activeLamports);
+          }
+
+          return {
+            pubkey: p.pubkey,
+            stakeXNT: activeLamports / 1e9,            // ACTIVE stake — matches the card
+            delegatedXNT: p.delegatedLamports / 1e9,   // full delegation, for reference
+            inactiveXNT: inactiveLamports / 1e9,       // cooling / not-yet-active portion
+            state,
+            countsActive: activeLamports > 0,
+            withdrawer: p.withdrawer,
+            staker: p.staker
+          };
+        }))).sort((a, b) => (b.countsActive - a.countsActive) || (b.stakeXNT - a.stakeXNT));
         
         currentStakeSelectionData = stakeAccounts;
         currentStakeSelectionName = validatorName;
@@ -21824,16 +21850,27 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
     
     function renderStakeSelection(body, stakeAccounts, cats, validatorName, voteAccount) {
-      // 4-way totals by category — sum only stake that's currently ACTIVE
-      // (active + cooling), so the grand total reconciles with the card's
-      // Active Stake. Inactive / activating delegations are listed but excluded.
+      // 4-way totals by category — each account's stakeXNT is now its CHAIN-REPORTED
+      // ACTIVE stake, so the grand total reconciles exactly with the card's Active
+      // Stake. Stake that's warming up / cooling down / inactive is split out below.
       const sums = { self: 0, foundation: 0, ripper: 0, community: 0 };
       stakeAccounts.forEach(acc => {
-        if (!acc.countsActive) return;
         const c = cats.get(acc.pubkey) || 'community';
-        sums[c] += acc.stakeXNT;
+        sums[c] += acc.stakeXNT; // stakeXNT = active portion (0 for fully inactive)
       });
-      const inactiveTotal = stakeAccounts.reduce((s, a) => s + (a.countsActive ? 0 : a.stakeXNT), 0);
+      const activeTotal  = sums.self + sums.foundation + sums.ripper + sums.community;
+      const warmingTotal = stakeAccounts.reduce((s, a) => s + (a.state === 'activating'   ? a.inactiveXNT : 0), 0);
+      const coolingTotal = stakeAccounts.reduce((s, a) => s + (a.state === 'deactivating' ? a.inactiveXNT : 0), 0);
+      const excludedTotal = stakeAccounts.reduce((s, a) => s + (a.inactiveXNT || 0), 0);
+      const inactiveOnly = Math.max(0, excludedTotal - warmingTotal - coolingTotal);
+      let exclNote = '';
+      if (excludedTotal > 0.5) {
+        const bits = [];
+        if (warmingTotal > 0.5) bits.push(`${formatNumber(warmingTotal, 0)} warming up`);
+        if (coolingTotal > 0.5) bits.push(`${formatNumber(coolingTotal, 0)} cooling down`);
+        if (inactiveOnly > 0.5) bits.push(`${formatNumber(inactiveOnly, 0)} inactive`);
+        exclNote = ` A further <strong style="color:var(--warning);">${formatNumber(excludedTotal, 0)} XNT</strong> is delegated but not active (${bits.join(', ')}) — which is why the active total matches the card rather than the larger delegated total.`;
+      }
 
       const metric = (val, label, color) => `
         <div class="stake-cat-metric">
@@ -21857,22 +21894,32 @@ Please give me the diagnostic commands to run on my server so you can help me id
           ${metric(sums.community, 'Community', 'var(--accent-blue)')}
         </div>
 
-        <div style="font-size:0.72rem;color:var(--text-secondary);margin:-0.2rem 0 0.6rem;text-align:center;">
-          Totals reflect <strong style="color:var(--text-secondary);">active</strong> stake (delegated &amp; earning) — matching the card's Active Stake.${inactiveTotal > 0 ? ` Inactive / activating accounts (${formatNumber(inactiveTotal, 0)} XNT) are shown dimmed and excluded.` : ''}
+        <div style="font-size:0.72rem;color:var(--text-secondary);margin:-0.2rem 0 0.6rem;text-align:center;line-height:1.5;">
+          Totals reflect <strong style="color:var(--text-secondary);">active</strong> stake (live &amp; earning) — matching the card's Active Stake (${formatNumber(activeTotal, 0)} XNT).${exclNote}
         </div>
 
         <div class="stake-selection-list">
           ${stakeAccounts.map(acc => {
             const cat = cats.get(acc.pubkey) || 'community';
-            const dim = acc.countsActive ? '' : 'opacity:0.5;';
-            const stateLabel = acc.countsActive
-              ? (acc.state === 'deactivating' ? ' · <span style="color:var(--warning);">cooling</span>' : '')
-              : ` · <span style="color:var(--text-secondary);">${acc.state}</span>`;
+            const dim = acc.countsActive ? '' : 'opacity:0.55;';
+            let note = '';
+            if (!acc.countsActive) {
+              const lbl = acc.state === 'activating' ? 'warming up'
+                        : acc.state === 'deactivating' ? 'cooling down'
+                        : (acc.state || 'inactive');
+              const delg = acc.delegatedXNT > 0.005 ? ` · ${formatNumber(acc.delegatedXNT, 0)} XNT delegated` : '';
+              note = ` · <span style="color:var(--text-secondary);">${lbl}${delg}</span>`;
+            } else if (acc.inactiveXNT > 0.005) {
+              const lbl = acc.state === 'deactivating' ? 'cooling'
+                        : acc.state === 'activating' ? 'warming'
+                        : 'pending';
+              note = ` · <span style="color:var(--warning);">+${formatNumber(acc.inactiveXNT, 0)} XNT ${lbl}</span>`;
+            }
             return `
             <div class="stake-selection-item" data-pubkey="${acc.pubkey}" style="${dim}">
               <div class="stake-selection-info">
                 <div class="stake-selection-address">${acc.pubkey.slice(0, 8)}...${acc.pubkey.slice(-8)} ${stakeCatBadge(acc.pubkey, cat)}</div>
-                <div class="stake-selection-details">Withdrawer: ${acc.withdrawer.slice(0, 8)}...${acc.withdrawer.slice(-4)}${stateLabel}</div>
+                <div class="stake-selection-details">Withdrawer: ${acc.withdrawer.slice(0, 8)}...${acc.withdrawer.slice(-4)}${note}</div>
               </div>
               <div class="stake-selection-amount">${formatNumber(acc.stakeXNT, 2)} XNT</div>
             </div>
