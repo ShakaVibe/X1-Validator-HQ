@@ -2754,6 +2754,11 @@
       color: var(--warning);
       background: rgba(255, 171, 0, 0.10);
       border: 1px solid rgba(255, 171, 0, 0.30);
+      /* Fixed width so the countdown text changing doesn't resize the badge.
+         Sized to fit the widest state ("Next slot ~47h 59m" / "No upcoming slots"). */
+      min-width: 11rem;
+      justify-content: center;
+      text-align: center;
     }
     /* This validator is the current leader */
     .vh-next-leader.is-leader {
@@ -4352,6 +4357,16 @@
       background: rgba(240, 185, 11, 0.14);
       color: var(--accent-gold);
       border: 1px solid rgba(240, 185, 11, 0.45);
+    }
+    .stake-source-badge.self {
+      background: rgba(0, 230, 118, 0.14);
+      color: var(--success);
+      border: 1px solid rgba(0, 230, 118, 0.45);
+    }
+    .stake-source-badge.community {
+      background: rgba(77, 166, 255, 0.14);
+      color: var(--accent-blue);
+      border: 1px solid rgba(77, 166, 255, 0.45);
     }
 
     /* ── Stake classification: category badges + 4-way summary ── */
@@ -22260,6 +22275,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
           return b.stake.lamports - a.stake.lamports;
         });
       
+      // Resolve stake-source category for the per-row badges, mirroring the
+      // Stake Classification modal: Foundation/Ripper are hard-coded by pool
+      // address; otherwise honor a saved classification, else auto-detect
+      // self via the vote account's withdrawer.
+      const mvVote     = currentManageValidator && currentManageValidator.voteAccount;
+      const mvSel      = mvVote ? getSelfStakeSelections(mvVote) : null;
+      const mvExplicit = hasUserClassification(mvSel);
+      const mvSelfSet  = new Set((mvSel && mvSel.pubkeys) || []);
+
       container.innerHTML = sortedStakes.map(({ stake, originalIndex }) => {
         // Determine badge text and class based on state
         let badgeText = 'STAKE';
@@ -22307,14 +22331,22 @@ Please give me the diagnostic commands to run on my server so you can help me id
             + `${pctCooled.toFixed(0)}% cooled</span>`;
         }
         
-        // Classify the stake by its withdrawer authority. If it matches a
-        // known pool delegator (X1 Labs / Foundation or Ripper Pool), surface
-        // it as a badge next to the Stake/Withdraw authority badges so the
-        // user can spot pool-delegated stakes at a glance.
-        const stakeSource = classifyStakeSource(stake.withdrawer);
-        const sourceBadgeHtml =
-          stakeSource === 'foundation' ? '<span class="stake-source-badge foundation" title="Stake routed via X1 Labs / Foundation pool">FOUNDATION</span>' :
-          stakeSource === 'ripper'     ? '<span class="stake-source-badge ripper" title="Stake routed via Ripper Pool">RIPPER POOL</span>' : '';
+        // Classify the stake into one of four buckets and surface a badge
+        // next to the Stake/Withdraw authority badges so the user can see at
+        // a glance whether each account is self-stake, foundation, ripper,
+        // or community delegation.
+        let stakeCat;
+        const _src = classifyStakeSource(stake.withdrawer);
+        if (_src === 'foundation') stakeCat = 'foundation';
+        else if (_src === 'ripper') stakeCat = 'ripper';
+        else if (mvExplicit) stakeCat = mvSelfSet.has(stake.pubkey) ? 'self' : 'community';
+        else stakeCat = (stake.withdrawer && manageVoteWithdrawAuthority && stake.withdrawer === manageVoteWithdrawAuthority) ? 'self' : 'community';
+        const sourceBadgeHtml = ({
+          self:       '<span class="stake-source-badge self" title="Validator self-stake — earns 100% of rewards">SELF-STAKE</span>',
+          foundation: '<span class="stake-source-badge foundation" title="Stake routed via X1 Labs / Foundation pool">FOUNDATION</span>',
+          ripper:     '<span class="stake-source-badge ripper" title="Stake routed via Ripper Pool">RIPPER POOL</span>',
+          community:  '<span class="stake-source-badge community" title="Community delegation — validator earns commission only">COMMUNITY</span>'
+        })[stakeCat] || '';
 
         return `
           <div class="account-row ${selectedAccountType === 'stake-${originalIndex}' ? 'selected' : ''}" onclick="selectAccount('stake-${originalIndex}')">
@@ -23030,6 +23062,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // Cache withdraw authority and refresh action locks now that it's known
           manageVoteWithdrawAuthority = withdrawAuthority || null;
           renderActions();
+          // Re-render the stake list now that the vote withdrawer is known,
+          // so self-stake badges (withdrawer-match) resolve correctly even if
+          // the stake accounts finished loading first.
+          if (typeof stakeAccounts !== 'undefined' && stakeAccounts && stakeAccounts.length > 0) {
+            renderStakeAccounts();
+          }
           
           // Display Vote Authority
           const voteAuthorityIndicator = document.getElementById('voteAuthorityIndicator');
@@ -29559,12 +29597,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
 
       function fmt(ms) {
-        const s = Math.max(0, Math.round(ms / 1000));
-        if (s < 60) return `~${s}s`;
-        const m = Math.floor(s / 60), rs = s % 60;
-        if (m < 60) return `~${m}m ${rs}s`;
-        const h = Math.floor(m / 60), rm = m % 60;
-        return `~${h}h ${rm}m`;
+        const totalMin = Math.floor(Math.max(0, ms) / 60000);
+        if (totalMin < 1) return '<1m';
+        if (totalMin < 60) return `~${totalMin}m`;
+        const h = Math.floor(totalMin / 60), rm = totalMin % 60;
+        return rm > 0 ? `~${h}h ${rm}m` : `~${h}h`;
       }
 
       async function sync() {
