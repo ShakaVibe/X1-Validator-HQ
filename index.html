@@ -2955,10 +2955,16 @@
       flex-direction: column;
     }
 
-    /* Keep secondary action links on a consistent bottom line so every
-       stat cell shows its number on the same top line and its action on
-       the same bottom line, regardless of how many sub-lines it has. */
-    .rb-open-link, .stat-foot-link { margin-top: auto; padding-top: 0.3rem; }
+    /* Unit text and its action sit on one line, so each stat cell has a
+       single line under the number and the cards stay shallow + uniform. */
+    .stat-sub-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.4rem;
+      margin-top: 0.2rem;
+    }
+    .stat-sub-row .stat-subtext { margin-top: 0; }
 
     /* Credit Pace Badge & Tooltip */
     .cred-tooltip {
@@ -16999,7 +17005,7 @@
                 onmouseenter="document.getElementById('${tooltipId}').classList.add('show')"
                 onmouseleave="document.getElementById('${tooltipId}').classList.remove('show')"
                 onclick="event.stopPropagation(); toggleCredTooltip('${tooltipId}')"
-                style="position:absolute;bottom:0.4rem;right:0.5rem;font-size:0.68rem;font-weight:700;color:${pctColor};line-height:1;cursor:help;border-bottom:1px dotted ${pctColor};padding-bottom:1px;">
+                style="position:relative;font-size:0.68rem;font-weight:700;color:${pctColor};line-height:1;cursor:help;border-bottom:1px dotted ${pctColor};padding-bottom:1px;white-space:nowrap;">
                 ${paceScore.toFixed(1)}%
                 ${tooltipHtml}
               </div>`;
@@ -17080,22 +17086,28 @@
                 <span class="stat-value" style="color: var(--success);">Loading...</span>
                 <span class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}"></span>
               </div>
-              <div class="stat-subtext">XNT</div>
-              <div class="stat-subtext rb-open-link" onclick="event.stopPropagation();openRewardBreakdown('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.commission})">Breakdown</div>
+              <div class="stat-sub-row">
+                <span class="stat-subtext">XNT</span>
+                <span class="rb-open-link" onclick="event.stopPropagation();openRewardBreakdown('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.commission})">Breakdown</span>
+              </div>
             </div>
             
             <div class="stat-item clickable-stat" onclick="openStakeSelection('${validator.voteAccount}', '${escAttrJs(validator.name)}')" title="Click to manage your stake classification (self-stake vs delegated)">
               <div class="stat-label">Active<br>Stake</div>
               <div class="stat-value">${formatXntCompact(validator.activatedStake)}</div>
-              <div class="stat-subtext">XNT</div>
-              <div class="stat-subtext stat-foot-link" style="color: var(--accent-cyan); font-size: 0.65rem;">Stake Classification</div>
+              <div class="stat-sub-row">
+                <span class="stat-subtext">XNT</span>
+                <span style="color: var(--accent-cyan); font-size: 0.65rem;">Classify ›</span>
+              </div>
             </div>
             
             <div class="stat-item epoch-credits-card" style="position:relative;" title="Epoch credits represent the validator's voting activity. More credits generally means better uptime and participation in consensus.">
               <div class="stat-label">Epoch<br>Credits</div>
               <div class="stat-value">${formatCompact(validator.epochCredits)}</div>
-              <div class="stat-subtext">Cumulative</div>
-              ${credPctHtml}
+              <div class="stat-sub-row">
+                <span class="stat-subtext">Cumulative</span>
+                ${credPctHtml}
+              </div>
             </div>
             
             <div class="stat-item" title="Commission is the percentage of staking rewards the validator keeps. The remaining percentage goes to delegators.">
@@ -17118,7 +17130,6 @@
                   <div class="perf-bar-fill" style="width: ${perfScore}%; background: ${perfBarColor};"></div>
                 </div>
               </div>
-              <div class="perf-click-hint">Click for details</div>
             </div>
           </div>
 
@@ -17607,7 +17618,7 @@
               // Update the subtext to show which epoch this is from
               const subtextEl = cardEl.querySelector('.stat-subtext');
               if (subtextEl) {
-                subtextEl.innerHTML = `XNT <span style="opacity:0.6;">· Epoch #${latest.epoch}</span>`;
+                subtextEl.innerHTML = `XNT <span style="opacity:0.6;">· #${latest.epoch}</span>`;
               }
 
               // Calculate change vs. the next-most-recent indexed epoch
