@@ -1368,8 +1368,6 @@
       cursor: pointer;
       transition: all 0.2s;
       border-radius: 8px;
-      padding: 0.5rem !important;
-      margin: -0.5rem;
     }
     
     .perf-score-wrapper:hover {
@@ -2965,6 +2963,33 @@
       margin-top: 0.2rem;
     }
     .stat-sub-row .stat-subtext { margin-top: 0; }
+
+    /* Lookup result placeholder — shown instantly from cached list data, then
+       replaced in place by the full validator card once it hydrates. */
+    .lookup-slot {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .lookup-slot-main { display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+    .lookup-slot-name { font-weight: 600; }
+    .lookup-slot-rank { color: var(--text-secondary); font-size: 0.8rem; font-weight: 400; margin-left: 0.4rem; }
+    .lookup-slot-sub { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem; }
+    .lookup-slot-spinner { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.8rem; flex-shrink: 0; }
+    .lookup-spin {
+      width: 16px; height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent-cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
 
     /* Credit Pace Badge & Tooltip */
     .cred-tooltip {
@@ -11600,7 +11625,7 @@
     <div class="tab-content" id="lookupTab">
       <section class="search-section">
         <h1>Validator <span>Lookup</span></h1>
-        <p>Search by validator name or enter a Vote Account ID</p>
+        <p>Search by validator name, or paste a vote account or identity address</p>
         
         <div class="search-container">
           <div class="search-input-wrapper">
@@ -11608,7 +11633,7 @@
               type="text" 
               class="search-input" 
               id="searchInput" 
-              placeholder="Search by name or Vote Account ID..."
+              placeholder="Search by name, vote account, or identity address..."
               autocomplete="off"
               oninput="handleSearchInput()"
             >
@@ -14584,6 +14609,7 @@
                                        // the lookup tab to decide whether to do a
                                        // silent refresh before / after a search.
     let _searchRequestId = 0;          // monotonic counter; stale searches abort
+    let _searchDebounce = null;        // debounce timer for the lookup input
     let validatorInfoCache = {};
     let myPortfolio = JSON.parse(localStorage.getItem('x1Portfolio') || '[]');
     let rewardsHistory = {};
@@ -17201,15 +17227,28 @@
     //   • The global RPC throttle (installRpcThrottle) caps concurrent
     //     in-flight requests, so even a flurry of keystrokes against an
     //     empty cache doesn't hammer the endpoint.
+    // Base58 excludes 0, O, I, l. A Solana/X1 pubkey is 32–44 of these chars
+    // (vote accounts and identities are typically 43–44).
+    const BASE58_RE = /^[1-9A-HJ-NP-Za-km-z]+$/;
+    function looksLikePubkey(s) {
+      return BASE58_RE.test(s) && s.length >= 32 && s.length <= 44;
+    }
+
     function handleSearchInput() {
+      clearTimeout(_searchDebounce);
       const input = document.getElementById('searchInput').value.trim();
       if (input.length < 2) return;
 
-      // Likely a name search, not a full address — fire immediately so
-      // results populate as the user types.
-      if (input.length > 3 && input.length < 44) {
-        performSearch();
-      }
+      const fullKey = looksLikePubkey(input) && input.length >= 43;
+      // A long base58 string that isn't yet a full key is almost certainly an
+      // address mid-type/paste. Don't fire a (useless, expensive) name search
+      // on a partial key — wait until it's complete.
+      const partialKey = !fullKey && input.length > 20 && BASE58_RE.test(input);
+      if (partialKey) return;
+
+      // Full keys resolve immediately; names get a short debounce so we don't
+      // launch a fresh search (and a wave of RPC calls) on every keystroke.
+      _searchDebounce = setTimeout(performSearch, fullKey ? 0 : 250);
     }
 
     // Lookup a specific validator (called from leaderboard)
@@ -17231,100 +17270,121 @@
       const input = document.getElementById('searchInput').value.trim();
       if (!input) return;
 
-      // Race-guard: each invocation gets a unique id. When async work
-      // finishes, we only render if our id is still the latest one —
-      // otherwise the user has typed more and a newer search is on the
-      // way. Prevents an old slow response from clobbering a fresh one.
+      // Race-guard: each invocation gets a unique id. Async work only commits
+      // to the DOM if our id is still the latest — a newer search supersedes us.
       const myRequestId = ++_searchRequestId;
       const isStale = () => myRequestId !== _searchRequestId;
 
       const loading = document.getElementById('loading');
       const results = document.getElementById('resultsSection');
       const error = document.getElementById('errorMessage');
+      const container = document.getElementById('validatorResults');
 
       results.style.display = 'none';
       error.style.display = 'none';
       loading.style.display = 'flex';
 
+      const showError = () => {
+        loading.style.display = 'none';
+        const noData = !allValidators || allValidators.length === 0;
+        error.querySelector('p').textContent = noData
+          ? 'Validator data is still loading — please try again in a moment.'
+          : 'No validators found. Try searching by name or check the address.';
+        error.style.display = 'block';
+      };
+
       try {
-        // Guard: ensure validator list is loaded before searching by name
+        // Ensure the validator list is loaded before scoring / resolving.
         if (!allValidators || allValidators.length === 0) {
           await loadNetworkStats();
           if (isStale()) return;
         }
 
-        const isPubkey = input.length >= 43 && input.length <= 44;
-        let validators = await runValidatorSearch(input, isPubkey);
-        if (isStale()) return;
+        const isPubkey = looksLikePubkey(input) && input.length >= 43;
 
-        // No name match? The validator list might be stale (a new validator
-        // joined since we last fetched getVoteAccounts). Refresh once and
-        // try again before declaring "not found". Skip this for pubkey
-        // searches because those go straight to the chain anyway.
+        // ── Address / vote-ID path: resolve vote-OR-identity, fetch one card ──
+        if (isPubkey) {
+          const voteToFetch = resolveVoteAccount(input);
+          const validator = await getValidatorInfo(voteToFetch).catch(() => null);
+          if (isStale()) return;
+          if (!validator) { showError(); return; }
+          container.innerHTML = renderValidatorCard(validator, true, false);
+          document.getElementById('resultCount').textContent = '1';
+          document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+          fetchLastEpochForCards([validator]);
+          loading.style.display = 'none';
+          results.style.display = 'block';
+          return;
+        }
+
+        // ── Name path: score against the cached list (no RPC) ──
+        let matches = scoreNameMatches(input);
+
+        // No match? The list may be stale (a validator joined since last fetch).
+        // Refresh once and retry before giving up.
         const STALE_THRESHOLD_MS = 30 * 1000;
         const cacheAge = Date.now() - (allValidatorsFetchedAt || 0);
-        if (validators.length === 0 && !isPubkey && cacheAge > STALE_THRESHOLD_MS) {
-          console.info('[performSearch] no results — refreshing validator list and retrying');
+        if (matches.length === 0 && cacheAge > STALE_THRESHOLD_MS) {
           await loadNetworkStats();
           if (isStale()) return;
-          validators = await runValidatorSearch(input, isPubkey);
+          matches = scoreNameMatches(input);
           if (isStale()) return;
         }
 
-        if (validators.length === 0) {
-          throw new Error('No validators found');
-        }
+        if (matches.length === 0) { showError(); return; }
 
-        // Render results
-        document.getElementById('validatorResults').innerHTML = validators.map(v => renderValidatorCard(v, true, false)).join('');
-        document.getElementById('resultCount').textContent = validators.length;
+        // Instant render: drop in lightweight placeholder rows (name, stake,
+        // commission, rank — all from cached data) in best-match order, then
+        // hydrate each into a full card as its data arrives. Results stream in
+        // rather than waiting on the slowest fetch, and last-epoch fills are
+        // issued per-card so they run in parallel through the RPC queue.
+        container.innerHTML = matches.map(lookupSlotHtml).join('');
+        document.getElementById('resultCount').textContent = matches.length;
         document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
-        
-        // Fetch last epoch rewards for each card
-        fetchLastEpochForCards(validators);
-        
         loading.style.display = 'none';
         results.style.display = 'block';
 
+        matches.forEach(m => {
+          getValidatorInfo(m.votePubkey)
+            .then(info => {
+              if (isStale() || !info) return;
+              const slot = document.getElementById('lkslot-' + m.votePubkey.slice(0, 8));
+              if (!slot) return;
+              slot.outerHTML = renderValidatorCard(info, true, false);
+              fetchLastEpochForCards([info]);
+            })
+            .catch(err => {
+              console.warn('[performSearch] hydrate skip', m.votePubkey, err && err.message || err);
+              if (isStale()) return;
+              const slot = document.getElementById('lkslot-' + m.votePubkey.slice(0, 8));
+              if (slot) slot.remove();
+            });
+        });
+
       } catch (err) {
-        if (isStale()) return; // silently drop — newer search is in flight
+        if (isStale()) return; // newer search in flight — drop silently
         console.error(err);
-        loading.style.display = 'none';
-        // Show a more specific message if validators never loaded
-        const noData = !allValidators || allValidators.length === 0;
-        error.querySelector('p').textContent = noData
-          ? 'Validator data is still loading — please try again in a moment.'
-          : 'No validators found. Try searching by name or check the Vote Account ID.';
-        error.style.display = 'block';
+        showError();
       }
     }
 
-    // Inner search routine extracted from performSearch so the outer
-    // function can call it twice (initial attempt + post-refresh retry).
-    // Returns an array of validator objects ready for rendering.
-    async function runValidatorSearch(input, isPubkey) {
-      // Check if it's a vote account address (44 characters)
-      if (isPubkey) {
-        const validator = await getValidatorInfo(input);
-        return validator ? [validator] : [];
-      }
-
-      // Search by name — prioritize name matches over pubkey matches,
-      // and exact/prefix name matches over partial name matches
+    // Score name/pubkey matches against the already-loaded validator list.
+    // Returns lightweight allValidators entries (NO RPC) in best-match order so
+    // result cards can render instantly and hydrate afterward.
+    function scoreNameMatches(input) {
       const searchLower = input.toLowerCase();
-
-      const scored = allValidators
+      return allValidators
         .map(v => {
-          const nameLower = v.name.toLowerCase();
-          const voteL   = v.votePubkey.toLowerCase();
-          const nodeL   = v.nodePubkey.toLowerCase();
+          const nameLower = (v.name || '').toLowerCase();
+          const voteL = v.votePubkey.toLowerCase();
+          const nodeL = v.nodePubkey.toLowerCase();
 
           let score = 0;
           if (nameLower === searchLower)               score = 100; // exact name match
-          else if (nameLower.startsWith(searchLower)) score = 80;  // name prefix match
-          else if (nameLower.includes(searchLower))   score = 60;  // partial name match
+          else if (nameLower.startsWith(searchLower))  score = 80;  // name prefix match
+          else if (nameLower.includes(searchLower))    score = 60;  // partial name match
           else if (voteL.includes(searchLower) ||
-                   nodeL.includes(searchLower))        score = 20;  // pubkey match only
+                   nodeL.includes(searchLower))         score = 20;  // pubkey substring
 
           return { v, score };
         })
@@ -17332,19 +17392,36 @@
         .sort((a, b) => b.score - a.score)
         .slice(0, 20)
         .map(item => item.v);
+    }
 
-      // Parallel fetch — was a sequential for-await loop that queued
-      // each validator's ~4 RPC round-trips back-to-back. Promise.all
-      // shares the 4-slot RPC queue across all matches instead.
-      const settled = await Promise.all(
-        scored.map(match =>
-          getValidatorInfo(match.votePubkey).catch(err => {
-            console.warn('[performSearch] skip', match.votePubkey, err && err.message || err);
-            return null;
-          })
-        )
-      );
-      return settled.filter(Boolean);
+    // Resolve a pasted key to a vote account, accepting EITHER the vote account
+    // or the validator identity (node) address. Falls back to the raw input so
+    // getValidatorInfo can still try the chain (active set + zombie) for keys
+    // that aren't in the cached list.
+    function resolveVoteAccount(key) {
+      if (allValidators.some(v => v.votePubkey === key)) return key;
+      const byNode = allValidators.find(v => v.nodePubkey === key);
+      return byNode ? byNode.votePubkey : key;
+    }
+
+    // Compact placeholder shown immediately for each result while its full card
+    // hydrates. Built purely from cached list data — no RPC.
+    function lookupSlotHtml(v) {
+      const id = 'lkslot-' + v.votePubkey.slice(0, 8);
+      const letter = (v.name || '?').charAt(0).toUpperCase();
+      const logo = v.iconUrl
+        ? `<img class="validator-logo" src="${safeUrl(v.iconUrl)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="validator-logo-placeholder" style="display:none;">${letter}</div>`
+        : `<div class="validator-logo-placeholder">${letter}</div>`;
+      const stake = formatXntCompact(lamportsToXNT(v.activatedStake));
+      return `<div id="${id}" class="lookup-slot">
+        <div class="lookup-slot-main">${logo}
+          <div style="min-width:0;">
+            <div class="lookup-slot-name">${escHtml(v.name)}<span class="lookup-slot-rank">#${v.rank} of ${v.totalValidators}</span></div>
+            <div class="lookup-slot-sub">${stake} XNT · ${v.commission}% commission</div>
+          </div>
+        </div>
+        <div class="lookup-slot-spinner"><span class="lookup-spin"></span> loading…</div>
+      </div>`;
     }
 
     // Portfolio management
