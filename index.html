@@ -3768,6 +3768,7 @@
       padding: 2px 0; letter-spacing: 0.01em;
     }
     .slot-tl-toggle:hover { color: var(--accent-cyan); text-decoration: underline; }
+    .slot-tl-note { margin-top: 4px; font-size: 0.66rem; color: var(--text-secondary); opacity: 0.85; }
     .sm-pip {
       width: 9px; height: 9px; border-radius: 2px; cursor: default;
       transition: transform 0.1s;
@@ -32098,52 +32099,34 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // take that path directly.
           const perSlotAvailable = d.producedSet && Array.isArray(d.pastSlots);
 
-          const SKIPMON_UPCOMING_PREVIEW = 40;
-          // Upcoming pips, with everything past the preview window flagged so it
-          // can be hidden until the user expands (keeps a fresh epoch tidy while
-          // still allowing the full assigned count to be shown).
-          const upcomingPipHtml = (n) => {
-            let h = '';
-            for (let i = 0; i < n; i++) {
-              h += '<div class="skipmon-pv-pip upcoming' + (i >= SKIPMON_UPCOMING_PREVIEW ? ' tl-extra' : '') + '"></div>';
-            }
-            return h;
-          };
-
-          let pips;
+          const SK_BUILD_CAP = SLOT_TL_MAX + 200; // bound string building for huge validators
+          const pipObjs = [];
           if (perSlotAvailable && skipped > 0) {
             let redBudget = skipped;
-            const pastPips = d.pastSlots.map(s => {
-              if (d.producedSet.has(s)) {
-                return '<div class="skipmon-pv-pip produced"></div>';
-              }
-              if (redBudget > 0) {
-                redBudget--;
-                return '<div class="skipmon-pv-pip skipped"></div>';
-              }
-              return '<div class="skipmon-pv-pip produced"></div>';
-            }).join('');
-            pips = pastPips + upcomingPipHtml((d.upcomingSlots || []).length);
+            d.pastSlots.forEach(s => {
+              if (d.producedSet.has(s)) { pipObjs.push({ html: '<div class="skipmon-pv-pip produced"></div>', red: false }); return; }
+              if (redBudget > 0) { redBudget--; pipObjs.push({ html: '<div class="skipmon-pv-pip skipped"></div>', red: true }); return; }
+              pipObjs.push({ html: '<div class="skipmon-pv-pip produced"></div>', red: false });
+            });
+            const upN = Math.min((d.upcomingSlots || []).length, SK_BUILD_CAP);
+            for (let i = 0; i < upN; i++) pipObjs.push({ html: '<div class="skipmon-pv-pip upcoming"></div>', red: false });
           } else {
-            // No per-slot data yet, OR aggregate says zero skips (timeline
-            // is entirely green/upcoming — no chronological detail to
-            // preserve). Grouped fallback is guaranteed to match aggregate.
-            pips =
-                '<div class="skipmon-pv-pip produced"></div>'.repeat(produced)
-              + '<div class="skipmon-pv-pip skipped"></div>'.repeat(skipped)
-              + upcomingPipHtml(upcoming);
+            // No per-slot data yet, OR aggregate says zero skips (all green/upcoming).
+            const prodN = Math.min(produced, SK_BUILD_CAP);
+            for (let i = 0; i < prodN; i++) pipObjs.push({ html: '<div class="skipmon-pv-pip produced"></div>', red: false });
+            for (let i = 0; i < skipped; i++) pipObjs.push({ html: '<div class="skipmon-pv-pip skipped"></div>', red: true });
+            const upN = Math.min(upcoming, SK_BUILD_CAP);
+            for (let i = 0; i < upN; i++) pipObjs.push({ html: '<div class="skipmon-pv-pip upcoming"></div>', red: false });
           }
           const legends = [
             produced > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip produced"></span> Produced</span>' : '',
             skipped  > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip skipped"></span> Skipped</span>' : '',
             upcoming > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip upcoming"></span> Upcoming</span>' : ''
           ].filter(Boolean).join('');
-          const hiddenUp = Math.max(0, upcoming - SKIPMON_UPCOMING_PREVIEW);
           const assignedTotal = produced + skipped + upcoming;
           timelineHtml = `<div class="skipmon-pv-tl-wrap">`
             + `<div class="skipmon-pv-tl-label">Slot timeline ${legends}</div>`
-            + `<div class="skipmon-pv-tl slot-tl collapsed">${pips}</div>`
-            + (hiddenUp > 0 ? `<button class="slot-tl-toggle" data-total="${assignedTotal.toLocaleString()}" data-hidden="${hiddenUp.toLocaleString()}" onclick="toggleSlotTimeline(this)">▾ Show all ${assignedTotal.toLocaleString()} slots (${hiddenUp.toLocaleString()} upcoming)</button>` : '')
+            + assembleSlotTimeline(pipObjs, 'skipmon-pv-tl', assignedTotal)
             + `</div>`;
         }
 
@@ -33341,7 +33324,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const epochFirstAbsoluteSlot = which === 'current'
         ? firstSlotOfCurrentEpoch
         : (firstSlotOfCurrentEpoch - slotsPerEpoch);
-      if (slotsToCheck.length > 0) {
+      // Per-slot fetch only positions red pips. For validators with thousands of
+      // leader slots this would fire thousands of getBlock calls and stall the
+      // panel (and could starve the other panel in "Both"). Cap it: above the
+      // limit we skip per-slot detail and render from the aggregate counts, which
+      // still show the correct produced/skipped totals.
+      const PER_SLOT_FETCH_CAP = 3000;
+      if (slotsToCheck.length > 0 && slotsToCheck.length <= PER_SLOT_FETCH_CAP) {
         const absoluteLeaderSlots = slotsToCheck.map(rel => rel + epochFirstAbsoluteSlot);
         const absProducedSet = await fetchProducedSlots(absoluteLeaderSlots);
         if (absProducedSet !== null) {
@@ -33368,18 +33357,65 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
     // ── Shared expand/collapse for any slot-timeline grid ──
     // Used by both the Slot Explorer modal (.sm-timeline) and the Network
-    // "My Validators" preview (.skipmon-pv-tl). Both tag their grid with
-    // .slot-tl and flag overflow pips with .tl-extra; this flips the collapsed
-    // state and rewrites the button label.
+    // "My Validators" preview (.skipmon-pv-tl). Collapsed view shows a preview
+    // of pips PLUS every skipped (red) pip so misses are never hidden; the rest
+    // is rendered lazily only when expanded, with a hard cap so a validator with
+    // tens of thousands of slots can't freeze the page.
+    window._slotTl = window._slotTl || {};
+    let _slotTlSeq = 0;
+    const SLOT_TL_PREVIEW = 144;   // pips shown while collapsed
+    const SLOT_TL_MAX     = 2000;  // hard cap on pips ever rendered (perf guard)
+
+    // pipObjs: [{ html, red }] in chronological order. Returns the grid wrapper
+    // (grid div + optional toggle + optional "capped" note) as an HTML string.
+    function assembleSlotTimeline(pipObjs, gridClass, assignedTotal) {
+      // Cap rendering: always keep every red pip; cap non-red pips at the max.
+      const render = [];
+      let nonRed = 0, truncated = false;
+      for (const p of pipObjs) {
+        if (p.red) render.push(p);
+        else if (nonRed < SLOT_TL_MAX) { render.push(p); nonRed++; }
+        else truncated = true;
+      }
+      // Collapsed = first PREVIEW pips + any red beyond that window.
+      const collapsedParts = [], fullParts = [];
+      render.forEach((p, i) => {
+        fullParts.push(p.html);
+        if (i < SLOT_TL_PREVIEW || p.red) collapsedParts.push(p.html);
+      });
+      const hidden = render.length - collapsedParts.length;
+      const total  = (assignedTotal != null) ? assignedTotal : pipObjs.length;
+      const id = 'stl' + (++_slotTlSeq);
+      window._slotTl[id] = { collapsed: collapsedParts.join(''), full: fullParts.join('') };
+
+      let html = `<div class="${gridClass} slot-tl collapsed" data-stl="${id}">${window._slotTl[id].collapsed}</div>`;
+      if (hidden > 0) {
+        const clabel = truncated
+          ? `▾ Show more (${hidden.toLocaleString()} pips)`
+          : `▾ Show all ${total.toLocaleString()} slots (${hidden.toLocaleString()} more)`;
+        html += `<button class="slot-tl-toggle" data-id="${id}" data-clabel="${clabel}" onclick="toggleSlotTimeline(this)">${clabel}</button>`;
+      }
+      if (truncated) {
+        html += `<div class="slot-tl-note">Showing ${render.length.toLocaleString()} of ${total.toLocaleString()} slots — capped for performance.</div>`;
+      }
+      return html;
+    }
+
     window.toggleSlotTimeline = function (btn) {
-      const tl = btn.parentElement && btn.parentElement.querySelector('.slot-tl');
-      if (!tl) return;
-      const nowCollapsed = tl.classList.toggle('collapsed');
-      const total  = btn.getAttribute('data-total')  || '';
-      const hidden = btn.getAttribute('data-hidden') || '';
-      btn.innerHTML = nowCollapsed
-        ? '▾ Show all ' + total + ' slots (' + hidden + ' upcoming)'
-        : '▴ Collapse';
+      const id = btn.getAttribute('data-id');
+      const store = window._slotTl[id];
+      const tl = btn.parentElement && (btn.parentElement.querySelector('.slot-tl[data-stl="' + id + '"]') || btn.parentElement.querySelector('.slot-tl'));
+      if (!tl || !store) return;
+      const expand = tl.classList.contains('collapsed');
+      if (expand) {
+        tl.innerHTML = store.full;          // lazy-build the overflow now
+        tl.classList.remove('collapsed');
+        btn.innerHTML = '▴ Collapse';
+      } else {
+        tl.innerHTML = store.collapsed;
+        tl.classList.add('collapsed');
+        btn.innerHTML = btn.getAttribute('data-clabel') || '▾ Show all slots';
+      }
     };
 
     // ── Render one panel's inner HTML ──────────────────────
@@ -33387,12 +33423,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const pct        = d.assigned > 0 ? (d.produced / d.assigned * 100) : 0;
       const skippedPct = d.assigned > 0 ? (d.skipped  / d.assigned * 100) : 0;
 
-      // Show ALL past slots so any skipped ones are visible even when they
-      // happened earlier in the epoch. Upcoming is no longer hard-capped — we
-      // render all of it but hide the overflow behind a "Show all" toggle so a
-      // fresh epoch doesn't dump a wall of empty pips while still letting the
-      // user expand to the full assigned count (matches the completed-epoch view).
-      const SM_UPCOMING_PREVIEW = 40;
+      // Show ALL past slots so any skipped ones are visible. Building is bounded
+      // (SLOT_TL_MAX) so a validator with tens of thousands of slots can't hang
+      // the page; the assembler collapses the rest behind a "Show all" toggle.
       let pastSlots, upcomingSlots;
       if (d.isCurrent) {
         pastSlots     = d.mySlots.filter(s => s <= d.slotIndex);
@@ -33401,8 +33434,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
         pastSlots     = d.mySlots.slice();
         upcomingSlots = [];
       }
-
       const hasProducedData = d.producedSet != null;
+
+      // Avoid materializing tens of thousands of pip strings. Upcoming is always
+      // safe to bound (no reds). Past pips are bounded only when we lack per-slot
+      // red positions — in that case reds are grouped up front so a slice keeps
+      // them; with per-slot data the past list is already small (fetch is capped).
+      const SM_BUILD_CAP = SLOT_TL_MAX + 200;
+      if (!hasProducedData && pastSlots.length > SM_BUILD_CAP) pastSlots = pastSlots.slice(0, SM_BUILD_CAP);
+      if (upcomingSlots.length > SM_BUILD_CAP) upcomingSlots = upcomingSlots.slice(0, SM_BUILD_CAP);
 
       // Reconcile per-slot data with the aggregate `skipped` count from
       // getBlockProduction (the ground truth). Confirmation lag and
@@ -33414,31 +33454,37 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const skippedBudget0 = d.skipped || 0;
       let redBudget = skippedBudget0;
 
-      const pips = [
-        ...pastSlots.map(s => {
-          if (!hasProducedData) {
-            // Legacy fallback (getBlocks unavailable): keep old behavior
-            return `<div class="sm-pip produced" title="Slot ${s.toLocaleString()}"></div>`;
-          }
-          if (d.producedSet.has(s)) {
-            return `<div class="sm-pip produced" title="Slot ${s.toLocaleString()} — Produced"></div>`;
-          }
+      const pipObjs = [];
+      pastSlots.forEach(s => {
+        if (!hasProducedData) {
+          // No per-slot detail (RPC failed, or capped for a huge validator):
+          // still reflect the aggregate skip count as red pips grouped up front.
           if (redBudget > 0) {
             redBudget--;
-            return `<div class="sm-pip skipped" title="Slot ${s.toLocaleString()} — Skipped"></div>`;
+            pipObjs.push({ html: `<div class="sm-pip skipped" title="Slot ${s.toLocaleString()} — Skipped"></div>`, red: true });
+          } else {
+            pipObjs.push({ html: `<div class="sm-pip produced" title="Slot ${s.toLocaleString()}"></div>`, red: false });
           }
-          // Per-slot says missing, but the aggregate's skip budget is
-          // exhausted — this slot is a confirmation-lag false positive.
-          return `<div class="sm-pip produced" title="Slot ${s.toLocaleString()} — Produced (pending finalization)"></div>`;
-        }),
-        ...upcomingSlots.map((s, i) => {
-          const ms = (s - d.slotIndex) * SM_SLOT_MS;
-          const extra = i >= SM_UPCOMING_PREVIEW ? ' tl-extra' : '';
-          return `<div class="sm-pip upcoming${extra}" title="Slot ${s.toLocaleString()} — in ${smCountdown(ms)}"></div>`;
-        })
-      ].join('');
+          return;
+        }
+        if (d.producedSet.has(s)) {
+          pipObjs.push({ html: `<div class="sm-pip produced" title="Slot ${s.toLocaleString()} — Produced"></div>`, red: false });
+          return;
+        }
+        if (redBudget > 0) {
+          redBudget--;
+          pipObjs.push({ html: `<div class="sm-pip skipped" title="Slot ${s.toLocaleString()} — Skipped"></div>`, red: true });
+          return;
+        }
+        pipObjs.push({ html: `<div class="sm-pip produced" title="Slot ${s.toLocaleString()} — Produced (pending finalization)"></div>`, red: false });
+      });
+      upcomingSlots.forEach(s => {
+        const ms = (s - d.slotIndex) * SM_SLOT_MS;
+        pipObjs.push({ html: `<div class="sm-pip upcoming" title="Slot ${s.toLocaleString()} — in ${smCountdown(ms)}"></div>`, red: false });
+      });
 
       const hasTimeline = (pastSlots.length + upcomingSlots.length) > 0;
+
 
       return `
         <div class="sm-body-inner">
@@ -33504,8 +33550,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               ${d.skipped>0 ? `<span class="sm-legend"><span class="sm-pip-demo" style="background:var(--danger)"></span> Skipped</span>` : ''}
               ${upcomingSlots.length ? `<span class="sm-legend"><span class="sm-pip-demo" style="border:1px solid var(--accent-blue);background:transparent"></span> Upcoming</span>` : ''}
             </div>
-            <div class="sm-timeline slot-tl collapsed">${pips}</div>
-            ${(upcomingSlots.length - SM_UPCOMING_PREVIEW) > 0 ? `<button class="slot-tl-toggle" data-total="${d.assignedTotal.toLocaleString()}" data-hidden="${(upcomingSlots.length - SM_UPCOMING_PREVIEW).toLocaleString()}" onclick="toggleSlotTimeline(this)">▾ Show all ${d.assignedTotal.toLocaleString()} slots (${(upcomingSlots.length - SM_UPCOMING_PREVIEW).toLocaleString()} upcoming)</button>` : ''}
+            ${assembleSlotTimeline(pipObjs, 'sm-timeline', d.assignedTotal)}
           </div>` : ''}
         </div>`;
     }
