@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-14T20:48:39.951Z",
+  "lastUpdated": "2026-06-14T22:46:14.087Z",
   "totalNodes": 682,
   "totalLocations": 679,
   "locations": {
@@ -2040,26 +2040,12 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "64.20.54.154": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "65.109.49.253": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "45.131.114.170": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "65.19.133.227": {
       "country": "United States",
@@ -2663,13 +2649,6 @@
       "lat": 52.1957,
       "lon": 20.9921
     },
-    "185.16.39.25": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1783,
-      "lon": 21.0602
-    },
     "192.200.99.90": {
       "country": "United States",
       "countryCode": "US",
@@ -2844,13 +2823,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "45.94.81.162": {
-      "country": "Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.352,
-      "lon": 4.9392
     },
     "51.161.15.103": {
       "country": "Canada",
@@ -3180,13 +3152,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "69.10.46.66": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "66.23.237.190": {
       "country": "United States",
@@ -4567,26 +4532,12 @@
       "lat": 52.2297,
       "lon": 21.0122
     },
-    "161.97.136.13": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "45.136.213.42": {
       "country": "Netherlands",
       "countryCode": "NL",
       "city": "Amsterdam",
       "lat": 52.352,
       "lon": 4.9392
-    },
-    "161.97.136.35": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
     },
     "37.187.143.170": {
       "country": "France",
@@ -4601,20 +4552,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "152.53.241.237": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Manassas",
-      "lat": 38.7911,
-      "lon": -77.5264
-    },
-    "152.53.127.243": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Karlsruhe",
-      "lat": 49.0291,
-      "lon": 8.35696
     },
     "188.117.169.90": {
       "country": "Poland",
@@ -4707,13 +4644,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "167.114.210.161": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5063,
-      "lon": -73.5794
-    },
     "167.114.209.111": {
       "country": "Canada",
       "countryCode": "CA",
@@ -4755,6 +4685,76 @@
       "city": "Skórcz",
       "lat": 53.7941,
       "lon": 18.5156
+    },
+    "38.147.104.84": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5247,
+      "lon": -111.8638
+    },
+    "161.129.67.218": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "156.67.31.218": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
+    },
+    "149.50.116.114": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "162.250.125.210": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "37.187.27.209": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "149.50.108.49": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "178.18.242.0": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
+    },
+    "149.86.227.5": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "149.50.101.55": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
@@ -4764,7 +4764,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 29
+      "count": 27
     },
     "US": {
       "name": "United States",
@@ -4776,15 +4776,15 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 139
+      "count": 138
     },
     "PL": {
       "name": "Poland",
-      "count": 88
+      "count": 91
     },
     "FR": {
       "name": "France",
-      "count": 52
+      "count": 53
     },
     "KE": {
       "name": "Kenya",
@@ -4796,7 +4796,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 23
+      "count": 22
     },
     "SG": {
       "name": "Singapore",
