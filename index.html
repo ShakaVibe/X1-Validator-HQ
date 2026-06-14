@@ -2944,13 +2944,21 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 1rem;
+      align-items: stretch;
     }
 
     .stat-item {
       background: var(--bg-secondary);
       padding: 1rem;
       border-radius: 10px;
+      display: flex;
+      flex-direction: column;
     }
+
+    /* Keep secondary action links on a consistent bottom line so every
+       stat cell shows its number on the same top line and its action on
+       the same bottom line, regardless of how many sub-lines it has. */
+    .rb-open-link, .stat-foot-link { margin-top: auto; padding-top: 0.3rem; }
 
     /* Credit Pace Badge & Tooltip */
     .cred-tooltip {
@@ -17080,7 +17088,7 @@
               <div class="stat-label">Active<br>Stake</div>
               <div class="stat-value">${formatXntCompact(validator.activatedStake)}</div>
               <div class="stat-subtext">XNT</div>
-              <div class="stat-subtext" style="color: var(--accent-cyan); font-size: 0.65rem;">Stake Classification</div>
+              <div class="stat-subtext stat-foot-link" style="color: var(--accent-cyan); font-size: 0.65rem;">Stake Classification</div>
             </div>
             
             <div class="stat-item epoch-credits-card" style="position:relative;" title="Epoch credits represent the validator's voting activity. More credits generally means better uptime and participation in consensus.">
