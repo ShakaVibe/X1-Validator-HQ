@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-14T16:51:39.861Z",
-  "totalNodes": 683,
-  "totalLocations": 680,
+  "lastUpdated": "2026-06-14T18:50:21.114Z",
+  "totalNodes": 682,
+  "totalLocations": 679,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4700,13 +4700,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "195.3.223.207": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2297,
-      "lon": 21.0122
-    },
     "5.135.136.13": {
       "country": "France",
       "countryCode": "FR",
@@ -4771,7 +4764,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 89
+      "count": 88
     },
     "CA": {
       "name": "Canada",
