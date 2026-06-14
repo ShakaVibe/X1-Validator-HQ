@@ -4354,6 +4354,75 @@
       border: 1px solid rgba(240, 185, 11, 0.45);
     }
 
+    /* ── Stake classification: category badges + 4-way summary ── */
+    .stake-cat-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 1rem 0 1.1rem;
+    }
+    .stake-cat-metric {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.4rem;
+      text-align: center;
+    }
+    .stake-cat-metric-value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.1;
+    }
+    .stake-cat-metric-label {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 3px;
+    }
+    .stake-cat {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 20px;
+      line-height: 1.4;
+      vertical-align: middle;
+      margin-left: 0.5rem;
+    }
+    .stake-cat .stake-cat-ico { font-size: 0.85em; opacity: 0.85; }
+    .stake-cat.self {
+      background: rgba(0, 230, 118, 0.14);
+      color: var(--success);
+      border: 1px solid rgba(0, 230, 118, 0.5);
+      cursor: pointer;
+    }
+    .stake-cat.community {
+      background: rgba(77, 166, 255, 0.14);
+      color: var(--accent-blue);
+      border: 1px solid rgba(77, 166, 255, 0.5);
+      cursor: pointer;
+    }
+    .stake-cat.self:hover, .stake-cat.community:hover { filter: brightness(1.25); }
+    .stake-cat.foundation {
+      background: rgba(0, 212, 255, 0.14);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 212, 255, 0.45);
+      cursor: default;
+    }
+    .stake-cat.ripper {
+      background: rgba(240, 185, 11, 0.14);
+      color: var(--accent-gold);
+      border: 1px solid rgba(240, 185, 11, 0.45);
+      cursor: default;
+    }
+
     .stake-selection-details {
       font-size: 0.75rem;
       color: var(--text-secondary);
@@ -14296,6 +14365,24 @@
       return null;
     }
 
+    // Resolve a single stake account into exactly one of four buckets:
+    //   'foundation' | 'ripper' | 'self' | 'community'
+    // Foundation and Ripper are hard-coded by withdrawer (locked — never
+    // overridable). For the rest, a user override wins; otherwise self is
+    // auto-detected when the stake withdrawer matches the vote account's
+    // withdrawer (same logic the Terminal uses), else community.
+    // Economically only 'self' is self-stake (100%); the other three are
+    // delegated (the validator earns commission only).
+    //   overrides: optional Map<pubkey, 'self'|'community'>
+    function classifyStakeAccount(pubkey, withdrawer, voteWithdrawer, overrides) {
+      const src = classifyStakeSource(withdrawer);
+      if (src === 'foundation') return 'foundation';
+      if (src === 'ripper') return 'ripper';
+      if (overrides && overrides.has(pubkey)) return overrides.get(pubkey);
+      if (withdrawer && voteWithdrawer && withdrawer === voteWithdrawer) return 'self';
+      return 'community';
+    }
+
     // ─────────────────────────────────────────────────────────────────────
     // Global RPC fetch throttle + retry layer
     //
@@ -14513,14 +14600,25 @@
       return selections[voteAccount] || null;
     }
     
-    // Save user-selected self-stake pubkeys for a validator
-    function setSelfStakeSelections(voteAccount, pubkeys) {
+    // Save user-selected self-stake pubkeys for a validator.
+    // explicit=true (default) records that the user has deliberately
+    // classified — so an empty self set is honored as "no self-stake"
+    // rather than falling back to auto-detection.
+    function setSelfStakeSelections(voteAccount, pubkeys, explicit) {
       const selections = loadSelfStakeSelections();
       selections[voteAccount] = {
         pubkeys: pubkeys,
+        explicit: explicit !== false,
         timestamp: Date.now()
       };
       saveSelfStakeSelections(selections);
+    }
+
+    // True when the user has deliberately classified this validator —
+    // either they have self-stake accounts selected, or they explicitly
+    // saved a classification (possibly with zero self-stake).
+    function hasUserClassification(sel) {
+      return !!(sel && sel.pubkeys && (sel.explicit || sel.pubkeys.length > 0));
     }
 
     // Legacy cache functions (for backwards compatibility)
@@ -14753,7 +14851,7 @@
           // Check for user selections first
           const userSelections = typeof getSelfStakeSelections === 'function' ? getSelfStakeSelections(voteAccount) : null;
           
-          if (userSelections && userSelections.pubkeys && userSelections.pubkeys.length > 0) {
+          if (hasUserClassification(userSelections)) {
             // Use user-selected self-stake accounts
             selfStakeAccounts = userSelections.pubkeys;
             console.log(`[${voteAccount.slice(0,8)}] Using ${selfStakeAccounts.length} user-selected self-stake accounts`);
@@ -19454,7 +19552,7 @@
         let selfStake = 0;
         let delegatedStake = 0;
         
-        if (userSelections && userSelections.pubkeys && userSelections.pubkeys.length > 0) {
+        if (hasUserClassification(userSelections)) {
           const selectedPubkeys = new Set(userSelections.pubkeys);
           stakeAccounts.forEach(acc => {
             if (selectedPubkeys.has(acc.pubkey)) {
@@ -21271,7 +21369,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Check for user selections first
         const userSelections = getSelfStakeSelections(voteAccount);
         
-        if (userSelections && userSelections.pubkeys && userSelections.pubkeys.length > 0) {
+        if (hasUserClassification(userSelections)) {
           detectionMethod = 'user-selected';
           const selectedPubkeys = new Set(userSelections.pubkeys);
           
@@ -21388,6 +21486,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // Stake Selection Modal Functions
     let currentStakeSelectionData = null;
     let currentStakeSelectionVote = null;
+    let currentStakeCategories = null;   // Map<pubkey, 'foundation'|'ripper'|'self'|'community'>
+    let currentStakeSelectionName = '';
     
     async function openStakeSelection(voteAccount, validatorName) {
       const modal = document.getElementById('stakeSelectionModal');
@@ -21447,12 +21547,44 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }).sort((a, b) => b.stakeXNT - a.stakeXNT);
         
         currentStakeSelectionData = stakeAccounts;
-        
-        // Load existing selections
-        const existingSelections = getSelfStakeSelections(voteAccount);
-        const selectedPubkeys = existingSelections ? new Set(existingSelections.pubkeys) : new Set();
-        
-        renderStakeSelection(body, stakeAccounts, selectedPubkeys, validatorName, voteAccount);
+        currentStakeSelectionName = validatorName;
+
+        // Fetch the vote account's authorized withdrawer — self-stake is
+        // auto-detected when a stake account's withdrawer matches it
+        // (same logic the Terminal uses).
+        let voteWithdrawer = null;
+        try {
+          const vaResp = await fetch(RPC_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              jsonrpc: '2.0', id: 1, method: 'getAccountInfo',
+              params: [voteAccount, { encoding: 'jsonParsed' }]
+            })
+          });
+          const vaData = await vaResp.json();
+          voteWithdrawer = vaData.result?.value?.data?.parsed?.info?.authorizedWithdrawer || null;
+        } catch (e) { /* non-fatal: self just won't auto-detect */ }
+
+        // Resolve each account's starting category. Honor a prior explicit
+        // classification; otherwise auto-detect. Foundation/Ripper are
+        // always hard-coded by withdrawer.
+        const stored   = getSelfStakeSelections(voteAccount);
+        const explicit = hasUserClassification(stored);
+        const storedSelf = new Set((stored && stored.pubkeys) || []);
+        const cats = new Map();
+        stakeAccounts.forEach(acc => {
+          const src = classifyStakeSource(acc.withdrawer);
+          let cat;
+          if (src === 'foundation') cat = 'foundation';
+          else if (src === 'ripper') cat = 'ripper';
+          else if (explicit) cat = storedSelf.has(acc.pubkey) ? 'self' : 'community';
+          else cat = (acc.withdrawer && voteWithdrawer && acc.withdrawer === voteWithdrawer) ? 'self' : 'community';
+          cats.set(acc.pubkey, cat);
+        });
+        currentStakeCategories = cats;
+
+        renderStakeSelection(body, stakeAccounts, cats, validatorName, voteAccount);
         
       } catch (err) {
         console.error('Error loading stake accounts:', err);
@@ -21464,66 +21596,43 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
     
-    function renderStakeSelection(body, stakeAccounts, selectedPubkeys, validatorName, voteAccount) {
-      // Calculate totals
-      let selfStake = 0;
-      let delegatedStake = 0;
-      
+    function renderStakeSelection(body, stakeAccounts, cats, validatorName, voteAccount) {
+      // 4-way totals by category
+      const sums = { self: 0, foundation: 0, ripper: 0, community: 0 };
       stakeAccounts.forEach(acc => {
-        if (selectedPubkeys.has(acc.pubkey)) {
-          selfStake += acc.stakeXNT;
-        } else {
-          delegatedStake += acc.stakeXNT;
-        }
+        const c = cats.get(acc.pubkey) || 'community';
+        sums[c] += acc.stakeXNT;
       });
-      
-      // Group by withdrawer for easier identification
-      const withdrawerGroups = {};
-      stakeAccounts.forEach(acc => {
-        if (!withdrawerGroups[acc.withdrawer]) {
-          withdrawerGroups[acc.withdrawer] = [];
-        }
-        withdrawerGroups[acc.withdrawer].push(acc);
-      });
-      
-      const uniqueWithdrawers = Object.keys(withdrawerGroups).length;
-      
+
+      const metric = (val, label, color) => `
+        <div class="stake-cat-metric">
+          <div class="stake-cat-metric-value" style="color:${color};">${formatNumber(val, 0)}</div>
+          <div class="stake-cat-metric-label">${label}</div>
+        </div>`;
+
       body.innerHTML = `
         <div class="stake-selection-intro">
-          <strong>Select your self-stake accounts</strong><br>
-          Check the boxes next to stake accounts that belong to YOU (your self-stake). 
-          Unchecked accounts will be counted as delegated stake from others.
-          ${uniqueWithdrawers > 1 ? `<br><br>💡 Found ${uniqueWithdrawers} different withdrawer addresses - accounts with the same withdrawer are likely from the same wallet.` : ''}
+          <strong>Stake classification</strong><br>
+          Each account is auto-identified. The <span style="color:var(--success);">Self-Stake</span> and
+          <span style="color:var(--accent-blue);">Community</span> badges are clickable — tap one to flip it.
+          <span style="color:var(--accent-cyan);">Foundation</span> and <span style="color:var(--accent-gold);">Ripper</span>
+          are detected from known pool addresses and locked. Only Self-Stake earns 100%; the rest are delegated (commission only).
         </div>
-        
-        <div class="stake-selection-summary">
-          <div class="stake-selection-summary-item">
-            <div class="stake-selection-summary-value self">${formatNumber(selfStake, 2)}</div>
-            <div class="stake-selection-summary-label">Self-Stake (XNT)</div>
-          </div>
-          <div class="stake-selection-summary-item">
-            <div class="stake-selection-summary-value delegated">${formatNumber(delegatedStake, 2)}</div>
-            <div class="stake-selection-summary-label">Delegated (XNT)</div>
-          </div>
+
+        <div class="stake-cat-summary">
+          ${metric(sums.self, 'Self-Stake', 'var(--success)')}
+          ${metric(sums.foundation, 'Foundation', 'var(--accent-cyan)')}
+          ${metric(sums.ripper, 'Ripper', 'var(--accent-gold)')}
+          ${metric(sums.community, 'Community', 'var(--accent-blue)')}
         </div>
-        
+
         <div class="stake-selection-list">
           ${stakeAccounts.map(acc => {
-            const source = classifyStakeSource(acc.withdrawer);
-            const badge =
-              source === 'foundation' ? '<span class="stake-source-badge foundation" title="Stake routed via X1 Labs / Foundation pool">FOUNDATION</span>' :
-              source === 'ripper'     ? '<span class="stake-source-badge ripper" title="Stake routed via Ripper Pool">RIPPER POOL</span>' : '';
+            const cat = cats.get(acc.pubkey) || 'community';
             return `
-            <div class="stake-selection-item ${selectedPubkeys.has(acc.pubkey) ? 'selected' : ''}" 
-                 onclick="toggleStakeSelectionItem(this, '${acc.pubkey}')"
-                 data-pubkey="${acc.pubkey}">
-              <div class="stake-selection-checkbox">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
+            <div class="stake-selection-item" data-pubkey="${acc.pubkey}">
               <div class="stake-selection-info">
-                <div class="stake-selection-address">${acc.pubkey.slice(0, 8)}...${acc.pubkey.slice(-8)}${badge}</div>
+                <div class="stake-selection-address">${acc.pubkey.slice(0, 8)}...${acc.pubkey.slice(-8)} ${stakeCatBadge(acc.pubkey, cat)}</div>
                 <div class="stake-selection-details">Withdrawer: ${acc.withdrawer.slice(0, 8)}...${acc.withdrawer.slice(-4)}</div>
               </div>
               <div class="stake-selection-amount">${formatNumber(acc.stakeXNT, 2)} XNT</div>
@@ -21531,62 +21640,75 @@ Please give me the diagnostic commands to run on my server so you can help me id
           `;
           }).join('')}
         </div>
-        
+
         <div class="stake-selection-actions">
           <button class="stake-selection-btn secondary" onclick="closeStakeSelection()">Cancel</button>
-          <button class="stake-selection-btn primary" onclick="saveStakeSelections('${voteAccount}')">Save Selection</button>
+          <button class="stake-selection-btn primary" onclick="saveStakeSelections('${voteAccount}')">Save Classification</button>
         </div>
       `;
     }
-    
-    function toggleStakeSelectionItem(element, pubkey) {
-      element.classList.toggle('selected');
-      
-      // Recalculate totals
-      const items = document.querySelectorAll('.stake-selection-item');
-      const selectedPubkeys = new Set();
-      
-      items.forEach(item => {
-        if (item.classList.contains('selected')) {
-          selectedPubkeys.add(item.dataset.pubkey);
-        }
-      });
-      
-      // Update summary
-      let selfStake = 0;
-      let delegatedStake = 0;
-      
-      currentStakeSelectionData.forEach(acc => {
-        if (selectedPubkeys.has(acc.pubkey)) {
-          selfStake += acc.stakeXNT;
-        } else {
-          delegatedStake += acc.stakeXNT;
-        }
-      });
-      
-      const summaryItems = document.querySelectorAll('.stake-selection-summary-value');
-      if (summaryItems.length >= 2) {
-        summaryItems[0].textContent = formatNumber(selfStake, 2);
-        summaryItems[1].textContent = formatNumber(delegatedStake, 2);
-      }
+
+    // Render a category badge. Self/Community are clickable (toggle between
+    // the two); Foundation/Ripper are locked (hard-coded by pool address).
+    function stakeCatBadge(pubkey, cat) {
+      const meta = {
+        self:       { label: 'Self-Stake', locked: false },
+        community:  { label: 'Community',  locked: false },
+        foundation: { label: 'Foundation', locked: true  },
+        ripper:     { label: 'Ripper',     locked: true  }
+      }[cat] || { label: 'Community', locked: false };
+      const icon = meta.locked ? '🔒' : '⇄';
+      const attrs = meta.locked
+        ? 'title="Detected from a known pool address — locked"'
+        : `onclick="event.stopPropagation(); cycleStakeCat('${pubkey}')" title="Click to switch between Self-Stake and Community"`;
+      return `<span class="stake-cat ${cat}" ${attrs}>${meta.label} <span class="stake-cat-ico">${icon}</span></span>`;
     }
+
+    // Flip a single account between self and community, then re-render.
+    function cycleStakeCat(pubkey) {
+      if (!currentStakeCategories) return;
+      const cat = currentStakeCategories.get(pubkey);
+      if (cat !== 'self' && cat !== 'community') return; // locked categories ignore clicks
+      currentStakeCategories.set(pubkey, cat === 'self' ? 'community' : 'self');
+      const body = document.getElementById('stakeSelectionBody');
+      if (body) renderStakeSelection(body, currentStakeSelectionData, currentStakeCategories, currentStakeSelectionName, currentStakeSelectionVote);
+    }
+
     
     function saveStakeSelections(voteAccount) {
-      const items = document.querySelectorAll('.stake-selection-item');
+      // Collect the accounts currently classified as self-stake. Foundation,
+      // Ripper and Community all count as delegated, so only 'self' is stored.
       const selectedPubkeys = [];
+      if (currentStakeCategories) {
+        currentStakeCategories.forEach((cat, pk) => {
+          if (cat === 'self') selectedPubkeys.push(pk);
+        });
+      }
       
-      items.forEach(item => {
-        if (item.classList.contains('selected')) {
-          selectedPubkeys.push(item.dataset.pubkey);
-        }
-      });
+      // Save to localStorage (explicit = the user deliberately classified,
+      // so an empty self set is honored rather than re-auto-detected).
+      setSelfStakeSelections(voteAccount, selectedPubkeys, true);
       
-      // Save to localStorage
-      setSelfStakeSelections(voteAccount, selectedPubkeys);
-      
-      // Clear the stake breakdown cache for this validator so it recalculates
+      // Clear every cache that derives from the self/delegated split so the
+      // new classification shows up immediately (no page reload needed).
+      // 1) Inline "Stake Details" cache
       if (stakeBreakdownCache[voteAccount]) {
         delete stakeBreakdownCache[voteAccount];
+      }
+      // 2) Calculator stake-breakdown cache (Staking + Compound read this)
+      if (window.stakeBreakdownData && window.stakeBreakdownData[voteAccount]) {
+        delete window.stakeBreakdownData[voteAccount];
+      }
+      // 3) Real-rewards cache (keyed `${vote}_total_${epochs}`) used by all
+      //    validator-mode calculators and the historical-APY panel
+      if (typeof totalRewardsCache === 'object' && totalRewardsCache) {
+        Object.keys(totalRewardsCache).forEach(k => {
+          if (k.indexOf(voteAccount + '_total_') === 0) delete totalRewardsCache[k];
+        });
+      }
+      // 4) Reward-breakdown modal cache (honors selections for self bucket)
+      if (typeof _rewardBreakdownCache === 'object' && _rewardBreakdownCache) {
+        delete _rewardBreakdownCache[voteAccount];
       }
       
       // Also clear any inline stake details that may be open
@@ -21606,6 +21728,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       document.body.style.overflow = '';
       currentStakeSelectionData = null;
       currentStakeSelectionVote = null;
+      currentStakeCategories = null;
+      currentStakeSelectionName = '';
     }
     
     // Simple toast notification
@@ -27558,7 +27682,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // Check for user selections first (from Stake Selection modal)
           const userSelections = getSelfStakeSelections(voteAccount);
           
-          if (userSelections && userSelections.pubkeys && userSelections.pubkeys.length > 0) {
+          if (hasUserClassification(userSelections)) {
             // Use user-selected self-stake accounts
             detectionMethod = 'user-selected';
             const selectedPubkeys = new Set(userSelections.pubkeys);
@@ -28640,7 +28764,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
                 let selfStake = 0, delegatedStake = 0;
                 const userSelections = getSelfStakeSelections(voteAccount);
                 
-                if (userSelections && userSelections.pubkeys && userSelections.pubkeys.length > 0) {
+                if (hasUserClassification(userSelections)) {
                   const selectedPubkeys = new Set(userSelections.pubkeys);
                   accountsWithRates.forEach(acc => {
                     if (selectedPubkeys.has(acc.pubkey)) {
@@ -32295,7 +32419,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const userSel = typeof getSelfStakeSelections === 'function'
         ? getSelfStakeSelections(voteAccount) : null;
       const userSelfSet = new Set((userSel && userSel.pubkeys) || []);
-      const hasUserSel = userSelfSet.size > 0;
+      const hasUserSel = hasUserClassification(userSel);
 
       // 6) Classify each stake account into exactly one bucket
       const catOf  = new Map();
