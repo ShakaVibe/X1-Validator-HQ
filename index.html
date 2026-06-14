@@ -3761,6 +3761,13 @@
     .sm-legend { display: flex; align-items: center; gap: 0.3rem; }
     .sm-pip-demo { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
     .sm-timeline { display: flex; flex-wrap: wrap; gap: 3px; }
+    .slot-tl.collapsed .tl-extra { display: none; }
+    .slot-tl-toggle {
+      margin-top: 8px; background: transparent; border: none; cursor: pointer;
+      color: var(--accent-blue); font-size: 0.72rem; font-family: inherit;
+      padding: 2px 0; letter-spacing: 0.01em;
+    }
+    .slot-tl-toggle:hover { color: var(--accent-cyan); text-decoration: underline; }
     .sm-pip {
       width: 9px; height: 9px; border-radius: 2px; cursor: default;
       transition: transform 0.1s;
@@ -32091,6 +32098,18 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // take that path directly.
           const perSlotAvailable = d.producedSet && Array.isArray(d.pastSlots);
 
+          const SKIPMON_UPCOMING_PREVIEW = 40;
+          // Upcoming pips, with everything past the preview window flagged so it
+          // can be hidden until the user expands (keeps a fresh epoch tidy while
+          // still allowing the full assigned count to be shown).
+          const upcomingPipHtml = (n) => {
+            let h = '';
+            for (let i = 0; i < n; i++) {
+              h += '<div class="skipmon-pv-pip upcoming' + (i >= SKIPMON_UPCOMING_PREVIEW ? ' tl-extra' : '') + '"></div>';
+            }
+            return h;
+          };
+
           let pips;
           if (perSlotAvailable && skipped > 0) {
             let redBudget = skipped;
@@ -32104,10 +32123,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               }
               return '<div class="skipmon-pv-pip produced"></div>';
             }).join('');
-            const upcomingPips = (d.upcomingSlots || []).map(() =>
-              '<div class="skipmon-pv-pip upcoming"></div>'
-            ).join('');
-            pips = pastPips + upcomingPips;
+            pips = pastPips + upcomingPipHtml((d.upcomingSlots || []).length);
           } else {
             // No per-slot data yet, OR aggregate says zero skips (timeline
             // is entirely green/upcoming — no chronological detail to
@@ -32115,16 +32131,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
             pips =
                 '<div class="skipmon-pv-pip produced"></div>'.repeat(produced)
               + '<div class="skipmon-pv-pip skipped"></div>'.repeat(skipped)
-              + '<div class="skipmon-pv-pip upcoming"></div>'.repeat(upcoming);
+              + upcomingPipHtml(upcoming);
           }
           const legends = [
             produced > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip produced"></span> Produced</span>' : '',
             skipped  > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip skipped"></span> Skipped</span>' : '',
             upcoming > 0 ? '<span class="skipmon-pv-tl-leg"><span class="skipmon-pv-pip upcoming"></span> Upcoming</span>' : ''
           ].filter(Boolean).join('');
+          const hiddenUp = Math.max(0, upcoming - SKIPMON_UPCOMING_PREVIEW);
+          const assignedTotal = produced + skipped + upcoming;
           timelineHtml = `<div class="skipmon-pv-tl-wrap">`
             + `<div class="skipmon-pv-tl-label">Slot timeline ${legends}</div>`
-            + `<div class="skipmon-pv-tl">${pips}</div>`
+            + `<div class="skipmon-pv-tl slot-tl collapsed">${pips}</div>`
+            + (hiddenUp > 0 ? `<button class="slot-tl-toggle" data-total="${assignedTotal.toLocaleString()}" data-hidden="${hiddenUp.toLocaleString()}" onclick="toggleSlotTimeline(this)">▾ Show all ${assignedTotal.toLocaleString()} slots (${hiddenUp.toLocaleString()} upcoming)</button>` : '')
             + `</div>`;
         }
 
@@ -33347,18 +33366,37 @@ Please give me the diagnostic commands to run on my server so you can help me id
                producedSet };
     }
 
+    // ── Shared expand/collapse for any slot-timeline grid ──
+    // Used by both the Slot Explorer modal (.sm-timeline) and the Network
+    // "My Validators" preview (.skipmon-pv-tl). Both tag their grid with
+    // .slot-tl and flag overflow pips with .tl-extra; this flips the collapsed
+    // state and rewrites the button label.
+    window.toggleSlotTimeline = function (btn) {
+      const tl = btn.parentElement && btn.parentElement.querySelector('.slot-tl');
+      if (!tl) return;
+      const nowCollapsed = tl.classList.toggle('collapsed');
+      const total  = btn.getAttribute('data-total')  || '';
+      const hidden = btn.getAttribute('data-hidden') || '';
+      btn.innerHTML = nowCollapsed
+        ? '▾ Show all ' + total + ' slots (' + hidden + ' upcoming)'
+        : '▴ Collapse';
+    };
+
     // ── Render one panel's inner HTML ──────────────────────
     function smRenderPanel(d) {
       const pct        = d.assigned > 0 ? (d.produced / d.assigned * 100) : 0;
       const skippedPct = d.assigned > 0 ? (d.skipped  / d.assigned * 100) : 0;
 
       // Show ALL past slots so any skipped ones are visible even when they
-      // happened earlier in the epoch. Upcoming is still capped at 40 to
-      // avoid a wall of empty pips at the start of a fresh epoch.
+      // happened earlier in the epoch. Upcoming is no longer hard-capped — we
+      // render all of it but hide the overflow behind a "Show all" toggle so a
+      // fresh epoch doesn't dump a wall of empty pips while still letting the
+      // user expand to the full assigned count (matches the completed-epoch view).
+      const SM_UPCOMING_PREVIEW = 40;
       let pastSlots, upcomingSlots;
       if (d.isCurrent) {
         pastSlots     = d.mySlots.filter(s => s <= d.slotIndex);
-        upcomingSlots = d.mySlots.filter(s => s >  d.slotIndex).slice(0, 40);
+        upcomingSlots = d.mySlots.filter(s => s >  d.slotIndex);
       } else {
         pastSlots     = d.mySlots.slice();
         upcomingSlots = [];
@@ -33395,7 +33433,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }),
         ...upcomingSlots.map((s, i) => {
           const ms = (s - d.slotIndex) * SM_SLOT_MS;
-          return `<div class="sm-pip upcoming" title="Slot ${s.toLocaleString()} — in ${smCountdown(ms)}"></div>`;
+          const extra = i >= SM_UPCOMING_PREVIEW ? ' tl-extra' : '';
+          return `<div class="sm-pip upcoming${extra}" title="Slot ${s.toLocaleString()} — in ${smCountdown(ms)}"></div>`;
         })
       ].join('');
 
@@ -33465,7 +33504,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
               ${d.skipped>0 ? `<span class="sm-legend"><span class="sm-pip-demo" style="background:var(--danger)"></span> Skipped</span>` : ''}
               ${upcomingSlots.length ? `<span class="sm-legend"><span class="sm-pip-demo" style="border:1px solid var(--accent-blue);background:transparent"></span> Upcoming</span>` : ''}
             </div>
-            <div class="sm-timeline">${pips}</div>
+            <div class="sm-timeline slot-tl collapsed">${pips}</div>
+            ${(upcomingSlots.length - SM_UPCOMING_PREVIEW) > 0 ? `<button class="slot-tl-toggle" data-total="${d.assignedTotal.toLocaleString()}" data-hidden="${(upcomingSlots.length - SM_UPCOMING_PREVIEW).toLocaleString()}" onclick="toggleSlotTimeline(this)">▾ Show all ${d.assignedTotal.toLocaleString()} slots (${(upcomingSlots.length - SM_UPCOMING_PREVIEW).toLocaleString()} upcoming)</button>` : ''}
           </div>` : ''}
         </div>`;
     }
