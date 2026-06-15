@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-15T19:37:18.863Z",
-  "totalNodes": 682,
-  "totalLocations": 679,
+  "lastUpdated": "2026-06-15T21:25:06.811Z",
+  "totalNodes": 683,
+  "totalLocations": 680,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4755,6 +4755,13 @@
       "city": "Warsaw",
       "lat": 52.1783,
       "lon": 21.0602
+    },
+    "54.37.82.188": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5072,
+      "lon": -0.127586
     }
   },
   "countries": {
@@ -4796,7 +4803,7 @@
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 5
+      "count": 6
     },
     "SG": {
       "name": "Singapore",
