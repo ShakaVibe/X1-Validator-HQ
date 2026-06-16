@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-16T16:01:41.678Z",
-  "totalNodes": 680,
-  "totalLocations": 678,
+  "lastUpdated": "2026-06-16T18:04:51.726Z",
+  "totalNodes": 679,
+  "totalLocations": 677,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1381,13 +1381,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "141.95.64.207": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "45.136.213.50": {
       "country": "The Netherlands",
@@ -4765,7 +4758,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 138
+      "count": 137
     },
     "FI": {
       "name": "Finland",
