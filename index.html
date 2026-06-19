@@ -331,6 +331,14 @@
     .xnt-pill-change.up { color: var(--success); }
     .xnt-pill-change.down { color: var(--danger); }
 
+    .header-pill-slot {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 1.5rem;
+      padding-left: 1.5rem;
+      border-left: 1px solid var(--border);
+    }
+
     /* Network Toggle Switch */
     .network-toggle-container {
       display: flex;
@@ -11556,37 +11564,21 @@
       <span class="logo-x1"><span class="logo-x">X</span><span class="logo-1">1</span></span>
       <span class="logo-subtitle"><span class="logo-subtitle-validator">Validator</span> <span class="logo-subtitle-hq">Headquarters</span></span>
     </a>
-    <div class="header-right">
-      <div class="header-links">
+    <div class="header-links">
       <a href="https://x1.xyz/" target="_blank" rel="noopener noreferrer">X1 Website</a>
       <a href="https://docs.x1.xyz/validating/create-a-read-only-node" target="_blank" rel="noopener noreferrer">Launch My Validator</a>
       <a href="https://github.com/ShakaVibe/X1-Validator-Dashboard" target="_blank" rel="noopener noreferrer">GitHub</a>
-      
-      <!-- Network Toggle -->
-      <div class="network-toggle-container">
-        <span class="network-toggle-label x1" id="x1Label">
-          <span class="x1-logo-small"><span class="x-char">X</span><span class="one-char">1</span></span>
-        </span>
-        <button class="network-toggle" id="networkToggle" onclick="toggleNetwork()">
-          <div class="network-toggle-slider"></div>
-        </button>
-        <span class="network-toggle-label solana inactive" id="solanaLabel">
-          <svg class="solana-logo-small" viewBox="0 0 397.7 311.7">
-            <path class="sol-bottom" d="M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7z"/>
-            <path class="sol-top" d="M64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1L64.6 3.8z"/>
-            <path class="sol-middle" d="M333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z"/>
-          </svg>
-        </span>
-      </div>
-      </div>
-      <div class="xnt-price-pill xnt-hidden" id="xntPricePill" title="XNT price — live from api.x1.xyz">
-        <div class="xnt-pill-inner">
-          <span class="xnt-pill-logo"><span class="x-char">X</span><span class="one-char">1</span></span>
-          <span class="xnt-pill-ticker">XNT</span>
-          <span class="xnt-pill-price" id="xntPillPrice">—</span>
-          <span class="xnt-pill-change" id="xntPillChange"></span>
+
+      <span class="header-pill-slot">
+        <div class="xnt-price-pill xnt-hidden" id="xntPricePill" title="XNT price — live from api.x1.xyz">
+          <div class="xnt-pill-inner">
+            <span class="xnt-pill-logo"><span class="x-char">X</span><span class="one-char">1</span></span>
+            <span class="xnt-pill-ticker">XNT</span>
+            <span class="xnt-pill-price" id="xntPillPrice">—</span>
+            <span class="xnt-pill-change" id="xntPillChange"></span>
+          </div>
         </div>
-      </div>
+      </span>
     </div>
   </header>
 
