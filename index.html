@@ -270,6 +270,67 @@
       color: var(--accent-blue);
     }
 
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+    }
+
+    .xnt-price-pill {
+      display: inline-block;
+      padding: 1px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      box-shadow: 0 0 7px rgba(0, 212, 255, 0.22);
+    }
+
+    .xnt-price-pill.xnt-hidden {
+      display: none;
+    }
+
+    .xnt-pill-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: #0c1526;
+    }
+
+    .xnt-pill-logo {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1;
+    }
+
+    .xnt-pill-logo .x-char { color: var(--text-primary); }
+    .xnt-pill-logo .one-char { color: var(--accent-blue); }
+
+    .xnt-pill-ticker {
+      font-size: 0.66rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 0.02em;
+    }
+
+    .xnt-pill-price {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .xnt-pill-change {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      font-weight: 600;
+    }
+
+    .xnt-pill-change.up { color: var(--success); }
+    .xnt-pill-change.down { color: var(--danger); }
+
     /* Network Toggle Switch */
     .network-toggle-container {
       display: flex;
@@ -8850,6 +8911,11 @@
         font-size: 0.85rem;
       }
 
+      .header-right {
+        align-items: center;
+        gap: 0.85rem;
+      }
+
       main {
         padding: 1rem;
       }
@@ -11490,7 +11556,8 @@
       <span class="logo-x1"><span class="logo-x">X</span><span class="logo-1">1</span></span>
       <span class="logo-subtitle"><span class="logo-subtitle-validator">Validator</span> <span class="logo-subtitle-hq">Headquarters</span></span>
     </a>
-    <div class="header-links">
+    <div class="header-right">
+      <div class="header-links">
       <a href="https://x1.xyz/" target="_blank" rel="noopener noreferrer">X1 Website</a>
       <a href="https://docs.x1.xyz/validating/create-a-read-only-node" target="_blank" rel="noopener noreferrer">Launch My Validator</a>
       <a href="https://github.com/ShakaVibe/X1-Validator-Dashboard" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -11510,6 +11577,15 @@
             <path class="sol-middle" d="M333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z"/>
           </svg>
         </span>
+      </div>
+      </div>
+      <div class="xnt-price-pill xnt-hidden" id="xntPricePill" title="XNT price — live from api.x1.xyz">
+        <div class="xnt-pill-inner">
+          <span class="xnt-pill-logo"><span class="x-char">X</span><span class="one-char">1</span></span>
+          <span class="xnt-pill-ticker">XNT</span>
+          <span class="xnt-pill-price" id="xntPillPrice">—</span>
+          <span class="xnt-pill-change" id="xntPillChange"></span>
+        </div>
       </div>
     </div>
   </header>
@@ -34440,6 +34516,102 @@ Please give me the diagnostic commands to run on my server so you can help me id
       window.vtOpen  = open;
       window.vtClose = close;
       window.vtRetry = refresh;
+    })();
+  </script>
+
+  <script>
+    // ════════════════════════════════════════════════════════════════
+    // XNT PRICE PILL — live price shown in the header (design 2b).
+    //
+    // CONFIG — the only line you may need to change:
+    //   PRICE_URL points at the X1 API. The site's on-chain API base is
+    //   https://api.x1.xyz (already allowed in the CSP connect-src), so
+    //   no security-policy change is needed for this host. If the price
+    //   actually lives at a different path, edit PRICE_URL below.
+    //
+    // The parser is shape-tolerant: a bare number, or an object with a
+    //   price / priceUsd / price_usd / usd / value / data.price / etc.
+    //   field, will all work. A 24h % change is shown if the response
+    //   includes one (change24h / priceChange24h / usd_24h_change / …).
+    //
+    // SAFETY: if the endpoint is missing, errors, or returns no usable
+    //   price, the pill hides itself. It never shows a stale or wrong
+    //   number — better to show nothing than the wrong coin's price.
+    // ════════════════════════════════════════════════════════════════
+    (function () {
+      const PRICE_URL  = 'https://api.x1.xyz/v1/price';
+      const REFRESH_MS = 60 * 1000; // re-fetch every 60s
+
+      const pill     = document.getElementById('xntPricePill');
+      const elPrice  = document.getElementById('xntPillPrice');
+      const elChange = document.getElementById('xntPillChange');
+      if (!pill || !elPrice) return;
+
+      function readPrice(d) {
+        if (d == null) return null;
+        if (typeof d === 'number') return isFinite(d) ? d : null;
+        if (typeof d === 'string') { const n = parseFloat(d); return isFinite(n) ? n : null; }
+        const cands = [
+          d.price, d.priceUsd, d.price_usd, d.usd, d.value, d.last, d.lastPrice,
+          d.data && d.data.price, d.price && d.price.usd, d.result && d.result.price,
+        ];
+        for (const c of cands) {
+          const n = typeof c === 'string' ? parseFloat(c) : c;
+          if (typeof n === 'number' && isFinite(n)) return n;
+        }
+        return null;
+      }
+
+      function readChange(d) {
+        if (d == null || typeof d !== 'object') return null;
+        const cands = [
+          d.change24h, d.priceChange24h, d.price_change_24h, d.usd_24h_change,
+          d.change_24h, d.changePercent24h, d.percentChange24h,
+          d.data && d.data.change24h,
+        ];
+        for (const c of cands) {
+          const n = typeof c === 'string' ? parseFloat(c) : c;
+          if (typeof n === 'number' && isFinite(n)) return n;
+        }
+        return null;
+      }
+
+      function fmtPrice(p) {
+        let dp = 2;
+        if (p < 1)    dp = 4;
+        if (p < 0.01) dp = 6;
+        return '$' + p.toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
+      }
+
+      async function update() {
+        try {
+          const r = await fetch(PRICE_URL, { headers: { accept: 'application/json' } });
+          if (!r.ok) throw new Error('price HTTP ' + r.status);
+          const data  = await r.json();
+          const price = readPrice(data);
+          if (price == null) throw new Error('no usable price field in response');
+
+          elPrice.textContent = fmtPrice(price);
+
+          const chg = readChange(data);
+          if (chg == null) {
+            elChange.textContent = '';
+            elChange.className   = 'xnt-pill-change';
+          } else {
+            const up = chg >= 0;
+            elChange.textContent = (up ? '+' : '') + chg.toFixed(1) + '%';
+            elChange.className   = 'xnt-pill-change ' + (up ? 'up' : 'down');
+          }
+
+          pill.classList.remove('xnt-hidden');
+        } catch (e) {
+          console.warn('[XNT pill] price unavailable:', (e && e.message) ? e.message : e);
+          pill.classList.add('xnt-hidden');
+        }
+      }
+
+      update();
+      setInterval(update, REFRESH_MS);
     })();
   </script>
 
