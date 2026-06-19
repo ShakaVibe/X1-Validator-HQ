@@ -59,11 +59,12 @@
                    so img-src cannot be a fixed allowlist. Images can't execute
                    code, so 'https:' here is low-risk; the meaningful protection
                    (no data exfiltration) is enforced by the tight connect-src.
-         connect : self + X1 RPC + api.x1.xyz + ipwho.is + api.github.com
-                   + unpkg (Leaflet's optional .js.map source-map fetch)
-                   + api.allorigins.win / api.codetabs.com (public CORS
-                   relays the XNT price pill uses to read the XDEX API,
-                   which blocks direct browser calls from this domain).
+         connect : self + X1 RPC + api.x1.xyz + api.xdex.xyz + ipwho.is
+                   + api.github.com
+                   + unpkg (Leaflet's optional .js.map source-map fetch).
+                   NOTE: api.xdex.xyz is the XNT price source for the header
+                   pill. It works only once XDEX allowlists this site's
+                   origin for CORS; until then the pill stays hidden.
        NOTE: frame-ancestors is intentionally omitted — it is ignored when a
        CSP is delivered via <meta>. To enforce clickjacking protection, set
        it as a real HTTP header in your `_headers` file:
@@ -77,7 +78,7 @@
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https:;
-    connect-src 'self' https://rpc.mainnet.x1.xyz https://api.x1.xyz https://api.allorigins.win https://api.codetabs.com https://ipwho.is https://api.github.com https://unpkg.com;
+    connect-src 'self' https://rpc.mainnet.x1.xyz https://api.x1.xyz https://api.xdex.xyz https://ipwho.is https://api.github.com https://unpkg.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -34522,36 +34523,28 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // ════════════════════════════════════════════════════════════════
     // XNT PRICE PILL — live price shown in the header (design 2b).
     //
-    // SOURCE: XDEX (X1's native DEX) pool list. XDEX blocks direct browser
-    //   calls from this domain (it only sends Access-Control-Allow-Origin
-    //   for its own front-ends), so we route the request through a public
-    //   CORS relay that's allowed to read XDEX and hands the body back to
-    //   this page. Two relays are tried in order for resilience; both are
-    //   whitelisted in the CSP connect-src at the top of this file.
-    //
+    // SOURCE: XDEX (X1's native DEX) pool list, called DIRECTLY.
     //   Each pool reports a per-token USD price. WXNT (wrapped XNT, 1:1
     //   with native XNT, mint So111…112) appears in many pools, so we take
     //   its price from the deepest-liquidity pool (highest TVL).
     //
-    // SAFETY: if every relay fails or no usable WXNT price is found, the
-    //   pill (and its divider) hide. It never shows a stale/wrong number.
-    //   The relays only ever carry this one public price request.
+    // REQUIRES: XDEX must allowlist this site's origin for CORS. XDEX only
+    //   returns Access-Control-Allow-Origin for its own front-ends, so
+    //   until x1valhq.xyz is added to that allowlist the browser blocks
+    //   the response and the pill stays hidden. The moment the domain is
+    //   whitelisted, the price appears on the next refresh — no code change
+    //   needed. (api.xdex.xyz is already in the CSP connect-src up top.)
+    //
+    // SAFETY: if the request is blocked/errors or no usable WXNT price is
+    //   found, the pill (and its divider) hide — never a stale/wrong number.
     //
     // 24h change: the pool list carries no price-change field, so no % is
     //   shown. To add it later, pull XDEX's history endpoint.
     // ════════════════════════════════════════════════════════════════
     (function () {
-      const TARGET   = 'https://api.xdex.xyz/api/xendex/pool/list?network=X1%20Mainnet';
-      const XNT_MINT = 'So11111111111111111111111111111111111111112';
-      const XNT_SYMS = ['WXNT', 'XNT'];
-      // Public CORS relays, tried in order until one succeeds. To swap in a
-      // different relay, edit this list (and its origin in the CSP).
-      // NOTE: corsproxy.io was dropped — it now returns 403 for anonymous
-      // use. These two don't require registration.
-      const PROXIES = [
-        u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
-        u => 'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(u),
-      ];
+      const PRICE_URL = 'https://api.xdex.xyz/api/xendex/pool/list?network=X1%20Mainnet';
+      const XNT_MINT  = 'So11111111111111111111111111111111111111112';
+      const XNT_SYMS  = ['WXNT', 'XNT'];
       const REFRESH_MS = 60 * 1000; // re-fetch every 60s
 
       const slot     = document.getElementById('xntPillSlot');
@@ -34589,29 +34582,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return '$' + p.toLocaleString('en-US', { minimumFractionDigits: dp, maximumFractionDigits: dp });
       }
 
-      // Try each relay until one returns a usable WXNT price.
-      async function fetchPrice() {
-        let lastErr = null;
-        for (const wrap of PROXIES) {
-          try {
-            const r = await fetch(wrap(TARGET), { headers: { accept: 'application/json' } });
-            if (!r.ok) throw new Error('relay HTTP ' + r.status);
-            const data  = await r.json();
-            const price = extractXntPrice(data);
-            if (price == null) throw new Error('WXNT price not found');
-            return price;
-          } catch (e) {
-            lastErr = e;
-          }
-        }
-        throw lastErr || new Error('all relays failed');
-      }
-
       async function update() {
         try {
-          const price = await fetchPrice();
+          const r = await fetch(PRICE_URL, { headers: { accept: 'application/json' } });
+          if (!r.ok) throw new Error('xdex HTTP ' + r.status);
+          const data  = await r.json();
+          const price = extractXntPrice(data);
+          if (price == null) throw new Error('WXNT price not found in pool list');
+
           elPrice.textContent = fmtPrice(price);
           if (elChange) { elChange.textContent = ''; elChange.className = 'xnt-pill-change'; }
+
           if (slot) slot.classList.remove('xnt-hidden');
         } catch (e) {
           console.warn('[XNT pill] price unavailable:', (e && e.message) ? e.message : e);
