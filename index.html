@@ -59,7 +59,8 @@
                    so img-src cannot be a fixed allowlist. Images can't execute
                    code, so 'https:' here is low-risk; the meaningful protection
                    (no data exfiltration) is enforced by the tight connect-src.
-         connect : self + X1 RPC + api.x1.xyz + ipwho.is + api.github.com
+         connect : self + X1 RPC + api.x1.xyz + api.xdex.xyz (XNT price)
+                   + ipwho.is + api.github.com
                    + unpkg (Leaflet's optional .js.map source-map fetch).
        NOTE: frame-ancestors is intentionally omitted — it is ignored when a
        CSP is delivered via <meta>. To enforce clickjacking protection, set
@@ -74,7 +75,7 @@
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https:;
-    connect-src 'self' https://rpc.mainnet.x1.xyz https://api.x1.xyz https://ipwho.is https://api.github.com https://unpkg.com;
+    connect-src 'self' https://rpc.mainnet.x1.xyz https://api.x1.xyz https://api.xdex.xyz https://ipwho.is https://api.github.com https://unpkg.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -337,6 +338,10 @@
       margin-left: 1.5rem;
       padding-left: 1.5rem;
       border-left: 1px solid var(--border);
+    }
+
+    .header-pill-slot.xnt-hidden {
+      display: none;
     }
 
     /* Network Toggle Switch */
@@ -11569,8 +11574,8 @@
       <a href="https://docs.x1.xyz/validating/create-a-read-only-node" target="_blank" rel="noopener noreferrer">Launch My Validator</a>
       <a href="https://github.com/ShakaVibe/X1-Validator-Dashboard" target="_blank" rel="noopener noreferrer">GitHub</a>
 
-      <span class="header-pill-slot">
-        <div class="xnt-price-pill xnt-hidden" id="xntPricePill" title="XNT price — live from api.x1.xyz">
+      <span class="header-pill-slot xnt-hidden" id="xntPillSlot">
+        <div class="xnt-price-pill" id="xntPricePill" title="XNT price — live from api.x1.xyz">
           <div class="xnt-pill-inner">
             <span class="xnt-pill-logo"><span class="x-char">X</span><span class="one-char">1</span></span>
             <span class="xnt-pill-ticker">XNT</span>
@@ -34515,57 +34520,58 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // ════════════════════════════════════════════════════════════════
     // XNT PRICE PILL — live price shown in the header (design 2b).
     //
-    // CONFIG — the only line you may need to change:
-    //   PRICE_URL points at the X1 API. The site's on-chain API base is
-    //   https://api.x1.xyz (already allowed in the CSP connect-src), so
-    //   no security-policy change is needed for this host. If the price
-    //   actually lives at a different path, edit PRICE_URL below.
+    // SOURCE: XDEX (X1's native DEX) pool list. Each pool reports a
+    //   per-token USD price; WXNT (wrapped XNT, 1:1 with native XNT,
+    //   mint So111…112) appears in many pools, so we take its price from
+    //   the pool with the deepest liquidity (highest TVL) for the most
+    //   representative number.
     //
-    // The parser is shape-tolerant: a bare number, or an object with a
-    //   price / priceUsd / price_usd / usd / value / data.price / etc.
-    //   field, will all work. A 24h % change is shown if the response
-    //   includes one (change24h / priceChange24h / usd_24h_change / …).
+    //   This is a cross-origin request to api.xdex.xyz, so that origin is
+    //   whitelisted in the CSP connect-src at the top of this file. If
+    //   XDEX ever restricts CORS to specific sites, the fetch fails and
+    //   the pill just hides — the fallback is to fetch server-side in the
+    //   GitHub Action and write a small JSON the site reads from its own
+    //   origin (no CORS, no CSP edit).
     //
-    // SAFETY: if the endpoint is missing, errors, or returns no usable
-    //   price, the pill hides itself. It never shows a stale or wrong
-    //   number — better to show nothing than the wrong coin's price.
+    // SAFETY: if the endpoint errors or returns no usable WXNT price, the
+    //   pill (and its divider) hide. It never shows a stale/wrong number.
+    //
+    // 24h change: the pool list carries no price-change field, so no %
+    //   is shown. To add it later, pull XDEX's history endpoint
+    //   (history?network=X1%20Mainnet&from_token=So111…112).
     // ════════════════════════════════════════════════════════════════
     (function () {
-      const PRICE_URL  = 'https://api.x1.xyz/v1/price';
+      const PRICE_URL  = 'https://api.xdex.xyz/api/xendex/pool/list?network=X1%20Mainnet';
+      const XNT_MINT   = 'So11111111111111111111111111111111111111112';
+      const XNT_SYMS   = ['WXNT', 'XNT'];
       const REFRESH_MS = 60 * 1000; // re-fetch every 60s
 
-      const pill     = document.getElementById('xntPricePill');
+      const slot     = document.getElementById('xntPillSlot');
       const elPrice  = document.getElementById('xntPillPrice');
       const elChange = document.getElementById('xntPillChange');
-      if (!pill || !elPrice) return;
+      if (!elPrice) return;
 
-      function readPrice(d) {
-        if (d == null) return null;
-        if (typeof d === 'number') return isFinite(d) ? d : null;
-        if (typeof d === 'string') { const n = parseFloat(d); return isFinite(n) ? n : null; }
-        const cands = [
-          d.price, d.priceUsd, d.price_usd, d.usd, d.value, d.last, d.lastPrice,
-          d.data && d.data.price, d.price && d.price.usd, d.result && d.result.price,
-        ];
-        for (const c of cands) {
-          const n = typeof c === 'string' ? parseFloat(c) : c;
-          if (typeof n === 'number' && isFinite(n)) return n;
+      // Pull WXNT's USD price out of the pool list, preferring the
+      // deepest-liquidity pool it appears in.
+      function extractXntPrice(json) {
+        const pools = json && Array.isArray(json.data) ? json.data : null;
+        if (!pools) return null;
+        let best = null; // { price, tvl }
+        for (const p of pools) {
+          if (!p) continue;
+          for (const n of [1, 2]) {
+            const sym   = p['token' + n + '_symbol'];
+            const addr  = p['token' + n + '_address'];
+            const price = Number(p['token' + n + '_price']);
+            const isXnt = addr === XNT_MINT ||
+                          (sym && XNT_SYMS.indexOf(String(sym).toUpperCase()) !== -1);
+            if (isXnt && isFinite(price) && price > 0) {
+              const tvl = Number(p.tvl) || 0;
+              if (!best || tvl > best.tvl) best = { price: price, tvl: tvl };
+            }
+          }
         }
-        return null;
-      }
-
-      function readChange(d) {
-        if (d == null || typeof d !== 'object') return null;
-        const cands = [
-          d.change24h, d.priceChange24h, d.price_change_24h, d.usd_24h_change,
-          d.change_24h, d.changePercent24h, d.percentChange24h,
-          d.data && d.data.change24h,
-        ];
-        for (const c of cands) {
-          const n = typeof c === 'string' ? parseFloat(c) : c;
-          if (typeof n === 'number' && isFinite(n)) return n;
-        }
-        return null;
+        return best ? best.price : null;
       }
 
       function fmtPrice(p) {
@@ -34578,27 +34584,18 @@ Please give me the diagnostic commands to run on my server so you can help me id
       async function update() {
         try {
           const r = await fetch(PRICE_URL, { headers: { accept: 'application/json' } });
-          if (!r.ok) throw new Error('price HTTP ' + r.status);
+          if (!r.ok) throw new Error('xdex HTTP ' + r.status);
           const data  = await r.json();
-          const price = readPrice(data);
-          if (price == null) throw new Error('no usable price field in response');
+          const price = extractXntPrice(data);
+          if (price == null) throw new Error('WXNT price not found in pool list');
 
           elPrice.textContent = fmtPrice(price);
+          if (elChange) { elChange.textContent = ''; elChange.className = 'xnt-pill-change'; }
 
-          const chg = readChange(data);
-          if (chg == null) {
-            elChange.textContent = '';
-            elChange.className   = 'xnt-pill-change';
-          } else {
-            const up = chg >= 0;
-            elChange.textContent = (up ? '+' : '') + chg.toFixed(1) + '%';
-            elChange.className   = 'xnt-pill-change ' + (up ? 'up' : 'down');
-          }
-
-          pill.classList.remove('xnt-hidden');
+          if (slot) slot.classList.remove('xnt-hidden');
         } catch (e) {
           console.warn('[XNT pill] price unavailable:', (e && e.message) ? e.message : e);
-          pill.classList.add('xnt-hidden');
+          if (slot) slot.classList.add('xnt-hidden');
         }
       }
 
