@@ -61,9 +61,9 @@
                    (no data exfiltration) is enforced by the tight connect-src.
          connect : self + X1 RPC + api.x1.xyz + ipwho.is + api.github.com
                    + unpkg (Leaflet's optional .js.map source-map fetch)
-                   + corsproxy.io / api.allorigins.win (public CORS relays
-                   the XNT price pill uses to read the XDEX API, which
-                   blocks direct browser calls from this domain).
+                   + api.allorigins.win / api.codetabs.com (public CORS
+                   relays the XNT price pill uses to read the XDEX API,
+                   which blocks direct browser calls from this domain).
        NOTE: frame-ancestors is intentionally omitted — it is ignored when a
        CSP is delivered via <meta>. To enforce clickjacking protection, set
        it as a real HTTP header in your `_headers` file:
@@ -77,7 +77,7 @@
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https:;
-    connect-src 'self' https://rpc.mainnet.x1.xyz https://api.x1.xyz https://corsproxy.io https://api.allorigins.win https://ipwho.is https://api.github.com https://unpkg.com;
+    connect-src 'self' https://rpc.mainnet.x1.xyz https://api.x1.xyz https://api.allorigins.win https://api.codetabs.com https://ipwho.is https://api.github.com https://unpkg.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -34546,9 +34546,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const XNT_SYMS = ['WXNT', 'XNT'];
       // Public CORS relays, tried in order until one succeeds. To swap in a
       // different relay, edit this list (and its origin in the CSP).
+      // NOTE: corsproxy.io was dropped — it now returns 403 for anonymous
+      // use. These two don't require registration.
       const PROXIES = [
-        u => 'https://corsproxy.io/?url=' + encodeURIComponent(u),
         u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+        u => 'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(u),
       ];
       const REFRESH_MS = 60 * 1000; // re-fetch every 60s
 
