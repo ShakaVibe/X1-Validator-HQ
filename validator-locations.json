@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-20T09:31:59.015Z",
-  "totalNodes": 678,
-  "totalLocations": 676,
+  "lastUpdated": "2026-06-20T11:06:58.598Z",
+  "totalNodes": 673,
+  "totalLocations": 671,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3076,40 +3076,12 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "23.175.144.75": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9596,
-      "lon": -75.161
-    },
-    "23.175.146.218": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9596,
-      "lon": -75.161
-    },
-    "23.175.144.99": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9596,
-      "lon": -75.161
-    },
     "23.175.144.140": {
       "country": "United States",
       "countryCode": "US",
       "city": "Philadelphia",
       "lat": 39.9596,
       "lon": -75.161
-    },
-    "23.175.145.220": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9522,
-      "lon": -75.1647
     },
     "135.181.7.90": {
       "country": "Finland",
@@ -4644,13 +4616,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "101.47.12.182": {
-      "country": "Singapore",
-      "countryCode": "SG",
-      "city": "Singapore",
-      "lat": 1.352,
-      "lon": 103.8198
-    },
     "95.214.54.88": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4747,7 +4712,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 242
+      "count": 238
     },
     "SE": {
       "name": "Sweden",
@@ -4767,7 +4732,7 @@
     },
     "SG": {
       "name": "Singapore",
-      "count": 4
+      "count": 3
     },
     "KE": {
       "name": "Kenya",
