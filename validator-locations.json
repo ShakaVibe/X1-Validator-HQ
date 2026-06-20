@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-20T20:50:03.890Z",
-  "totalNodes": 673,
-  "totalLocations": 671,
+  "lastUpdated": "2026-06-20T22:46:06.555Z",
+  "totalNodes": 672,
+  "totalLocations": 670,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4637,13 +4637,6 @@
       "lat": 45.5075,
       "lon": -73.5887
     },
-    "188.117.169.89": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Żory",
-      "lat": 50.0433,
-      "lon": 18.6828
-    },
     "51.254.132.48": {
       "country": "France",
       "countryCode": "FR",
@@ -4720,7 +4713,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 93
+      "count": 92
     },
     "NL": {
       "name": "The Netherlands",
