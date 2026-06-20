@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-20T05:50:53.215Z",
+  "lastUpdated": "2026-06-20T07:38:58.673Z",
   "totalNodes": 677,
   "totalLocations": 675,
   "locations": {
@@ -625,13 +625,6 @@
       "city": "Pleasant View",
       "lat": 41.3072,
       "lon": -111.992
-    },
-    "74.50.79.234": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "135.125.222.229": {
       "country": "Germany",
@@ -4727,52 +4720,59 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "162.35.160.11": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 6
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 137
-    },
-    "US": {
-      "name": "United States",
-      "count": 244
-    },
     "FI": {
       "name": "Finland",
       "count": 74
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 92
     },
     "NL": {
       "name": "The Netherlands",
       "count": 28
     },
-    "CA": {
-      "name": "Canada",
-      "count": 23
-    },
-    "FR": {
-      "name": "France",
-      "count": 57
-    },
-    "SG": {
-      "name": "Singapore",
-      "count": 2
+    "US": {
+      "name": "United States",
+      "count": 244
     },
     "SE": {
       "name": "Sweden",
       "count": 8
     },
+    "DE": {
+      "name": "Germany",
+      "count": 137
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 92
+    },
+    "FR": {
+      "name": "France",
+      "count": 57
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 6
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 23
+    },
+    "SG": {
+      "name": "Singapore",
+      "count": 2
     }
   }
 }
