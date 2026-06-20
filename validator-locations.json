@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-20T03:35:22.735Z",
+  "lastUpdated": "2026-06-20T05:50:53.215Z",
   "totalNodes": 677,
   "totalLocations": 675,
   "locations": {
@@ -1164,13 +1164,6 @@
       "city": "Amsterdam",
       "lat": 52.3676,
       "lon": 4.90414
-    },
-    "157.250.197.34": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "135.125.222.228": {
       "country": "Germany",
@@ -4441,13 +4434,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "162.35.160.11": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "San Jose",
-      "lat": 37.3387,
-      "lon": -121.885
-    },
     "213.25.37.212": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4727,6 +4713,20 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "37.59.96.131": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "37.59.96.57": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -4740,7 +4740,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 246
+      "count": 244
     },
     "FI": {
       "name": "Finland",
@@ -4760,7 +4760,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 55
+      "count": 57
     },
     "SG": {
       "name": "Singapore",
