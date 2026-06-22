@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-22T03:36:16.870Z",
-  "totalNodes": 674,
-  "totalLocations": 672,
+  "lastUpdated": "2026-06-22T06:12:11.146Z",
+  "totalNodes": 673,
+  "totalLocations": 671,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1290,13 +1290,6 @@
       "city": "Stockholm",
       "lat": 59.3287,
       "lon": 18.0717
-    },
-    "75.119.157.71": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
     },
     "65.108.76.59": {
       "country": "Finland",
@@ -4731,7 +4724,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 57
+      "count": 56
     },
     "SG": {
       "name": "Singapore",
