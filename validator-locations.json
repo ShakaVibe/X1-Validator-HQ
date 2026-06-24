@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-24T20:56:42.460Z",
-  "totalNodes": 670,
-  "totalLocations": 668,
+  "lastUpdated": "2026-06-24T22:48:28.241Z",
+  "totalNodes": 671,
+  "totalLocations": 669,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4462,26 +4462,12 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "149.50.108.49": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "178.18.242.0": {
       "country": "France",
       "countryCode": "FR",
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
-    },
-    "149.50.101.55": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "5.196.64.42": {
       "country": "France",
@@ -4678,6 +4664,27 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "54.37.82.188": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5072,
+      "lon": -0.127586
+    },
+    "69.169.101.195": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "147.135.130.108": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -4691,7 +4698,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 236
+      "count": 237
     },
     "SE": {
       "name": "Sweden",
@@ -4703,11 +4710,11 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 93
+      "count": 91
     },
     "FR": {
       "name": "France",
-      "count": 58
+      "count": 59
     },
     "KE": {
       "name": "Kenya",
@@ -4715,7 +4722,7 @@
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 4
+      "count": 5
     },
     "CA": {
       "name": "Canada",
