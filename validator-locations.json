@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-25T01:21:04.534Z",
-  "totalNodes": 670,
-  "totalLocations": 668,
+  "lastUpdated": "2026-06-25T03:35:04.029Z",
+  "totalNodes": 671,
+  "totalLocations": 669,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4678,6 +4678,13 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "69.169.101.195": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
@@ -4699,7 +4706,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 236
+      "count": 237
     },
     "NL": {
       "name": "The Netherlands",
