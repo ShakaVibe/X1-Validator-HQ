@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-25T13:07:30.504Z",
-  "totalNodes": 671,
-  "totalLocations": 669,
+  "lastUpdated": "2026-06-25T15:21:34.030Z",
+  "totalNodes": 670,
+  "totalLocations": 668,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -618,13 +618,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "104.250.141.74": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Pleasant View",
-      "lat": 41.3072,
-      "lon": -111.992
     },
     "135.125.222.229": {
       "country": "Germany",
@@ -4706,7 +4699,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 237
+      "count": 236
     },
     "NL": {
       "name": "The Netherlands",
