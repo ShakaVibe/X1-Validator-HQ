@@ -25919,6 +25919,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
 
     async function confirmCreateStake() {
+      let connection = null;
+      let signature = null;
       const amountInput = document.getElementById('createStakeAmountInput');
       const amount = parseFloat(amountInput.value);
       
@@ -25945,7 +25947,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         const { Connection, PublicKey, Transaction, Keypair, StakeProgram } = solanaWeb3;
         
-        const connection = new Connection(RPC_URL, 'confirmed');
+        connection = new Connection(RPC_URL, 'confirmed');
         const fromPubkey = new PublicKey(walletPublicKey);
         const votePubkey = new PublicKey(currentManageValidator.voteAccount);
         
@@ -26019,7 +26021,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         // Sign with wallet and send
         if (connectedWallet && connectedWallet.provider) {
-          let signature;
           
           try {
             console.log('Calling signAndSendTransaction...');
@@ -26077,14 +26078,59 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
       } catch (e) {
         console.error('Create stake error:', e);
-        
+
+        // "Block height exceeded" / "expired" is often a FALSE failure: confirmTransaction
+        // stopped waiting at lastValidBlockHeight, but the tx may have actually landed.
+        // Verify on-chain before reporting failure (same pattern as confirmWithdrawXnt).
+        const looksExpired = e.message && (
+          e.message.includes('block height exceeded') ||
+          e.message.includes('expired') ||
+          e.message.includes('TransactionExpired')
+        );
+
+        if (looksExpired && connection && signature) {
+          try {
+            btn.textContent = 'Verifying...';
+            showCreateStakeMessage('Confirmation timed out — verifying on-chain...', 'info');
+
+            // Give the network a moment, then check the signature status directly.
+            await new Promise(r => setTimeout(r, 3000));
+            const status = await connection.getSignatureStatus(signature, { searchTransactionHistory: true });
+            const confStatus = status && status.value ? status.value.confirmationStatus : null;
+
+            if (confStatus === 'confirmed' || confStatus === 'finalized') {
+              if (status.value.err) {
+                throw new Error('Transaction failed on-chain: ' + JSON.stringify(status.value.err));
+              }
+              btn.textContent = 'Success!';
+              btn.onclick = closeCreateStakeModal;
+              btn.disabled = false;
+              document.getElementById('createStakeCancelBtn').textContent = 'Close';
+              showCreateStakeMessage(`Stake created and delegated! Signature: ${String(signature).slice(0, 16)}...`, 'success');
+
+              setTimeout(() => {
+                fetchCreateStakeWalletBalance();
+                if (currentManageValidator && currentManageValidator.voteAccount) {
+                  fetchStakeAccounts(currentManageValidator.voteAccount);
+                }
+              }, 3000);
+              return;
+            }
+          } catch (verifyErr) {
+            console.error('Verification check failed:', verifyErr);
+            // fall through to normal error handling below
+          }
+        }
+
         btn.disabled = false;
         btn.textContent = 'Create & Delegate Stake';
-        
+
         if (e.message && (e.message.includes('User rejected') || e.message.includes('rejected'))) {
           showCreateStakeMessage('Transaction cancelled by user.', 'error');
         } else if (e.message && e.message.includes('Plugin Closed')) {
           showCreateStakeMessage('Wallet closed unexpectedly. Please try again.', 'error');
+        } else if (looksExpired) {
+          showCreateStakeMessage('Could not confirm in time. Your stake may still have been created — please check your stake accounts before retrying so you don\'t double-stake.', 'error');
         } else {
           showCreateStakeMessage(`Transaction failed: ${e.message || 'Unknown error'}`, 'error');
         }
