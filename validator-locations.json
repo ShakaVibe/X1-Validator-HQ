@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-26T20:56:33.549Z",
+  "lastUpdated": "2026-06-26T22:47:02.615Z",
   "totalNodes": 662,
   "totalLocations": 660,
   "locations": {
@@ -1780,13 +1780,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "185.191.118.87": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1169,
-      "lon": 8.6837
     },
     "205.209.110.66": {
       "country": "United States",
@@ -4622,44 +4615,51 @@
       "city": "Newark",
       "lat": 40.7356,
       "lon": -74.1723
+    },
+    "173.214.172.174": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 138
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 74
+    "US": {
+      "name": "United States",
+      "count": 239
     },
     "PL": {
       "name": "Poland",
       "count": 90
     },
-    "US": {
-      "name": "United States",
-      "count": 238
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 27
-    },
     "CA": {
       "name": "Canada",
       "count": 23
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 137
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 74
     },
     "FR": {
       "name": "France",
       "count": 53
     },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 27
+    },
     "SE": {
       "name": "Sweden",
       "count": 6
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "GB": {
       "name": "United Kingdom",
