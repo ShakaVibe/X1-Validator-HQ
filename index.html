@@ -24617,15 +24617,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         btn.textContent = 'Confirming...';
         showUndelegateMessage('Transaction sent! Waiting for confirmation...', 'info');
         
-        const confirmation = await connection.confirmTransaction({
-          signature,
-          blockhash,
-          lastValidBlockHeight
-        }, 'confirmed');
-        
-        if (confirmation.value.err) {
-          throw new Error('Transaction failed: ' + JSON.stringify(confirmation.value.err));
-        }
+        await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
         
         btn.textContent = 'Success!';
         btn.onclick = closeUndelegateStakeModal;
@@ -25043,15 +25035,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         btn.textContent = 'Confirming...';
         showRedelegateMessage('Transaction sent! Waiting for confirmation...', 'info');
         
-        const confirmation = await connection.confirmTransaction({
-          signature,
-          blockhash,
-          lastValidBlockHeight
-        }, 'confirmed');
-        
-        if (confirmation.value.err) {
-          throw new Error('Transaction failed: ' + JSON.stringify(confirmation.value.err));
-        }
+        await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
         
         btn.textContent = 'Success!';
         btn.onclick = closeRedelegateStakeModal;
@@ -25397,15 +25381,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         btn.textContent = 'Confirming...';
         showWithdrawStakeMessage('Transaction sent! Waiting for confirmation...', 'info');
         
-        const confirmation = await connection.confirmTransaction({
-          signature,
-          blockhash,
-          lastValidBlockHeight
-        }, 'confirmed');
-        
-        if (confirmation.value.err) {
-          throw new Error('Transaction failed: ' + JSON.stringify(confirmation.value.err));
-        }
+        await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
         
         btn.textContent = 'Success!';
         btn.onclick = closeWithdrawStakeModal;
@@ -25732,15 +25708,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           showSendMessage('Transaction sent! Waiting for confirmation...', 'info');
           
           // Wait for confirmation
-          const confirmation = await connection.confirmTransaction({
-            signature,
-            blockhash,
-            lastValidBlockHeight
-          }, 'confirmed');
-          
-          if (confirmation.value.err) {
-            throw new Error('Transaction failed to confirm: ' + JSON.stringify(confirmation.value.err));
-          }
+          await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
           
           btn.textContent = 'Success!';
           btn.onclick = closeSendXntModal;
@@ -25918,9 +25886,65 @@ Please give me the diagnostic commands to run on my server so you can help me id
       document.getElementById('createStakeSummaryTotal').textContent = formatNumber(total, 6) + ' XNT';
     }
 
+    // ───────────────────────────────────────────────
+    // Shared transaction-confirmation helper.
+    //
+    // A "block height exceeded" / "expired" error from confirmTransaction is a
+    // CONFIRMATION TIMEOUT, not proof of failure: the wallet's confirmation
+    // watcher stopped waiting at lastValidBlockHeight, but the transaction may
+    // still have landed (lagging RPC node, dropped websocket notification, or
+    // inclusion right around the deadline). On that specific error we re-check the
+    // signature on-chain a few times and only report failure if it genuinely
+    // failed or never appeared.
+    //
+    // Returns void on success. Throws on a real failure. Pass the same
+    // connection/signature/blockhash/lastValidBlockHeight used to send the tx.
+    async function confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, commitment = 'confirmed') {
+      try {
+        const confirmation = await connection.confirmTransaction(
+          { signature, blockhash, lastValidBlockHeight },
+          commitment
+        );
+        if (confirmation && confirmation.value && confirmation.value.err) {
+          throw new Error('Transaction failed to confirm: ' + JSON.stringify(confirmation.value.err));
+        }
+        return; // confirmed cleanly
+      } catch (e) {
+        const looksExpired = e && e.message && (
+          e.message.includes('block height exceeded') ||
+          e.message.includes('expired') ||
+          e.message.includes('TransactionExpired')
+        );
+        // Genuine failure (including a real on-chain error) — propagate as-is.
+        if (!looksExpired) throw e;
+
+        // Confirmation watcher gave up. Verify on-chain before declaring failure.
+        for (let attempt = 0; attempt < 3; attempt++) {
+          await new Promise(r => setTimeout(r, 2000));
+          let status;
+          try {
+            status = await connection.getSignatureStatus(signature, { searchTransactionHistory: true });
+          } catch (statusErr) {
+            console.error('getSignatureStatus failed during verification:', statusErr);
+            continue;
+          }
+          const v = status && status.value ? status.value : null;
+          if (!v) continue;
+          if (v.err) {
+            throw new Error('Transaction failed on-chain: ' + JSON.stringify(v.err));
+          }
+          if (v.confirmationStatus === 'confirmed' || v.confirmationStatus === 'finalized') {
+            return; // it landed successfully
+          }
+        }
+
+        const timeoutErr = new Error('the network did not confirm in time. Your transaction may still have gone through — please check before retrying.');
+        timeoutErr.isUnconfirmedTimeout = true;
+        throw timeoutErr;
+      }
+    }
+
     async function confirmCreateStake() {
-      let connection = null;
-      let signature = null;
       const amountInput = document.getElementById('createStakeAmountInput');
       const amount = parseFloat(amountInput.value);
       
@@ -25947,7 +25971,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         const { Connection, PublicKey, Transaction, Keypair, StakeProgram } = solanaWeb3;
         
-        connection = new Connection(RPC_URL, 'confirmed');
+        const connection = new Connection(RPC_URL, 'confirmed');
         const fromPubkey = new PublicKey(walletPublicKey);
         const votePubkey = new PublicKey(currentManageValidator.voteAccount);
         
@@ -26021,6 +26045,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         // Sign with wallet and send
         if (connectedWallet && connectedWallet.provider) {
+          let signature;
           
           try {
             console.log('Calling signAndSendTransaction...');
@@ -26047,15 +26072,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           showCreateStakeMessage('Transaction sent! Waiting for confirmation...', 'info');
           
           // Wait for confirmation
-          const confirmation = await connection.confirmTransaction({
-            signature,
-            blockhash,
-            lastValidBlockHeight
-          }, 'confirmed');
-          
-          if (confirmation.value.err) {
-            throw new Error('Transaction failed to confirm: ' + JSON.stringify(confirmation.value.err));
-          }
+          await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
           
           btn.textContent = 'Success!';
           btn.onclick = closeCreateStakeModal;
@@ -26078,59 +26095,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
       } catch (e) {
         console.error('Create stake error:', e);
-
-        // "Block height exceeded" / "expired" is often a FALSE failure: confirmTransaction
-        // stopped waiting at lastValidBlockHeight, but the tx may have actually landed.
-        // Verify on-chain before reporting failure (same pattern as confirmWithdrawXnt).
-        const looksExpired = e.message && (
-          e.message.includes('block height exceeded') ||
-          e.message.includes('expired') ||
-          e.message.includes('TransactionExpired')
-        );
-
-        if (looksExpired && connection && signature) {
-          try {
-            btn.textContent = 'Verifying...';
-            showCreateStakeMessage('Confirmation timed out — verifying on-chain...', 'info');
-
-            // Give the network a moment, then check the signature status directly.
-            await new Promise(r => setTimeout(r, 3000));
-            const status = await connection.getSignatureStatus(signature, { searchTransactionHistory: true });
-            const confStatus = status && status.value ? status.value.confirmationStatus : null;
-
-            if (confStatus === 'confirmed' || confStatus === 'finalized') {
-              if (status.value.err) {
-                throw new Error('Transaction failed on-chain: ' + JSON.stringify(status.value.err));
-              }
-              btn.textContent = 'Success!';
-              btn.onclick = closeCreateStakeModal;
-              btn.disabled = false;
-              document.getElementById('createStakeCancelBtn').textContent = 'Close';
-              showCreateStakeMessage(`Stake created and delegated! Signature: ${String(signature).slice(0, 16)}...`, 'success');
-
-              setTimeout(() => {
-                fetchCreateStakeWalletBalance();
-                if (currentManageValidator && currentManageValidator.voteAccount) {
-                  fetchStakeAccounts(currentManageValidator.voteAccount);
-                }
-              }, 3000);
-              return;
-            }
-          } catch (verifyErr) {
-            console.error('Verification check failed:', verifyErr);
-            // fall through to normal error handling below
-          }
-        }
-
+        
         btn.disabled = false;
         btn.textContent = 'Create & Delegate Stake';
-
+        
         if (e.message && (e.message.includes('User rejected') || e.message.includes('rejected'))) {
           showCreateStakeMessage('Transaction cancelled by user.', 'error');
         } else if (e.message && e.message.includes('Plugin Closed')) {
           showCreateStakeMessage('Wallet closed unexpectedly. Please try again.', 'error');
-        } else if (looksExpired) {
-          showCreateStakeMessage('Could not confirm in time. Your stake may still have been created — please check your stake accounts before retrying so you don\'t double-stake.', 'error');
         } else {
           showCreateStakeMessage(`Transaction failed: ${e.message || 'Unknown error'}`, 'error');
         }
@@ -26272,15 +26244,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           btn.textContent = 'Confirming...';
           showSetWithdrawAuthorityMessage('Transaction sent! Waiting for confirmation...', 'info');
           
-          const confirmation = await connection.confirmTransaction({
-            signature,
-            blockhash,
-            lastValidBlockHeight
-          }, 'confirmed');
-          
-          if (confirmation.value.err) {
-            throw new Error('Transaction failed: ' + JSON.stringify(confirmation.value.err));
-          }
+          await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
           
           btn.textContent = 'Success!';
           btn.onclick = closeSetWithdrawAuthorityModal;
@@ -26453,15 +26417,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           btn.textContent = 'Confirming...';
           showSetStakeAuthorityMessage('Transaction sent! Waiting for confirmation...', 'info');
           
-          const confirmation = await connection.confirmTransaction({
-            signature,
-            blockhash,
-            lastValidBlockHeight
-          }, 'confirmed');
-          
-          if (confirmation.value.err) {
-            throw new Error('Transaction failed: ' + JSON.stringify(confirmation.value.err));
-          }
+          await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
           
           btn.textContent = 'Success!';
           btn.onclick = closeSetStakeAuthorityModal;
@@ -27297,15 +27253,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           showCommissionMessage('Transaction sent! Waiting for confirmation...', 'info');
           
           // Wait for confirmation
-          const confirmation = await connection.confirmTransaction({
-            signature,
-            blockhash,
-            lastValidBlockHeight
-          }, 'confirmed');
-          
-          if (confirmation.value.err) {
-            throw new Error('Transaction failed to confirm: ' + JSON.stringify(confirmation.value.err));
-          }
+          await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
           
           btn.textContent = 'Success!';
           btn.onclick = closeCommissionModal;
@@ -27567,15 +27515,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           showIdentityMessage('Transaction sent! Waiting for confirmation...', 'info');
           
           // Wait for confirmation
-          const confirmation = await connection.confirmTransaction({
-            signature,
-            blockhash,
-            lastValidBlockHeight
-          }, 'confirmed');
-          
-          if (confirmation.value.err) {
-            throw new Error('Transaction failed to confirm');
-          }
+          await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
           
           btn.textContent = 'Success!';
           btn.onclick = closeIdentityModal;
@@ -27867,15 +27807,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         btn.textContent = 'Confirming...';
         showChangeVoteAuthorityMessage('Transaction sent! Waiting for confirmation...', 'info');
         
-        const confirmation = await connection.confirmTransaction({
-          signature,
-          blockhash,
-          lastValidBlockHeight
-        }, 'confirmed');
-        
-        if (confirmation.value.err) {
-          throw new Error('Transaction failed: ' + JSON.stringify(confirmation.value.err));
-        }
+        await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
         
         const typeLabel = voteAuthorityType === 'vote' ? 'Vote' : 'Withdraw';
         btn.textContent = 'Success!';
