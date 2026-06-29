@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-29T09:57:42.728Z",
-  "totalNodes": 662,
-  "totalLocations": 660,
+  "lastUpdated": "2026-06-29T12:03:34.877Z",
+  "totalNodes": 658,
+  "totalLocations": 656,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4119,47 +4119,12 @@
       "lat": 50.1592,
       "lon": 8.48174
     },
-    "51.38.150.225": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
     "149.86.227.144": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "51.38.150.243": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.158.10": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.147.170": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.68.131.132": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
     },
     "64.20.39.74": {
       "country": "United States",
@@ -4622,6 +4587,13 @@
       "city": "Wroclaw",
       "lat": 51.098,
       "lon": 17.0321
+    },
+    "173.225.109.205": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
@@ -4637,13 +4609,9 @@
       "name": "Finland",
       "count": 76
     },
-    "PL": {
-      "name": "Poland",
-      "count": 91
-    },
     "US": {
       "name": "United States",
-      "count": 238
+      "count": 239
     },
     "NL": {
       "name": "The Netherlands",
@@ -4652,6 +4620,10 @@
     "CA": {
       "name": "Canada",
       "count": 23
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 86
     },
     "FR": {
       "name": "France",
