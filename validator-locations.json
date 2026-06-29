@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-29T19:04:34.265Z",
+  "lastUpdated": "2026-06-29T20:56:45.568Z",
   "totalNodes": 659,
   "totalLocations": 656,
   "locations": {
@@ -359,13 +359,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "84.32.49.204": {
-      "country": "Sweden",
-      "countryCode": "SE",
-      "city": "Stockholm",
-      "lat": 59.3287,
-      "lon": 18.0717
     },
     "69.10.60.142": {
       "country": "United States",
@@ -4594,28 +4587,39 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "162.246.16.230": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
-    "FI": {
-      "name": "Finland",
-      "count": 76
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 27
-    },
-    "US": {
-      "name": "United States",
-      "count": 240
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 6
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "DE": {
       "name": "Germany",
       "count": 135
+    },
+    "US": {
+      "name": "United States",
+      "count": 241
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 76
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 23
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 27
     },
     "PL": {
       "name": "Poland",
@@ -4625,17 +4629,13 @@
       "name": "France",
       "count": 53
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "SE": {
+      "name": "Sweden",
+      "count": 5
     },
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 23
     },
     "SG": {
       "name": "Singapore",
