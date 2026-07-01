@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-01T13:18:12.510Z",
-  "totalNodes": 655,
-  "totalLocations": 653,
+  "lastUpdated": "2026-07-01T15:19:13.785Z",
+  "totalNodes": 656,
+  "totalLocations": 654,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4573,6 +4573,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "64.130.37.226": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Newark",
+      "lat": 40.7356,
+      "lon": -74.1723
     }
   },
   "countries": {
@@ -4586,7 +4593,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 236
+      "count": 237
     },
     "FI": {
       "name": "Finland",
