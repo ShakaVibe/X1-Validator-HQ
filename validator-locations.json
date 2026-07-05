@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-04T23:26:15.714Z",
-  "totalNodes": 653,
-  "totalLocations": 651,
+  "lastUpdated": "2026-07-05T04:35:39.647Z",
+  "totalNodes": 654,
+  "totalLocations": 652,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -387,13 +387,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "149.50.101.50": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "174.138.181.250": {
       "country": "United States",
@@ -4559,9 +4552,27 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
+    },
+    "149.50.101.82": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "65.108.46.11": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
     "DE": {
       "name": "Germany",
       "count": 135
@@ -4570,25 +4581,25 @@
       "name": "United States",
       "count": 237
     },
-    "PL": {
-      "name": "Poland",
-      "count": 84
+    "FI": {
+      "name": "Finland",
+      "count": 78
     },
     "CA": {
       "name": "Canada",
       "count": 23
     },
-    "FR": {
-      "name": "France",
-      "count": 52
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 27
     },
-    "FI": {
-      "name": "Finland",
-      "count": 77
+    "PL": {
+      "name": "Poland",
+      "count": 84
+    },
+    "FR": {
+      "name": "France",
+      "count": 52
     },
     "SE": {
       "name": "Sweden",
@@ -4597,10 +4608,6 @@
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "SG": {
       "name": "Singapore",
