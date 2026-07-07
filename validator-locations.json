@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-07T04:28:11.694Z",
-  "totalNodes": 656,
-  "totalLocations": 654,
+  "lastUpdated": "2026-07-07T10:02:58.193Z",
+  "totalNodes": 658,
+  "totalLocations": 656,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4469,13 +4469,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "46.170.40.94": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2065,
-      "lon": 21.0249
-    },
     "51.38.147.239": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4580,6 +4573,27 @@
       "city": "Wattrelos",
       "lat": 50.7012,
       "lon": 3.21501
+    },
+    "158.69.54.196": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5075,
+      "lon": -73.5887
+    },
+    "144.217.73.198": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "144.217.73.226": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     }
   },
   "countries": {
@@ -4601,7 +4615,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 23
+      "count": 26
     },
     "NL": {
       "name": "The Netherlands",
@@ -4609,7 +4623,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 84
+      "count": 83
     },
     "FR": {
       "name": "France",
