@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-08T23:32:43.928Z",
-  "totalNodes": 657,
-  "totalLocations": 654,
+  "lastUpdated": "2026-07-09T04:25:16.833Z",
+  "totalNodes": 658,
+  "totalLocations": 655,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4580,6 +4580,13 @@
       "city": "Warsaw",
       "lat": 52.2065,
       "lon": 21.0249
+    },
+    "205.209.113.106": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
@@ -4593,7 +4600,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 236
+      "count": 237
     },
     "SE": {
       "name": "Sweden",
