@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-18T03:38:20.412Z",
-  "totalNodes": 649,
-  "totalLocations": 647,
+  "lastUpdated": "2026-07-18T06:24:13.376Z",
+  "totalNodes": 652,
+  "totalLocations": 650,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4531,6 +4531,27 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
+    },
+    "144.217.73.198": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
+    },
+    "158.69.54.196": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5075,
+      "lon": -73.5887
+    },
+    "144.217.73.226": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Beauharnois",
+      "lat": 45.3161,
+      "lon": -73.8736
     }
   },
   "countries": {
@@ -4538,25 +4559,21 @@
       "name": "Germany",
       "count": 135
     },
-    "US": {
-      "name": "United States",
-      "count": 228
-    },
     "PL": {
       "name": "Poland",
       "count": 84
     },
-    "CA": {
-      "name": "Canada",
-      "count": 23
-    },
-    "FR": {
-      "name": "France",
-      "count": 55
+    "US": {
+      "name": "United States",
+      "count": 228
     },
     "FI": {
       "name": "Finland",
       "count": 80
+    },
+    "FR": {
+      "name": "France",
+      "count": 55
     },
     "NL": {
       "name": "The Netherlands",
@@ -4566,9 +4583,9 @@
       "name": "Sweden",
       "count": 5
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
+    "CA": {
+      "name": "Canada",
+      "count": 26
     },
     "KE": {
       "name": "Kenya",
@@ -4577,6 +4594,10 @@
     "SG": {
       "name": "Singapore",
       "count": 1
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 5
     }
   }
 }
