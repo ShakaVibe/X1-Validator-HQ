@@ -59,9 +59,14 @@
                    so img-src cannot be a fixed allowlist. Images can't execute
                    code, so 'https:' here is low-risk; the meaningful protection
                    (no data exfiltration) is enforced by the tight connect-src.
-         connect : self + X1 RPC + api.x1.xyz + api.xdex.xyz + ipwho.is
-                   + api.github.com
+         connect : self + X1 RPC (https + wss) + api.x1.xyz + api.xdex.xyz
+                   + ipwho.is + api.github.com
                    + unpkg (Leaflet's optional .js.map source-map fetch).
+                   NOTE: wss://rpc.mainnet.x1.xyz is required — @solana/web3.js
+                   opens a WebSocket to the RPC for signature/account
+                   subscriptions (this is how confirmTransaction gets notified
+                   the instant a tx lands). Without it the browser blocks the
+                   socket and confirmations fall back to slow HTTP polling.
                    NOTE: api.xdex.xyz is the XNT price source for the header
                    pill. It works only once XDEX allowlists this site's
                    origin for CORS; until then the pill stays hidden.
@@ -78,7 +83,7 @@
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https:;
-    connect-src 'self' https://rpc.mainnet.x1.xyz https://api.x1.xyz https://api.xdex.xyz https://ipwho.is https://api.github.com https://unpkg.com;
+    connect-src 'self' https://rpc.mainnet.x1.xyz wss://rpc.mainnet.x1.xyz https://api.x1.xyz https://api.xdex.xyz https://ipwho.is https://api.github.com https://unpkg.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
