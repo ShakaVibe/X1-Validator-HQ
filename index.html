@@ -24420,6 +24420,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
         });
         transaction.add(splitIx);
         
+        // Attach the priority fee BEFORE partialSign — adding instructions after
+        // signing would invalidate the new stake account's signature.
+        addPriorityFee(transaction);
+        
         // Sign with new stake account keypair (required for createAccount)
         transaction.partialSign(newStakeKeypair);
         
@@ -25840,12 +25844,21 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
     // Prepend a compute-unit-limit + priority-fee instruction to a tx.
     // No-ops safely if ComputeBudgetProgram is unavailable or already added.
+    // CRITICAL: never mutate a transaction that already carries a signature —
+    // adding an instruction after signing invalidates that signature and the
+    // network rejects it with "signature verification failure". Transactions
+    // that are partialSign'd with an extra keypair (create-stake, split) must
+    // therefore call addPriorityFee BEFORE they partialSign; this guard makes a
+    // later call from signSendTx a safe no-op for them.
     function addPriorityFee(transaction) {
       try {
         const { ComputeBudgetProgram } = solanaWeb3;
         if (!ComputeBudgetProgram || !transaction || typeof transaction.add !== 'function') {
           return transaction;
         }
+        const alreadySigned = Array.isArray(transaction.signatures) &&
+          transaction.signatures.some(s => s && s.signature);
+        if (alreadySigned) return transaction;
         const already = (transaction.instructions || []).some(ix =>
           ix && ix.programId && ix.programId.toString() === COMPUTE_BUDGET_PROGRAM_ID);
         if (already) return transaction;
@@ -26073,6 +26086,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
         
         console.log('Transaction built with', transaction.instructions.length, 'instructions');
+        
+        // Attach the priority fee BEFORE partialSign — adding instructions after
+        // signing would invalidate the stake account's signature.
+        addPriorityFee(transaction);
         
         // The stake account keypair needs to sign
         transaction.partialSign(stakeAccount);
