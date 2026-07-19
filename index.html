@@ -24144,8 +24144,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Create connection
         const connection = new Connection(RPC_URL, 'confirmed');
         
-        // Get recent blockhash
-        const { blockhash } = await connection.getLatestBlockhash('confirmed');
+        // Get recent blockhash (need lastValidBlockHeight to confirm the merge)
+        const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('confirmed');
         
         const fromPubkey = new PublicKey(walletPublicKey);
         const destinationStakePubkey = new PublicKey(destinationPubkey);
@@ -24177,37 +24177,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
           transaction.add(mergeInstruction);
         }
         
-        // Sign and send
-        let signature;
-        try {
-          const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-          signature = result.signature || result;
-        } catch (signError) {
-          // Try fallback signing method
-          if (connectedWallet.provider.signTransaction) {
-            const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
-            const rawTransaction = signedTransaction.serialize();
-            signature = await connection.sendRawTransaction(rawTransaction, {
-              skipPreflight: false,
-              preflightCommitment: 'confirmed'
-            });
-          } else {
-            throw signError;
-          }
-        }
+        // Sign + send (with priority fee + rebroadcast)
+        const signature = await signSendTx(connection, transaction);
         
-        // Handle signature being an object or string
-        let sigString = 'unknown';
-        if (signature) {
-          if (typeof signature === 'string') {
-            sigString = signature;
-          } else if (signature.signature) {
-            sigString = signature.signature;
-          } else {
-            sigString = String(signature);
-          }
-        }
-        showMergeStakesMessage(`Stakes merged successfully! Signature: ${sigString.slice(0, 20)}...`, 'success');
+        // Wait for the merge to actually confirm on-chain before declaring
+        // success. Previously this reported "merged successfully" the instant
+        // the tx was sent, so a dropped/unlanded tx still showed success.
+        // confirmWithFallback re-checks the signature a few times on a timeout
+        // before reporting failure.
+        btn.textContent = 'Confirming...';
+        showMergeStakesMessage('Transaction sent! Waiting for confirmation...', 'info');
+        await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
+        
+        showMergeStakesMessage(`Stakes merged successfully! Signature: ${signature.slice(0, 20)}...`, 'success');
         btn.textContent = 'Merge Complete!';
         btn.onclick = closeMergeStakesModal;
         btn.disabled = false;
@@ -24223,10 +24205,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
       } catch (e) {
         console.error('Merge stakes error:', e);
         
+        // A confirmation timeout is not proof of failure — the merge may still
+        // have landed. Flag it distinctly from a hard error.
+        const looksExpired = e.isUnconfirmedTimeout || (e.message && (
+          e.message.includes('block height exceeded') ||
+          e.message.includes('expired') ||
+          e.message.includes('TransactionExpired')
+        ));
+        
         if (e.message?.includes('User rejected') || e.message?.includes('cancelled')) {
           showMergeStakesMessage('Transaction cancelled by user.', 'error');
         } else if (e.message?.includes('Plugin Closed')) {
           showMergeStakesMessage('Wallet closed unexpectedly. Please try again.', 'error');
+        } else if (looksExpired) {
+          showMergeStakesMessage('Could not confirm in time. The merge may still have gone through — please check your stake accounts before retrying.', 'error');
         } else {
           showMergeStakesMessage(`Error: ${e.message || 'Transaction failed'}`, 'error');
         }
@@ -24431,24 +24423,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
         // Sign with new stake account keypair (required for createAccount)
         transaction.partialSign(newStakeKeypair);
         
-        // Sign and send with wallet
-        let signature;
-        try {
-          const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-          signature = result.signature || result;
-        } catch (signError) {
-          // Try fallback signing method
-          if (connectedWallet.provider.signTransaction) {
-            const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
-            const rawTransaction = signedTransaction.serialize();
-            signature = await connection.sendRawTransaction(rawTransaction, {
-              skipPreflight: false,
-              preflightCommitment: 'confirmed'
-            });
-          } else {
-            throw signError;
-          }
-        }
+        // Sign + send with wallet (priority fee + rebroadcast)
+        const signature = await signSendTx(connection, transaction);
+        
+        // Wait for on-chain confirmation before declaring success (previously
+        // this reported success the instant the tx was sent).
+        btn.textContent = 'Confirming...';
+        showSplitStakeMessage('Transaction sent! Waiting for confirmation...', 'info');
+        await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
         
         showSplitStakeMessage(`Stake split successfully! New account: ${shortenAddress(newStakeKeypair.publicKey.toString())}`, 'success');
         btn.textContent = 'Split Complete!';
@@ -24466,10 +24448,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
       } catch (e) {
         console.error('Split stake error:', e);
         
+        // A confirmation timeout is not proof of failure — the split may still
+        // have landed.
+        const looksExpired = e.isUnconfirmedTimeout || (e.message && (
+          e.message.includes('block height exceeded') ||
+          e.message.includes('expired') ||
+          e.message.includes('TransactionExpired')
+        ));
+        
         if (e.message?.includes('User rejected') || e.message?.includes('cancelled')) {
           showSplitStakeMessage('Transaction cancelled by user.', 'error');
         } else if (e.message?.includes('Plugin Closed')) {
           showSplitStakeMessage('Wallet closed unexpectedly. Please try again.', 'error');
+        } else if (looksExpired) {
+          showSplitStakeMessage('Could not confirm in time. The split may still have gone through — please check your stake accounts before retrying.', 'error');
         } else {
           showSplitStakeMessage(`Error: ${e.message || 'Transaction failed'}`, 'error');
         }
@@ -24595,24 +24587,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         // Sign and send
         let signature;
-        try {
-          const signed = await connectedWallet.provider.signTransaction(transaction);
-          signature = await connection.sendRawTransaction(signed.serialize(), {
-            skipPreflight: false,
-            preflightCommitment: 'confirmed'
-          });
-        } catch (signError) {
-          if (signError.message?.includes('User rejected')) {
-            throw new Error('Transaction cancelled by user.');
-          }
-          // Try alternative signing
-          if (connectedWallet.provider.signAndSendTransaction) {
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature;
-          } else {
-            throw signError;
-          }
-        }
+        signature = await signSendTx(connection, transaction);
         
         btn.textContent = 'Confirming...';
         showUndelegateMessage('Transaction sent! Waiting for confirmation...', 'info');
@@ -25014,23 +24989,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         showRedelegateMessage('Please approve the transaction in your wallet...', 'info');
         
         let signature;
-        try {
-          const signed = await connectedWallet.provider.signTransaction(transaction);
-          signature = await connection.sendRawTransaction(signed.serialize(), {
-            skipPreflight: false,
-            preflightCommitment: 'confirmed'
-          });
-        } catch (signError) {
-          if (signError.message?.includes('User rejected')) {
-            throw new Error('Transaction cancelled by user.');
-          }
-          if (connectedWallet.provider.signAndSendTransaction) {
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature;
-          } else {
-            throw signError;
-          }
-        }
+        signature = await signSendTx(connection, transaction);
         
         btn.textContent = 'Confirming...';
         showRedelegateMessage('Transaction sent! Waiting for confirmation...', 'info');
@@ -25359,24 +25318,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         // Sign and send
         let signature;
-        try {
-          const signed = await connectedWallet.provider.signTransaction(transaction);
-          signature = await connection.sendRawTransaction(signed.serialize(), {
-            skipPreflight: false,
-            preflightCommitment: 'confirmed'
-          });
-        } catch (signError) {
-          if (signError.message?.includes('User rejected')) {
-            throw new Error('Transaction cancelled by user.');
-          }
-          // Try alternative signing
-          if (connectedWallet.provider.signAndSendTransaction) {
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature;
-          } else {
-            throw signError;
-          }
-        }
+        signature = await signSendTx(connection, transaction);
         
         btn.textContent = 'Confirming...';
         showWithdrawStakeMessage('Transaction sent! Waiting for confirmation...', 'info');
@@ -25685,24 +25627,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           let signature;
           
           // Try signAndSendTransaction first
-          try {
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature;
-          } catch (signError) {
-            console.log('signAndSendTransaction failed, trying alternative method:', signError);
-            
-            // If that fails, try signing then sending separately
-            if (connectedWallet.provider.signTransaction) {
-              const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
-              const rawTransaction = signedTransaction.serialize();
-              signature = await connection.sendRawTransaction(rawTransaction, {
-                skipPreflight: false,
-                preflightCommitment: 'confirmed'
-              });
-            } else {
-              throw signError;
-            }
-          }
+          signature = await signSendTx(connection, transaction);
           
           btn.textContent = 'Confirming...';
           showSendMessage('Transaction sent! Waiting for confirmation...', 'info');
@@ -25887,6 +25812,119 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
 
     // ───────────────────────────────────────────────
+    // Reliable transaction SEND path (priority fee + rebroadcast).
+    //
+    // WHY: X1 (like Solana) will silently DROP a valid, simulated-OK tx when
+    // the network is busy if it (a) carries no priority fee, so it loses the
+    // fee auction, and/or (b) is broadcast only once, so a single dropped
+    // packet loses it forever. Both were true of every send in this app, which
+    // is why withdrawals were "confirming out" without the funds ever moving.
+    //
+    // This helper fixes both for EVERY signed action that routes through it:
+    //   1. Attaches a ComputeBudget priority fee so the tx is worth including.
+    //   2. Prefers signTransaction (so WE hold the signed bytes) and then
+    //      re-broadcasts the exact same signed tx every few seconds until it
+    //      confirms or its blockhash expires. Wallets that only expose
+    //      signAndSendTransaction still work — they just don't get rebroadcast.
+    //
+    // Pair the returned signature with confirmWithFallback() for confirmation.
+    // ───────────────────────────────────────────────
+
+    // Priority fee knobs. Total extra cost ≈ price × limit / 1e6 lamports.
+    // 50000 µLamports/CU × 200000 CU = 10,000 lamports = 0.00001 XNT — tiny,
+    // but enough to win inclusion under load. Bump PRIORITY_FEE_MICROLAMPORTS
+    // if X1 gets congested and txs still lag.
+    const PRIORITY_FEE_MICROLAMPORTS   = 50000;
+    const PRIORITY_COMPUTE_UNIT_LIMIT  = 200000;
+    const COMPUTE_BUDGET_PROGRAM_ID    = 'ComputeBudget111111111111111111111111111111';
+
+    // Prepend a compute-unit-limit + priority-fee instruction to a tx.
+    // No-ops safely if ComputeBudgetProgram is unavailable or already added.
+    function addPriorityFee(transaction) {
+      try {
+        const { ComputeBudgetProgram } = solanaWeb3;
+        if (!ComputeBudgetProgram || !transaction || typeof transaction.add !== 'function') {
+          return transaction;
+        }
+        const already = (transaction.instructions || []).some(ix =>
+          ix && ix.programId && ix.programId.toString() === COMPUTE_BUDGET_PROGRAM_ID);
+        if (already) return transaction;
+        transaction.add(
+          ComputeBudgetProgram.setComputeUnitLimit({ units: PRIORITY_COMPUTE_UNIT_LIMIT }),
+          ComputeBudgetProgram.setComputeUnitPrice({ microLamports: PRIORITY_FEE_MICROLAMPORTS })
+        );
+      } catch (e) {
+        console.warn('addPriorityFee: could not attach priority fee:', e);
+      }
+      return transaction;
+    }
+
+    // Normalize the many shapes a wallet may return for a signature.
+    function normalizeSignature(sig) {
+      if (!sig) return sig;
+      if (typeof sig === 'string') return sig;
+      if (sig.signature) return sig.signature;
+      return String(sig);
+    }
+
+    // Fire-and-forget rebroadcast loop for an already-signed raw tx. Re-sends
+    // the identical bytes every 2.5s (up to ~50s) and stops early once the
+    // signature is seen confirmed/finalized. Re-sending an already-landed tx is
+    // a harmless no-op, so there's no risk of double-spend.
+    function startRebroadcast(connection, rawTx, signature) {
+      if (!rawTx || !signature) return;
+      let ticks = 0;
+      const tick = async () => {
+        if (ticks++ >= 20) return;
+        try {
+          const st = await connection.getSignatureStatus(signature);
+          const cs = st && st.value ? st.value.confirmationStatus : null;
+          if (cs === 'confirmed' || cs === 'finalized') return; // landed — stop
+        } catch (e) { /* status check failed; keep trying to send */ }
+        try {
+          await connection.sendRawTransaction(rawTx, { skipPreflight: true, maxRetries: 5 });
+        } catch (e) { /* transient send error; keep looping */ }
+        setTimeout(tick, 2500);
+      };
+      setTimeout(tick, 2500);
+    }
+
+    // Sign + send a transaction with priority fee and rebroadcast, returning
+    // the signature string. The tx must already have recentBlockhash + feePayer
+    // set by the caller. Throws on wallet rejection or a real send/preflight
+    // error (so callers' existing catch blocks still work).
+    async function signSendTx(connection, transaction) {
+      addPriorityFee(transaction);
+      const provider = connectedWallet && connectedWallet.provider;
+      if (!provider) throw new Error('Wallet not connected properly');
+
+      let signature = null;
+      let rawTx = null;
+
+      if (provider.signTransaction) {
+        // Preferred path: we hold the signed bytes, so we can rebroadcast and
+        // we know the blockhash the wallet signed matches what we'll confirm.
+        const signed = await provider.signTransaction(transaction);
+        rawTx = signed.serialize();
+        signature = await connection.sendRawTransaction(rawTx, {
+          skipPreflight: false,
+          preflightCommitment: 'confirmed',
+          maxRetries: 5
+        });
+      } else {
+        // Wallet only supports signAndSendTransaction: it controls sending, so
+        // no manual rebroadcast, but the priority fee still applies.
+        const result = await provider.signAndSendTransaction(transaction);
+        signature = (result && result.signature) ? result.signature : result;
+      }
+
+      signature = normalizeSignature(signature);
+      startRebroadcast(connection, rawTx, signature);
+      return signature;
+    }
+
+
+    // ───────────────────────────────────────────────
     // Shared transaction-confirmation helper.
     //
     // A "block height exceeded" / "expired" error from confirmTransaction is a
@@ -26047,26 +26085,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (connectedWallet && connectedWallet.provider) {
           let signature;
           
-          try {
-            console.log('Calling signAndSendTransaction...');
-            // The wallet needs to sign the partially signed transaction
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature || result;
-            console.log('Got signature:', signature);
-          } catch (signError) {
-            console.log('signAndSendTransaction failed, trying alternative:', signError);
-            
-            if (connectedWallet.provider.signTransaction) {
-              const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
-              const rawTransaction = signedTransaction.serialize();
-              signature = await connection.sendRawTransaction(rawTransaction, {
-                skipPreflight: false,
-                preflightCommitment: 'confirmed'
-              });
-            } else {
-              throw signError;
-            }
-          }
+          signature = await signSendTx(connection, transaction);
           
           btn.textContent = 'Confirming...';
           showCreateStakeMessage('Transaction sent! Waiting for confirmation...', 'info');
@@ -26228,18 +26247,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (connectedWallet && connectedWallet.provider) {
           let signature;
           
-          try {
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature;
-          } catch (signError) {
-            if (connectedWallet.provider.signTransaction) {
-              const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
-              const rawTransaction = signedTransaction.serialize();
-              signature = await connection.sendRawTransaction(rawTransaction);
-            } else {
-              throw signError;
-            }
-          }
+          signature = await signSendTx(connection, transaction);
           
           btn.textContent = 'Confirming...';
           showSetWithdrawAuthorityMessage('Transaction sent! Waiting for confirmation...', 'info');
@@ -26401,18 +26409,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (connectedWallet && connectedWallet.provider) {
           let signature;
           
-          try {
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature;
-          } catch (signError) {
-            if (connectedWallet.provider.signTransaction) {
-              const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
-              const rawTransaction = signedTransaction.serialize();
-              signature = await connection.sendRawTransaction(rawTransaction);
-            } else {
-              throw signError;
-            }
-          }
+          signature = await signSendTx(connection, transaction);
           
           btn.textContent = 'Confirming...';
           showSetStakeAuthorityMessage('Transaction sent! Waiting for confirmation...', 'info');
@@ -26970,38 +26967,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (connectedWallet && connectedWallet.provider) {
           
           // Try signAndSendTransaction first
-          try {
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature;
-          } catch (signError) {
-            console.log('signAndSendTransaction failed, trying alternative method:', signError);
-            
-            // If that fails, try signing then sending separately
-            if (connectedWallet.provider.signTransaction) {
-              const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
-              const rawTransaction = signedTransaction.serialize();
-              signature = await connection.sendRawTransaction(rawTransaction, {
-                skipPreflight: false,
-                preflightCommitment: 'confirmed'
-              });
-            } else {
-              throw signError;
-            }
-          }
+          signature = await signSendTx(connection, transaction);
           
           btn.textContent = 'Confirming...';
           showWithdrawMessage('Transaction sent! Waiting for confirmation...', 'info');
           
-          // Wait for confirmation
-          const confirmation = await connection.confirmTransaction({
-            signature,
-            blockhash,
-            lastValidBlockHeight
-          }, 'confirmed');
-          
-          if (confirmation.value.err) {
-            throw new Error('Transaction failed to confirm: ' + JSON.stringify(confirmation.value.err));
-          }
+          // Wait for confirmation (robust: re-checks the signature on-chain a
+          // few times on a "block height exceeded"/expired timeout before
+          // reporting failure — same helper the rest of the app uses).
+          await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
           
           btn.textContent = 'Success!';
           btn.onclick = closeWithdrawXntModal;
@@ -27024,45 +26998,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         const btn = document.getElementById('withdrawConfirmBtn');
 
-        // "Block height exceeded" / "expired" is often a FALSE failure: confirmTransaction
-        // stopped waiting, but the tx may have actually landed. Verify before reporting failure.
-        const looksExpired = e.message && (
+        // confirmWithFallback already re-checks the signature on-chain before
+        // giving up, and flags a genuine confirmation timeout via
+        // isUnconfirmedTimeout. Treat that (or any raw expiry text) as "may
+        // still have landed" rather than a hard failure.
+        const looksExpired = e.isUnconfirmedTimeout || (e.message && (
           e.message.includes('block height exceeded') ||
           e.message.includes('expired') ||
           e.message.includes('TransactionExpired')
-        );
-
-        if (looksExpired && connection && signature) {
-          try {
-            btn.textContent = 'Verifying...';
-            showWithdrawMessage('Confirmation timed out — verifying on-chain...', 'info');
-
-            // Give the network a moment, then check the signature status directly
-            await new Promise(r => setTimeout(r, 3000));
-            const status = await connection.getSignatureStatus(signature, { searchTransactionHistory: true });
-            const confStatus = status && status.value ? status.value.confirmationStatus : null;
-
-            if (confStatus === 'confirmed' || confStatus === 'finalized') {
-              if (status.value.err) {
-                throw new Error('Transaction failed on-chain: ' + JSON.stringify(status.value.err));
-              }
-              btn.textContent = 'Success!';
-              btn.onclick = closeWithdrawXntModal;
-              btn.disabled = false;
-              document.getElementById('withdrawXntCancelBtn').textContent = 'Close';
-              showWithdrawMessage(`Withdrawal confirmed! Signature: ${signature.slice(0, 16)}...`, 'success');
-
-              setTimeout(() => {
-                fetchManageValidatorData(currentManageValidator.voteAccount);
-                fetchWithdrawModalData();
-              }, 2000);
-              return;
-            }
-          } catch (verifyErr) {
-            console.error('Verification check failed:', verifyErr);
-            // fall through to normal error handling below
-          }
-        }
+        ));
 
         btn.disabled = false;
         btn.textContent = 'Withdraw XNT';
@@ -27230,24 +27174,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           let signature;
           
           // Try signAndSendTransaction first
-          try {
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature;
-          } catch (signError) {
-            console.log('signAndSendTransaction failed, trying alternative method:', signError);
-            
-            // If that fails, try signing then sending separately
-            if (connectedWallet.provider.signTransaction) {
-              const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
-              const rawTransaction = signedTransaction.serialize();
-              signature = await connection.sendRawTransaction(rawTransaction, {
-                skipPreflight: false,
-                preflightCommitment: 'confirmed'
-              });
-            } else {
-              throw signError;
-            }
-          }
+          signature = await signSendTx(connection, transaction);
           
           btn.textContent = 'Confirming...';
           showCommissionMessage('Transaction sent! Waiting for confirmation...', 'info');
@@ -27493,23 +27420,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (connectedWallet && connectedWallet.provider) {
           let signature;
           
-          try {
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature;
-          } catch (signError) {
-            console.log('signAndSendTransaction failed:', signError);
-            
-            if (connectedWallet.provider.signTransaction) {
-              const signedTransaction = await connectedWallet.provider.signTransaction(transaction);
-              const rawTransaction = signedTransaction.serialize();
-              signature = await connection.sendRawTransaction(rawTransaction, {
-                skipPreflight: false,
-                preflightCommitment: 'confirmed'
-              });
-            } else {
-              throw signError;
-            }
-          }
+          signature = await signSendTx(connection, transaction);
           
           btn.textContent = 'Confirming...';
           showIdentityMessage('Transaction sent! Waiting for confirmation...', 'info');
@@ -27786,23 +27697,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         showChangeVoteAuthorityMessage('Please approve the transaction in your wallet...', 'info');
         
         let signature;
-        try {
-          const signed = await connectedWallet.provider.signTransaction(transaction);
-          signature = await connection.sendRawTransaction(signed.serialize(), {
-            skipPreflight: false,
-            preflightCommitment: 'confirmed'
-          });
-        } catch (signError) {
-          if (signError.message?.includes('User rejected')) {
-            throw new Error('Transaction cancelled by user.');
-          }
-          if (connectedWallet.provider.signAndSendTransaction) {
-            const result = await connectedWallet.provider.signAndSendTransaction(transaction);
-            signature = result.signature;
-          } else {
-            throw signError;
-          }
-        }
+        signature = await signSendTx(connection, transaction);
         
         btn.textContent = 'Confirming...';
         showChangeVoteAuthorityMessage('Transaction sent! Waiting for confirmation...', 'info');
