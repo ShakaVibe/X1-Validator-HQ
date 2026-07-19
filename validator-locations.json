@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-19T15:27:11.963Z",
-  "totalNodes": 647,
-  "totalLocations": 645,
+  "lastUpdated": "2026-07-19T17:28:16.453Z",
+  "totalNodes": 640,
+  "totalLocations": 638,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2901,20 +2901,6 @@
       "lat": 34.0479,
       "lon": -118.256
     },
-    "38.147.106.143": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
-    "38.147.106.161": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "193.34.212.22": {
       "country": "Poland",
       "countryCode": "PL",
@@ -2922,47 +2908,12 @@
       "lat": 52.1783,
       "lon": 21.0602
     },
-    "38.147.106.142": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "38.246.112.150": {
       "country": "United States",
       "countryCode": "US",
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "38.97.61.76": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
-    "38.97.61.77": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
-    "38.58.176.31": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
-    "23.175.144.186": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9596,
-      "lon": -75.161
     },
     "135.181.11.129": {
       "country": "Finland",
@@ -4530,7 +4481,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 223
+      "count": 216
     },
     "FI": {
       "name": "Finland",
