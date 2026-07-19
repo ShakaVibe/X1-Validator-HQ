@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-18T23:13:49.743Z",
-  "totalNodes": 650,
-  "totalLocations": 648,
+  "lastUpdated": "2026-07-19T04:00:18.918Z",
+  "totalNodes": 647,
+  "totalLocations": 645,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2922,13 +2922,6 @@
       "lat": 52.1783,
       "lon": 21.0602
     },
-    "23.175.144.29": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9596,
-      "lon": -75.161
-    },
     "38.147.106.142": {
       "country": "United States",
       "countryCode": "US",
@@ -2970,20 +2963,6 @@
       "city": "Philadelphia",
       "lat": 39.9596,
       "lon": -75.161
-    },
-    "23.175.144.166": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9596,
-      "lon": -75.161
-    },
-    "23.146.144.188": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9598,
-      "lon": -75.1607
     },
     "135.181.11.129": {
       "country": "Finland",
@@ -4551,7 +4530,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 226
+      "count": 223
     },
     "SE": {
       "name": "Sweden",
