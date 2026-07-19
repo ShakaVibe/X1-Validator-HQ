@@ -5880,6 +5880,21 @@
       color: var(--accent-blue);
     }
 
+    .tx-explorer-link {
+      display: inline-block;
+      margin-top: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-cyan);
+      text-decoration: none;
+      opacity: 0.9;
+    }
+
+    .tx-explorer-link:hover {
+      text-decoration: underline;
+      opacity: 1;
+    }
+
     .send-actions {
       display: flex;
       gap: 0.75rem;
@@ -24113,11 +24128,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       confirmBtn.disabled = false;
     }
     
-    function showMergeStakesMessage(message, type) {
-      const msgEl = document.getElementById('mergeStakesMessage');
-      msgEl.textContent = message;
-      msgEl.className = 'send-message ' + type;
-      msgEl.style.display = 'block';
+    function showMergeStakesMessage(message, type, signature) {
+      renderTxMessage('mergeStakesMessage', message, type, signature);
     }
     
     async function confirmMergeStakes() {
@@ -24189,7 +24201,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         showMergeStakesMessage('Transaction sent! Waiting for confirmation...', 'info');
         await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
         
-        showMergeStakesMessage(`Stakes merged successfully! Signature: ${signature.slice(0, 20)}...`, 'success');
+        showMergeStakesMessage(`Stakes merged successfully! Signature: ${signature.slice(0, 20)}...`, 'success', signature);
         btn.textContent = 'Merge Complete!';
         btn.onclick = closeMergeStakesModal;
         btn.disabled = false;
@@ -24336,11 +24348,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
     
-    function showSplitStakeMessage(message, type) {
-      const msgEl = document.getElementById('splitStakeMessage');
-      msgEl.textContent = message;
-      msgEl.className = 'send-message ' + type;
-      msgEl.style.display = 'block';
+    function showSplitStakeMessage(message, type, signature) {
+      renderTxMessage('splitStakeMessage', message, type, signature);
     }
     
     async function confirmSplitStake() {
@@ -24422,6 +24431,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         // Attach the priority fee BEFORE partialSign — adding instructions after
         // signing would invalidate the new stake account's signature.
+        await refreshPriorityFee(connection);
         addPriorityFee(transaction);
         
         // Sign with new stake account keypair (required for createAccount)
@@ -24436,7 +24446,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         showSplitStakeMessage('Transaction sent! Waiting for confirmation...', 'info');
         await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
         
-        showSplitStakeMessage(`Stake split successfully! New account: ${shortenAddress(newStakeKeypair.publicKey.toString())}`, 'success');
+        showSplitStakeMessage(`Stake split successfully! New account: ${shortenAddress(newStakeKeypair.publicKey.toString())}`, 'success', signature);
         btn.textContent = 'Split Complete!';
         btn.onclick = closeSplitStakeModal;
         btn.disabled = false;
@@ -24552,11 +24562,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       undelegateStakeData = null;
     }
 
-    function showUndelegateMessage(message, type) {
-      const msgEl = document.getElementById('undelegateMessage');
-      msgEl.textContent = message;
-      msgEl.className = 'send-message ' + type;
-      msgEl.style.display = 'block';
+    function showUndelegateMessage(message, type, signature) {
+      renderTxMessage('undelegateMessage', message, type, signature);
     }
 
     async function confirmUndelegateStake() {
@@ -24602,7 +24609,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         btn.onclick = closeUndelegateStakeModal;
         btn.disabled = false;
         document.getElementById('undelegateCancelBtn').textContent = 'Close';
-        showUndelegateMessage(`Stake undelegated! It will enter "Deactivating" state. Signature: ${signature.slice(0, 20)}...`, 'success');
+        showUndelegateMessage(`Stake undelegated! It will enter "Deactivating" state. Signature: ${signature.slice(0, 20)}...`, 'success', signature);
         
         // Remember current selection
         const currentSelection = selectedAccountType;
@@ -24943,11 +24950,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       document.getElementById('redelegateConfirmBtn').disabled = true;
     }
 
-    function showRedelegateMessage(message, type) {
-      const msgEl = document.getElementById('redelegateMessage');
-      msgEl.textContent = message;
-      msgEl.className = 'send-message ' + type;
-      msgEl.style.display = 'block';
+    function showRedelegateMessage(message, type, signature) {
+      renderTxMessage('redelegateMessage', message, type, signature);
     }
 
     async function confirmRedelegateStake() {
@@ -25004,7 +25008,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         btn.onclick = closeRedelegateStakeModal;
         btn.disabled = false;
         document.getElementById('redelegateCancelBtn').textContent = 'Close';
-        showRedelegateMessage(`Stake delegated to ${redelegateNewValidatorName}! Signature: ${signature.slice(0, 20)}...`, 'success');
+        showRedelegateMessage(`Stake delegated to ${redelegateNewValidatorName}! Signature: ${signature.slice(0, 20)}...`, 'success', signature);
         
         // Refresh stake accounts in background (but don't auto-close modal)
         setTimeout(async () => {
@@ -25250,11 +25254,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       btn.disabled = !hasAuthority || finalAmount <= 0 || withdrawStakeAvailableLamports <= 0;
     }
 
-    function showWithdrawStakeMessage(message, type) {
-      const msgEl = document.getElementById('withdrawStakeMessage');
-      msgEl.textContent = message;
-      msgEl.className = 'send-message ' + type;
-      msgEl.style.display = 'block';
+    function showWithdrawStakeMessage(message, type, signature) {
+      renderTxMessage('withdrawStakeMessage', message, type, signature);
     }
 
     async function confirmWithdrawFromStake() {
@@ -25334,9 +25335,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         btn.disabled = false;
         document.getElementById('withdrawStakeCancelBtn').textContent = 'Close';
         if (isClosingAccount) {
-          showWithdrawStakeMessage(`Account closed! Withdrew ${formatNumber(amountXnt, 4)} XNT. Signature: ${signature.slice(0, 20)}...`, 'success');
+          showWithdrawStakeMessage(`Account closed! Withdrew ${formatNumber(amountXnt, 4)} XNT. Signature: ${signature.slice(0, 20)}...`, 'success', signature);
         } else {
-          showWithdrawStakeMessage(`Withdrew ${formatNumber(amountXnt, 4)} XNT! Signature: ${signature.slice(0, 20)}...`, 'success');
+          showWithdrawStakeMessage(`Withdrew ${formatNumber(amountXnt, 4)} XNT! Signature: ${signature.slice(0, 20)}...`, 'success', signature);
         }
         
         // Remember current selection
@@ -25643,7 +25644,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           btn.onclick = closeSendXntModal;
           btn.disabled = false;
           document.getElementById('sendXntCancelBtn').textContent = 'Close';
-          showSendMessage(`Transaction confirmed! Signature: ${signature.slice(0, 16)}...`, 'success');
+          showSendMessage(`Transaction confirmed! Signature: ${signature.slice(0, 16)}...`, 'success', signature);
           
           // Refresh balances after a delay (but don't auto-close modal)
           setTimeout(() => {
@@ -25672,11 +25673,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
 
-    function showSendMessage(message, type) {
-      const el = document.getElementById('sendMessage');
-      el.textContent = message;
-      el.className = 'send-message ' + type;
-      el.style.display = 'block';
+    function showSendMessage(message, type, signature) {
+      renderTxMessage('sendMessage', message, type, signature);
     }
 
     // Add event listeners for form inputs
@@ -25842,6 +25840,42 @@ Please give me the diagnostic commands to run on my server so you can help me id
     const PRIORITY_COMPUTE_UNIT_LIMIT  = 200000;
     const COMPUTE_BUDGET_PROGRAM_ID    = 'ComputeBudget111111111111111111111111111111';
 
+    // Dynamic priority fee: start at the floor, then adjust to what's actually
+    // landing on-chain right now (getRecentPrioritizationFees). Cached briefly so
+    // a burst of signed actions doesn't hammer the RPC, and clamped so we never
+    // drop below a sane floor or wildly overpay. Falls back to the floor if the
+    // RPC doesn't support the call.
+    const PRIORITY_FEE_FLOOR_MICROLAMPORTS = PRIORITY_FEE_MICROLAMPORTS; // never below this
+    const PRIORITY_FEE_CEIL_MICROLAMPORTS  = 1000000; // never above this (0.0002 XNT @ 200k CU)
+    const PRIORITY_FEE_TTL_MS              = 15000;    // reuse a fetched value for 15s
+    let _dynamicPriorityFee   = PRIORITY_FEE_MICROLAMPORTS;
+    let _priorityFeeFetchedAt = 0;
+
+    async function refreshPriorityFee(connection) {
+      try {
+        if (!connection || typeof connection.getRecentPrioritizationFees !== 'function') {
+          return _dynamicPriorityFee;
+        }
+        const now = Date.now();
+        if (now - _priorityFeeFetchedAt < PRIORITY_FEE_TTL_MS) return _dynamicPriorityFee;
+        _priorityFeeFetchedAt = now;
+        const fees = await connection.getRecentPrioritizationFees();
+        if (Array.isArray(fees) && fees.length) {
+          const vals = fees
+            .map(f => Number(f && f.prioritizationFee) || 0)
+            .sort((a, b) => a - b);
+          // 75th percentile of recent fees + 20% headroom, clamped to [floor, ceil].
+          const idx = Math.min(vals.length - 1, Math.floor(vals.length * 0.75));
+          let fee = Math.ceil((vals[idx] || 0) * 1.2);
+          fee = Math.max(PRIORITY_FEE_FLOOR_MICROLAMPORTS, Math.min(PRIORITY_FEE_CEIL_MICROLAMPORTS, fee));
+          _dynamicPriorityFee = fee;
+        }
+      } catch (e) {
+        console.warn('refreshPriorityFee: using floor —', e && e.message ? e.message : e);
+      }
+      return _dynamicPriorityFee;
+    }
+
     // Prepend a compute-unit-limit + priority-fee instruction to a tx.
     // No-ops safely if ComputeBudgetProgram is unavailable or already added.
     // CRITICAL: never mutate a transaction that already carries a signature —
@@ -25864,7 +25898,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (already) return transaction;
         transaction.add(
           ComputeBudgetProgram.setComputeUnitLimit({ units: PRIORITY_COMPUTE_UNIT_LIMIT }),
-          ComputeBudgetProgram.setComputeUnitPrice({ microLamports: PRIORITY_FEE_MICROLAMPORTS })
+          ComputeBudgetProgram.setComputeUnitPrice({ microLamports: _dynamicPriorityFee })
         );
       } catch (e) {
         console.warn('addPriorityFee: could not attach priority fee:', e);
@@ -25878,6 +25912,36 @@ Please give me the diagnostic commands to run on my server so you can help me id
       if (typeof sig === 'string') return sig;
       if (sig.signature) return sig.signature;
       return String(sig);
+    }
+
+    // Build a link to a transaction on the X1 block explorer.
+    const EXPLORER_TX_BASE = 'https://explorer.x1.xyz/tx/';
+    function explorerTxUrl(signature) {
+      return EXPLORER_TX_BASE + encodeURIComponent(normalizeSignature(signature));
+    }
+
+    // Shared renderer for the transaction status boxes in every action modal.
+    // Sets the message as TEXT (never HTML, so on-chain/user strings can't inject
+    // markup) and, when a signature is supplied, appends a real "View on X1
+    // Explorer" link built as a DOM node — handy for verifying a tx after a
+    // "may still have gone through" timeout, or just checking a success.
+    function renderTxMessage(elId, message, type, signature) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      el.textContent = message;
+      el.className = 'send-message ' + type;
+      el.style.display = 'block';
+      const sig = signature ? normalizeSignature(signature) : null;
+      if (sig) {
+        el.appendChild(document.createElement('br'));
+        const a = document.createElement('a');
+        a.href = explorerTxUrl(sig);
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.className = 'tx-explorer-link';
+        a.textContent = 'View on X1 Explorer ↗';
+        el.appendChild(a);
+      }
     }
 
     // Fire-and-forget rebroadcast loop for an already-signed raw tx. Re-sends
@@ -25907,6 +25971,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // set by the caller. Throws on wallet rejection or a real send/preflight
     // error (so callers' existing catch blocks still work).
     async function signSendTx(connection, transaction) {
+      await refreshPriorityFee(connection);
       addPriorityFee(transaction);
       const provider = connectedWallet && connectedWallet.provider;
       if (!provider) throw new Error('Wallet not connected properly');
@@ -26089,6 +26154,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         // Attach the priority fee BEFORE partialSign — adding instructions after
         // signing would invalidate the stake account's signature.
+        await refreshPriorityFee(connection);
         addPriorityFee(transaction);
         
         // The stake account keypair needs to sign
@@ -26114,7 +26180,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           btn.onclick = closeCreateStakeModal;
           btn.disabled = false;
           document.getElementById('createStakeCancelBtn').textContent = 'Close';
-          showCreateStakeMessage(`Stake created and delegated! Account: ${stakeAccount.publicKey.toString().slice(0, 12)}... Signature: ${String(signature).slice(0, 16)}...`, 'success');
+          showCreateStakeMessage(`Stake created and delegated! Account: ${stakeAccount.publicKey.toString().slice(0, 12)}... Signature: ${String(signature).slice(0, 16)}...`, 'success', signature);
           
           // Refresh balances and stake accounts after a delay (but don't auto-close modal)
           setTimeout(() => {
@@ -26145,11 +26211,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
 
-    function showCreateStakeMessage(message, type) {
-      const el = document.getElementById('createStakeMessage');
-      el.textContent = message;
-      el.className = 'send-message ' + type;
-      el.style.display = 'block';
+    function showCreateStakeMessage(message, type, signature) {
+      renderTxMessage('createStakeMessage', message, type, signature);
     }
 
     // Track current stake for authority changes
@@ -26275,7 +26338,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           btn.onclick = closeSetWithdrawAuthorityModal;
           btn.disabled = false;
           document.getElementById('setWithdrawAuthorityCancelBtn').textContent = 'Close';
-          showSetWithdrawAuthorityMessage(`Withdraw authority updated! Signature: ${signature.slice(0, 20)}...`, 'success');
+          showSetWithdrawAuthorityMessage(`Withdraw authority updated! Signature: ${signature.slice(0, 20)}...`, 'success', signature);
           
           // Remember current selection
           const currentSelection = selectedAccountType;
@@ -26311,11 +26374,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
 
-    function showSetWithdrawAuthorityMessage(message, type) {
-      const el = document.getElementById('setWithdrawAuthorityMessage');
-      el.textContent = message;
-      el.className = 'send-message ' + type;
-      el.style.display = 'block';
+    function showSetWithdrawAuthorityMessage(message, type, signature) {
+      renderTxMessage('setWithdrawAuthorityMessage', message, type, signature);
     }
 
     function initiateSetStakeAuthority() {
@@ -26437,7 +26497,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           btn.onclick = closeSetStakeAuthorityModal;
           btn.disabled = false;
           document.getElementById('setStakeAuthorityCancelBtn').textContent = 'Close';
-          showSetStakeAuthorityMessage(`Stake authority updated! Signature: ${signature.slice(0, 20)}...`, 'success');
+          showSetStakeAuthorityMessage(`Stake authority updated! Signature: ${signature.slice(0, 20)}...`, 'success', signature);
           
           // Remember current selection
           const currentSelection = selectedAccountType;
@@ -26473,11 +26533,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
 
-    function showSetStakeAuthorityMessage(message, type) {
-      const el = document.getElementById('setStakeAuthorityMessage');
-      el.textContent = message;
-      el.className = 'send-message ' + type;
-      el.style.display = 'block';
+    function showSetStakeAuthorityMessage(message, type, signature) {
+      renderTxMessage('setStakeAuthorityMessage', message, type, signature);
     }
 
     // Wallet Connection State
@@ -26998,7 +27055,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           btn.onclick = closeWithdrawXntModal;
           btn.disabled = false;
           document.getElementById('withdrawXntCancelBtn').textContent = 'Close';
-          showWithdrawMessage(`Withdrawal confirmed! Signature: ${signature.slice(0, 16)}...`, 'success');
+          showWithdrawMessage(`Withdrawal confirmed! Signature: ${signature.slice(0, 16)}...`, 'success', signature);
           
           // Refresh balances (but don't auto-close modal)
           setTimeout(() => {
@@ -27033,18 +27090,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
         } else if (e.message && e.message.includes('Plugin Closed')) {
           showWithdrawMessage('Wallet closed unexpectedly. Please try again.', 'error');
         } else if (looksExpired) {
-          showWithdrawMessage('Could not confirm in time. Your withdrawal may still have gone through — please check your balance before retrying.', 'error');
+          showWithdrawMessage('Could not confirm in time. Your withdrawal may still have gone through — please check your balance before retrying.', 'error', signature);
         } else {
           showWithdrawMessage(`Transaction failed: ${e.message || 'Unknown error'}`, 'error');
         }
       }
     }
 
-    function showWithdrawMessage(message, type) {
-      const el = document.getElementById('withdrawMessage');
-      el.textContent = message;
-      el.className = 'send-message ' + type;
-      el.style.display = 'block';
+    function showWithdrawMessage(message, type, signature) {
+      renderTxMessage('withdrawMessage', message, type, signature);
     }
 
     // Change Commission Modal State
@@ -27203,7 +27257,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           btn.onclick = closeCommissionModal;
           btn.disabled = false;
           document.getElementById('commissionCancelBtn').textContent = 'Close';
-          showCommissionMessage(`Commission updated to ${newCommission}%! Signature: ${signature.slice(0, 16)}...`, 'success');
+          showCommissionMessage(`Commission updated to ${newCommission}%! Signature: ${signature.slice(0, 16)}...`, 'success', signature);
           
           // Update the local state
           currentManageValidator.commission = newCommission;
@@ -27232,11 +27286,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
 
-    function showCommissionMessage(message, type) {
-      const el = document.getElementById('commissionMessage');
-      el.textContent = message;
-      el.className = 'send-message ' + type;
-      el.style.display = 'block';
+    function showCommissionMessage(message, type, signature) {
+      renderTxMessage('commissionMessage', message, type, signature);
     }
 
     // Update Identity Modal State
@@ -27449,7 +27500,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           btn.onclick = closeIdentityModal;
           btn.disabled = false;
           document.getElementById('identityCancelBtn').textContent = 'Close';
-          showIdentityMessage(`Identity updated! Signature: ${signature.slice(0, 16)}...`, 'success');
+          showIdentityMessage(`Identity updated! Signature: ${signature.slice(0, 16)}...`, 'success', signature);
           
           // Update local state
           currentManageValidator.name = validatorName;
@@ -27477,11 +27528,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
 
-    function showIdentityMessage(message, type) {
-      const el = document.getElementById('identityMessage');
-      el.textContent = message;
-      el.className = 'send-message ' + type;
-      el.style.display = 'block';
+    function showIdentityMessage(message, type, signature) {
+      renderTxMessage('identityMessage', message, type, signature);
     }
 
     // Change Vote Account Authority state
@@ -27622,11 +27670,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       btn.disabled = !(hasAuthority && isValidInput && isDifferent);
     }
 
-    function showChangeVoteAuthorityMessage(message, type) {
-      const msgEl = document.getElementById('changeVoteAuthorityMessage');
-      msgEl.textContent = message;
-      msgEl.className = 'send-message ' + type;
-      msgEl.style.display = 'block';
+    function showChangeVoteAuthorityMessage(message, type, signature) {
+      renderTxMessage('changeVoteAuthorityMessage', message, type, signature);
     }
 
     async function confirmChangeVoteAuthority() {
@@ -27726,7 +27771,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         btn.onclick = closeChangeVoteAuthorityModal;
         btn.disabled = false;
         document.getElementById('changeVoteAuthorityCancelBtn').textContent = 'Close';
-        showChangeVoteAuthorityMessage(`${typeLabel} authority changed successfully! Signature: ${signature.slice(0, 20)}...`, 'success');
+        showChangeVoteAuthorityMessage(`${typeLabel} authority changed successfully! Signature: ${signature.slice(0, 20)}...`, 'success', signature);
         
         // Refresh authorities display after a delay
         setTimeout(() => {
