@@ -1,0 +1,47 @@
+name: Update canonical validator scores
+
+on:
+  schedule:
+    # Every hour at minute 7 (offset avoids the top-of-hour cron rush,
+    # which can delay scheduled GitHub Actions runs significantly)
+    - cron: '7 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-scores
+  cancel-in-progress: false
+
+jobs:
+  update-scores:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Compute scores
+        run: node scripts/compute-scores.js
+        env:
+          X1_RPC_URL: https://rpc.mainnet.x1.xyz
+
+      - name: Commit updated data
+        run: |
+          git config user.name "x1hq-score-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/scores.json data/history.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update canonical scores [skip ci]"
+            # Rebase in case another push landed while we ran
+            git pull --rebase origin ${GITHUB_REF_NAME}
+            git push
+          fi
