@@ -18563,8 +18563,8 @@
         'performance': { title: '⭐ Top Performance Score', subtitle: 'Validators ranked by official performance score (formula v2)' },
         'stake': { title: '💰 Most Stake', subtitle: 'Validators with the highest total stake' },
         'commission': { title: '🏷️ Lowest Commission', subtitle: 'Active validators with the lowest commission rates' },
-        'efficient': { title: '🎯 Most Efficient', subtitle: 'Validators earning the most credits relative to their stake' },
-        'reliable': { title: '🛡️ Most Reliable', subtitle: 'Validators with the lowest skip rates and best uptime' },
+        'efficient': { title: '🎯 Most Efficient', subtitle: 'Validators earning the most credits relative to their stake (7-epoch average)' },
+        'reliable': { title: '🛡️ Most Reliable', subtitle: 'Validators with the best 7-day uptime and lowest skip rates' },
         'newest': { title: '🆕 Newest Validators', subtitle: 'Most recently started validators on the network' },
         'delegations': { title: '🤝 Delegations', subtitle: 'Validators ranked by stake delegated from X1 Labs and the Ripper Pool' }
       };
@@ -18759,17 +18759,29 @@
                         .sort((a, b) => a.commission - b.commission);
           break;
         case 'efficient':
-          // Validators with highest credits efficiency (credits per stake)
-          // Use last *completed* epoch (index -2), skipping the current in-progress epoch (index -1)
+          // Validators with highest credits efficiency (credits per stake).
+          // Averaged over the last 7 *completed* epochs (skipping the current
+          // in-progress one) — a single epoch was noisy enough that one weird
+          // epoch could bounce a validator around the board every hour.
+          const avgCompletedCredits = (v) => {
+            if (!v.epochCredits || v.epochCredits.length < 2) return 0;
+            let total = 0, count = 0;
+            for (let i = 1; i < Math.min(v.epochCredits.length, 8); i++) {
+              const entry = v.epochCredits[v.epochCredits.length - 1 - i];
+              if (entry && entry.length >= 3) {
+                total += entry[1] - entry[2];
+                count++;
+              }
+            }
+            return count > 0 ? total / count : 0;
+          };
           sorted = sorted.filter(v => {
               const stakeInXNT = v.activatedStake / 1e9;
-              const credits = v.epochCredits && v.epochCredits.length >= 2 ? v.epochCredits[v.epochCredits.length - 2][1] - v.epochCredits[v.epochCredits.length - 2][2] : 0;
-              return credits > 0 && stakeInXNT > 1000 && !v.delinquent;
+              return avgCompletedCredits(v) > 0 && stakeInXNT > 1000 && !v.delinquent;
             })
             .map(v => {
               const stakeInXNT = v.activatedStake / 1e9;
-              const credits = v.epochCredits[v.epochCredits.length - 2][1] - v.epochCredits[v.epochCredits.length - 2][2];
-              v.efficiencyRatio = credits / (stakeInXNT / 1000000); // Credits per 1M XNT
+              v.efficiencyRatio = avgCompletedCredits(v) / (stakeInXNT / 1000000); // Avg credits per 1M XNT
               return v;
             })
             .sort((a, b) => b.efficiencyRatio - a.efficiencyRatio);
@@ -18783,13 +18795,26 @@
               v.activatedStake > 10000 * 1e9
             )
             .sort((a, b) => {
-              // Primary: lowest skip rate — prefer the 7-epoch average (from
-              // published data when available) over the noisy current-epoch
-              // value, so one skipped slot today doesn't reshuffle the board.
-              const aRate = a.skipRateHistory?.avgSkipRate ?? a.skipRate;
-              const bRate = b.skipRateHistory?.avgSkipRate ?? b.skipRate;
+              // Primary: real 7-day uptime from the published scores, once it
+              // exists. During the first days of data collection uptimePct is
+              // null for everyone, so this cleanly falls through to skip rate
+              // — the board upgrades itself into a true reliability ranking
+              // as observations accumulate.
+              const aCanon = window.canonicalScores?.validators[a.votePubkey];
+              const bCanon = window.canonicalScores?.validators[b.votePubkey];
+              const aUp = aCanon?.uptimePct ?? null;
+              const bUp = bCanon?.uptimePct ?? null;
+              if (aUp !== null || bUp !== null) {
+                if (aUp === null) return 1;
+                if (bUp === null) return -1;
+                if (aUp !== bUp) return bUp - aUp;
+              }
+              // Secondary: lowest skip rate — confidence-adjusted when
+              // published, else the 7-epoch average, else current epoch.
+              const aRate = aCanon?.skipRateAdj ?? a.skipRateHistory?.avgSkipRate ?? a.skipRate;
+              const bRate = bCanon?.skipRateAdj ?? b.skipRateHistory?.avgSkipRate ?? b.skipRate;
               if (aRate !== bRate) return aRate - bRate;
-              // Secondary: highest performance score
+              // Tertiary: highest performance score
               return b.performanceScore - a.performanceScore;
             });
           break;
@@ -18934,7 +18959,17 @@
             break;
           case 'commission':
             const commClass = getCommissionColorClass(v.commission);
-            statsHtml = `
+            // Commission-rug flag from the published scores: this board is
+            // exactly where a raise-then-lower rugger would resurface looking
+            // cheap, so surface the warning right on the row.
+            const rugBadge = window.canonicalScores?.validators[v.votePubkey]?.flags?.includes('commission_rug')
+              ? `
+              <div class="leaderboard-stat" title="This validator raised commission by 10+ percentage points within the last 7 days">
+                <div class="leaderboard-stat-value" style="color: var(--danger, #ff5c5c);">⚠</div>
+                <div class="leaderboard-stat-label" style="color: var(--danger, #ff5c5c);">Raised recently</div>
+              </div>`
+              : '';
+            statsHtml = `${rugBadge}
               <div class="leaderboard-stat">
                 <div class="leaderboard-stat-value ${commClass}">${v.commission}%</div>
                 <div class="leaderboard-stat-label">Commission</div>
@@ -18967,7 +19002,16 @@
             const skipRateDisplay = avgSkip !== null && avgSkip !== undefined ? avgSkip.toFixed(2) + '%' : 'N/A';
             const skipClass = getSkipRateColorClass(avgSkip);
             const relScoreClass = v.performanceScore > 0 ? getScoreColorClass(v.performanceScore) : '';
+            // Real 7-day uptime from the published scores; '—' until the
+            // monitoring service has collected enough hourly observations.
+            const relUp = window.canonicalScores?.validators[v.votePubkey]?.uptimePct;
+            const relUpDisplay = (relUp !== null && relUp !== undefined) ? relUp.toFixed(2) + '%' : '—';
+            const relUpClass = (relUp === null || relUp === undefined) ? '' : (relUp >= 99.5 ? 'score-good' : relUp >= 98 ? 'score-warning' : 'score-bad');
             statsHtml = `
+              <div class="leaderboard-stat">
+                <div class="leaderboard-stat-value ${relUpClass}" ${relUpDisplay === '—' ? 'title="Collecting uptime data — populates after ~12 hours of monitoring"' : ''}>${relUpDisplay}</div>
+                <div class="leaderboard-stat-label">Uptime (7d)</div>
+              </div>
               <div class="leaderboard-stat">
                 <div class="leaderboard-stat-value ${skipClass}">${skipRateDisplay}</div>
                 <div class="leaderboard-stat-label">Skip Rate</div>
@@ -18975,10 +19019,6 @@
               <div class="leaderboard-stat">
                 <div class="leaderboard-stat-value ${relScoreClass}">${v.performanceScore > 0 ? v.performanceScore.toFixed(2) : 'N/A'}</div>
                 <div class="leaderboard-stat-label">Score</div>
-              </div>
-              <div class="leaderboard-stat">
-                <div class="leaderboard-stat-value">${formatStake(v.activatedStake)}</div>
-                <div class="leaderboard-stat-label">Stake</div>
               </div>`;
             break;
           case 'newest':
