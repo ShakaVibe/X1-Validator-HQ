@@ -151,7 +151,7 @@ server.listen(18990, async () => {
     await runNode([script], env);
     let doc = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'scores.json'), 'utf8'));
 
-    check(doc.formulaVersion === 2, 'formulaVersion is 2');
+    check(doc.formulaVersion === 2.1, 'formulaVersion is 2.1');
     check(doc.validatorCount === validators.length, `all ${validators.length} validators scored`);
 
     const v1 = doc.validators['Vote111'];
