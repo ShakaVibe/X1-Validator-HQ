@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-23T06:42:42.310Z",
-  "totalNodes": 636,
-  "totalLocations": 634,
+  "lastUpdated": "2026-07-23T10:36:14.455Z",
+  "totalNodes": 638,
+  "totalLocations": 636,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4440,12 +4440,26 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
+    },
+    "65.109.35.205": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "205.209.102.138": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "FI": {
       "name": "Finland",
-      "count": 79
+      "count": 80
     },
     "NL": {
       "name": "The Netherlands",
@@ -4453,7 +4467,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 214
+      "count": 215
     },
     "SE": {
       "name": "Sweden",
