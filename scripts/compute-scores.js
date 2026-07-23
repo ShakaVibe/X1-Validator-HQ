@@ -37,7 +37,7 @@ const path = require('path');
 
 const RPC_URL = process.env.X1_RPC_URL || 'https://rpc.mainnet.x1.xyz';
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
-const FORMULA_VERSION = 2;
+const FORMULA_VERSION = 2.1;
 
 const SKIP_EPOCHS = 7;             // completed epochs of skip-rate history
 const CREDIT_EPOCHS = 7;           // completed epochs of credit history
@@ -132,82 +132,62 @@ function pruneHistory(history, activeVoteKeys) {
 // Component scoring
 // ---------------------------------------------------------------------------
 
+// Piecewise-linear interpolation over anchor points [[x,y],...] (ascending x).
+// Continuous scoring: values between anchors interpolate smoothly, so two
+// validators only share a component score when their underlying metrics are
+// actually identical. (Formula v2.1 — the v2.0 step functions collapsed the
+// whole top-50 onto identical plateau scores.)
+function interp(x, pts) {
+  if (x <= pts[0][0]) return pts[0][1];
+  for (let i = 1; i < pts.length; i++) {
+    if (x <= pts[i][0]) {
+      const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+      return y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+    }
+  }
+  return pts[pts.length - 1][1];
+}
+
 function scoreVoteEfficiency(pctOfAvg) {
-  if (pctOfAvg >= 105) return 100;
-  if (pctOfAvg >= 103) return 98;
-  if (pctOfAvg >= 101) return 96;
-  if (pctOfAvg >= 100) return 93;
-  if (pctOfAvg >= 99) return 88;
-  if (pctOfAvg >= 98) return 82;
-  if (pctOfAvg >= 97) return 75;
-  if (pctOfAvg >= 95) return 65;
-  if (pctOfAvg >= 93) return 55;
-  if (pctOfAvg >= 90) return 45;
-  if (pctOfAvg >= 85) return 30;
-  if (pctOfAvg >= 80) return 15;
-  return 5;
+  return interp(pctOfAvg, [
+    [80, 15], [85, 30], [90, 45], [93, 55], [95, 65], [97, 75],
+    [98, 82], [99, 88], [100, 93], [101, 96], [103, 98], [106, 100]
+  ]);
 }
 
 function scoreSkipRate(pct) {
-  if (pct <= 0.02) return 100;
-  if (pct <= 0.1) return 98;
-  if (pct <= 0.25) return 95;
-  if (pct <= 0.5) return 90;
-  if (pct <= 1.0) return 85;
-  if (pct <= 2.0) return 70;
-  if (pct <= 3.0) return 50;
-  if (pct <= 5.0) return 35;
-  if (pct <= 10.0) return 20;
-  return 10;
+  return interp(pct, [
+    [0, 100], [0.1, 98], [0.25, 95], [0.5, 90], [1, 85],
+    [2, 70], [3, 50], [5, 35], [10, 20], [25, 10]
+  ]);
 }
 
 function scoreConsistency(cv) {
-  if (cv <= 0.1) return 100;
-  if (cv <= 0.3) return 98;
-  if (cv <= 0.5) return 96;
-  if (cv <= 1.0) return 92;
-  if (cv <= 2.0) return 85;
-  if (cv <= 3.0) return 75;
-  if (cv <= 5.0) return 60;
-  if (cv <= 8.0) return 45;
-  if (cv <= 12.0) return 30;
-  return 15;
+  return interp(cv, [
+    [0.1, 100], [0.3, 98], [0.5, 96], [1, 92], [2, 85],
+    [3, 75], [5, 60], [8, 45], [12, 30], [30, 15]
+  ]);
 }
 
 function scoreVoteLatency(avgLagSlots) {
-  if (avgLagSlots <= 2.0) return 100;
-  if (avgLagSlots <= 2.5) return 96;
-  if (avgLagSlots <= 3.0) return 92;
-  if (avgLagSlots <= 4.0) return 85;
-  if (avgLagSlots <= 5.0) return 78;
-  if (avgLagSlots <= 7.0) return 68;
-  if (avgLagSlots <= 10.0) return 55;
-  if (avgLagSlots <= 15.0) return 40;
-  if (avgLagSlots <= 30.0) return 25;
-  return 10;
+  return interp(avgLagSlots, [
+    [1, 100], [2, 97], [2.5, 94], [3, 90], [4, 84], [5, 78],
+    [7, 68], [10, 55], [15, 40], [30, 25], [100, 10]
+  ]);
 }
 
 function scoreRootDistance(avgDistSlots) {
-  // A healthy tower roots ~32 slots behind the vote tip, so distance is
-  // roughly (lag + 32). Chronic large values indicate replay/hardware issues.
-  if (avgDistSlots <= 45) return 100;
-  if (avgDistSlots <= 60) return 92;
-  if (avgDistSlots <= 80) return 82;
-  if (avgDistSlots <= 120) return 70;
-  if (avgDistSlots <= 200) return 50;
-  if (avgDistSlots <= 400) return 30;
-  return 10;
+  return interp(avgDistSlots, [
+    [32, 100], [45, 97], [60, 92], [80, 82], [120, 70],
+    [200, 50], [400, 30], [1000, 10]
+  ]);
 }
 
 function scoreUptime(pct) {
-  if (pct >= 100) return 100;
-  if (pct >= 99.9) return 98;
-  if (pct >= 99.5) return 94;
-  if (pct >= 99) return 88;
-  if (pct >= 98) return 78;
-  if (pct >= 95) return 55;
-  if (pct >= 90) return 35;
-  return 10;
+  return interp(pct, [
+    [85, 10], [90, 35], [95, 55], [98, 78], [99, 88],
+    [99.5, 94], [99.9, 98], [100, 100]
+  ]);
 }
 
 function parseVersion(v) {
@@ -564,7 +544,10 @@ async function main() {
     // ---- Total ----
     let total = 0;
     for (const c of Object.values(components)) {
-      if (c.weight > 0) total += c.score * c.weight;
+      if (c.weight > 0) {
+        c.score = Math.round(c.score * 10) / 10; // one decimal on sub-scores
+        total += c.score * c.weight;
+      }
     }
     total = Math.round(Math.max(0, Math.min(100, total - rugPenalty)) * 100) / 100;
 
