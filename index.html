@@ -11928,7 +11928,7 @@
       <div class="leaderboard-container" id="leaderboardContainer">
         <div class="leaderboard-header" id="leaderboardHeader">
           <h2>⭐ Top Performance Score</h2>
-          <p class="leaderboard-subtitle">Validators ranked by 7-day performance score</p>
+          <p class="leaderboard-subtitle">Validators ranked by official performance score (formula v2)</p>
         </div>
         <div class="leaderboard-list" id="leaderboardList">
           <!-- Populated by JS -->
@@ -14202,10 +14202,14 @@
         
         <div class="perf-explainer-divider"></div>
         
-        <h4 style="color: var(--text-primary); margin-bottom: 1rem;">How Scoring Works</h4>
+        <h4 style="color: var(--text-primary); margin-bottom: 1rem;">How Scoring Works (v2)</h4>
         <p style="color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6;">
-          The Performance Score is a <strong>size-independent</strong> metric that evaluates operator quality over the last 7 epochs. 
-          It uses <strong>percentile rankings</strong> to spread scores and reward efficient operators regardless of stake size.
+          Scores are <strong>computed centrally every hour</strong> and published for everyone —
+          the score you see is the exact score every other visitor (and your delegators) sees.
+          The formula is <strong>size-independent</strong> and evaluates pure operator quality
+          over the last 7 epochs plus 7 days of round-the-clock monitoring.
+          Commission and validator age are shown for context but are <strong>not scored</strong> —
+          commission is a pricing choice, and age isn't something an operator can control.
         </p>
         
         <div class="perf-metric-item">
@@ -14214,9 +14218,9 @@
             <span class="perf-metric-weight">30%</span>
           </div>
           <div class="perf-metric-description">
-            Measures how many epoch credits the validator earns compared to the network average.
-            A validator earning 105% of average credits is performing better than one earning 95%.
-            This is size-independent since credits are roughly equal for all active validators.
+            Measures how many epoch credits the validator earns compared to the network average
+            over the last 7 completed epochs. This is size-independent since credits are roughly
+            equal for all healthy validators.
           </div>
           <div class="perf-metric-scoring">
             <div class="perf-metric-scoring-title">Scoring</div>
@@ -14229,16 +14233,54 @@
         <div class="perf-metric-item">
           <div class="perf-metric-header">
             <span class="perf-metric-name">⏱️ Skip Rate</span>
-            <span class="perf-metric-weight">25%</span>
+            <span class="perf-metric-weight">20%</span>
           </div>
           <div class="perf-metric-description">
-            Measures the percentage of assigned leader slots where the validator failed to produce a block. 
-            Lower is better.
+            The percentage of assigned leader slots where no block was produced, aggregated over
+            7 epochs and <strong>confidence-weighted</strong>: validators with only a handful of
+            leader slots are blended toward the network average, so a single unlucky skipped slot
+            can no longer destroy a small validator's score.
+          </div>
+          <div class="perf-metric-scoring">
+            <div class="perf-metric-scoring-title">Scoring (on the confidence-adjusted rate)</div>
+            <div class="perf-metric-scoring-detail">
+              ~0% = 100 • ≤0.1% = 98 • ≤0.25% = 95 • ≤0.5% = 90 • ≤1% = 85 • ≤2% = 70
+            </div>
+          </div>
+        </div>
+        
+        <div class="perf-metric-item">
+          <div class="perf-metric-header">
+            <span class="perf-metric-name">📡 Vote Latency</span>
+            <span class="perf-metric-weight">15%</span>
+          </div>
+          <div class="perf-metric-description">
+            How many slots behind the chain tip the validator's most recent vote lands, sampled
+            around the clock and averaged over 7 days. Fast, well-connected validators vote within
+            1–2 slots; high latency indicates network or hardware issues even when votes eventually land.
+          </div>
+          <div class="perf-metric-scoring">
+            <div class="perf-metric-scoring-title">Scoring (7-day average lag)</div>
+            <div class="perf-metric-scoring-detail">
+              ≤2 slots = 100 • ≤3 = 92 • ≤4 = 85 • ≤5 = 78 • ≤7 = 68 • ≤10 = 55 • ≤15 = 40
+            </div>
+          </div>
+        </div>
+        
+        <div class="perf-metric-item">
+          <div class="perf-metric-header">
+            <span class="perf-metric-name">🎖️ Uptime</span>
+            <span class="perf-metric-weight">15%</span>
+          </div>
+          <div class="perf-metric-description">
+            The percentage of hourly checks over the last 7 days where the validator was voting
+            (not delinquent). Monitored continuously by our scoring service — this replaced the
+            old browser-based tracking that caused different viewers to see different scores.
           </div>
           <div class="perf-metric-scoring">
             <div class="perf-metric-scoring-title">Scoring</div>
             <div class="perf-metric-scoring-detail">
-              0% = 100 • ≤0.1% = 98 • ≤0.25% = 95 • ≤0.5% = 90 • ≤1% = 82 • ≤2% = 70
+              100% = 100 • ≥99.9% = 98 • ≥99.5% = 94 • ≥99% = 88 • ≥98% = 78 • ≥95% = 55
             </div>
           </div>
         </div>
@@ -14246,11 +14288,11 @@
         <div class="perf-metric-item">
           <div class="perf-metric-header">
             <span class="perf-metric-name">🔄 Consistency</span>
-            <span class="perf-metric-weight">20%</span>
+            <span class="perf-metric-weight">10%</span>
           </div>
           <div class="perf-metric-description">
-            Measures how stable the validator's epoch credit earnings are over the last 7 epochs using Coefficient of Variation.
-            Consistent validators are more predictable and reliable.
+            How stable the validator's epoch credit earnings are over the last 7 epochs, using
+            Coefficient of Variation. Consistent validators are more predictable and reliable.
           </div>
           <div class="perf-metric-scoring">
             <div class="perf-metric-scoring-title">Scoring</div>
@@ -14262,34 +14304,18 @@
         
         <div class="perf-metric-item">
           <div class="perf-metric-header">
-            <span class="perf-metric-name">💰 Commission</span>
+            <span class="perf-metric-name">🌳 Root Distance</span>
             <span class="perf-metric-weight">5%</span>
           </div>
           <div class="perf-metric-description">
-            The validator's commission rate directly affects delegator returns. 
-            Lower commission = more rewards for delegators.
+            How far the validator's finalized (rooted) slot trails the chain tip, averaged over
+            7 days. A healthy tower roots ~32 slots behind the tip; a chronically large gap points
+            to replay lag or struggling hardware even when the validator appears active.
           </div>
           <div class="perf-metric-scoring">
-            <div class="perf-metric-scoring-title">Scoring</div>
+            <div class="perf-metric-scoring-title">Scoring (7-day average distance)</div>
             <div class="perf-metric-scoring-detail">
-              0% commission = 100 • 10% = 90 • 50% = 50 • 100% = 0
-            </div>
-          </div>
-        </div>
-        
-        <div class="perf-metric-item">
-          <div class="perf-metric-header">
-            <span class="perf-metric-name">📅 Longevity</span>
-            <span class="perf-metric-weight">5%</span>
-          </div>
-          <div class="perf-metric-description">
-            How long the validator has been active on the network. Established validators 
-            with a proven track record are generally more reliable than newer ones.
-          </div>
-          <div class="perf-metric-scoring">
-            <div class="perf-metric-scoring-title">Scoring</div>
-            <div class="perf-metric-scoring-detail">
-              100+ epochs = 100 • 50+ = 90 • 30+ = 80 • 20+ = 70 • 10+ = 60 • 5+ = 50 • &lt;5 = 40
+              ≤45 slots = 100 • ≤60 = 92 • ≤80 = 82 • ≤120 = 70 • ≤200 = 50
             </div>
           </div>
         </div>
@@ -14300,8 +14326,8 @@
             <span class="perf-metric-weight">5%</span>
           </div>
           <div class="perf-metric-description">
-            Whether the validator is running the latest software version. Staying updated 
-            ensures compatibility, security patches, and network improvements.
+            Whether the validator is running the latest software version in real network use. Staying
+            updated ensures compatibility, security patches, and network improvements.
           </div>
           <div class="perf-metric-scoring">
             <div class="perf-metric-scoring-title">Scoring</div>
@@ -14313,19 +14339,14 @@
         
         <div class="perf-metric-item">
           <div class="perf-metric-header">
-            <span class="perf-metric-name">🎖️ Reliability</span>
-            <span class="perf-metric-weight">10%</span>
+            <span class="perf-metric-name">⚠️ Commission-Rug Penalty</span>
+            <span class="perf-metric-weight">−15</span>
           </div>
           <div class="perf-metric-description">
-            Measures operational reliability through uptime history and consistent performance.
-            Uptime is tracked over time for more accurate historical measurement.
-          </div>
-          <div class="perf-metric-scoring">
-            <div class="perf-metric-scoring-title">Scoring</div>
-            <div class="perf-metric-scoring-detail">
-              +50 points: High uptime history (98%+ tracked observations)<br>
-              +50 points: Consistent performance (80%+ credits in all 7 epochs)
-            </div>
+            Commission changes are tracked continuously. A validator that raises commission by
+            10+ percentage points within a 7-day window takes a flat 15-point penalty and is
+            flagged — protecting delegators from "commission rug" tactics, including raise-then-lower
+            moves timed around epoch boundaries.
           </div>
         </div>
       </div>
@@ -14501,6 +14522,64 @@
     }
 
     const RPC_URL = 'https://rpc.mainnet.x1.xyz';
+
+    // =========================================================================
+    // CANONICAL SCORES (formula v2)
+    //
+    // Scores are computed hourly by a GitHub Action (scripts/compute-scores.js)
+    // and published to data/scores.json on this same origin. Every visitor
+    // reads the same file, so every visitor sees the same score — this replaces
+    // the old per-browser client-side scoring, which drifted between viewers
+    // because it depended on localStorage uptime history, session caches, and
+    // fetch timing.
+    //
+    // If the file is missing or stale (Action broken / local dev), the site
+    // falls back to computing scores in the browser like before.
+    // =========================================================================
+    const CANONICAL_SCORES_URL = 'data/scores.json';
+    const CANONICAL_MAX_AGE_MS = 3 * 3600000; // treat >3h-old scores as stale
+
+    window.canonicalScores = null;
+
+    async function loadCanonicalScores() {
+      try {
+        // Cache-bust so an hourly update is picked up without a hard refresh
+        const res = await fetch(`${CANONICAL_SCORES_URL}?t=${Math.floor(Date.now() / 300000)}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const doc = await res.json();
+        const age = Date.now() - new Date(doc.generatedAt).getTime();
+        if (!doc.validators || age > CANONICAL_MAX_AGE_MS) {
+          console.warn(`Canonical scores stale (${(age / 3600000).toFixed(1)}h old) — falling back to client-side scoring`);
+          return null;
+        }
+        window.canonicalScores = doc;
+        console.log(`Canonical scores loaded: ${doc.validatorCount} validators, generated ${doc.generatedAt}`);
+        return doc;
+      } catch (e) {
+        console.warn('Canonical scores unavailable — falling back to client-side scoring:', e.message);
+        return null;
+      }
+    }
+
+    // Kick the fetch off immediately at page load; scoring paths await this.
+    window.canonicalScoresPromise = loadCanonicalScores();
+
+    // Look up a validator's canonical breakdown (or null if unavailable)
+    function getCanonicalBreakdown(validator) {
+      if (!window.canonicalScores) return null;
+      const key = validator.voteAccount || validator.votePubkey;
+      const entry = key ? window.canonicalScores.validators[key] : null;
+      if (!entry) return null;
+      // Return in the same shape calculatePerformanceBreakdown produces, with
+      // the component map spread at the top level plus totalScore/meta.
+      return {
+        ...entry.breakdown,
+        totalScore: entry.score,
+        canonical: true,
+        flags: entry.flags || [],
+        generatedAt: window.canonicalScores.generatedAt
+      };
+    }
     const REWARDS_API_URL = null; // Set to your API URL when rewards tracker is running
 
     // ─────────────────────────────────────────────────────────────────────
@@ -15659,7 +15738,10 @@
         version: validator.version || null
       };
       
-      // Calculate and cache performance score for consistency
+      // Calculate and cache performance score for consistency.
+      // Await the published-scores fetch first so the lookup card uses the
+      // canonical number whenever it's available (same score for everyone).
+      await window.canonicalScoresPromise;
       info.performanceScore = calculatePerformanceScore(info);
 
       // Cache it
@@ -16125,8 +16207,15 @@
       return breakdown.totalScore;
     }
     
-    // Get detailed performance breakdown - ABSOLUTE SCORING
+    // Get detailed performance breakdown.
+    // CANONICAL FIRST: if the hourly published scores are loaded, return the
+    // canonical breakdown so every viewer sees identical numbers everywhere
+    // (leaderboard, lookup cards, tooltips). The absolute-scoring code below
+    // only runs as a fallback when data/scores.json is missing or stale.
     function calculatePerformanceBreakdown(validator) {
+      const canonical = getCanonicalBreakdown(validator);
+      if (canonical) return canonical;
+
       const breakdown = {
         voteEfficiency: { score: 85, weight: 0.30, details: '' },
         skipRate: { score: 75, weight: 0.25, details: '' },
@@ -16345,30 +16434,17 @@
       let reliabilityScore = 0;
       const reliabilityDetails = [];
       
-      // Uptime history check (+50) - uses tracked delinquency over time
+      // Uptime check (+50) - current status only.
+      // NOTE: this used to read per-browser localStorage uptime history, which
+      // was the main reason two viewers saw different scores for the same
+      // validator. Real 24/7 uptime tracking now lives in the canonical score
+      // pipeline (scripts/compute-scores.js); this fallback stays deterministic.
       const isDelinquent = validator.isDelinquent || validator.delinquent || false;
-      const uptimeData = getValidatorUptimeHistory(voteAccount);
-      
-      if (uptimeData && uptimeData.observations >= 5) {
-        // Have enough observations, use historical uptime
-        const uptimePercent = ((uptimeData.observations - uptimeData.delinquentCount) / uptimeData.observations) * 100;
-        if (uptimePercent >= 98) {
-          reliabilityScore += 50;
-          reliabilityDetails.push(`✓ ${uptimePercent.toFixed(0)}% uptime`);
-        } else if (uptimePercent >= 90) {
-          reliabilityScore += Math.round(50 * (uptimePercent / 100));
-          reliabilityDetails.push(`◐ ${uptimePercent.toFixed(0)}% uptime`);
-        } else {
-          reliabilityDetails.push(`✗ ${uptimePercent.toFixed(0)}% uptime`);
-        }
+      if (!isDelinquent) {
+        reliabilityScore += 50;
+        reliabilityDetails.push('✓ Active');
       } else {
-        // Not enough history, use current status
-        if (!isDelinquent) {
-          reliabilityScore += 50;
-          reliabilityDetails.push('✓ Active');
-        } else {
-          reliabilityDetails.push('✗ Delinquent');
-        }
+        reliabilityDetails.push('✗ Delinquent');
       }
       
       // Reliable performance check (+50) - all epochs at 80%+ of network average
@@ -16887,59 +16963,66 @@
       }
     }
 
-    // Generate performance tooltip HTML
+    // Legacy (fallback formula) component labels — canonical components carry
+    // their own `label` field, so this map is only needed for the old keys.
+    const LEGACY_BREAKDOWN_LABELS = {
+      voteEfficiency: 'Vote Efficiency',
+      skipRate: 'Skip Rate',
+      consistency: 'Consistency',
+      commission: 'Commission',
+      longevity: 'Longevity',
+      softwareVersion: 'Software',
+      reliability: 'Reliability'
+    };
+
+    // Generate performance tooltip HTML.
+    // Renders whatever components the breakdown contains — works for both the
+    // canonical v2 formula (vote latency, uptime, root distance, info rows)
+    // and the legacy client-side fallback, so a formula change on the server
+    // never requires touching this renderer again.
     function getPerformanceTooltipHtml(validator) {
       const breakdown = calculatePerformanceBreakdown(validator);
-      
+
+      let rows = '';
+      for (const [key, comp] of Object.entries(breakdown)) {
+        if (!comp || typeof comp !== 'object' || !('score' in comp)) continue; // skip totalScore/meta
+        const label = comp.label || LEGACY_BREAKDOWN_LABELS[key] || key;
+        if (comp.score === null || comp.weight === 0) {
+          // Informational (unweighted) entry — e.g. commission, validator age
+          rows += `
+          <div class="perf-tooltip-row">
+            <span class="perf-tooltip-label">${label} <span style="opacity:0.6;">(info)</span></span>
+            <span class="perf-tooltip-value" style="opacity:0.6;">—</span>
+          </div>
+          <div class="perf-tooltip-detail">${comp.details}</div>`;
+        } else {
+          rows += `
+          <div class="perf-tooltip-row">
+            <span class="perf-tooltip-label">${label} (${Math.round(comp.weight * 100)}%)</span>
+            <span class="perf-tooltip-value ${getScoreColorClass(comp.score)}">${comp.score.toFixed(0)}</span>
+          </div>
+          <div class="perf-tooltip-detail">${comp.details}</div>`;
+        }
+      }
+
+      const flagRow = (breakdown.flags && breakdown.flags.includes('commission_rug'))
+        ? `<div class="perf-tooltip-detail" style="color: var(--danger, #ff5c5c);">⚠ Commission raised sharply in the last 7 days — penalty applied</div>`
+        : '';
+
+      const sourceRow = breakdown.canonical
+        ? `<div class="perf-tooltip-detail" style="margin-top: 0.4rem; opacity: 0.7;">Published score · updated ${new Date(breakdown.generatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · identical for all viewers</div>`
+        : `<div class="perf-tooltip-detail" style="margin-top: 0.4rem; opacity: 0.7;">Computed locally (published scores unavailable)</div>`;
+
       return `
         <div class="perf-tooltip">
-          <div class="perf-tooltip-title">Performance Breakdown (7-epoch)</div>
-          <div class="perf-tooltip-row">
-            <span class="perf-tooltip-label">Vote Efficiency (30%)</span>
-            <span class="perf-tooltip-value ${getScoreColorClass(breakdown.voteEfficiency.score)}">${breakdown.voteEfficiency.score.toFixed(0)}</span>
-          </div>
-          <div class="perf-tooltip-detail">${breakdown.voteEfficiency.details}</div>
-          
-          <div class="perf-tooltip-row">
-            <span class="perf-tooltip-label">Skip Rate (25%)</span>
-            <span class="perf-tooltip-value ${getScoreColorClass(breakdown.skipRate.score)}">${breakdown.skipRate.score.toFixed(0)}</span>
-          </div>
-          <div class="perf-tooltip-detail">${breakdown.skipRate.details}</div>
-          
-          <div class="perf-tooltip-row">
-            <span class="perf-tooltip-label">Consistency (20%)</span>
-            <span class="perf-tooltip-value ${getScoreColorClass(breakdown.consistency.score)}">${breakdown.consistency.score.toFixed(0)}</span>
-          </div>
-          <div class="perf-tooltip-detail">${breakdown.consistency.details}</div>
-          
-          <div class="perf-tooltip-row">
-            <span class="perf-tooltip-label">Commission (5%)</span>
-            <span class="perf-tooltip-value ${getScoreColorClass(breakdown.commission.score)}">${breakdown.commission.score.toFixed(0)}</span>
-          </div>
-          <div class="perf-tooltip-detail">${breakdown.commission.details}</div>
-          
-          <div class="perf-tooltip-row">
-            <span class="perf-tooltip-label">Longevity (5%)</span>
-            <span class="perf-tooltip-value ${getScoreColorClass(breakdown.longevity.score)}">${breakdown.longevity.score.toFixed(0)}</span>
-          </div>
-          <div class="perf-tooltip-detail">${breakdown.longevity.details}</div>
-          
-          <div class="perf-tooltip-row">
-            <span class="perf-tooltip-label">Software (5%)</span>
-            <span class="perf-tooltip-value ${getScoreColorClass(breakdown.softwareVersion.score)}">${breakdown.softwareVersion.score.toFixed(0)}</span>
-          </div>
-          <div class="perf-tooltip-detail">${breakdown.softwareVersion.details}</div>
-          
-          <div class="perf-tooltip-row">
-            <span class="perf-tooltip-label">Reliability (10%)</span>
-            <span class="perf-tooltip-value ${getScoreColorClass(breakdown.reliability.score)}">${breakdown.reliability.score.toFixed(0)}</span>
-          </div>
-          <div class="perf-tooltip-detail">${breakdown.reliability.details}</div>
-          
+          <div class="perf-tooltip-title">Performance Breakdown${breakdown.canonical ? '' : ' (7-epoch)'}</div>
+          ${rows}
+          ${flagRow}
           <div class="perf-tooltip-total">
             <span>Total Score</span>
             <span class="${getScoreColorClass(breakdown.totalScore)}">${breakdown.totalScore.toFixed(2)}</span>
           </div>
+          ${sourceRow}
         </div>
       `;
     }
@@ -18474,7 +18557,7 @@
       // Update header
       const header = document.getElementById('leaderboardHeader');
       const headers = {
-        'performance': { title: '⭐ Top Performance Score', subtitle: 'Validators ranked by 7-day performance score' },
+        'performance': { title: '⭐ Top Performance Score', subtitle: 'Validators ranked by official performance score (formula v2)' },
         'stake': { title: '💰 Most Stake', subtitle: 'Validators with the highest total stake' },
         'commission': { title: '🏷️ Lowest Commission', subtitle: 'Active validators with the lowest commission rates' },
         'efficient': { title: '🎯 Most Efficient', subtitle: 'Validators earning the most credits relative to their stake' },
@@ -18482,7 +18565,16 @@
         'newest': { title: '🆕 Newest Validators', subtitle: 'Most recently started validators on the network' },
         'delegations': { title: '🤝 Delegations', subtitle: 'Validators ranked by stake delegated from X1 Labs and the Ripper Pool' }
       };
-      header.innerHTML = `<h2>${headers[category].title}</h2><p class="leaderboard-subtitle">${headers[category].subtitle}</p>`;
+      // Published-score stamp: proof to every viewer that the numbers they
+      // see are the same numbers everyone else sees.
+      let sourceNote = '';
+      if (window.canonicalScores) {
+        const t = new Date(window.canonicalScores.generatedAt);
+        sourceNote = `<p class="leaderboard-subtitle" style="font-size: 0.75rem; opacity: 0.65; margin-top: 0.15rem;">📡 Official scores · updated ${t.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })} · refreshed hourly · same for all viewers</p>`;
+      } else if (category === 'performance') {
+        sourceNote = `<p class="leaderboard-subtitle" style="font-size: 0.75rem; opacity: 0.65; margin-top: 0.15rem;">⚠ Published scores unavailable — showing locally computed estimates</p>`;
+      }
+      header.innerHTML = `<h2>${headers[category].title}</h2><p class="leaderboard-subtitle">${headers[category].subtitle}</p>${sourceNote}`;
       
       // Render the list
       renderLeaderboard(category);
@@ -18536,17 +18628,49 @@
         }
       });
 
-      setStep(3, 'Fetching skip rate history...');
+      // Make sure the published (canonical) scores had a chance to load —
+      // retry once here in case the initial page-load fetch failed.
+      await window.canonicalScoresPromise;
+      if (!window.canonicalScores) await loadCanonicalScores();
 
-      // Step 3 - bulk historical skip rates (7 epochs, 7 RPC calls in parallel)
-      await fetchAllHistoricalSkipRatesBulk(7);
+      if (window.canonicalScores) {
+        // Published scores carry 7-epoch skip data computed server-side, so
+        // the expensive client-side crawl (7 getBlockProduction calls) is
+        // unnecessary. Map the published skip data into the cache the rest of
+        // the pipeline reads (Reliable tab sorting, card display, fallback).
+        setStep(3, 'Using published skip-rate history...');
+        const nowTs = Date.now();
+        allValidators.forEach(v => {
+          const c = window.canonicalScores.validators[v.votePubkey];
+          if (!c) return;
+          skipRateHistoryCache[v.nodePubkey] = {
+            timestamp: nowTs,
+            data: {
+              epochs: [],
+              avgSkipRate: c.skipRate7d,
+              simpleAvgSkipRate: c.skipRate7d,
+              epochCount: c.skipEpochs,
+              requestedEpochs: 7,
+              lastEpochSkipRate: null,
+              currentEpoch: window.canonicalScores.epoch
+            }
+          };
+        });
+      } else {
+        setStep(3, 'Fetching skip rate history...');
+        // Fallback: bulk historical skip rates (7 epochs, 7 RPC calls in parallel)
+        await fetchAllHistoricalSkipRatesBulk(7);
+      }
 
       setStep(4, 'Calculating scores...');
 
       // Step 4 - score every validator using the same full data the lookup card uses
       leaderboardData = allValidators.map(v => {
-        // If already individually cached, use that (it's at least as good)
-        const cached = validatorInfoCache[v.votePubkey];
+        // If already individually cached, use that (it's at least as good).
+        // EXCEPT when canonical scores are loaded — then always score through
+        // the canonical path so a lookup cached earlier in the session can't
+        // pin a stale number onto the leaderboard.
+        const cached = window.canonicalScores ? null : validatorInfoCache[v.votePubkey];
         if (cached && cached.performanceScore !== undefined) {
           return {
             ...v,
@@ -18624,8 +18748,11 @@
           sorted = sorted.sort((a, b) => b.activatedStake - a.activatedStake);
           break;
         case 'commission':
-          // Only active validators with some minimum stake
-          sorted = sorted.filter(v => !v.delinquent && v.activatedStake > 10000)
+          // Only active validators with some minimum stake.
+          // (Bug fix: activatedStake is in lamports — the old `> 10000` check
+          // was 0.00001 XNT, i.e. no filter at all. 10000 XNT matches the
+          // Reliable tab's threshold.)
+          sorted = sorted.filter(v => !v.delinquent && v.activatedStake > 10000 * 1e9)
                         .sort((a, b) => a.commission - b.commission);
           break;
         case 'efficient':
@@ -18653,8 +18780,12 @@
               v.activatedStake > 10000 * 1e9
             )
             .sort((a, b) => {
-              // Primary: lowest skip rate
-              if (a.skipRate !== b.skipRate) return a.skipRate - b.skipRate;
+              // Primary: lowest skip rate — prefer the 7-epoch average (from
+              // published data when available) over the noisy current-epoch
+              // value, so one skipped slot today doesn't reshuffle the board.
+              const aRate = a.skipRateHistory?.avgSkipRate ?? a.skipRate;
+              const bRate = b.skipRateHistory?.avgSkipRate ?? b.skipRate;
+              if (aRate !== bRate) return aRate - bRate;
               // Secondary: highest performance score
               return b.performanceScore - a.performanceScore;
             });
@@ -21455,42 +21586,27 @@
             <div class="perf-breakdown-total">Score: <span class="${getScoreColorClass(totalScore)}">${totalScore.toFixed(2)}</span></div>
           </div>
           <div class="perf-breakdown-grid">
+            ${Object.entries(breakdown).map(([key, comp]) => {
+              if (!comp || typeof comp !== 'object' || !('score' in comp)) return '';
+              const label = comp.label || LEGACY_BREAKDOWN_LABELS[key] || key;
+              if (comp.score === null || comp.weight === 0) {
+                return `
+            <div class="perf-breakdown-item" style="opacity: 0.65;">
+              <span class="perf-breakdown-label">${label} (info)</span>
+              <span class="perf-breakdown-score">—</span>
+              <span class="perf-breakdown-detail">${comp.details}</span>
+            </div>`;
+              }
+              return `
             <div class="perf-breakdown-item">
-              <span class="perf-breakdown-label">Vote Efficiency (30%)</span>
-              <span class="perf-breakdown-score ${getScoreColorClass(breakdown.voteEfficiency.score)}">${breakdown.voteEfficiency.score.toFixed(0)}</span>
-              <span class="perf-breakdown-detail">${breakdown.voteEfficiency.details}</span>
-            </div>
-            <div class="perf-breakdown-item">
-              <span class="perf-breakdown-label">Skip Rate (25%)</span>
-              <span class="perf-breakdown-score ${getScoreColorClass(breakdown.skipRate.score)}">${breakdown.skipRate.score.toFixed(0)}</span>
-              <span class="perf-breakdown-detail">${breakdown.skipRate.details}</span>
-            </div>
-            <div class="perf-breakdown-item">
-              <span class="perf-breakdown-label">Consistency (20%)</span>
-              <span class="perf-breakdown-score ${getScoreColorClass(breakdown.consistency.score)}">${breakdown.consistency.score.toFixed(0)}</span>
-              <span class="perf-breakdown-detail">${breakdown.consistency.details}</span>
-            </div>
-            <div class="perf-breakdown-item">
-              <span class="perf-breakdown-label">Commission (5%)</span>
-              <span class="perf-breakdown-score ${getScoreColorClass(breakdown.commission.score)}">${breakdown.commission.score.toFixed(0)}</span>
-              <span class="perf-breakdown-detail">${breakdown.commission.details}</span>
-            </div>
-            <div class="perf-breakdown-item">
-              <span class="perf-breakdown-label">Longevity (5%)</span>
-              <span class="perf-breakdown-score ${getScoreColorClass(breakdown.longevity.score)}">${breakdown.longevity.score.toFixed(0)}</span>
-              <span class="perf-breakdown-detail">${breakdown.longevity.details}</span>
-            </div>
-            <div class="perf-breakdown-item">
-              <span class="perf-breakdown-label">Software (5%)</span>
-              <span class="perf-breakdown-score ${getScoreColorClass(breakdown.softwareVersion.score)}">${breakdown.softwareVersion.score.toFixed(0)}</span>
-              <span class="perf-breakdown-detail">${breakdown.softwareVersion.details}</span>
-            </div>
-            <div class="perf-breakdown-item">
-              <span class="perf-breakdown-label">Reliability (10%)</span>
-              <span class="perf-breakdown-score ${getScoreColorClass(breakdown.reliability.score)}">${breakdown.reliability.score.toFixed(0)}</span>
-              <span class="perf-breakdown-detail">${breakdown.reliability.details}</span>
-            </div>
+              <span class="perf-breakdown-label">${label} (${Math.round(comp.weight * 100)}%)</span>
+              <span class="perf-breakdown-score ${getScoreColorClass(comp.score)}">${comp.score.toFixed(0)}</span>
+              <span class="perf-breakdown-detail">${comp.details}</span>
+            </div>`;
+            }).join('')}
           </div>
+          ${(breakdown.flags && breakdown.flags.includes('commission_rug')) ? `<div class="perf-breakdown-detail" style="color: var(--danger, #ff5c5c); margin-top: 0.5rem;">⚠ Commission raised sharply in the last 7 days — score penalty applied</div>` : ''}
+          ${breakdown.canonical ? `<div class="perf-breakdown-detail" style="opacity: 0.65; margin-top: 0.5rem;">📡 Official published score · updated hourly · identical for all viewers</div>` : ''}
           <div class="ask-claude-divider"><span>Need Help?</span></div>
           <button class="ask-claude-btn" onclick="askClaudeForHelp('${voteAccount}', '${escAttrJs(validatorName)}', ${totalScore.toFixed(2)}, '${escAttrJs(breakdown.skipRate.details)}')">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
