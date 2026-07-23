@@ -14210,6 +14210,9 @@
           over the last 7 epochs plus 7 days of round-the-clock monitoring.
           Commission and validator age are shown for context but are <strong>not scored</strong> —
           commission is a pricing choice, and age isn't something an operator can control.
+          Component scores are <strong>continuous</strong>: the anchor values listed below are
+          interpolated smoothly, so two validators only share a score when their underlying
+          metrics are genuinely identical.
         </p>
         
         <div class="perf-metric-item">
@@ -16999,7 +17002,7 @@
           rows += `
           <div class="perf-tooltip-row">
             <span class="perf-tooltip-label">${label} (${Math.round(comp.weight * 100)}%)</span>
-            <span class="perf-tooltip-value ${getScoreColorClass(comp.score)}">${comp.score.toFixed(0)}</span>
+            <span class="perf-tooltip-value ${getScoreColorClass(comp.score)}">${comp.score.toFixed(1)}</span>
           </div>
           <div class="perf-tooltip-detail">${comp.details}</div>`;
         }
@@ -21600,7 +21603,7 @@
               return `
             <div class="perf-breakdown-item">
               <span class="perf-breakdown-label">${label} (${Math.round(comp.weight * 100)}%)</span>
-              <span class="perf-breakdown-score ${getScoreColorClass(comp.score)}">${comp.score.toFixed(0)}</span>
+              <span class="perf-breakdown-score ${getScoreColorClass(comp.score)}">${comp.score.toFixed(1)}</span>
               <span class="perf-breakdown-detail">${comp.details}</span>
             </div>`;
             }).join('')}
