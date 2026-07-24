@@ -11623,6 +11623,32 @@
     .vp-badge.vp-delinq { background: rgba(255,82,82,0.15); color: var(--danger); border: 1px solid rgba(255,82,82,0.4); }
     .vp-badge.vp-new { background: rgba(240,185,11,0.12); color: var(--accent-gold); border: 1px solid rgba(240,185,11,0.35); }
     .vp-spark { display: inline-block; vertical-align: middle; }
+    .vp-ava, .vp-ava-fb {
+      width: 18px; height: 18px; border-radius: 50%;
+      vertical-align: middle; margin-right: 6px;
+      object-fit: cover; background: var(--bg-secondary);
+      border: 1px solid var(--border);
+    }
+    .vp-ava-fb {
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif; font-size: 0.6rem; font-weight: 700;
+      color: var(--accent-cyan);
+    }
+    .vp-name { color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; font-size: 0.78rem; }
+    .vp-name.vp-unnamed { color: var(--text-dim); font-style: italic; }
+    .vp-riskpill {
+      display: inline-block; min-width: 86px; text-align: center;
+      padding: 0.12rem 0.5rem; border-radius: 999px;
+      font-size: 0.68rem; font-family: 'JetBrains Mono', monospace; font-weight: 700;
+      border: 1px solid transparent; cursor: help;
+    }
+    .vp-r1 { background: rgba(0,230,118,0.12);  color: var(--success);      border-color: rgba(0,230,118,0.35); }
+    .vp-r2 { background: rgba(77,166,255,0.12); color: var(--accent-blue);  border-color: rgba(77,166,255,0.35); }
+    .vp-r3 { background: rgba(240,185,11,0.12); color: var(--accent-gold);  border-color: rgba(240,185,11,0.35); }
+    .vp-r4 { background: rgba(255,171,0,0.14);  color: var(--warning);      border-color: rgba(255,171,0,0.4); }
+    .vp-r5 { background: rgba(255,82,82,0.16);  color: var(--danger);       border-color: rgba(255,82,82,0.45); }
+    .vp-methodology { font-size: 0.74rem; color: var(--text-dim); margin-top: 0.6rem; max-width: 110ch; line-height: 1.45; }
+    .vp-methodology b { color: var(--text-secondary); }
     .vp-foot { color: var(--text-dim); font-size: 0.72rem; margin-top: 1.5rem; font-family: 'JetBrains Mono', monospace; }
     .vp-hidden { display: none; }
   </style>
@@ -34901,6 +34927,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
             <tbody id="vpTbody"></tbody>
           </table>
         </div>
+        <div class="vp-methodology">
+          <b>Farmer risk</b> is a percentile composite relative to the current field, 0&ndash;100: with credits history only it weighs <b>vote-efficiency rank 55%</b>, <b>worst-epoch sag 25%</b>, <b>epoch-to-epoch variance 20%</b>. Once the live lag sampler has &ge;5 minutes of data, the weights become <b>eff 35 / worst 15 / variance 10 / lag &sigma; 25 / lag max 10 / root lag 5</b> &mdash; lag variance and max isolate hardware from geography, since network distance shifts the mean but not the variance. A <b>~</b> marks scores resting on fewer than 3 epochs of data. This score ranks who is <i>most consistent with underprovisioned hardware</i>; it is a lead for investigation, not proof of farming.
+        </div>
       </div>
 
       <div class="vp-foot">Read-only probe &mdash; makes no transactions, signs nothing. Vote efficiency = credits earned &divide; (slots &times; max credits/slot), completed epochs only.</div>
@@ -34922,13 +34951,18 @@ Please give me the diagnostic commands to run on my server so you can help me id
         slotsPerEpoch: 0,
         currentEpoch: 0,
         epochsAnalyzed: 0,
-        sortKey: 'meanEff',
+        sortKey: 'risk',
         sortDir: -1,
         lagTimer: null,
         lagSamples: 0,
         prevBodyOverflow: '',
       };
       let vpHist = null, vpScatter = null;
+
+      // Reuse the site's hardened escapers (Issue #3); minimal fallbacks if
+      // this module ever runs standalone.
+      const esc   = (typeof escHtml   === 'function') ? escHtml   : s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      const safeU = (typeof safeUrl   === 'function') ? safeUrl   : u => (/^https?:\/\//i.test(String(u||'')) ? String(u) : '');
 
       function setStatus(msg, isErr) {
         const el = document.getElementById('vpStatus');
@@ -35047,8 +35081,25 @@ Please give me the diagnostic commands to run on my server so you can help me id
           withData.forEach((r, i) => { r.pctile = Math.round(100 * i / Math.max(1, withData.length - 1)); });
           rows.filter(r => r.epochsCounted === 0).forEach(r => { r.pctile = null; });
 
+          // Names + icons — reuse the site's identity cache, or fetch it once.
+          let ids = window.validatorIdentities || null;
+          if (!ids || Object.keys(ids).length === 0) {
+            try {
+              setStatus('Fetching validator identities…');
+              ids = await fetchValidatorIdentities();
+              window.validatorIdentities = ids;
+            } catch (e) { ids = {}; }
+          }
+          for (const r of rows) {
+            const id = ids[r.nodePubkey];
+            r.name = (id && id.name) ? String(id.name) : '';
+            r.iconUrl = id ? safeU(id.iconUrl || '') : '';
+          }
+
           S.rows = rows;
           S.epochsAnalyzed = wantEpochs;
+
+          computeRisk();
 
           renderVerdict(withData);
           renderStats(withData);
@@ -35074,6 +35125,74 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const pos = (sortedAsc.length - 1) * q;
         const lo = Math.floor(pos), hi = Math.ceil(pos);
         return sortedAsc[lo] + (sortedAsc[hi] - sortedAsc[lo]) * (pos - lo);
+      }
+
+      // ── FARMER RISK ─────────────────────────────────────
+      // Composite of hardware signals, expressed as a percentile-based score
+      // 0–100 relative to the current field. NOT proof of anything — a
+      // ranking of "how consistent with underprovisioned hardware."
+      //
+      // Credits-only weights:   55% vote-eff rank, 25% worst-epoch sag,
+      //                         20% epoch-to-epoch variance.
+      // With ≥5min lag samples: 35% eff, 15% worst, 10% variance,
+      //                         25% lag σ, 10% lag max, 5% root lag.
+      // (Lag variance/max are weighted because they isolate hardware from
+      // geography — distance shifts the mean, not the variance.)
+      function pctRanks(getter) {
+        const arr = S.rows
+          .filter(r => r.epochsCounted > 0)
+          .map(r => ({ r, v: getter(r) }))
+          .filter(x => x.v !== null && x.v !== undefined && isFinite(x.v));
+        arr.sort((a, b) => a.v - b.v);
+        const n = Math.max(1, arr.length - 1);
+        const m = new Map();
+        arr.forEach((x, i) => m.set(x.r, 100 * i / n));
+        return m;
+      }
+
+      function computeRisk() {
+        const withData = S.rows.filter(r => r.epochsCounted > 0);
+        if (withData.length < 2) { S.rows.forEach(r => { r.risk = null; }); return; }
+        const pEff   = pctRanks(r => r.meanEff);    // low rank = worst eff
+        const pWorst = pctRanks(r => r.worstEff);
+        const pSd    = pctRanks(r => r.sdEff);      // high rank = most unstable
+        const lagReady = S.lagSamples >= 30;        // ~5 min of samples
+        let pLagSd = null, pLagMax = null, pRoot = null;
+        if (lagReady) {
+          pLagSd  = pctRanks(r => r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : null);
+          pLagMax = pctRanks(r => r.lagN > 0 ? r.lagMax : null);
+          pRoot   = pctRanks(r => r.rootLagLast);
+        }
+        for (const r of S.rows) {
+          if (r.epochsCounted === 0) { r.risk = null; continue; }
+          const riskEff   = 100 - (pEff.get(r)   ?? 50);
+          const riskWorst = 100 - (pWorst.get(r) ?? 50);
+          const riskSd    = pSd.get(r) ?? 50;
+          let score;
+          if (lagReady && r.lagN > 1) {
+            score = 0.35 * riskEff + 0.15 * riskWorst + 0.10 * riskSd
+                  + 0.25 * (pLagSd.get(r)  ?? 50)
+                  + 0.10 * (pLagMax.get(r) ?? 50)
+                  + 0.05 * (pRoot.get(r)   ?? 50);
+          } else {
+            score = 0.55 * riskEff + 0.25 * riskWorst + 0.20 * riskSd;
+          }
+          r.risk = Math.round(score);
+          r.riskLowConf = r.epochsCounted < 3;
+        }
+      }
+
+      function riskPill(r) {
+        if (r.risk === null || r.risk === undefined) return '<span class="vp-muted">—</span>';
+        const t = r.risk >= 80 ? ['VERY HIGH', 'vp-r5']
+                : r.risk >= 60 ? ['HIGH', 'vp-r4']
+                : r.risk >= 40 ? ['MODERATE', 'vp-r3']
+                : r.risk >= 20 ? ['LOW', 'vp-r2']
+                :                ['VERY LOW', 'vp-r1'];
+        const conf = r.riskLowConf ? ' · thin data (&lt;3 epochs)' : '';
+        const basis = S.lagSamples >= 30 ? 'credits + live lag' : 'credits history only';
+        return '<span class="vp-riskpill ' + t[1] + '" title="Farmer risk ' + r.risk + '/100 (' + basis + ')' + conf + ' — percentile composite, relative to current field, not proof">'
+          + r.risk + (r.riskLowConf ? '~' : '') + ' ' + t[0] + '</span>';
       }
 
       function renderVerdict(withData) {
@@ -35108,6 +35227,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const med = quantile(effs, 0.5);
         const below = withData.filter(r => r.meanEff < med - 0.02).length;
         const delinq = S.rows.filter(r => r.delinquent).length;
+        const highRisk = S.rows.filter(r => r.risk !== null && r.risk >= 60).length;
         const cells = [
           ['Validators', S.rows.length, 'vp-plain'],
           ['Delinquent now', delinq, delinq ? '' : 'vp-plain'],
@@ -35116,7 +35236,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           ['Median efficiency', pct(med), ''],
           ['p10 efficiency', pct(quantile(effs, 0.10)), ''],
           ['p90 efficiency', pct(quantile(effs, 0.90)), ''],
-          ['>2pts below median', below, below ? '' : 'vp-plain'],
+          ['Farmer risk ≥ 60', highRisk, highRisk ? '' : 'vp-plain'],
         ];
         document.getElementById('vpStatGrid').innerHTML = cells.map(c =>
           '<div class="vp-stat"><div class="vp-k">' + c[0] + '</div><div class="vp-v ' + c[2] + '">' + c[1] + '</div></div>'
@@ -35176,7 +35296,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // ── table ───────────────────────────────────────────
       const COLS = [
         { key: 'rank',        label: '#',            sortable: false },
+        { key: 'name',        label: 'Validator',    left: true },
         { key: 'votePubkey',  label: 'Vote account', left: true },
+        { key: 'risk',        label: 'Farmer risk' },
         { key: 'stake',       label: 'Stake (XNT)' },
         { key: 'commission',  label: 'Comm' },
         { key: 'meanEff',     label: 'Mean eff' },
@@ -35192,13 +35314,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       function sortVal(r, key) {
         if (key === 'lagSd') return r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : -1;
+        if (key === 'name') return r.name ? r.name.toLowerCase() : '\uffff' + r.votePubkey.toLowerCase();
         const v = r[key];
         return (v === null || v === undefined) ? -Infinity : v;
       }
 
       function setSort(key) {
         if (S.sortKey === key) S.sortDir *= -1;
-        else { S.sortKey = key; S.sortDir = (key === 'votePubkey') ? 1 : -1; }
+        else { S.sortKey = key; S.sortDir = (key === 'votePubkey' || key === 'name') ? 1 : -1; }
         renderTable();
       }
 
@@ -35239,7 +35362,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
         const filter = document.getElementById('vpFilterBox').value.trim().toLowerCase();
         let rows = S.rows.slice();
-        if (filter) rows = rows.filter(r => r.votePubkey.toLowerCase().includes(filter) || r.nodePubkey.toLowerCase().includes(filter));
+        if (filter) rows = rows.filter(r =>
+          r.votePubkey.toLowerCase().includes(filter) ||
+          r.nodePubkey.toLowerCase().includes(filter) ||
+          (r.name && r.name.toLowerCase().includes(filter)));
         rows.sort((a, b) => {
           const av = sortVal(a, S.sortKey), bv = sortVal(b, S.sortKey);
           if (av < bv) return -S.sortDir;
@@ -35249,14 +35375,27 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
         document.getElementById('vpTblCount').textContent = '(' + rows.length + ')';
         const frag = rows.map((r, i) => {
-          // votePubkey / nodePubkey were validated against base58 at ingest —
-          // safe to inject (site convention: escape/validate all on-chain data).
+          // votePubkey / nodePubkey were validated against base58 at ingest.
+          // name and iconUrl are validator-controlled on-chain data: name is
+          // escaped, iconUrl passed through safeUrl (site convention, Issue #3).
           const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : null;
           const badges =
             (r.delinquent ? ' <span class="vp-badge vp-delinq">DELINQ</span>' : '') +
-            (r.epochsCounted > 0 && r.epochsCounted < S.epochsAnalyzed ? ' <span class="vp-badge vp-new">' + r.epochsCounted + ' ep</span>' : '');
+            (r.epochsCounted > 0 && r.epochsCounted < S.epochsAnalyzed
+              ? ' <span class="vp-badge vp-new" title="Only ' + r.epochsCounted + ' of the ' + S.epochsAnalyzed + ' analyzed epochs have credit history for this validator (new or previously inactive) — stats rest on a thinner sample">' + r.epochsCounted + '/' + S.epochsAnalyzed + ' ep</span>'
+              : '');
+          const letter = esc(((r.name || r.votePubkey).trim()[0] || '?').toUpperCase());
+          const ava = r.iconUrl
+            ? '<img class="vp-ava" src="' + esc(r.iconUrl) + '" alt="" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline-flex\';">'
+              + '<span class="vp-ava-fb" style="display:none;">' + letter + '</span>'
+            : '<span class="vp-ava-fb">' + letter + '</span>';
+          const nameHtml = r.name
+            ? '<span class="vp-name">' + esc(r.name) + '</span>'
+            : '<span class="vp-name vp-unnamed">unnamed</span>';
           let cells = '<td class="vp-muted">' + (i + 1) + '</td>';
+          cells += '<td class="vp-left">' + ava + nameHtml + '</td>';
           cells += '<td class="vp-left"><span class="vp-pk" onclick="vpCopyPk(\'' + r.votePubkey + '\', this)" title="' + r.votePubkey + '&#10;node: ' + r.nodePubkey + '&#10;click to copy">' + r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4) + '</span>' + badges + '</td>';
+          cells += '<td>' + riskPill(r) + '</td>';
           cells += '<td>' + Math.round(r.stake).toLocaleString() + '</td>';
           cells += '<td>' + r.commission + '%</td>';
           cells += r.epochsCounted === 0
@@ -35303,6 +35442,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           S.lagSamples++;
           const mins = Math.floor(S.lagSamples * 10 / 60);
           document.getElementById('vpLagBtn').textContent = 'Stop lag sampling (' + S.lagSamples + ' samples, ~' + mins + 'm)';
+          computeRisk();   // once ≥30 samples, lag variance folds into the score
           renderTable();
         } catch (e) {
           console.warn('[vote probe] lag sample failed:', e.message);
@@ -35327,12 +35467,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       // ── CSV export ──────────────────────────────────────
       function downloadCsv() {
-        const head = ['vote_pubkey','node_pubkey','stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last'];
+        const q = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
+        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last'];
         const lines = [head.join(',')];
         for (const r of S.rows) {
           const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : '';
           lines.push([
-            r.votePubkey, r.nodePubkey, r.stake.toFixed(4), r.commission, r.delinquent,
+            r.votePubkey, r.nodePubkey, q(r.name || ''),
+            r.risk === null || r.risk === undefined ? '' : r.risk,
+            r.riskLowConf ? 'true' : 'false',
+            r.stake.toFixed(4), r.commission, r.delinquent,
             r.epochsCounted, r.meanEff.toFixed(6), r.sdEff.toFixed(6), r.worstEff.toFixed(6),
             r.worstEpoch === null ? '' : r.worstEpoch, r.pctile === null ? '' : r.pctile,
             r.lagN, r.lagN ? r.lagMean.toFixed(2) : '', lagSd === '' ? '' : lagSd.toFixed(2),
