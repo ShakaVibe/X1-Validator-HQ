@@ -34919,11 +34919,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       <div class="vp-charts vp-hidden" id="vpChartsRow">
         <div class="vp-panel">
-          <h4>Efficiency distribution <span>&mdash; mean vote efficiency, all validators</span></h4>
+          <h4>Hardware signal map <span>&mdash; low efficiency + high instability = the suspect corner (top-left)</span></h4>
           <div class="vp-chart-holder"><canvas id="vpHistChart"></canvas></div>
         </div>
         <div class="vp-panel">
-          <h4>Efficiency vs stake <span>&mdash; log stake axis; farmers cluster low-left</span></h4>
+          <h4>Top suspects <span>&mdash; highest farmer risk, updates as lag/deep-scan data lands</span></h4>
           <div class="vp-chart-holder"><canvas id="vpScatterChart"></canvas></div>
         </div>
       </div>
@@ -34993,7 +34993,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         computeRisk();
         renderVerdict(withData);
         renderStats(withData);
-        renderCharts(withData);
+        renderCharts();
         renderTable();
       }
 
@@ -35416,47 +35416,116 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const vpGrid = 'rgba(30,48,80,0.6)';
       const vpTick = '#8a8f98';
 
-      function renderCharts(withData) {
+      function tierColor(risk, alpha) {
+        const a = alpha === undefined ? 0.85 : alpha;
+        if (risk === null || risk === undefined) return 'rgba(138,143,152,0.45)';
+        if (risk >= 80) return 'rgba(255,82,82,' + a + ')';
+        if (risk >= 60) return 'rgba(255,171,0,' + a + ')';
+        if (risk >= 40) return 'rgba(240,185,11,' + a + ')';
+        if (risk >= 20) return 'rgba(77,166,255,' + (a - 0.15) + ')';
+        return 'rgba(0,230,118,' + (a - 0.15) + ')';
+      }
+
+      function renderCharts() {
+        const act = activeRows().filter(r => r.epochsCounted > 0);
+        if (!act.length) return;
         document.getElementById('vpChartsRow').classList.remove('vp-hidden');
-        const effs = withData.map(r => r.meanEff);
-        const lo = Math.max(0, Math.floor(Math.min(...effs) * 100) - 1) / 100;
-        const bins = 30;
-        const w = Math.max(0.0005, (1 - lo) / bins);
-        const counts = new Array(bins).fill(0);
-        effs.forEach(e => counts[Math.min(bins - 1, Math.floor((e - lo) / w))]++);
-        const labels = counts.map((_, i) => (100 * (lo + i * w)).toFixed(1) + '%');
+
+        // ── Chart 1: HARDWARE SIGNAL MAP ──────────────────
+        // x = mean vote efficiency, y = epoch-to-epoch instability (σ).
+        // Weak/oversubscribed boxes drift LEFT (losing credits) and UP
+        // (erratic between epochs). Dashed median guides split the field
+        // into quadrants; the top-left quadrant is the suspect corner.
+        // Colors = farmer-risk tier, so the corner should glow red.
+        const effsSorted = act.map(r => r.meanEff).sort((a, b) => a - b);
+        const sdsSorted = act.map(r => r.sdEff).sort((a, b) => a - b);
+        const medEff = quantile(effsSorted, 0.5) * 100;
+        const medSd = quantile(sdsSorted, 0.5) * 100;
+        const medianLines = {
+          id: 'vpMedianLines',
+          afterDatasetsDraw(chart) {
+            const { ctx, chartArea, scales } = chart;
+            if (!chartArea) return;
+            ctx.save();
+            ctx.setLineDash([4, 4]);
+            ctx.strokeStyle = 'rgba(138,143,152,0.5)';
+            ctx.lineWidth = 1;
+            const x = scales.x.getPixelForValue(medEff);
+            if (x >= chartArea.left && x <= chartArea.right) {
+              ctx.beginPath(); ctx.moveTo(x, chartArea.top); ctx.lineTo(x, chartArea.bottom); ctx.stroke();
+            }
+            const y = scales.y.getPixelForValue(medSd);
+            if (y >= chartArea.top && y <= chartArea.bottom) {
+              ctx.beginPath(); ctx.moveTo(chartArea.left, y); ctx.lineTo(chartArea.right, y); ctx.stroke();
+            }
+            ctx.restore();
+          }
+        };
 
         if (vpHist) vpHist.destroy();
         vpHist = new Chart(document.getElementById('vpHistChart'), {
-          type: 'bar',
-          data: { labels, datasets: [{ data: counts, backgroundColor: 'rgba(0,212,255,0.55)', borderColor: '#00d4ff', borderWidth: 1 }] },
-          options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-              x: { grid: { color: vpGrid }, ticks: { color: vpTick, maxTicksLimit: 10, font: { family: "'JetBrains Mono'", size: 10 } } },
-              y: { grid: { color: vpGrid }, ticks: { color: vpTick, precision: 0, font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'validators', color: vpTick } }
-            }
-          }
-        });
-
-        if (vpScatter) vpScatter.destroy();
-        vpScatter = new Chart(document.getElementById('vpScatterChart'), {
           type: 'scatter',
           data: { datasets: [{
-            data: withData.map(r => ({ x: Math.max(r.stake, 0.001), y: r.meanEff * 100, pk: r.votePubkey })),
-            backgroundColor: withData.map(r => r.delinquent ? 'rgba(255,82,82,0.8)' : 'rgba(77,166,255,0.65)'),
-            pointRadius: 3.5,
+            data: act.map(r => ({
+              x: r.meanEff * 100,
+              y: r.sdEff * 100,
+              nm: r.name || (r.votePubkey.slice(0, 6) + '…'),
+              risk: r.risk
+            })),
+            backgroundColor: act.map(r => tierColor(r.risk)),
+            pointRadius: 4, pointHoverRadius: 6,
           }]},
           options: {
             responsive: true, maintainAspectRatio: false,
             plugins: {
               legend: { display: false },
-              tooltip: { callbacks: { label: (c) => c.raw.pk.slice(0, 8) + '…  ' + c.raw.y.toFixed(2) + '% @ ' + Math.round(c.raw.x).toLocaleString() + ' XNT' } }
+              tooltip: { callbacks: { label: c =>
+                c.raw.nm + '  eff ' + c.raw.x.toFixed(2) + '%, σ ' + c.raw.y.toFixed(2) + '%'
+                + (c.raw.risk === null ? '' : ', risk ' + c.raw.risk)
+              } }
             },
             scales: {
-              x: { type: 'logarithmic', grid: { color: vpGrid }, ticks: { color: vpTick, font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'activated stake (XNT, log)', color: vpTick } },
-              y: { grid: { color: vpGrid }, ticks: { color: vpTick, callback: v => v + '%', font: { family: "'JetBrains Mono'", size: 10 } } }
+              x: { grid: { color: vpGrid }, ticks: { color: vpTick, callback: v => v + '%', font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'mean vote efficiency →  (weak boxes drift left)', color: vpTick } },
+              y: { grid: { color: vpGrid }, ticks: { color: vpTick, callback: v => v + '%', font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'epoch σ  (instability ↑)', color: vpTick } }
+            }
+          },
+          plugins: [medianLines]
+        });
+
+        // ── Chart 2: TOP SUSPECTS ─────────────────────────
+        // The mission, as a picture: the 15 highest farmer-risk validators,
+        // named, ranked, colored by tier. Re-renders as lag sampling and
+        // deep-scan data re-weight the score.
+        const suspects = act
+          .filter(r => r.risk !== null)
+          .sort((a, b) => b.risk - a.risk)
+          .slice(0, 15);
+        if (vpScatter) vpScatter.destroy();
+        vpScatter = new Chart(document.getElementById('vpScatterChart'), {
+          type: 'bar',
+          data: {
+            labels: suspects.map(r => (r.name || r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4)).slice(0, 22)),
+            datasets: [{
+              data: suspects.map(r => r.risk),
+              backgroundColor: suspects.map(r => tierColor(r.risk, 0.7)),
+              borderColor: suspects.map(r => tierColor(r.risk, 1)),
+              borderWidth: 1,
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: c => {
+                const r = suspects[c.dataIndex];
+                return 'risk ' + r.risk + ' · eff ' + (r.meanEff * 100).toFixed(2) + '%'
+                  + (r.ipShared > 1 ? ' · ' + r.ipShared + '× same IP' : '');
+              } } }
+            },
+            scales: {
+              x: { min: 0, max: 100, grid: { color: vpGrid }, ticks: { color: vpTick, font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'farmer risk', color: vpTick } },
+              y: { grid: { display: false }, ticks: { color: vpTick, font: { family: "'JetBrains Mono'", size: 9 } } }
             }
           }
         });
@@ -35470,7 +35539,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
         { key: 'risk',        label: 'Farmer risk' },
         { key: 'ipShared',    label: 'Same IP' },
         { key: 'stake',       label: 'Stake (XNT)' },
-        { key: 'commission',  label: 'Comm' },
         { key: 'meanEff',     label: 'Mean eff' },
         { key: 'pctile',      label: 'Pctile' },
         { key: 'sdEff',       label: 'σ (epochs)' },
@@ -35589,7 +35657,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
               + (hot ? '<b>' + r.ipShared + '×</b>' : '1') + '</td>';
           }
           cells += '<td>' + Math.round(r.stake).toLocaleString() + '</td>';
-          cells += '<td>' + r.commission + '%</td>';
           cells += r.epochsCounted === 0
             ? '<td class="vp-muted">no data</td><td class="vp-muted">—</td><td class="vp-muted">—</td><td class="vp-muted">—</td>'
             : '<td class="' + effClass(r.meanEff) + '">' + pct(r.meanEff) + '</td>'
@@ -35674,6 +35741,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const mins = Math.floor(S.lagSamples * 10 / 60);
           document.getElementById('vpLagBtn').textContent = 'Stop lag sampling (' + S.lagSamples + ' samples, ~' + mins + 'm)';
           computeRisk();   // once ≥30 samples, lag variance folds into the score
+          if (S.lagSamples === 30) renderCharts();   // score basis changed — re-rank suspects
           renderTable();
         } catch (e) {
           console.warn('[vote probe] lag sample failed:', e.message);
@@ -35768,6 +35836,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           }
           S.deepDone = true;
           computeRisk();
+          renderCharts();   // top-suspects re-ranks with latency-weighted scores
           renderTable();
           const withLat = S.rows.filter(r => r.vlatN >= 5).length;
           setStatus('Deep scan done: ' + produced + ' blocks over ' + SLOTS + ' slots, latency for ' + withLat + ' validators. Risk re-weighted (45% vote-tx latency).');
