@@ -11499,7 +11499,7 @@
     }
 
     /* ═══════════════════════════════════════════════════════
-       VOTE CREDIT PROBE (hidden recon tool)
+       VALIDATOR FORENSICS (hidden analysis tool)
        Opened via the faint dot in the Validator Terminal
        footer. All selectors are vp- prefixed to avoid any
        collision with the rest of the site.
@@ -34888,7 +34888,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
   </script>
 
   <!-- ═══════════════════════════════════════════════════════
-       VOTE CREDIT PROBE — hidden hardware-signal recon tool.
+       VALIDATOR FORENSICS — hidden hardware & fleet analysis tool.
        No visible entry point except the faint dot injected to
        the left of "Generated" in the Validator Terminal footer.
        Reads on-chain epochCredits history to measure vote
@@ -34900,10 +34900,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
     <div class="vp-wrap">
       <div class="vp-header">
         <span class="logo-x1" style="font-size:1.8rem;"><span style="color:#fff;">X</span><span style="color:var(--accent-blue);">1</span></span>
-        <h2>Vote Credit Probe <span class="vp-mono">// hardware signal recon</span></h2>
+        <h2>Validator Forensics <span class="vp-mono">// hardware &amp; fleet analysis</span></h2>
         <button class="vp-close" onclick="vpCloseProbe()" title="Close (Esc)">✕</button>
       </div>
-      <p class="vp-tagline">Reads the on-chain <b>epochCredits</b> history for every vote account and measures how close each validator votes to the theoretical maximum. Slow replay, oversubscribed CPUs, and throttled disks all surface here as lost credits &mdash; even when skip rates show nothing.</p>
+      <p class="vp-tagline">Benchmarks every validator on the work that actually costs money &mdash; <b>producing blocks under a deadline</b> &mdash; and cross-references operator fleets by co-location, shared performance trajectories, and sibling delinquency. Built to separate real infrastructure from cheap VPS farms collecting delegation.</p>
 
       <div class="vp-panel">
         <div class="vp-controls">
@@ -34970,17 +34970,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </table>
         </div>
         <div class="vp-methodology">
-          <b>Farmer risk v3</b> uses hybrid scoring: each signal takes the WORSE of (a) an absolute anchor and (b) a robust outlier score &mdash; how many noise-widths (median&plusmn;MAD, floored at measurement resolution) the value sits above the field&#39;s own baseline. Identical hardware still scores identically, a uniform field still scores ~0, but validators running 3&ndash;10&times; the field&#39;s jitter baseline now register even when the chain is too quiet for absolute thresholds to trip. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>slow block production 22%</b> and <b>thin blocks 14%</b> (leader benchmark &mdash; the only measurement of the validator doing <i>expensive</i> work under a deadline; taken inside its own 4-slot window so geography cancels), <b>vote jitter tail 14%</b> (votes missing the next slot &mdash; the shared-vCPU fingerprint), <b>arrival jitter 12%</b> (&sigma; of position among each block&#39;s votes &mdash; sub-slot latency stability that never saturates; distance shifts the mean, only unstable hardware inflates the &sigma;), <b>vote cadence 12%</b> (missing/bunched vote transactions), <b>epoch-boundary stress 12%</b> (late votes during the ~400 slots after rollover &mdash; the quiet chain&#39;s only guaranteed load spike), <b>slot-1 fumbles 8%</b> + <b>skips 6%</b> (leader-window forensics over ~4.5h &mdash; slow boxes disproportionately miss the first slot of their window), <b>clock drift 4%</b>, <b>live stalls/lag 14%</b> (when the live watch has &ge;5 min). <b>Trajectory twins</b> (identical multi-epoch damage pattern at 4 decimals, outside the saturated band) score coloc-grade inside the co-location component &mdash; independent machines never share exact damage. <b>Fleet mortality 15%</b> (standalone): the delinquency rate of this validator&#39;s fleet group (name / style / /16 / trajectory groups of &ge;4) &mdash; a half-dead fleet indicts its healthy-looking survivors, which is precisely what snapshot metrics can never show. <b>Fleet evidence 15%</b> (matching name pattern after digit-stripping, matching name STYLE template &mdash; e.g. one scheme like "X1-" + all-caps word across many different words, identical birth epoch, or &ge;3 in one /24 subnet &mdash; each capped, since a signal shared by half the chain is demographics, not a fleet; identical self-stake is recorded in the CSV as corroboration but deliberately excluded from scoring) is an <i>amplifier</i>, scaled by the hardware subscore &mdash; a fleet of good boxes gains ~nothing, a fleet of weak boxes gets pushed hard. Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
+          <b>Farmer risk v4</b> combines evidence with <b>noisy-OR</b> rather than averaging: P = 1 &minus; &Pi;(1 &minus; w&#7522;&middot;v&#7522;), so independent signals compound and silent ones contribute nothing. (Averaging was the earlier flaw &mdash; one damning signal divided by a dozen quiet ones came out a whisper.) Each signal takes the WORSE of (a) an absolute anchor and (b) a robust outlier score &mdash; how many noise-widths (median&plusmn;MAD, floored at measurement resolution) the value sits above the field&#39;s own baseline. Identical hardware still scores identically, a uniform field still scores ~0, but validators running 3&ndash;10&times; the field&#39;s jitter baseline now register even when the chain is too quiet for absolute thresholds to trip. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>slow block production 22%</b> and <b>thin blocks 14%</b> (leader benchmark &mdash; the only measurement of the validator doing <i>expensive</i> work under a deadline; taken inside its own 4-slot window so geography cancels), <b>vote jitter tail 14%</b> (votes missing the next slot &mdash; the shared-vCPU fingerprint), <b>arrival jitter 12%</b> (&sigma; of position among each block&#39;s votes &mdash; sub-slot latency stability that never saturates; distance shifts the mean, only unstable hardware inflates the &sigma;), <b>vote cadence 12%</b> (missing/bunched vote transactions), <b>epoch-boundary stress 12%</b> (late votes during the ~400 slots after rollover &mdash; the quiet chain&#39;s only guaranteed load spike), <b>slot-1 fumbles 8%</b> + <b>skips 6%</b> (leader-window forensics over ~4.5h &mdash; slow boxes disproportionately miss the first slot of their window), <b>clock drift 4%</b>, <b>live stalls/lag 14%</b> (when the live watch has &ge;5 min). <b>Trajectory twins</b> (identical multi-epoch damage pattern at 4 decimals, outside the saturated band) score coloc-grade inside the co-location component &mdash; independent machines never share exact damage. <b>Fleet mortality 15%</b> (standalone): the delinquency rate of this validator&#39;s fleet group (name / style / /16 / trajectory groups of &ge;4) &mdash; a half-dead fleet indicts its healthy-looking survivors, which is precisely what snapshot metrics can never show. <b>Fleet evidence 15%</b> (matching name pattern after digit-stripping, matching name STYLE template &mdash; e.g. one scheme like "X1-" + all-caps word across many different words, identical birth epoch, or &ge;3 in one /24 subnet &mdash; each capped, since a signal shared by half the chain is demographics, not a fleet; identical self-stake is recorded in the CSV as corroboration but deliberately excluded from scoring) is an <i>amplifier</i>, scaled by the hardware subscore &mdash; a fleet of good boxes gains ~nothing, a fleet of weak boxes gets pushed hard. Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
         </div>
       </div>
 
-      <div class="vp-foot">Read-only probe &mdash; makes no transactions, signs nothing. Vote efficiency = credits earned &divide; (slots &times; max credits/slot), completed epochs only.</div>
+      <div class="vp-foot">Read-only &mdash; makes no transactions, signs nothing. Evidence-based scoring: findings are investigative leads, not proof of misconduct.</div>
     </div>
   </div>
 
   <script>
     // ═══════════════════════════════════════════════════════
-    // VOTE CREDIT PROBE — module (all names vp-prefixed)
+    // VALIDATOR FORENSICS — module (all names vp-prefixed)
     // ═══════════════════════════════════════════════════════
     (function () {
       const VP_RPC = (typeof RPC_URL !== 'undefined') ? RPC_URL : 'https://rpc.mainnet.x1.xyz';
@@ -35584,14 +35584,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // Hardware components first — these also feed the fleet amplifier.
           const hw = [];
           const pushHw = (label, w, v) => { if (v !== null) hw.push({ label, w, v }); };
-          pushHw('efficiency', 0.18, Math.max(
+          pushHw('efficiency', 0.45, Math.max(
             anchored(refEff - r.meanEff, 0.005, 0.08) || 0,
             zb(refEff - r.meanEff, stEffDef, 0.0015, 3, 9) || 0));
-          pushHw('instability \u03c3', 0.18, Math.max(
+          pushHw('instability \u03c3', 0.45, Math.max(
             anchored(r.sdEff, 0.015, 0.12) || 0,
             zb(r.sdEff, stSd, 0.0006) || 0));
-          pushHw('worst epoch', 0.08, anchored(refEff - r.worstEff, 0.02, 0.25));
-          pushHw('clock drift', 0.04, r.clockDrift === null ? null : anchored(Math.abs(r.clockDrift), 2, 30));
+          pushHw('worst epoch', 0.30, anchored(refEff - r.worstEff, 0.02, 0.25));
+          pushHw('clock drift', 0.20, r.clockDrift === null ? null : anchored(Math.abs(r.clockDrift), 2, 30));
           if (S.deepDone && r.vlatN >= 10) {
             // Latency is integer slots, so the MEAN saturates at 1.00 on a
             // quiet chain. The TAIL — fraction of votes that miss the next
@@ -35599,7 +35599,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             // cause micro-stalls that show up as occasional 2+ landings).
             const meanLat = r.vlatSum / r.vlatN;
             const tailRate = r.vlatTail / r.vlatN;
-            pushHw('vote jitter tail', 0.14, Math.max(
+            pushHw('vote jitter tail', 0.40, Math.max(
               anchored(meanLat, 1.15, 3) || 0,
               anchored(tailRate, 0.01, 0.12) || 0,
               zb(tailRate, stTail, 0.004) || 0));
@@ -35609,7 +35609,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               const density = r.vlatN / S.deepBlocks;
               // Density is scored relative to the field only — X1 batches
               // votes (~1 tx per 4 slots), so an absolute anchor misreads it.
-              pushHw('vote cadence', 0.12, Math.max(
+              pushHw('vote cadence', 0.30, Math.max(
                 anchored(r.vgapMax, 8, 60) || 0,
                 zb(-density, stDens, 0.02) || 0,
                 zb(r.vgapMax, stGap, 2) || 0));
@@ -35619,7 +35619,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             // shifts the MEAN position; only unstable hardware inflates σ.
             if (r.vposN >= 30) {
               const posSd = Math.sqrt(r.vposM2 / (r.vposN - 1));
-              pushHw('arrival jitter', 0.12, Math.max(
+              pushHw('arrival jitter', 0.35, Math.max(
                 anchored(posSd, 0.13, 0.30) || 0,
                 zb(posSd, stPosSd, 0.012) || 0));
             }
@@ -35628,19 +35628,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // guaranteed load spike — late/bunched votes there = weak box.
           if ((S.boundaryBlocks || 0) >= 50 && r.bN >= 30) {
             const bTailRate = r.bTail / r.bN;
-            pushHw('epoch-boundary stress', 0.12, Math.max(
+            pushHw('epoch-boundary stress', 0.40, Math.max(
               anchored(bTailRate, 0.02, 0.20) || 0,
               zb(bTailRate, stBTail, 0.008) || 0,
               anchored(r.bGapMax, 6, 60) || 0));
           }
           // Leader-window forensics (~4.5h of schedule vs produced blocks).
           if (r.ledSlots >= 16) {
-            pushHw('skips', 0.06, anchored(r.ledMissed / r.ledSlots, 0.002, 0.05));
+            pushHw('skips', 0.30, anchored(r.ledMissed / r.ledSlots, 0.002, 0.05));
             if (r.w1Led >= 8) {
               const w1Rate = r.w1Missed / r.w1Led;
               const rest = r.ledSlots - r.w1Led;
               const otherRate = rest > 0 ? (r.ledMissed - r.w1Missed) / rest : 0;
-              pushHw('slot-1 fumbles', 0.08, anchored(w1Rate - otherRate, 0.005, 0.10));
+              pushHw('slot-1 fumbles', 0.35, anchored(w1Rate - otherRate, 0.005, 0.10));
             }
           }
           if (lagReady && r.lagN > 1) {
@@ -35650,7 +35650,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               r.stalls > 0 ? Math.min(100, 60 + 10 * r.stalls) : 0,
               anchored(r.lagMax, 16, 150) || 0
             );
-            pushHw('live stalls/lag', 0.14, live);
+            pushHw('live stalls/lag', 0.45, live);
           }
           // ── PRODUCTION BENCHMARK — the actual CPU test ──────────
           // Weighted heaviest of any hardware signal: this is real work
@@ -35661,14 +35661,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const pv = Math.max(
               anchored(r.benchPace - stPace.med, 0.04, 0.30) || 0,
               zb(r.benchPace, stPace, 0.02) || 0);
-            pushHw('slow block production', 0.22, pv);
+            pushHw('slow block production', 0.60, pv);
             prodComps.push({ w: 0.6, v: pv });
           }
           if (S.benchDone && r.benchFill !== null && stFill) {
             const fv = Math.max(
               anchored(1 - r.benchFill, 0.06, 0.45) || 0,
               zb(-r.benchFill, stFill, 0.03) || 0);
-            pushHw('thin blocks', 0.14, fv);
+            pushHw('thin blocks', 0.35, fv);
             prodComps.push({ w: 0.4, v: fv });
           }
           // hwScore = production-only class when the benchmark has run,
@@ -35692,12 +35692,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const colocLabel = (twinVal > (ipVal || 0))
             ? 'identical trajectory \u2261' + r.twinN
             : (r.ipShared > 1 ? 'shared IP ' + r.ipShared + '\u00d7' : 'co-location');
-          push(colocLabel, 0.25, colocVal);
+          push(colocLabel, 0.80, colocVal);
 
           // Fleet mortality: their siblings' death rate, standalone — this
           // is exactly what current-snapshot metrics can never show.
           if (r.fleetMortality !== null) {
-            push('fleet mortality ' + Math.round(100 * r.fleetMortality) + '%', 0.15,
+            push('fleet mortality ' + Math.round(100 * r.fleetMortality) + '%', 0.65,
               anchored(r.fleetMortality, 0.12, 0.5));
           }
 
@@ -35718,16 +35718,27 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // mass-grouped ~76 validators). Kept in the CSV as corroboration.
           const softFleet = Math.max(subScore, nameScore, cohortScore, styleScore);
           if (softFleet > 0) {
-            push('fleet \u00d7 weak hw', 0.15, softFleet * hwScore / 100);
+            push('fleet \u00d7 weak hw', 0.35, softFleet * hwScore / 100);
           }
 
-          const wSum = comps.reduce((s, c) => s + c.w, 0);
-          if (!wSum) continue;
-          r.risk = Math.round(comps.reduce((s, c) => s + c.w * c.v, 0) / wSum);
+          // ── EVIDENCE COMBINATION (noisy-OR, not averaging) ────────
+          // Averaging was the core flaw: one screaming signal (e.g. 96
+          // validators sharing an identical multi-epoch trajectory) got
+          // divided by a dozen signals that read ~0 on an idle chain, and
+          // came out a whisper. Independent evidence should COMPOUND:
+          //   P = 1 - Π(1 - wᵢ · vᵢ/100)
+          // where wᵢ is how much that signal alone can prove. Signals at 0
+          // contribute exactly nothing (no dilution); two strong signals
+          // reinforce. Deliberately conservative: no single signal reaches
+          // certainty, so a lone flag lands "high", never "proven".
+          if (!comps.length) continue;
+          let surv = 1;
+          for (const c of comps) surv *= (1 - c.w * Math.max(0, Math.min(100, c.v)) / 100);
+          r.risk = Math.round(100 * (1 - surv));
           r.riskLowConf = r.epochsCounted < 3;
 
           const drivers = comps
-            .filter(c => c.v >= 25)
+            .filter(c => c.w * c.v / 100 >= 0.12)
             .sort((a, b) => b.w * b.v - a.w * a.v)
             .slice(0, 2)
             .map(c => c.label);
@@ -36611,7 +36622,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'x1_vote_probe_epoch' + S.currentEpoch + '.csv';
+        a.download = 'x1_validator_forensics_epoch' + S.currentEpoch + '.csv';
         a.click();
         URL.revokeObjectURL(a.href);
       }
