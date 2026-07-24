@@ -36114,12 +36114,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
           cells += '<td class="vp-left">' + ava + nameHtml + '</td>';
           cells += '<td class="vp-left"><span class="vp-pk" title="' + r.votePubkey + '&#10;node: ' + r.nodePubkey + '">' + r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4) + '</span>'
             + '<span class="vp-copy" onclick="vpCopyPk(\'' + r.votePubkey + '\', this)" title="Copy vote account address">⧉</span>' + badges + '</td>';
-          if (r.hwScore === null) {
-            cells += '<td class="vp-muted" title="No leader slots produced in the analysis window — validator has not led recently">—</td>';
-          } else {
-            const hc = r.hwScore >= 70 ? ['VERY WEAK', 'vp-r5'] : r.hwScore >= 50 ? ['WEAK', 'vp-r4']
-                     : r.hwScore >= 30 ? ['AVERAGE', 'vp-r3'] : r.hwScore >= 15 ? ['SOLID', 'vp-r2'] : ['STRONG', 'vp-r1'];
-            cells += '<td><span class="vp-riskpill ' + hc[1] + '" title="Hardware class from block PRODUCTION (the expensive, deadline-bound work), score ' + r.hwScore + '/100 (higher = weaker). Driven by: ' + esc(r.hwWhy || 'clean production') + '. Based on ' + r.ledSlots + ' scheduled leader slots' + (r.benchPace !== null ? ', pace ' + r.benchPace.toFixed(2) + 's/slot' : '') + '.">' + hc[0] + '</span></td>';
+          if (S.deepDone) {   // HW class header is shown only after deep scan — keep cells in lockstep
+            if (r.hwScore === null) {
+              cells += '<td class="vp-muted" title="No leader slots produced in the analysis window — validator has not led recently">—</td>';
+            } else {
+              const hc = r.hwScore >= 70 ? ['VERY WEAK', 'vp-r5'] : r.hwScore >= 50 ? ['WEAK', 'vp-r4']
+                       : r.hwScore >= 30 ? ['AVERAGE', 'vp-r3'] : r.hwScore >= 15 ? ['SOLID', 'vp-r2'] : ['STRONG', 'vp-r1'];
+              cells += '<td><span class="vp-riskpill ' + hc[1] + '" title="Hardware class from block PRODUCTION (the expensive, deadline-bound work), score ' + r.hwScore + '/100 (higher = weaker). Driven by: ' + esc(r.hwWhy || 'clean production') + '. Based on ' + r.ledSlots + ' scheduled leader slots' + (r.benchPace !== null ? ', pace ' + r.benchPace.toFixed(2) + 's/slot' : '') + '.">' + hc[0] + '</span></td>';
+            }
           }
           if (S.benchDone) {
             cells += r.benchPace === null
