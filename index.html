@@ -11566,6 +11566,11 @@
     .vp-btn.vp-secondary { background: var(--bg-secondary); color: var(--accent-cyan); border: 1px solid var(--border); }
     .vp-btn.vp-danger { background: var(--bg-secondary); color: var(--danger); border: 1px solid var(--border); }
     #vpStatus { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-secondary); }
+    .vp-chk {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.8rem; color: var(--text-secondary); cursor: pointer; user-select: none;
+    }
+    .vp-chk input { accent-color: var(--accent-cyan); cursor: pointer; }
     #vpStatus.vp-err { color: var(--danger); }
     #vpLagNote { font-size: 0.75rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; margin-top: 0.5rem; }
 
@@ -34887,6 +34892,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             <option value="60">last 60 (max on-chain)</option>
           </select>
           <button class="vp-btn" id="vpRunBtn" onclick="vpRunProbe()">Run probe</button>
+          <label class="vp-chk"><input type="checkbox" id="vpHideDelinq" checked onchange="vpToggleDelinq()"> Hide delinquent</label>
           <button class="vp-btn vp-secondary vp-hidden" id="vpCsvBtn" onclick="vpDownloadCsv()">Download CSV</button>
           <button class="vp-btn vp-secondary vp-hidden" id="vpLagBtn" onclick="vpToggleLag()">Start live lag sampling</button>
           <span id="vpStatus">Idle.</span>
@@ -34956,8 +34962,35 @@ Please give me the diagnostic commands to run on my server so you can help me id
         lagTimer: null,
         lagSamples: 0,
         prevBodyOverflow: '',
+        hideDelinq: true,
       };
       let vpHist = null, vpScatter = null;
+
+      // The active comparison field: hidden delinquents are excluded from
+      // percentiles AND risk pools, not just the display — otherwise dead
+      // validators absorb the bottom percentiles and compress everyone
+      // else's scores toward the middle.
+      function activeRows() {
+        return S.hideDelinq ? S.rows.filter(r => !r.delinquent) : S.rows;
+      }
+
+      function recomputeAndRender() {
+        // wipe stale stats so excluded rows don't show old percentiles/risk
+        for (const r of S.rows) { r.pctile = null; r.risk = null; }
+        const act = activeRows();
+        const withData = act.filter(r => r.epochsCounted > 0).sort((a, b) => a.meanEff - b.meanEff);
+        withData.forEach((r, i) => { r.pctile = Math.round(100 * i / Math.max(1, withData.length - 1)); });
+        computeRisk();
+        renderVerdict(withData);
+        renderStats(withData);
+        renderCharts(withData);
+        renderTable();
+      }
+
+      function toggleDelinq() {
+        S.hideDelinq = document.getElementById('vpHideDelinq').checked;
+        if (S.rows.length) recomputeAndRender();
+      }
 
       // Reuse the site's hardened escapers (Issue #3); minimal fallbacks if
       // this module ever runs standalone.
@@ -35036,6 +35069,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           try {
             const BATCH = 100;
             const extended = {};
+            const lastTs = {};   // votePubkey -> {slot, ts} from vote state (free clock-drift signal)
             const nBatches = Math.ceil(all.length / BATCH);
             for (let i = 0; i < all.length; i += BATCH) {
               setStatus('Fetching full credit history… batch ' + (Math.floor(i / BATCH) + 1) + '/' + nBatches);
@@ -35053,13 +35087,18 @@ Please give me the diagnostic commands to run on my server so you can help me id
               const batch = await res.json();
               if (Array.isArray(batch)) {
                 batch.forEach((r2, idx) => {
-                  const ec = r2?.result?.value?.data?.parsed?.info?.epochCredits;
+                  const info = r2?.result?.value?.data?.parsed?.info;
+                  const ec = info?.epochCredits;
                   if (ec && Array.isArray(ec) && ec.length) {
                     // Handle both shapes: [{epoch,credits,previousCredits}] or [[e,c,p]]
                     extended[chunk[idx].votePubkey] = ec.map(e =>
                       Array.isArray(e) ? [Number(e[0]), Number(e[1]), Number(e[2])]
                                        : [Number(e.epoch), Number(e.credits), Number(e.previousCredits)]
                     );
+                  }
+                  const lt = info?.lastTimestamp;
+                  if (lt && lt.slot && lt.timestamp) {
+                    lastTs[chunk[idx].votePubkey] = { slot: Number(lt.slot), ts: Number(lt.timestamp) };
                   }
                 });
               }
@@ -35068,6 +35107,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             for (const v of all) {
               const ext = extended[v.votePubkey];
               if (ext && ext.length > (v.epochCredits || []).length) { v.epochCredits = ext; upgraded++; }
+              v._lastTs = lastTs[v.votePubkey] || null;
             }
             console.log('[vote probe] extended credit history for ' + upgraded + '/' + all.length + ' validators');
           } catch (e) {
@@ -35118,14 +35158,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
               worstEff: worst ? worst.eff : 0,
               worstEpoch: worst ? worst.epoch : null,
               sparks: effs.map(e => e.eff),
+              lastTs: v._lastTs || null,
+              clockDrift: null,
               lagN: 0, lagMean: 0, lagM2: 0, lagMax: 0,
               rootLagLast: null,
+              stalls: 0, liveBase: null, liveEff: null,
             });
           }
 
-          const withData = rows.filter(r => r.epochsCounted > 0).sort((a, b) => a.meanEff - b.meanEff);
-          withData.forEach((r, i) => { r.pctile = Math.round(100 * i / Math.max(1, withData.length - 1)); });
-          rows.filter(r => r.epochsCounted === 0).forEach(r => { r.pctile = null; });
+          // Percentiles + risk are computed in recomputeAndRender() so the
+          // "hide delinquent" toggle can rebuild the comparison field live.
 
           // Names + icons — reuse the site's identity cache, or fetch it once.
           let ids = window.validatorIdentities || null;
@@ -35175,15 +35217,36 @@ Please give me the diagnostic commands to run on my server so you can help me id
             r.subnetShared = r.subnet ? subnetCount.get(r.subnet) : null;
           }
 
+          // Clock drift — validators self-report a timestamp with each vote.
+          // Fit ts = a + D·slot across the field (D ≈ real slot duration),
+          // two-pass with outlier trim; each validator's residual is its
+          // clock offset vs cluster consensus. Well-run boxes are NTP-tight
+          // (< ~1–2s); neglected ones drift.
+          (function fitClockDrift() {
+            let pts = rows.filter(r => r.lastTs).map(r => ({ r, x: r.lastTs.slot, y: r.lastTs.ts }));
+            if (pts.length < 5) return;
+            const fit = ps => {
+              const n = ps.length;
+              const mx = ps.reduce((s, p) => s + p.x, 0) / n;
+              const my = ps.reduce((s, p) => s + p.y, 0) / n;
+              let num = 0, den = 0;
+              for (const p of ps) { num += (p.x - mx) * (p.y - my); den += (p.x - mx) ** 2; }
+              const D = den ? num / den : 0;
+              return { D, a: my - D * mx };
+            };
+            let f = fit(pts);
+            // trim residuals > 30s (dead clocks, ancient lastTs), refit
+            const trimmed = pts.filter(p => Math.abs(p.y - (f.a + f.D * p.x)) <= 30);
+            if (trimmed.length >= 5) f = fit(trimmed);
+            for (const p of pts) {
+              p.r.clockDrift = p.y - (f.a + f.D * p.x);
+            }
+          })();
+
           S.rows = rows;
           S.epochsAnalyzed = wantEpochs;
 
-          computeRisk();
-
-          renderVerdict(withData);
-          renderStats(withData);
-          renderCharts(withData);
-          renderTable();
+          recomputeAndRender();
 
           document.getElementById('vpCsvBtn').classList.remove('vp-hidden');
           document.getElementById('vpLagBtn').classList.remove('vp-hidden');
@@ -35218,7 +35281,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // (Lag variance/max are weighted because they isolate hardware from
       // geography — distance shifts the mean, not the variance.)
       function pctRanks(getter) {
-        const arr = S.rows
+        const arr = activeRows()
           .filter(r => r.epochsCounted > 0)
           .map(r => ({ r, v: getter(r) }))
           .filter(x => x.v !== null && x.v !== undefined && isFinite(x.v));
@@ -35230,7 +35293,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
 
       function computeRisk() {
-        const withData = S.rows.filter(r => r.epochsCounted > 0);
+        const act = activeRows();
+        const withData = act.filter(r => r.epochsCounted > 0);
         if (withData.length < 2) { S.rows.forEach(r => { r.risk = null; }); return; }
         const pEff   = pctRanks(r => r.meanEff);    // low rank = worst eff
         const pWorst = pctRanks(r => r.worstEff);
@@ -35242,7 +35306,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           pLagMax = pctRanks(r => r.lagN > 0 ? r.lagMax : null);
           pRoot   = pctRanks(r => r.rootLagLast);
         }
-        for (const r of S.rows) {
+        for (const r of act) {
           if (r.epochsCounted === 0) { r.risk = null; continue; }
           const riskEff   = 100 - (pEff.get(r)   ?? 50);
           const riskWorst = 100 - (pWorst.get(r) ?? 50);
@@ -35388,6 +35452,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         { key: 'sdEff',       label: 'σ (epochs)' },
         { key: 'worstEff',    label: 'Worst epoch' },
         { key: 'sparkline',   label: 'Trend', sortable: false },
+        { key: 'clockDrift',  label: 'Clock drift' },
+        { key: 'liveEff',     label: 'Live eff', lag: true },
+        { key: 'stalls',      label: 'Stalls', lag: true },
         { key: 'lagMean',     label: 'Lag μ', lag: true },
         { key: 'lagSd',       label: 'Lag σ', lag: true },
         { key: 'lagMax',      label: 'Lag max', lag: true },
@@ -35397,6 +35464,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       function sortVal(r, key) {
         if (key === 'lagSd') return r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : -1;
         if (key === 'name') return r.name ? r.name.toLowerCase() : '\uffff' + r.votePubkey.toLowerCase();
+        if (key === 'clockDrift') return r.clockDrift === null ? -Infinity : Math.abs(r.clockDrift);
         const v = r[key];
         return (v === null || v === undefined) ? -Infinity : v;
       }
@@ -35443,7 +35511,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }).join('');
 
         const filter = document.getElementById('vpFilterBox').value.trim().toLowerCase();
-        let rows = S.rows.slice();
+        let rows = activeRows().slice();
         if (filter) rows = rows.filter(r =>
           r.votePubkey.toLowerCase().includes(filter) ||
           r.nodePubkey.toLowerCase().includes(filter) ||
@@ -35500,10 +35568,23 @@ Please give me the diagnostic commands to run on my server so you can help me id
               + '<td>' + pct(r.sdEff) + '</td>'
               + '<td class="' + effClass(r.worstEff) + '" title="epoch ' + r.worstEpoch + '">' + pct(r.worstEff) + '</td>';
           cells += '<td>' + sparkSvg(r.sparks) + '</td>';
+          if (r.clockDrift === null) {
+            cells += '<td class="vp-muted">—</td>';
+          } else {
+            const ad = Math.abs(r.clockDrift);
+            const cls = ad <= 2 ? 'vp-muted' : ad <= 10 ? 'vp-eff-mid' : 'vp-eff-bad';
+            cells += '<td class="' + cls + '" title="Self-reported vote timestamp vs cluster consensus. NTP-disciplined boxes stay within ~1–2s; large drift = neglected machine">'
+              + (r.clockDrift > 0 ? '+' : '') + r.clockDrift.toFixed(1) + 's</td>';
+          }
           if (lagOn) {
+            const liveCell = r.liveEff === null
+              ? '<td class="vp-muted" title="Needs ~1 min of sampling">…</td>'
+              : '<td class="' + effClass(r.liveEff) + '" title="Credits earned ÷ max possible over the sampling window — right-now efficiency">' + pct(r.liveEff, 1) + '</td>';
+            const stallCell = '<td class="' + (r.stalls > 0 ? 'vp-eff-bad' : 'vp-muted') + '" title="Samples where vote lag ≥ 32 slots — micro-outages that never register as delinquency">' + (r.lagN ? r.stalls : '—') + '</td>';
             cells += r.lagN === 0
-              ? '<td class="vp-muted">—</td><td class="vp-muted">—</td><td class="vp-muted">—</td><td class="vp-muted">—</td>'
-              : '<td>' + r.lagMean.toFixed(1) + '</td>'
+              ? liveCell + stallCell + '<td class="vp-muted">—</td><td class="vp-muted">—</td><td class="vp-muted">—</td><td class="vp-muted">—</td>'
+              : liveCell + stallCell
+                + '<td>' + r.lagMean.toFixed(1) + '</td>'
                 + '<td>' + (lagSd === null ? '—' : lagSd.toFixed(1)) + '</td>'
                 + '<td>' + r.lagMax + '</td>'
                 + '<td>' + (r.rootLagLast === null ? '—' : r.rootLagLast) + '</td>';
@@ -35522,6 +35603,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             rpc('getVoteAccounts', [{ commitment: 'processed' }])
           ]);
           const tip = epochInfo.absoluteSlot;
+          const curEpoch = epochInfo.epoch;
           const byPk = new Map(S.rows.map(r => [r.votePubkey, r]));
           for (const v of [...va.current, ...va.delinquent]) {
             const r = byPk.get(v.votePubkey);
@@ -35532,7 +35614,22 @@ Please give me the diagnostic commands to run on my server so you can help me id
             r.lagMean += d / r.lagN;
             r.lagM2 += d * (lag - r.lagMean);
             r.lagMax = Math.max(r.lagMax, lag);
+            if (lag >= 32) r.stalls++;
             r.rootLagLast = v.rootSlot ? Math.max(0, tip - v.rootSlot) : null;
+
+            // Live window efficiency: credits gained since sampling began ÷
+            // max possible over the same slots. High-resolution "right now"
+            // view — catches flapping the 10-epoch averages smooth over.
+            const cur = (v.epochCredits || []).find(e => Number(e[0]) === curEpoch);
+            if (cur) {
+              const credits = Number(cur[1]);
+              if (!r.liveBase) {
+                r.liveBase = { slot: tip, credits };
+              } else if (tip - r.liveBase.slot >= 120) {   // ≥ ~1 min of slots
+                r.liveEff = Math.min(1, Math.max(0,
+                  (credits - r.liveBase.credits) / ((tip - r.liveBase.slot) * S.maxCreditsPerSlot)));
+              }
+            }
           }
           S.lagSamples++;
           const mins = Math.floor(S.lagSamples * 10 / 60);
@@ -35563,7 +35660,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // ── CSV export ──────────────────────────────────────
       function downloadCsv() {
         const q = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
-        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last'];
+        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','clock_drift_s','stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples'];
         const lines = [head.join(',')];
         for (const r of S.rows) {
           const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : '';
@@ -35572,11 +35669,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
             r.risk === null || r.risk === undefined ? '' : r.risk,
             r.riskLowConf ? 'true' : 'false',
             r.ip || '', r.ipShared === null ? '' : r.ipShared, r.subnetShared === null ? '' : r.subnetShared,
+            r.clockDrift === null ? '' : r.clockDrift.toFixed(2),
             r.stake.toFixed(4), r.commission, r.delinquent,
             r.epochsCounted, r.meanEff.toFixed(6), r.sdEff.toFixed(6), r.worstEff.toFixed(6),
             r.worstEpoch === null ? '' : r.worstEpoch, r.pctile === null ? '' : r.pctile,
             r.lagN, r.lagN ? r.lagMean.toFixed(2) : '', lagSd === '' ? '' : lagSd.toFixed(2),
-            r.lagN ? r.lagMax : '', r.rootLagLast === null ? '' : r.rootLagLast
+            r.lagN ? r.lagMax : '', r.rootLagLast === null ? '' : r.rootLagLast,
+            r.liveEff === null ? '' : r.liveEff.toFixed(6), r.lagN ? r.stalls : ''
           ].join(','));
         }
         const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
@@ -35596,6 +35695,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       window.vpSetSort     = setSort;
       window.vpCopyPk      = copyPk;
       window.vpRenderTable = renderTable;
+      window.vpToggleDelinq = toggleDelinq;
     })();
   </script>
 
