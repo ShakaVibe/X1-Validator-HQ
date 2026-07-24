@@ -34969,7 +34969,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </table>
         </div>
         <div class="vp-methodology">
-          <b>Farmer risk v3</b> uses hybrid scoring: each signal takes the WORSE of (a) an absolute anchor and (b) a robust outlier score &mdash; how many noise-widths (median&plusmn;MAD, floored at measurement resolution) the value sits above the field&#39;s own baseline. Identical hardware still scores identically, a uniform field still scores ~0, but validators running 3&ndash;10&times; the field&#39;s jitter baseline now register even when the chain is too quiet for absolute thresholds to trip. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>vote jitter tail 14%</b> (votes missing the next slot &mdash; the shared-vCPU fingerprint), <b>arrival jitter 12%</b> (&sigma; of position among each block&#39;s votes &mdash; sub-slot latency stability that never saturates; distance shifts the mean, only unstable hardware inflates the &sigma;), <b>vote cadence 12%</b> (missing/bunched vote transactions), <b>epoch-boundary stress 12%</b> (late votes during the ~400 slots after rollover &mdash; the quiet chain&#39;s only guaranteed load spike), <b>slot-1 fumbles 8%</b> + <b>skips 6%</b> (leader-window forensics over ~4.5h &mdash; slow boxes disproportionately miss the first slot of their window), <b>clock drift 4%</b>, <b>live stalls/lag 14%</b> (when the live watch has &ge;5 min). <b>Fleet evidence 15%</b> (matching name pattern after digit-stripping, matching name STYLE template &mdash; e.g. one scheme like "X1-" + all-caps word across many different words, identical birth epoch, or &ge;3 in one /24 subnet &mdash; each capped, since a signal shared by half the chain is demographics, not a fleet; identical self-stake is recorded in the CSV as corroboration but deliberately excluded from scoring) is an <i>amplifier</i>, scaled by the hardware subscore &mdash; a fleet of good boxes gains ~nothing, a fleet of weak boxes gets pushed hard. Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
+          <b>Farmer risk v3</b> uses hybrid scoring: each signal takes the WORSE of (a) an absolute anchor and (b) a robust outlier score &mdash; how many noise-widths (median&plusmn;MAD, floored at measurement resolution) the value sits above the field&#39;s own baseline. Identical hardware still scores identically, a uniform field still scores ~0, but validators running 3&ndash;10&times; the field&#39;s jitter baseline now register even when the chain is too quiet for absolute thresholds to trip. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>vote jitter tail 14%</b> (votes missing the next slot &mdash; the shared-vCPU fingerprint), <b>arrival jitter 12%</b> (&sigma; of position among each block&#39;s votes &mdash; sub-slot latency stability that never saturates; distance shifts the mean, only unstable hardware inflates the &sigma;), <b>vote cadence 12%</b> (missing/bunched vote transactions), <b>epoch-boundary stress 12%</b> (late votes during the ~400 slots after rollover &mdash; the quiet chain&#39;s only guaranteed load spike), <b>slot-1 fumbles 8%</b> + <b>skips 6%</b> (leader-window forensics over ~4.5h &mdash; slow boxes disproportionately miss the first slot of their window), <b>clock drift 4%</b>, <b>live stalls/lag 14%</b> (when the live watch has &ge;5 min). <b>Trajectory twins</b> (identical multi-epoch damage pattern at 4 decimals, outside the saturated band) score coloc-grade inside the co-location component &mdash; independent machines never share exact damage. <b>Fleet mortality 15%</b> (standalone): the delinquency rate of this validator&#39;s fleet group (name / style / /16 / trajectory groups of &ge;4) &mdash; a half-dead fleet indicts its healthy-looking survivors, which is precisely what snapshot metrics can never show. <b>Fleet evidence 15%</b> (matching name pattern after digit-stripping, matching name STYLE template &mdash; e.g. one scheme like "X1-" + all-caps word across many different words, identical birth epoch, or &ge;3 in one /24 subnet &mdash; each capped, since a signal shared by half the chain is demographics, not a fleet; identical self-stake is recorded in the CSV as corroboration but deliberately excluded from scoring) is an <i>amplifier</i>, scaled by the hardware subscore &mdash; a fleet of good boxes gains ~nothing, a fleet of weak boxes gets pushed hard. Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
         </div>
       </div>
 
@@ -35216,6 +35216,29 @@ Please give me the diagnostic commands to run on my server so you can help me id
               const ep = Number(Array.isArray(e) ? e[0] : e.epoch);
               if (isFinite(ep) && (firstEpoch === null || ep < firstEpoch)) firstEpoch = ep;
             }
+            // Trajectory signature: the last 6 completed epochs' efficiency,
+            // each at 4-decimal resolution. Two independent machines never
+            // share a multi-epoch DAMAGE pattern to 4dp — but validators on
+            // one box (or hit by one incident) do, exactly. Only signatures
+            // OUTSIDE the saturated healthy band count (the ≥0.997-everywhere
+            // crowd collides by the hundreds and proves nothing).
+            let trajSig = null;
+            {
+              const sigEffs = [];
+              for (const e of (v.epochCredits || [])) {
+                const ep = Number(Array.isArray(e) ? e[0] : e.epoch);
+                if (ep < S.currentEpoch - 6 || ep >= S.currentEpoch) continue;
+                const cred = Number(Array.isArray(e) ? e[1] : e.credits);
+                const prev = Number(Array.isArray(e) ? e[2] : e.previousCredits);
+                sigEffs.push({ ep, eff: Math.min(1, (cred - prev) / (S.slotsPerEpoch * S.maxCreditsPerSlot)) });
+              }
+              sigEffs.sort((a, b) => a.ep - b.ep);
+              if (sigEffs.length >= 4) {
+                const vals = sigEffs.map(x => x.eff);
+                const distinctive = Math.min(...vals) <= 0.997 || (Math.max(...vals) - Math.min(...vals)) >= 0.004;
+                if (distinctive) trajSig = sigEffs.map(x => x.ep + ':' + x.eff.toFixed(4)).join('|');
+              }
+            }
             const n = effs.length;
             let mean = 0, sd = 0, worst = null;
             if (n > 0) {
@@ -35247,6 +35270,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               version: null,
               selfStake: null,
               firstEpoch: firstEpoch,
+              trajSig: trajSig, twinN: 0, fleetMortality: null, subnet16Shared: null,
               nameGroup: 1, cohortCount: 1, stakeCohort: 1, styleGroup: 1, fleetN: 0,
             });
           }
@@ -35303,17 +35327,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
               if (n.version) nodeVer.set(n.pubkey, String(n.version));
             }
           }
-          const ipCount = new Map(), subnetCount = new Map();
+          const ipCount = new Map(), subnetCount = new Map(), subnet16Count = new Map();
           for (const r of rows) {
             r.ip = nodeIp.get(r.nodePubkey) || null;
             r.version = nodeVer.get(r.nodePubkey) || null;
             r.subnet = (r.ip && r.ip.includes('.')) ? r.ip.split('.').slice(0, 3).join('.') + '.x' : null;
+            r.subnet16 = (r.ip && r.ip.includes('.')) ? r.ip.split('.').slice(0, 2).join('.') + '.x' : null;
             if (r.ip) ipCount.set(r.ip, (ipCount.get(r.ip) || 0) + 1);
             if (r.subnet) subnetCount.set(r.subnet, (subnetCount.get(r.subnet) || 0) + 1);
+            if (r.subnet16) subnet16Count.set(r.subnet16, (subnet16Count.get(r.subnet16) || 0) + 1);
           }
           for (const r of rows) {
             r.ipShared = r.ip ? ipCount.get(r.ip) : null;
             r.subnetShared = r.subnet ? subnetCount.get(r.subnet) : null;
+            r.subnet16Shared = r.subnet16 ? subnet16Count.get(r.subnet16) : null;
           }
 
           // Fleet evidence (soft): name template + birth cohort.
@@ -35369,8 +35396,53 @@ Please give me the diagnostic commands to run on my server so you can help me id
               inBand(r.nameGroup, 3, 12),
               inBand(r.cohortCount, 3, 15),
               r.subnetShared !== null ? inBand(r.subnetShared, 3, 10) : 0,
+              r.subnet16Shared !== null ? inBand(r.subnet16Shared, 4, 25) : 0,
               Math.min(inBand(r.styleGroup, 4, 30), 30)
             );
+          }
+
+          // Trajectory twins: validators sharing an identical multi-epoch
+          // damage pattern (4dp, outside the saturated band) are on the same
+          // machine or shared the same incident — coloc-grade evidence.
+          const sigCounts = new Map();
+          for (const r of rows) {
+            if (r.trajSig) sigCounts.set(r.trajSig, (sigCounts.get(r.trajSig) || 0) + 1);
+          }
+          for (const r of rows) {
+            r.twinN = r.trajSig ? (sigCounts.get(r.trajSig) || 1) : 1;
+            if (r.twinN < 2) r.twinN = 0;
+          }
+
+          // Fleet mortality: a fleet's death rate transfers to its living
+          // members. The alive half of a 50%-delinquent fleet looks clean in
+          // every snapshot metric — this is how the survivors inherit their
+          // siblings' record. Groups: exact name key, WIDE style template
+          // (no upper cap here), /16 subnet, and trajectory signature.
+          const mortGroups = new Map();   // key -> {n, dead}
+          const addMort = (key, dead) => {
+            if (!key) return;
+            let g = mortGroups.get(key);
+            if (!g) { g = { n: 0, dead: 0 }; mortGroups.set(key, g); }
+            g.n++; if (dead) g.dead++;
+          };
+          for (const r of rows) {
+            addMort('nm:' + (nameKeyOf(r.name) || ''), r.delinquent);
+            addMort('st:' + (styleKeyOf(r.name) || ''), r.delinquent);
+            addMort('s16:' + (r.subnet16 || ''), r.delinquent);
+            addMort('tw:' + (r.trajSig || ''), r.delinquent);
+          }
+          for (const r of rows) {
+            let worst = null;
+            const keys = ['nm:' + (nameKeyOf(r.name) || ''), 'st:' + (styleKeyOf(r.name) || ''), 's16:' + (r.subnet16 || ''), 'tw:' + (r.trajSig || '')];
+            for (const k of keys) {
+              if (k.endsWith(':')) continue;
+              const g = mortGroups.get(k);
+              if (g && g.n >= 4) {
+                const rate = g.dead / g.n;
+                if (worst === null || rate > worst) worst = rate;
+              }
+            }
+            r.fleetMortality = worst;
           }
 
           // Clock drift — validators self-report a timestamp with each vote.
@@ -35528,9 +35600,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
             // overcommitted one stalls then batches — fewer, burstier txs.
             if (S.deepBlocks >= 50) {
               const density = r.vlatN / S.deepBlocks;
+              // Density is scored relative to the field only — X1 batches
+              // votes (~1 tx per 4 slots), so an absolute anchor misreads it.
               pushHw('vote cadence', 0.12, Math.max(
-                anchored(0.92 - density, 0, 0.37) || 0,
-                anchored(r.vgapMax, 4, 40) || 0,
+                anchored(r.vgapMax, 8, 60) || 0,
                 zb(-density, stDens, 0.02) || 0,
                 zb(r.vgapMax, stGap, 2) || 0));
             }
@@ -35578,10 +35651,22 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const comps = hw.slice();
           const push = (label, w, v) => { if (v !== null) comps.push({ label, w, v }); };
 
-          // Exact same IP: standalone-strong — sharing an IP is (usually)
-          // sharing a machine, which IS a hardware statement by itself.
-          push(r.ipShared > 1 ? 'shared IP ' + r.ipShared + '\u00d7' : 'shared IP', 0.25,
-            r.ipShared === null ? null : (r.ipShared <= 1 ? 0 : r.ipShared === 2 ? 70 : r.ipShared === 3 ? 85 : 100));
+          // Co-location: exact same IP OR identical multi-epoch damage
+          // trajectory — both mean "same machine" and score standalone-strong.
+          const ipVal = r.ipShared === null ? null : (r.ipShared <= 1 ? 0 : r.ipShared === 2 ? 70 : r.ipShared === 3 ? 85 : 100);
+          const twinVal = r.twinN >= 2 ? (r.twinN === 2 ? 70 : r.twinN <= 5 ? 85 : 95) : 0;
+          const colocVal = (ipVal === null && !twinVal) ? null : Math.max(ipVal || 0, twinVal);
+          const colocLabel = (twinVal > (ipVal || 0))
+            ? 'identical trajectory \u2261' + r.twinN
+            : (r.ipShared > 1 ? 'shared IP ' + r.ipShared + '\u00d7' : 'co-location');
+          push(colocLabel, 0.25, colocVal);
+
+          // Fleet mortality: their siblings' death rate, standalone — this
+          // is exactly what current-snapshot metrics can never show.
+          if (r.fleetMortality !== null) {
+            push('fleet mortality ' + Math.round(100 * r.fleetMortality) + '%', 0.15,
+              anchored(r.fleetMortality, 0.12, 0.5));
+          }
 
           // Soft fleet evidence (name group / birth cohort / subnet):
           // same operator ≠ farmer — plenty of people run several GOOD
@@ -35796,7 +35881,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         { key: 'name',        label: 'Validator',    left: true, tip: 'On-chain published name and icon; unnamed validators are themselves a mild low-effort signal' },
         { key: 'votePubkey',  label: 'Vote acct',    left: true, tip: 'Vote account — hover for full address, ⧉ copies it' },
         { key: 'risk',        label: 'Farmer risk',  tip: 'Composite likelihood of underprovisioned hardware, 0–100, relative to the visible field' },
-        { key: 'ipShared',    label: 'Cluster',      tip: 'Operator-fleet evidence. Red N× = N validators on this EXACT IP (one machine — strong standalone signal, sorts highest). Amber ~N = same operator inferred from name pattern, identical birth epoch, same /24 subnet, or identical self-stake — amber only raises risk when hardware signals are ALSO weak, so legit multi-validator operators with good boxes are unaffected. Gray 1 = independent. Hover any cell for the specific evidence' },
+        { key: 'ipShared',    label: 'Cluster',      tip: 'Operator-fleet evidence. Red N× = N validators on this EXACT IP (one machine — strong standalone signal, sorts highest). Amber ~N = same operator inferred from name pattern, identical birth epoch, same /24 subnet, or identical self-stake — amber only raises risk when hardware signals are ALSO weak, so legit multi-validator operators with good boxes are unaffected. Red ≡N = N validators with an IDENTICAL multi-epoch efficiency trajectory (4-decimal match outside the healthy band — same machine or same incident, coloc-grade). Gray 1 = independent. Hover any cell for the specific evidence, including the fleet group&#39;s delinquency rate' },
         { key: 'stake',       label: 'Stake',        tip: 'Activated stake (XNT) — includes foundation delegation' },
         { key: 'selfStake',   label: 'Self',         tip: 'Direct (non-foundation) stake: validator self-stake + 3rd-party direct stakers — stakePool = null, same definition as the Validator Terminal' },
         { key: 'meanEff',     label: 'Mean eff',     tip: 'Average vote credits earned vs max possible across analyzed epochs' },
@@ -35819,7 +35904,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (key === 'lagSd') return r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : -1;
         if (key === 'name') return r.name ? r.name.toLowerCase() : '\uffff' + r.votePubkey.toLowerCase();
         if (key === 'clockDrift') return r.clockDrift === null ? -Infinity : Math.abs(r.clockDrift);
-        if (key === 'ipShared') return (r.ipShared !== null && r.ipShared > 1) ? 1000 + r.ipShared : (r.fleetN || 0);
+        if (key === 'ipShared') return (r.ipShared !== null && r.ipShared > 1) ? 2000 + r.ipShared : (r.twinN >= 2 ? 1000 + r.twinN : (r.fleetN || 0));
         if (key === 'vlatTail') return r.vlatN >= 5 ? r.vlatTail / r.vlatN : -Infinity;
         if (key === 'vposSd') return r.vposN >= 30 ? Math.sqrt(r.vposM2 / (r.vposN - 1)) : -Infinity;
         if (key === 'skipPct') return r.ledSlots >= 16 ? r.ledMissed / r.ledSlots : -Infinity;
@@ -35916,14 +36001,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
             cells += '<td class="vp-muted" title="Not found in gossip (getClusterNodes) — node may be offline">—</td>';
           } else {
             const fleetBits = [];
-            if (r.subnetShared !== null && r.subnetShared >= 3) fleetBits.push(r.subnetShared + ' in subnet ' + esc(r.subnet));
+            if (r.subnetShared !== null && r.subnetShared >= 3) fleetBits.push(r.subnetShared + ' in /24 ' + esc(r.subnet));
+            if (r.subnet16Shared !== null && r.subnet16Shared >= 4 && r.subnet16Shared <= 25) fleetBits.push(r.subnet16Shared + ' in /16 ' + esc(r.subnet16));
             if (r.nameGroup >= 3) fleetBits.push(r.nameGroup + ' matching name pattern');
             if (r.styleGroup >= 4 && r.styleGroup <= 30) fleetBits.push(r.styleGroup + ' matching name style');
             if (r.cohortCount >= 3) fleetBits.push(r.cohortCount + ' born in epoch ' + r.firstEpoch);
-
-            const fleetTip = fleetBits.length ? ' &middot; fleet evidence: ' + fleetBits.join(', ') + ' (boosts risk only when hardware is also weak)' : '';
+            if (r.fleetMortality !== null && r.fleetMortality >= 0.12) fleetBits.push(Math.round(100 * r.fleetMortality) + '% of this validator\u2019s fleet group is delinquent');
+            const fleetTip = fleetBits.length ? ' &middot; ' + fleetBits.join(', ') : '';
             if (r.ipShared > 1) {
               cells += '<td class="vp-eff-bad" title="' + esc(r.ip) + fleetTip + '"><b>' + r.ipShared + '×</b></td>';
+            } else if (r.twinN >= 2) {
+              cells += '<td class="vp-eff-bad" title="' + esc(r.ip || '') + ' — ' + r.twinN + ' validators share this EXACT multi-epoch efficiency trajectory (4-decimal match outside the healthy band): same machine or same incident' + fleetTip + '"><b>≡' + r.twinN + '</b></td>';
             } else if (r.fleetN >= 3) {
               cells += '<td class="vp-eff-mid" title="' + esc(r.ip) + ' — unique IP' + fleetTip + '">~' + r.fleetN + '</td>';
             } else {
@@ -36282,7 +36370,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // ── CSV export ──────────────────────────────────────
       function downloadCsv() {
         const q = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
-        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','name_group_count','name_style_count','birth_cohort_count','first_epoch','clock_drift_s','stake_xnt','self_stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples','vote_lat_n','vote_lat_mean_slots','vote_lat_max_slots','vote_late_pct','vote_gap_max_slots','vote_density','stake_cohort_count','arrival_pos_mean','arrival_pos_sd','boundary_votes','boundary_late_pct','boundary_gap_max','led_slots','led_missed','w1_led','w1_missed','software_version'];
+        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','name_group_count','name_style_count','birth_cohort_count','first_epoch','trajectory_twin_count','fleet_mortality_pct','subnet16_count','clock_drift_s','stake_xnt','self_stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples','vote_lat_n','vote_lat_mean_slots','vote_lat_max_slots','vote_late_pct','vote_gap_max_slots','vote_density','stake_cohort_count','arrival_pos_mean','arrival_pos_sd','boundary_votes','boundary_late_pct','boundary_gap_max','led_slots','led_missed','w1_led','w1_missed','software_version'];
         const lines = [head.join(',')];
         for (const r of S.rows) {
           const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : '';
@@ -36292,6 +36380,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             r.riskLowConf ? 'true' : 'false',
             r.ip || '', r.ipShared === null ? '' : r.ipShared, r.subnetShared === null ? '' : r.subnetShared,
             r.nameGroup, r.styleGroup, r.cohortCount, r.firstEpoch === null ? '' : r.firstEpoch,
+            r.twinN || 0, r.fleetMortality === null ? '' : (100 * r.fleetMortality).toFixed(1), r.subnet16Shared === null ? '' : r.subnet16Shared,
             r.clockDrift === null ? '' : r.clockDrift.toFixed(2),
             r.stake.toFixed(4), r.selfStake === null ? '' : r.selfStake.toFixed(4), r.commission, r.delinquent,
             r.epochsCounted, r.meanEff.toFixed(6), r.sdEff.toFixed(6), r.worstEff.toFixed(6),
