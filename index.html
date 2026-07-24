@@ -11662,6 +11662,14 @@
     .vp-r3 { background: rgba(240,185,11,0.12); color: var(--accent-gold);  border-color: rgba(240,185,11,0.35); }
     .vp-r4 { background: rgba(255,171,0,0.14);  color: var(--warning);      border-color: rgba(255,171,0,0.4); }
     .vp-r5 { background: rgba(255,82,82,0.16);  color: var(--danger);       border-color: rgba(255,82,82,0.45); }
+    #vpProgress {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem 1.6rem; margin-bottom: 1rem;
+    }
+    .vp-prog-label { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.7rem; }
+    .vp-prog-track { height: 8px; background: var(--bg-secondary); border-radius: 999px; overflow: hidden; border: 1px solid var(--border); }
+    .vp-prog-fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #4da6ff, #00d4ff); transition: width 0.4s ease; }
+    .vp-prog-sub { font-size: 0.76rem; color: var(--text-dim); margin-top: 0.6rem; }
     .vp-suspects { display: flex; flex-direction: column; gap: 0.3rem; max-height: 300px; overflow-y: auto; padding-right: 2px; }
     .vp-sus-row {
       display: flex; align-items: center; gap: 0.55rem;
@@ -34927,6 +34935,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
         </div>
       </div>
 
+      <div id="vpProgress" class="vp-hidden">
+        <div class="vp-prog-label" id="vpProgLabel">Starting…</div>
+        <div class="vp-prog-track"><div class="vp-prog-fill" id="vpProgFill"></div></div>
+        <div class="vp-prog-sub" id="vpProgSub">Analyzing on-chain history, then benchmarking block production. This runs a full pass so results appear all at once.</div>
+      </div>
+
       <div id="vpVerdict">
         <div class="vp-v-title" id="vpVerdictTitle"></div>
         <div class="vp-v-body" id="vpVerdictBody"></div>
@@ -35002,6 +35016,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         minStake: 3000,
         deepDone: false,
         benchDone: false,
+        scanning: false,
       };
       let vpHist = null;
       const vpImgCache = new Map();   // iconUrl -> Image, shared across chart renders
@@ -35043,6 +35058,26 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // this module ever runs standalone.
       const esc   = (typeof escHtml   === 'function') ? escHtml   : s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
       const safeU = (typeof safeUrl   === 'function') ? safeUrl   : u => (/^https?:\/\//i.test(String(u||'')) ? String(u) : '');
+
+      function setProgress(pct, label) {
+        const p = document.getElementById('vpProgress');
+        if (pct === null) { p.classList.add('vp-hidden'); return; }
+        p.classList.remove('vp-hidden');
+        document.getElementById('vpProgFill').style.width = Math.round(pct) + '%';
+        if (label) document.getElementById('vpProgLabel').textContent = label;
+      }
+
+      // Hide result panels while a full scan is in flight, so nothing
+      // renders until every stage is done (no flickering score changes).
+      function setResultsVisible(v) {
+        for (const id of ['vpVerdict','vpStatsPanel','vpChartsRow','vpTablePanel']) {
+          const el = document.getElementById(id);
+          if (!el) continue;
+          if (v) el.classList.remove('vp-hidden');
+          else el.classList.add('vp-hidden');
+        }
+        if (v) document.getElementById('vpVerdict').style.display = '';
+      }
 
       function setStatus(msg, isErr) {
         const el = document.getElementById('vpStatus');
@@ -35117,7 +35152,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         btn.disabled = true;
         try {
           const wantEpochs = parseInt(document.getElementById('vpEpochSel').value, 10);
-
+          S.scanning = true;
+          setResultsVisible(false);
+          setProgress(4, 'Fetching network state…');
           setStatus('Fetching epoch info…');
           const [epochInfo, sched, clusterNodes] = await Promise.all([
             rpc('getEpochInfo'),
@@ -35543,21 +35580,32 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
           S.rows = rows;
           S.epochsAnalyzed = wantEpochs;
-          S.deepDone = false;   // new field, previous scan no longer applies
+          S.deepDone = false;
 
-          recomputeAndRender();
-
+          computeRisk();   // compute silently; do NOT render yet
+          setProgress(30, 'History analyzed — scanning vote transactions…');
           document.getElementById('vpCsvBtn').classList.remove('vp-hidden');
           document.getElementById('vpLagBtn').classList.remove('vp-hidden');
           document.getElementById('vpDeepBtn').classList.remove('vp-hidden');
           document.getElementById('vpBenchBtn').classList.remove('vp-hidden');
-          setStatus('Done. ' + all.length + ' validators, epochs ' + minEpoch + '–' + (S.currentEpoch - 1) + '. Starting latency deep scan…');
-          deepScan();   // always run — latency columns are core findings, not an extra
+          // Chain the remaining stages, then reveal everything at once.
+          await deepScan(true);          // silent
+          setProgress(60, 'Benchmarking block production…');
+          await leaderBench(true);       // silent
+          setProgress(100, 'Complete');
+          S.scanning = false;
+          recomputeAndRender();          // single final render
+          setResultsVisible(true);
+          setProgress(null);
+          setStatus('Done. ' + all.length + ' validators, epochs ' + minEpoch + '–' + (S.currentEpoch - 1) + '.');
         } catch (e) {
           console.error('[vote probe]', e);
           setStatus('Error: ' + e.message, true);
         } finally {
           btn.disabled = false;
+          S.scanning = false;
+          setProgress(null);
+          setResultsVisible(true);   // reveal whatever completed
         }
       }
 
@@ -35802,8 +35850,22 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // reinforce. Deliberately conservative: no single signal reaches
           // certainty, so a lone flag lands "high", never "proven".
           if (!comps.length) continue;
+          // Split evidence into HARDWARE-inference vs FLEET/identity.
+          // If the benchmark measured this box as strong, the hardware
+          // GUESSES (vote jitter, efficiency, σ, etc.) are wrong for it and
+          // must not inflate risk — only fleet evidence should. This removes
+          // the "STRONG hardware yet VERY HIGH farmer" contradiction.
+          const HW_LABELS = ['efficiency','instability','worst epoch','clock drift','vote jitter','vote cadence','arrival jitter','epoch-boundary','skips','slot-1','live stalls'];
+          const isHwGuess = c => HW_LABELS.some(t => c.label.indexOf(t) === 0 || c.label.indexOf(t) >= 0);
+          const benchStrong = (r.hwScore !== null && r.hwScore < 30);   // STRONG/SOLID
           let surv = 1;
-          for (const c of comps) surv *= (1 - c.w * Math.max(0, Math.min(100, c.v)) / 100);
+          for (const c of comps) {
+            let w = c.w;
+            // Down-weight vote-side hardware guesses when the benchmark
+            // directly contradicts them (measured strong box).
+            if (benchStrong && isHwGuess(c) && c.label.indexOf('weak production') !== 0) w *= 0.15;
+            surv *= (1 - w * Math.max(0, Math.min(100, c.v)) / 100);
+          }
           r.risk = Math.round(100 * (1 - surv));
           r.riskLowConf = r.epochsCounted < 3;
 
@@ -36318,7 +36380,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       //          enough before the deadline ships thinner blocks. On a
       //          quiet chain the steady vote traffic makes this a fair
       //          like-for-like comparison.
-      async function leaderBench() {
+      async function leaderBench(silent) {
         if (!S.rows.length) { setStatus('Run the probe first.', true); return; }
         const btn = document.getElementById('vpBenchBtn');
         btn.disabled = true;
@@ -36386,6 +36448,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const meta = new Map();   // slot -> {bt, tx}
           for (let i = 0; i < slots.length; i += BATCH) {
             setStatus('Leader benchmark: ' + i + '/' + slots.length + ' blocks…');
+            if (S.scanning) setProgress(60 + 38 * i / slots.length, 'Benchmarking block production… ' + i + '/' + slots.length);
             const chunk = slots.slice(i, i + BATCH);
             const body = chunk.map(s => ({
               jsonrpc: '2.0', id: s, method: 'getBlock',
@@ -36443,10 +36506,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
           S.benchDone = true;
           S.benchGlobalTx = gTxMean;
           computeRisk();
-          renderCharts();
-          renderTable();
+          if (!silent) { renderCharts(); renderTable(); }
           const n = S.rows.filter(r => r.benchPace !== null).length;
-          setStatus('Leader benchmark done: ' + meta.size + ' blocks, pace measured for ' + n + ' validators (avg ' + gTxMean.toFixed(0) + ' tx/block).');
+          if (!silent) setStatus('Leader benchmark done: ' + meta.size + ' blocks, pace for ' + n + ' validators.');
         } catch (e) {
           console.error('[vote probe] leader bench', e);
           setStatus('Leader benchmark error: ' + e.message, true);
@@ -36455,7 +36517,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
       }
 
-      async function deepScan() {
+      async function deepScan(silent) {
         if (!S.rows.length) { setStatus('Run the probe first.', true); return; }
         const btn = document.getElementById('vpDeepBtn');
         btn.disabled = true;
@@ -36474,6 +36536,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           for (let s = tip - SLOTS + 1; s <= tip; s += BATCH) {
             const hi = Math.min(s + BATCH - 1, tip);
             setStatus('Deep scan: ' + scanned + '/' + SLOTS + ' slots…');
+            if (S.scanning) setProgress(30 + 25 * scanned / SLOTS, 'Scanning vote transactions… ' + scanned + '/' + SLOTS);
             const body = [];
             for (let slot = s; slot <= hi; slot++) {
               body.push({
@@ -36651,11 +36714,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
           computeRisk();
           renderCharts();   // top-suspects re-ranks with latency-weighted scores
           renderTable();
-          const withLat = S.rows.filter(r => r.vlatN >= 5).length;
-          setStatus('Deep scan done (' + produced + ' blocks, latency for ' + withLat + ' validators). Starting CPU benchmark…');
-          // The benchmark is the only signal measuring EXPENSIVE work —
-          // it always runs, even though it is the slowest stage.
-          await leaderBench();
+          if (!silent) {
+            computeRisk(); renderCharts(); renderTable();
+            setStatus('Deep scan done (' + produced + ' blocks). Starting CPU benchmark…');
+            await leaderBench();
+          } else {
+            computeRisk();   // silent: compute, no render
+          }
         } catch (e) {
           console.error('[vote probe] deep scan', e);
           setStatus('Deep scan error: ' + e.message, true);
