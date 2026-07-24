@@ -34928,7 +34928,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </table>
         </div>
         <div class="vp-methodology">
-          <b>Farmer risk</b> is a percentile composite relative to the current field, 0&ndash;100: with credits history only it weighs <b>vote-efficiency rank 55%</b>, <b>worst-epoch sag 25%</b>, <b>epoch-to-epoch variance 20%</b>. Once the live lag sampler has &ge;5 minutes of data, the weights become <b>eff 35 / worst 15 / variance 10 / lag &sigma; 25 / lag max 10 / root lag 5</b> &mdash; lag variance and max isolate hardware from geography, since network distance shifts the mean but not the variance. A <b>~</b> marks scores resting on fewer than 3 epochs of data. This score ranks who is <i>most consistent with underprovisioned hardware</i>; it is a lead for investigation, not proof of farming.
+          <b>Farmer risk</b> is a percentile composite relative to the current field, 0&ndash;100: with credits history only it weighs <b>vote-efficiency rank 55%</b>, <b>worst-epoch sag 25%</b>, <b>epoch-to-epoch variance 20%</b>. Once the live lag sampler has &ge;5 minutes of data, the weights become <b>eff 35 / worst 15 / variance 10 / lag &sigma; 25 / lag max 10 / root lag 5</b> &mdash; lag variance and max isolate hardware from geography, since network distance shifts the mean but not the variance. A <b>~</b> marks scores resting on fewer than 3 epochs of data. This score ranks who is <i>most consistent with underprovisioned hardware</i>; it is a lead for investigation, not proof of farming. <b>Same IP</b> is deliberately kept out of the score: it is a co-location signal, not a hardware signal &mdash; exact matches mean multiple validators behind one machine/NAT; the tooltip also shows /24 subnet neighbors. High risk <i>plus</i> a shared IP is the strongest combined read.
         </div>
       </div>
 
@@ -35014,9 +35014,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const wantEpochs = parseInt(document.getElementById('vpEpochSel').value, 10);
 
           setStatus('Fetching epoch info…');
-          const [epochInfo, sched] = await Promise.all([
+          const [epochInfo, sched, clusterNodes] = await Promise.all([
             rpc('getEpochInfo'),
-            rpc('getEpochSchedule')
+            rpc('getEpochSchedule'),
+            rpc('getClusterNodes').catch(e => { console.warn('[vote probe] getClusterNodes failed:', e.message); return []; })
           ]);
           S.currentEpoch = epochInfo.epoch;
           S.slotsPerEpoch = sched.slotsPerEpoch;
@@ -35027,6 +35028,51 @@ Please give me the diagnostic commands to run on my server so you can help me id
             ...va.current.map(v => ({ ...v, delinquent: false })),
             ...va.delinquent.map(v => ({ ...v, delinquent: true }))
           ].filter(v => B58.test(v.votePubkey || '') && B58.test(v.nodePubkey || ''));
+
+          // getVoteAccounts truncates epochCredits to the last ~5 entries, so
+          // anything beyond "last 4" needs the full 64-epoch history from the
+          // vote account state itself. Batched getAccountInfo (jsonParsed),
+          // 100 per request — same technique as the site's batch fetcher.
+          try {
+            const BATCH = 100;
+            const extended = {};
+            const nBatches = Math.ceil(all.length / BATCH);
+            for (let i = 0; i < all.length; i += BATCH) {
+              setStatus('Fetching full credit history… batch ' + (Math.floor(i / BATCH) + 1) + '/' + nBatches);
+              const chunk = all.slice(i, i + BATCH);
+              const body = chunk.map((v, idx) => ({
+                jsonrpc: '2.0', id: idx, method: 'getAccountInfo',
+                params: [v.votePubkey, { encoding: 'jsonParsed' }]
+              }));
+              const res = await fetch(VP_RPC, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+              });
+              if (!res.ok) throw new Error('getAccountInfo batch HTTP ' + res.status);
+              const batch = await res.json();
+              if (Array.isArray(batch)) {
+                batch.forEach((r2, idx) => {
+                  const ec = r2?.result?.value?.data?.parsed?.info?.epochCredits;
+                  if (ec && Array.isArray(ec) && ec.length) {
+                    // Handle both shapes: [{epoch,credits,previousCredits}] or [[e,c,p]]
+                    extended[chunk[idx].votePubkey] = ec.map(e =>
+                      Array.isArray(e) ? [Number(e[0]), Number(e[1]), Number(e[2])]
+                                       : [Number(e.epoch), Number(e.credits), Number(e.previousCredits)]
+                    );
+                  }
+                });
+              }
+            }
+            let upgraded = 0;
+            for (const v of all) {
+              const ext = extended[v.votePubkey];
+              if (ext && ext.length > (v.epochCredits || []).length) { v.epochCredits = ext; upgraded++; }
+            }
+            console.log('[vote probe] extended credit history for ' + upgraded + '/' + all.length + ' validators');
+          } catch (e) {
+            console.warn('[vote probe] extended credits fetch failed, using truncated getVoteAccounts history:', e.message);
+          }
 
           setStatus('Analyzing ' + all.length + ' vote accounts…');
 
@@ -35094,6 +35140,39 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const id = ids[r.nodePubkey];
             r.name = (id && id.name) ? String(id.name) : '';
             r.iconUrl = id ? safeU(id.iconUrl || '') : '';
+          }
+
+          // IP sharing — map node identity → gossip IP, then count how many
+          // probe validators sit on the exact same IP (same box/NAT: the
+          // hardest co-location signal) and in the same /24 subnet (adjacent
+          // cheap instances at one host: the softer one).
+          const ipOf = addr => {
+            if (!addr || typeof addr !== 'string') return null;
+            if (addr.startsWith('[')) {                 // [ipv6]:port
+              const end = addr.indexOf(']');
+              return end > 1 ? addr.slice(1, end) : null;
+            }
+            const cut = addr.lastIndexOf(':');
+            const ip = cut > 0 ? addr.slice(0, cut) : addr;
+            return /^\d{1,3}(\.\d{1,3}){3}$/.test(ip) ? ip : (ip || null);
+          };
+          const nodeIp = new Map();
+          for (const n of (clusterNodes || [])) {
+            if (n && n.pubkey && B58.test(n.pubkey)) {
+              const ip = ipOf(n.gossip || n.tpu || null);
+              if (ip) nodeIp.set(n.pubkey, ip);
+            }
+          }
+          const ipCount = new Map(), subnetCount = new Map();
+          for (const r of rows) {
+            r.ip = nodeIp.get(r.nodePubkey) || null;
+            r.subnet = (r.ip && r.ip.includes('.')) ? r.ip.split('.').slice(0, 3).join('.') + '.x' : null;
+            if (r.ip) ipCount.set(r.ip, (ipCount.get(r.ip) || 0) + 1);
+            if (r.subnet) subnetCount.set(r.subnet, (subnetCount.get(r.subnet) || 0) + 1);
+          }
+          for (const r of rows) {
+            r.ipShared = r.ip ? ipCount.get(r.ip) : null;
+            r.subnetShared = r.subnet ? subnetCount.get(r.subnet) : null;
           }
 
           S.rows = rows;
@@ -35228,6 +35307,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const below = withData.filter(r => r.meanEff < med - 0.02).length;
         const delinq = S.rows.filter(r => r.delinquent).length;
         const highRisk = S.rows.filter(r => r.risk !== null && r.risk >= 60).length;
+        const onSharedIp = S.rows.filter(r => r.ipShared !== null && r.ipShared > 1).length;
         const cells = [
           ['Validators', S.rows.length, 'vp-plain'],
           ['Delinquent now', delinq, delinq ? '' : 'vp-plain'],
@@ -35237,6 +35317,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           ['p10 efficiency', pct(quantile(effs, 0.10)), ''],
           ['p90 efficiency', pct(quantile(effs, 0.90)), ''],
           ['Farmer risk ≥ 60', highRisk, highRisk ? '' : 'vp-plain'],
+          ['On shared IPs', onSharedIp, onSharedIp ? '' : 'vp-plain'],
         ];
         document.getElementById('vpStatGrid').innerHTML = cells.map(c =>
           '<div class="vp-stat"><div class="vp-k">' + c[0] + '</div><div class="vp-v ' + c[2] + '">' + c[1] + '</div></div>'
@@ -35299,6 +35380,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         { key: 'name',        label: 'Validator',    left: true },
         { key: 'votePubkey',  label: 'Vote account', left: true },
         { key: 'risk',        label: 'Farmer risk' },
+        { key: 'ipShared',    label: 'Same IP' },
         { key: 'stake',       label: 'Stake (XNT)' },
         { key: 'commission',  label: 'Comm' },
         { key: 'meanEff',     label: 'Mean eff' },
@@ -35365,7 +35447,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (filter) rows = rows.filter(r =>
           r.votePubkey.toLowerCase().includes(filter) ||
           r.nodePubkey.toLowerCase().includes(filter) ||
-          (r.name && r.name.toLowerCase().includes(filter)));
+          (r.name && r.name.toLowerCase().includes(filter)) ||
+          (r.ip && r.ip.toLowerCase().includes(filter)));
         rows.sort((a, b) => {
           const av = sortVal(a, S.sortKey), bv = sortVal(b, S.sortKey);
           if (av < bv) return -S.sortDir;
@@ -35396,6 +35479,18 @@ Please give me the diagnostic commands to run on my server so you can help me id
           cells += '<td class="vp-left">' + ava + nameHtml + '</td>';
           cells += '<td class="vp-left"><span class="vp-pk" onclick="vpCopyPk(\'' + r.votePubkey + '\', this)" title="' + r.votePubkey + '&#10;node: ' + r.nodePubkey + '&#10;click to copy">' + r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4) + '</span>' + badges + '</td>';
           cells += '<td>' + riskPill(r) + '</td>';
+          // r.ip comes from getClusterNodes gossip and was shape-validated in
+          // ipOf(); esc() it anyway before injection (site convention).
+          if (r.ip === null) {
+            cells += '<td class="vp-muted" title="Not found in gossip (getClusterNodes) — node may be offline">—</td>';
+          } else {
+            const subExtra = (r.subnetShared > r.ipShared)
+              ? ' &middot; ' + r.subnetShared + ' in subnet ' + esc(r.subnet)
+              : '';
+            const hot = r.ipShared > 1;
+            cells += '<td class="' + (hot ? 'vp-eff-bad' : 'vp-muted') + '" title="' + esc(r.ip) + subExtra + '">'
+              + (hot ? '<b>' + r.ipShared + '×</b>' : '1') + '</td>';
+          }
           cells += '<td>' + Math.round(r.stake).toLocaleString() + '</td>';
           cells += '<td>' + r.commission + '%</td>';
           cells += r.epochsCounted === 0
@@ -35468,7 +35563,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // ── CSV export ──────────────────────────────────────
       function downloadCsv() {
         const q = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
-        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last'];
+        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last'];
         const lines = [head.join(',')];
         for (const r of S.rows) {
           const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : '';
@@ -35476,6 +35571,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             r.votePubkey, r.nodePubkey, q(r.name || ''),
             r.risk === null || r.risk === undefined ? '' : r.risk,
             r.riskLowConf ? 'true' : 'false',
+            r.ip || '', r.ipShared === null ? '' : r.ipShared, r.subnetShared === null ? '' : r.subnetShared,
             r.stake.toFixed(4), r.commission, r.delinquent,
             r.epochsCounted, r.meanEff.toFixed(6), r.sdEff.toFixed(6), r.worstEff.toFixed(6),
             r.worstEpoch === null ? '' : r.worstEpoch, r.pctile === null ? '' : r.pctile,
