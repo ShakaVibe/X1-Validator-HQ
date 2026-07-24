@@ -34917,6 +34917,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </select>
           <button class="vp-btn" id="vpRunBtn" onclick="vpRunProbe()">Run probe</button>
           <button class="vp-btn vp-secondary vp-hidden" id="vpDeepBtn" onclick="vpDeepScan()">Re-scan vote latency</button>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpBenchBtn" onclick="vpLeaderBench()">Leader benchmark (CPU test)</button>
           <button class="vp-btn vp-secondary vp-hidden" id="vpCsvBtn" onclick="vpDownloadCsv()">Download CSV</button>
           <button class="vp-btn vp-secondary vp-hidden" id="vpLagBtn" onclick="vpToggleLag()">Watch live (catch stalls over time)</button>
           <span id="vpStatus">Idle.</span>
@@ -34969,7 +34970,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </table>
         </div>
         <div class="vp-methodology">
-          <b>Farmer risk v3</b> uses hybrid scoring: each signal takes the WORSE of (a) an absolute anchor and (b) a robust outlier score &mdash; how many noise-widths (median&plusmn;MAD, floored at measurement resolution) the value sits above the field&#39;s own baseline. Identical hardware still scores identically, a uniform field still scores ~0, but validators running 3&ndash;10&times; the field&#39;s jitter baseline now register even when the chain is too quiet for absolute thresholds to trip. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>vote jitter tail 14%</b> (votes missing the next slot &mdash; the shared-vCPU fingerprint), <b>arrival jitter 12%</b> (&sigma; of position among each block&#39;s votes &mdash; sub-slot latency stability that never saturates; distance shifts the mean, only unstable hardware inflates the &sigma;), <b>vote cadence 12%</b> (missing/bunched vote transactions), <b>epoch-boundary stress 12%</b> (late votes during the ~400 slots after rollover &mdash; the quiet chain&#39;s only guaranteed load spike), <b>slot-1 fumbles 8%</b> + <b>skips 6%</b> (leader-window forensics over ~4.5h &mdash; slow boxes disproportionately miss the first slot of their window), <b>clock drift 4%</b>, <b>live stalls/lag 14%</b> (when the live watch has &ge;5 min). <b>Trajectory twins</b> (identical multi-epoch damage pattern at 4 decimals, outside the saturated band) score coloc-grade inside the co-location component &mdash; independent machines never share exact damage. <b>Fleet mortality 15%</b> (standalone): the delinquency rate of this validator&#39;s fleet group (name / style / /16 / trajectory groups of &ge;4) &mdash; a half-dead fleet indicts its healthy-looking survivors, which is precisely what snapshot metrics can never show. <b>Fleet evidence 15%</b> (matching name pattern after digit-stripping, matching name STYLE template &mdash; e.g. one scheme like "X1-" + all-caps word across many different words, identical birth epoch, or &ge;3 in one /24 subnet &mdash; each capped, since a signal shared by half the chain is demographics, not a fleet; identical self-stake is recorded in the CSV as corroboration but deliberately excluded from scoring) is an <i>amplifier</i>, scaled by the hardware subscore &mdash; a fleet of good boxes gains ~nothing, a fleet of weak boxes gets pushed hard. Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
+          <b>Farmer risk v3</b> uses hybrid scoring: each signal takes the WORSE of (a) an absolute anchor and (b) a robust outlier score &mdash; how many noise-widths (median&plusmn;MAD, floored at measurement resolution) the value sits above the field&#39;s own baseline. Identical hardware still scores identically, a uniform field still scores ~0, but validators running 3&ndash;10&times; the field&#39;s jitter baseline now register even when the chain is too quiet for absolute thresholds to trip. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>slow block production 22%</b> and <b>thin blocks 14%</b> (leader benchmark &mdash; the only measurement of the validator doing <i>expensive</i> work under a deadline; taken inside its own 4-slot window so geography cancels), <b>vote jitter tail 14%</b> (votes missing the next slot &mdash; the shared-vCPU fingerprint), <b>arrival jitter 12%</b> (&sigma; of position among each block&#39;s votes &mdash; sub-slot latency stability that never saturates; distance shifts the mean, only unstable hardware inflates the &sigma;), <b>vote cadence 12%</b> (missing/bunched vote transactions), <b>epoch-boundary stress 12%</b> (late votes during the ~400 slots after rollover &mdash; the quiet chain&#39;s only guaranteed load spike), <b>slot-1 fumbles 8%</b> + <b>skips 6%</b> (leader-window forensics over ~4.5h &mdash; slow boxes disproportionately miss the first slot of their window), <b>clock drift 4%</b>, <b>live stalls/lag 14%</b> (when the live watch has &ge;5 min). <b>Trajectory twins</b> (identical multi-epoch damage pattern at 4 decimals, outside the saturated band) score coloc-grade inside the co-location component &mdash; independent machines never share exact damage. <b>Fleet mortality 15%</b> (standalone): the delinquency rate of this validator&#39;s fleet group (name / style / /16 / trajectory groups of &ge;4) &mdash; a half-dead fleet indicts its healthy-looking survivors, which is precisely what snapshot metrics can never show. <b>Fleet evidence 15%</b> (matching name pattern after digit-stripping, matching name STYLE template &mdash; e.g. one scheme like "X1-" + all-caps word across many different words, identical birth epoch, or &ge;3 in one /24 subnet &mdash; each capped, since a signal shared by half the chain is demographics, not a fleet; identical self-stake is recorded in the CSV as corroboration but deliberately excluded from scoring) is an <i>amplifier</i>, scaled by the hardware subscore &mdash; a fleet of good boxes gains ~nothing, a fleet of weak boxes gets pushed hard. Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
         </div>
       </div>
 
@@ -35000,6 +35001,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         hideDelinq: true,
         minStake: 3000,
         deepDone: false,
+        benchDone: false,
       };
       let vpHist = null;
       const vpImgCache = new Map();   // iconUrl -> Image, shared across chart renders
@@ -35271,6 +35273,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
               selfStake: null,
               firstEpoch: firstEpoch,
               trajSig: trajSig, twinN: 0, fleetMortality: null, subnet16Shared: null,
+              benchWin: 0, benchDN: 0, benchDSum: 0, benchTxN: 0, benchTxSum: 0,
+              benchPace: null, benchFill: null, hwScore: null,
               nameGroup: 1, cohortCount: 1, stakeCohort: 1, styleGroup: 1, fleetN: 0,
             });
           }
@@ -35489,6 +35493,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           document.getElementById('vpCsvBtn').classList.remove('vp-hidden');
           document.getElementById('vpLagBtn').classList.remove('vp-hidden');
           document.getElementById('vpDeepBtn').classList.remove('vp-hidden');
+          document.getElementById('vpBenchBtn').classList.remove('vp-hidden');
           setStatus('Done. ' + all.length + ' validators, epochs ' + minEpoch + '–' + (S.currentEpoch - 1) + '. Starting latency deep scan…');
           deepScan();   // always run — latency columns are core findings, not an extra
         } catch (e) {
@@ -35572,6 +35577,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
           ? medMad(withData.filter(r => r.vlatN >= 10).map(r => -(r.vlatN / S.deepBlocks))) : null;  // negated: lower density = worse
         const stGap    = medMad(withData.filter(r => r.vlatN >= 10).map(r => r.vgapMax));
         const stBTail  = medMad(withData.filter(r => r.bN >= 30).map(r => r.bTail / r.bN));
+        const stPace   = medMad(withData.filter(r => r.benchPace !== null).map(r => r.benchPace));
+        const stFill   = medMad(withData.filter(r => r.benchFill !== null).map(r => -r.benchFill));  // negated: thinner = worse
 
         for (const r of withData) {
           // Hardware components first — these also feed the fleet amplifier.
@@ -35645,6 +35652,32 @@ Please give me the diagnostic commands to run on my server so you can help me id
             );
             pushHw('live stalls/lag', 0.14, live);
           }
+          // ── PRODUCTION BENCHMARK — the actual CPU test ──────────
+          // Weighted heaviest of any hardware signal: this is real work
+          // under a deadline, measured inside the validator's own window
+          // so geography cancels. Everything else observes free work.
+          const prodComps = [];
+          if (S.benchDone && r.benchPace !== null && stPace) {
+            const pv = Math.max(
+              anchored(r.benchPace - stPace.med, 0.04, 0.30) || 0,
+              zb(r.benchPace, stPace, 0.02) || 0);
+            pushHw('slow block production', 0.22, pv);
+            prodComps.push({ w: 0.6, v: pv });
+          }
+          if (S.benchDone && r.benchFill !== null && stFill) {
+            const fv = Math.max(
+              anchored(1 - r.benchFill, 0.06, 0.45) || 0,
+              zb(-r.benchFill, stFill, 0.03) || 0);
+            pushHw('thin blocks', 0.14, fv);
+            prodComps.push({ w: 0.4, v: fv });
+          }
+          // hwScore = production-only class when the benchmark has run,
+          // since it is the only true load measurement available.
+          if (prodComps.length) {
+            const pw = prodComps.reduce((s, c) => s + c.w, 0);
+            r.hwScore = Math.round(prodComps.reduce((s, c) => s + c.w * c.v, 0) / pw);
+          }
+
           const hwW = hw.reduce((s, c) => s + c.w, 0);
           const hwScore = hwW ? hw.reduce((s, c) => s + c.w * c.v, 0) / hwW : 0;
 
@@ -35880,6 +35913,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         { key: 'rank',        label: '#',            sortable: false, tip: 'Row number under the current sort' },
         { key: 'name',        label: 'Validator',    left: true, tip: 'On-chain published name and icon; unnamed validators are themselves a mild low-effort signal' },
         { key: 'votePubkey',  label: 'Vote acct',    left: true, tip: 'Vote account — hover for full address, ⧉ copies it' },
+        { key: 'hwScore',     label: 'HW class',     bench: true, tip: 'Hardware class from the leader benchmark ONLY — measured while the validator was producing blocks under a deadline, inside its own 4-slot window so geography cancels out. This is the closest thing to a CPU test the chain allows: STRONG / SOLID / AVERAGE / WEAK / VERY WEAK' },
+        { key: 'benchPace',   label: 'Pace',         bench: true, tip: 'Seconds per slot across the validator\'s OWN consecutive leader slots. Block-building has a fixed cost floor (bank setup, PoH hashing, state commitment) that runs every slot regardless of load — slow boxes stretch their own window. Field median is the reference' },
+        { key: 'benchFill',   label: 'Fill',         bench: true, tip: 'Transactions packed per block vs the chain average over the same period. A leader that cannot execute fast enough before the deadline ships thinner blocks. 1.00 = average, below 1 = thin' },
         { key: 'risk',        label: 'Farmer risk',  tip: 'Composite likelihood of underprovisioned hardware, 0–100, relative to the visible field' },
         { key: 'ipShared',    label: 'Cluster',      tip: 'Operator-fleet evidence. Red N× = N validators on this EXACT IP (one machine — strong standalone signal, sorts highest). Amber ~N = same operator inferred from name pattern, identical birth epoch, same /24 subnet, or identical self-stake — amber only raises risk when hardware signals are ALSO weak, so legit multi-validator operators with good boxes are unaffected. Red ≡N = N validators with an IDENTICAL multi-epoch efficiency trajectory (4-decimal match outside the healthy band — same machine or same incident, coloc-grade). Gray 1 = independent. Hover any cell for the specific evidence, including the fleet group&#39;s delinquency rate' },
         { key: 'stake',       label: 'Stake',        tip: 'Activated stake (XNT) — includes foundation delegation' },
@@ -35909,6 +35945,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (key === 'vposSd') return r.vposN >= 30 ? Math.sqrt(r.vposM2 / (r.vposN - 1)) : -Infinity;
         if (key === 'skipPct') return r.ledSlots >= 16 ? r.ledMissed / r.ledSlots : -Infinity;
         if (key === 'bTailPct') return r.bN >= 30 ? r.bTail / r.bN : -Infinity;
+        if (key === 'hwScore') return r.hwScore === null ? -Infinity : r.hwScore;
+        if (key === 'benchPace') return r.benchPace === null ? -Infinity : r.benchPace;
+        if (key === 'benchFill') return r.benchFill === null ? Infinity : r.benchFill;
         if (key === 'vlatMean') return r.vlatN > 0 ? r.vlatSum / r.vlatN : -Infinity;
         const v = r[key];
         return (v === null || v === undefined) ? -Infinity : v;
@@ -35948,7 +35987,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       function renderTable() {
         const lagOn = S.lagSamples > 0;
-        const cols = COLS.filter(c => (!c.lag || lagOn) && (!c.deep || S.deepDone));
+        const cols = COLS.filter(c => (!c.lag || lagOn) && (!c.deep || S.deepDone) && (!c.bench || S.benchDone));
 
         document.getElementById('vpTheadRow').innerHTML = cols.map(c => {
           const arrow = S.sortKey === c.key ? ' <span class="vp-arrow">' + (S.sortDir < 0 ? '▼' : '▲') + '</span>' : '';
@@ -35994,6 +36033,21 @@ Please give me the diagnostic commands to run on my server so you can help me id
           cells += '<td class="vp-left">' + ava + nameHtml + '</td>';
           cells += '<td class="vp-left"><span class="vp-pk" title="' + r.votePubkey + '&#10;node: ' + r.nodePubkey + '">' + r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4) + '</span>'
             + '<span class="vp-copy" onclick="vpCopyPk(\'' + r.votePubkey + '\', this)" title="Copy vote account address">⧉</span>' + badges + '</td>';
+          if (S.benchDone) {
+            if (r.hwScore === null) {
+              cells += '<td class="vp-muted" title="Not enough produced leader slots in the benchmark window">—</td>';
+            } else {
+              const hc = r.hwScore >= 70 ? ['VERY WEAK', 'vp-r5'] : r.hwScore >= 50 ? ['WEAK', 'vp-r4']
+                       : r.hwScore >= 30 ? ['AVERAGE', 'vp-r3'] : r.hwScore >= 15 ? ['SOLID', 'vp-r2'] : ['STRONG', 'vp-r1'];
+              cells += '<td><span class="vp-riskpill ' + hc[1] + '" title="Production-only hardware class, score ' + r.hwScore + '/100 (higher = weaker). Measured over ' + r.benchWin + ' leader windows while actually building blocks.">' + hc[0] + '</span></td>';
+            }
+            cells += r.benchPace === null
+              ? '<td class="vp-muted">—</td>'
+              : '<td title="' + r.benchDN + ' slot-intervals measured inside this validator\u2019s own leader windows">' + r.benchPace.toFixed(2) + 's</td>';
+            cells += r.benchFill === null
+              ? '<td class="vp-muted">—</td>'
+              : '<td class="' + (r.benchFill >= 0.95 ? 'vp-eff-good' : r.benchFill >= 0.8 ? 'vp-eff-mid' : 'vp-eff-bad') + '" title="Mean ' + (r.benchTxSum / Math.max(1, r.benchTxN)).toFixed(0) + ' tx/block vs chain average ' + (S.benchGlobalTx || 0).toFixed(0) + '">' + r.benchFill.toFixed(2) + '</td>';
+          }
           cells += '<td>' + riskPill(r) + '</td>';
           // r.ip comes from getClusterNodes gossip and was shape-validated in
           // ipOf(); esc() it anyway before injection (site convention).
@@ -36161,6 +36215,159 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // both earning full credits can still show mean latency 1.1 vs 1.9;
       // that gap is pure hardware + network, and it breaks the ties the
       // epoch averages can't.
+      // ── LEADER BENCHMARK — the closest thing to a CPU test ─────
+      // Voting is nearly free: receive, replay, sign. PRODUCING is the
+      // expensive half — build the bank, pull and execute transactions,
+      // hash state, ship it, all inside one slot. That is where a $10
+      // shared vCPU and dedicated iron actually diverge, even at low TPS,
+      // because block-building has a fixed cost floor (bank setup, PoH
+      // hashing, state commitment) that runs every slot regardless of
+      // transaction count.
+      //
+      // Two measurements, both taken INSIDE a validator's own 4-slot
+      // leader window so geography cancels out entirely:
+      //   PACE — seconds per slot across their own consecutive slots.
+      //          blockTime is second-resolution, so a single window is
+      //          coarse; aggregated over many windows the mean converges
+      //          and slow producers separate.
+      //   FILL — transactions packed per block vs the chain average over
+      //          the same period. A leader that cannot execute fast
+      //          enough before the deadline ships thinner blocks. On a
+      //          quiet chain the steady vote traffic makes this a fair
+      //          like-for-like comparison.
+      async function leaderBench() {
+        if (!S.rows.length) { setStatus('Run the probe first.', true); return; }
+        const btn = document.getElementById('vpBenchBtn');
+        btn.disabled = true;
+        try {
+          const info = await rpc('getEpochInfo', [{ commitment: 'confirmed' }]);
+          const epochStart = info.absoluteSlot - info.slotIndex;
+          const endSlot = info.absoluteSlot - 20;
+          const span = Math.min(info.slotIndex - 40, 150000);
+          if (span < 4000) throw new Error('too early in this epoch — not enough leader history yet');
+          const startSlot = endSlot - span + 1;
+
+          setStatus('Leader benchmark: fetching schedule and produced blocks…');
+          const [prodArr, sched] = await Promise.all([
+            rpc('getBlocks', [startSlot, endSlot]),
+            rpc('getLeaderSchedule', [])
+          ]);
+          const producedSet = new Set(prodArr || []);
+
+          const act = activeRows();
+          const byNode = new Map(act.map(r => [r.nodePubkey, r]));
+          for (const r of S.rows) {
+            r.benchWin = 0; r.benchDN = 0; r.benchDSum = 0; r.benchTxN = 0; r.benchTxSum = 0;
+            r.benchPace = null; r.benchFill = null; r.hwScore = null;
+          }
+
+          // Budget ~4,000 block fetches, split evenly across the validators
+          // currently in view (the filters decide the comparison field).
+          const perVal = Math.max(4, Math.min(24,
+            Math.floor(4000 / Math.max(1, act.length) / 4) * 4 || 4));
+          const wanted = new Map();   // slot -> owning row
+          for (const [ident, idxs] of Object.entries(sched || {})) {
+            const r = byNode.get(ident);
+            if (!r || !Array.isArray(idxs)) continue;
+            // Group this validator's slots into their 4-slot windows and
+            // keep only windows with >=2 produced slots (a pace needs a pair).
+            const wins = new Map();
+            for (const idx of idxs) {
+              const abs = epochStart + idx;
+              if (abs < startSlot || abs > endSlot) continue;
+              if (!producedSet.has(abs)) continue;
+              const w = abs - (idx % 4);
+              if (!wins.has(w)) wins.set(w, []);
+              wins.get(w).push(abs);
+            }
+            let taken = 0;
+            for (const slots of wins.values()) {
+              if (slots.length < 2) continue;
+              slots.sort((a, b) => a - b);
+              for (const s of slots) {
+                if (taken >= perVal) break;
+                wanted.set(s, r);
+                taken++;
+              }
+              r.benchWin++;
+              if (taken >= perVal) break;
+            }
+          }
+
+          const slots = [...wanted.keys()].sort((a, b) => a - b);
+          if (!slots.length) throw new Error('no usable leader windows found in range');
+
+          // Fetch light blocks: signatures give the tx count, and we need
+          // blockTime — no full transaction payloads required.
+          const BATCH = 25;
+          const meta = new Map();   // slot -> {bt, tx}
+          for (let i = 0; i < slots.length; i += BATCH) {
+            setStatus('Leader benchmark: ' + i + '/' + slots.length + ' blocks…');
+            const chunk = slots.slice(i, i + BATCH);
+            const body = chunk.map(s => ({
+              jsonrpc: '2.0', id: s, method: 'getBlock',
+              params: [s, { encoding: 'json', transactionDetails: 'signatures', rewards: false, maxSupportedTransactionVersion: 0 }]
+            }));
+            const res = await fetch(VP_RPC, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(body)
+            });
+            if (!res.ok) throw new Error('getBlock batch HTTP ' + res.status);
+            const batch = await res.json();
+            if (!Array.isArray(batch)) continue;
+            for (const b of batch) {
+              const blk = b && b.result;
+              if (!blk || !blk.blockTime) continue;
+              meta.set(Number(b.id), { bt: Number(blk.blockTime), tx: (blk.signatures || []).length });
+            }
+          }
+
+          // Per-validator aggregation, strictly within their own windows.
+          let gTxSum = 0, gTxN = 0;
+          for (const [slot, r] of wanted) {
+            const m = meta.get(slot);
+            if (!m) continue;
+            r.benchTxN++; r.benchTxSum += m.tx;
+            gTxSum += m.tx; gTxN++;
+          }
+          const byWindow = new Map();
+          for (const [slot, r] of wanted) {
+            const w = slot - (slot % 4);
+            const key = r.nodePubkey + ':' + w;
+            if (!byWindow.has(key)) byWindow.set(key, { r, slots: [] });
+            byWindow.get(key).slots.push(slot);
+          }
+          for (const { r, slots: ws } of byWindow.values()) {
+            ws.sort((a, b) => a - b);
+            for (let i = 1; i < ws.length; i++) {
+              const a = meta.get(ws[i - 1]), b = meta.get(ws[i]);
+              if (!a || !b) continue;
+              const dt = b.bt - a.bt, ds = ws[i] - ws[i - 1];
+              if (ds <= 0 || ds > 3 || dt < 0 || dt > 20) continue;
+              r.benchDSum += dt; r.benchDN += ds;
+            }
+          }
+          const gTxMean = gTxN ? gTxSum / gTxN : 0;
+          for (const r of S.rows) {
+            if (r.benchDN >= 4) r.benchPace = r.benchDSum / r.benchDN;
+            if (r.benchTxN >= 4 && gTxMean > 0) r.benchFill = (r.benchTxSum / r.benchTxN) / gTxMean;
+          }
+
+          S.benchDone = true;
+          S.benchGlobalTx = gTxMean;
+          computeRisk();
+          renderCharts();
+          renderTable();
+          const n = S.rows.filter(r => r.benchPace !== null).length;
+          setStatus('Leader benchmark done: ' + meta.size + ' blocks, pace measured for ' + n + ' validators (avg ' + gTxMean.toFixed(0) + ' tx/block).');
+        } catch (e) {
+          console.error('[vote probe] leader bench', e);
+          setStatus('Leader benchmark error: ' + e.message, true);
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
       async function deepScan() {
         if (!S.rows.length) { setStatus('Run the probe first.', true); return; }
         const btn = document.getElementById('vpDeepBtn');
@@ -36370,7 +36577,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // ── CSV export ──────────────────────────────────────
       function downloadCsv() {
         const q = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
-        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','name_group_count','name_style_count','birth_cohort_count','first_epoch','trajectory_twin_count','fleet_mortality_pct','subnet16_count','clock_drift_s','stake_xnt','self_stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples','vote_lat_n','vote_lat_mean_slots','vote_lat_max_slots','vote_late_pct','vote_gap_max_slots','vote_density','stake_cohort_count','arrival_pos_mean','arrival_pos_sd','boundary_votes','boundary_late_pct','boundary_gap_max','led_slots','led_missed','w1_led','w1_missed','software_version'];
+        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','name_group_count','name_style_count','birth_cohort_count','first_epoch','trajectory_twin_count','fleet_mortality_pct','subnet16_count','clock_drift_s','stake_xnt','self_stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples','vote_lat_n','vote_lat_mean_slots','vote_lat_max_slots','vote_late_pct','vote_gap_max_slots','vote_density','stake_cohort_count','arrival_pos_mean','arrival_pos_sd','boundary_votes','boundary_late_pct','boundary_gap_max','led_slots','led_missed','w1_led','w1_missed','bench_windows','bench_pace_s_per_slot','bench_fill_ratio','bench_tx_per_block','hardware_score','software_version'];
         const lines = [head.join(',')];
         for (const r of S.rows) {
           const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : '';
@@ -36394,7 +36601,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
             r.stakeCohort,
             r.vposN ? r.vposMean.toFixed(4) : '', r.vposN > 1 ? Math.sqrt(r.vposM2 / (r.vposN - 1)).toFixed(4) : '',
             r.bN, r.bN ? (100 * r.bTail / r.bN).toFixed(2) : '', r.bN ? r.bGapMax : '',
-            r.ledSlots, r.ledMissed, r.w1Led, r.w1Missed, q(r.version || '')
+            r.ledSlots, r.ledMissed, r.w1Led, r.w1Missed,
+            r.benchWin || 0, r.benchPace === null ? '' : r.benchPace.toFixed(3),
+            r.benchFill === null ? '' : r.benchFill.toFixed(3),
+            r.benchTxN ? (r.benchTxSum / r.benchTxN).toFixed(1) : '',
+            r.hwScore === null ? '' : r.hwScore, q(r.version || '')
           ].join(','));
         }
         const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
@@ -36423,6 +36634,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         document.getElementById('vpTablePanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
       };
       window.vpDeepScan    = deepScan;
+      window.vpLeaderBench = leaderBench;
     })();
   </script>
 
