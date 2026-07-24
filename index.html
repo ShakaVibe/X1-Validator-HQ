@@ -11602,7 +11602,7 @@
     .vp-tbl-scroll { overflow-x: auto; }
     .vp-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
     .vp-table th {
-      text-align: right; padding: 0.5rem 0.55rem; color: var(--text-secondary);
+      text-align: right; padding: 0.45rem 0.42rem; color: var(--text-secondary);
       font-weight: 600; border-bottom: 1px solid var(--border);
       white-space: nowrap; cursor: pointer; user-select: none; background: transparent;
     }
@@ -11610,9 +11610,9 @@
     .vp-table th:hover { color: var(--accent-cyan); }
     .vp-table th .vp-arrow { color: var(--accent-cyan); font-size: 0.7rem; }
     .vp-table td {
-      padding: 0.42rem 0.55rem; text-align: right; color: var(--text-primary);
+      padding: 0.36rem 0.42rem; text-align: right; color: var(--text-primary);
       font-family: 'JetBrains Mono', monospace; border-bottom: 1px solid rgba(30,48,80,0.45);
-      white-space: nowrap;
+      white-space: nowrap; font-size: 0.75rem;
     }
     .vp-table tr:hover td { background: var(--bg-card-hover); }
     .vp-pk { color: var(--accent-blue); }
@@ -11645,7 +11645,11 @@
       font-family: 'Space Grotesk', sans-serif; font-size: 0.6rem; font-weight: 700;
       color: var(--accent-cyan);
     }
-    .vp-name { color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; font-size: 0.78rem; }
+    .vp-name {
+      color: var(--text-primary); font-family: 'Space Grotesk', sans-serif; font-size: 0.76rem;
+      display: inline-block; max-width: 108px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap; vertical-align: middle;
+    }
     .vp-name.vp-unnamed { color: var(--text-dim); font-style: italic; }
     .vp-riskpill {
       display: inline-block; min-width: 86px; text-align: center;
@@ -34898,9 +34902,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
             <option value="60">last 60 (max on-chain)</option>
           </select>
           <button class="vp-btn" id="vpRunBtn" onclick="vpRunProbe()">Run probe</button>
-          <button class="vp-btn vp-secondary vp-hidden" id="vpDeepBtn" onclick="vpDeepScan()">Deep scan (vote latency)</button>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpDeepBtn" onclick="vpDeepScan()">Re-scan vote latency</button>
           <button class="vp-btn vp-secondary vp-hidden" id="vpCsvBtn" onclick="vpDownloadCsv()">Download CSV</button>
-          <button class="vp-btn vp-secondary vp-hidden" id="vpLagBtn" onclick="vpToggleLag()">Start live lag sampling</button>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpLagBtn" onclick="vpToggleLag()">Watch live (catch stalls over time)</button>
           <span id="vpStatus">Idle.</span>
         </div>
         <div id="vpLagNote" class="vp-hidden">
@@ -34933,6 +34937,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
           <h4>Validators <span id="vpTblCount"></span></h4>
           <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
             <label class="vp-chk"><input type="checkbox" id="vpHideDelinq" checked onchange="vpToggleDelinq()"> Hide delinquent</label>
+            <label class="vp-chk">Min self stake
+              <select id="vpMinStake" class="vp-select" onchange="vpMinStakeChange()" style="padding:0.3rem 0.45rem;">
+                <option value="3000" selected>3,000+</option>
+                <option value="4000">4,000+</option>
+                <option value="5000">5,000+</option>
+                <option value="0">All</option>
+              </select>
+            </label>
             <input type="text" class="vp-filter" id="vpFilterBox" placeholder="filter by name / pubkey / IP…" oninput="vpRenderTable()">
           </div>
         </div>
@@ -34972,16 +34984,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
         lagSamples: 0,
         prevBodyOverflow: '',
         hideDelinq: true,
+        minStake: 3000,
         deepDone: false,
       };
       let vpHist = null, vpScatter = null;
+      const vpImgCache = new Map();   // iconUrl -> Image, shared across chart renders
 
       // The active comparison field: hidden delinquents are excluded from
       // percentiles AND risk pools, not just the display — otherwise dead
       // validators absorb the bottom percentiles and compress everyone
       // else's scores toward the middle.
       function activeRows() {
-        return S.hideDelinq ? S.rows.filter(r => !r.delinquent) : S.rows;
+        return S.rows.filter(r =>
+          (!S.hideDelinq || !r.delinquent) &&
+          (S.minStake <= 0 || !S.selfStakeOk || r.selfStake >= S.minStake));
       }
 
       function recomputeAndRender() {
@@ -35002,6 +35018,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (S.rows.length) recomputeAndRender();
       }
 
+      function minStakeChange() {
+        S.minStake = parseInt(document.getElementById('vpMinStake').value, 10) || 0;
+        if (S.rows.length) recomputeAndRender();
+      }
+
       // Reuse the site's hardened escapers (Issue #3); minimal fallbacks if
       // this module ever runs standalone.
       const esc   = (typeof escHtml   === 'function') ? escHtml   : s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -35011,6 +35032,31 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const el = document.getElementById('vpStatus');
         el.textContent = msg;
         el.className = isErr ? 'vp-err' : '';
+      }
+
+      // Self stake — same source and definition as the Validator Terminal:
+      // api.x1.xyz /v1/stakes (includeInactive), summed per votePubkey where
+      // stakePool == null (validator self-stake + 3rd-party direct stakers).
+      async function fetchSelfStakes() {
+        const API = 'https://api.x1.xyz', PAGE = 10000, MAX_OFFSET = 5000;
+        const sums = new Map();   // votePubkey -> BigInt lamports
+        for (let offset = 0; ; offset += PAGE) {
+          const u = new URL(API + '/v1/stakes');
+          u.searchParams.set('includeInactive', 'true');
+          u.searchParams.set('limit', String(PAGE));
+          u.searchParams.set('offset', String(offset));
+          const r = await fetch(u);
+          if (!r.ok) throw new Error('/v1/stakes HTTP ' + r.status);
+          const page = await r.json();
+          for (const s of page) {
+            if (!s || !s.votePubkey || s.stakePool) continue;   // foundation excluded
+            sums.set(s.votePubkey, (sums.get(s.votePubkey) || 0n) + BigInt(s.amount || 0));
+          }
+          if (page.length < PAGE || offset >= MAX_OFFSET) break;
+        }
+        const out = new Map();
+        for (const [k, v] of sums) out.set(k, Number(v) / 1e9);
+        return out;
       }
 
       async function rpc(method, params) {
@@ -35174,6 +35220,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               rootLagLast: null,
               stalls: 0, liveBase: null, liveEff: null,
               vlatN: 0, vlatSum: 0, vlatMax: 0,
+              selfStake: null,
             });
           }
 
@@ -35193,6 +35240,18 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const id = ids[r.nodePubkey];
             r.name = (id && id.name) ? String(id.name) : '';
             r.iconUrl = id ? safeU(id.iconUrl || '') : '';
+          }
+
+          // Self stake for the column + Min-self-stake filter.
+          S.selfStakeOk = false;
+          try {
+            setStatus('Fetching stake breakdown (self vs foundation)…');
+            const selfMap = await fetchSelfStakes();
+            for (const r of rows) r.selfStake = selfMap.get(r.votePubkey) ?? 0;
+            S.selfStakeOk = true;
+          } catch (e) {
+            console.warn('[vote probe] self-stake fetch failed, min-self-stake filter disabled:', e.message);
+            for (const r of rows) r.selfStake = null;
           }
 
           // IP sharing — map node identity → gossip IP, then count how many
@@ -35263,7 +35322,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
           document.getElementById('vpCsvBtn').classList.remove('vp-hidden');
           document.getElementById('vpLagBtn').classList.remove('vp-hidden');
           document.getElementById('vpDeepBtn').classList.remove('vp-hidden');
-          setStatus('Done. ' + all.length + ' validators, epochs ' + minEpoch + '–' + (S.currentEpoch - 1) + '.');
+          setStatus('Done. ' + all.length + ' validators, epochs ' + minEpoch + '–' + (S.currentEpoch - 1) + '. Starting latency deep scan…');
+          deepScan();   // always run — latency columns are core findings, not an extra
         } catch (e) {
           console.error('[vote probe]', e);
           setStatus('Error: ' + e.message, true);
@@ -35500,6 +35560,39 @@ Please give me the diagnostic commands to run on my server so you can help me id
           .filter(r => r.risk !== null)
           .sort((a, b) => b.risk - a.risk)
           .slice(0, 15);
+        // Draw each suspect's on-chain logo at the start of its bar.
+        // Images are cached across renders; broken/missing URLs just skip
+        // (drawImage never reads pixels, so cross-origin icons are fine).
+        const barIcons = {
+          id: 'vpBarIcons',
+          afterDatasetsDraw(chart) {
+            const { ctx, chartArea, scales } = chart;
+            if (!chartArea) return;
+            suspects.forEach((r, i) => {
+              if (!r.iconUrl) return;
+              let img = vpImgCache.get(r.iconUrl);
+              if (!img) {
+                img = new Image();
+                img.decoding = 'async';
+                vpImgCache.set(r.iconUrl, img);
+                img.onload = () => { try { chart.draw(); } catch (e) {} };
+                img.onerror = () => {};
+                img.src = r.iconUrl;
+              }
+              if (!img.complete || !img.naturalWidth) return;
+              const yc = scales.y.getPixelForValue(i);
+              const x0 = chartArea.left + 3, sz = 15;
+              try {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(x0 + sz / 2, yc, sz / 2, 0, Math.PI * 2);
+                ctx.clip();
+                ctx.drawImage(img, x0, yc - sz / 2, sz, sz);
+                ctx.restore();
+              } catch (e) { ctx.restore(); }
+            });
+          }
+        };
         if (vpScatter) vpScatter.destroy();
         vpScatter = new Chart(document.getElementById('vpScatterChart'), {
           type: 'bar',
@@ -35512,6 +35605,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               borderWidth: 1,
             }]
           },
+          plugins: [barIcons],
           options: {
             indexAxis: 'y',
             responsive: true, maintainAspectRatio: false,
@@ -35535,24 +35629,23 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const COLS = [
         { key: 'rank',        label: '#',            sortable: false },
         { key: 'name',        label: 'Validator',    left: true },
-        { key: 'votePubkey',  label: 'Vote account', left: true },
-        { key: 'risk',        label: 'Farmer risk' },
-        { key: 'ipShared',    label: 'Same IP' },
-        { key: 'stake',       label: 'Stake (XNT)' },
-        { key: 'meanEff',     label: 'Mean eff' },
-        { key: 'pctile',      label: 'Pctile' },
-        { key: 'sdEff',       label: 'σ (epochs)' },
-        { key: 'worstEff',    label: 'Worst epoch' },
-        { key: 'sparkline',   label: 'Trend', sortable: false },
-        { key: 'clockDrift',  label: 'Clock drift' },
-        { key: 'vlatMean',    label: 'Vote lat μ', deep: true },
-        { key: 'vlatMax',     label: 'Lat max', deep: true },
-        { key: 'liveEff',     label: 'Live eff', lag: true },
-        { key: 'stalls',      label: 'Stalls', lag: true },
-        { key: 'lagMean',     label: 'Lag μ', lag: true },
-        { key: 'lagSd',       label: 'Lag σ', lag: true },
-        { key: 'lagMax',      label: 'Lag max', lag: true },
-        { key: 'rootLagLast', label: 'Root lag', lag: true },
+        { key: 'votePubkey',  label: 'Vote acct',    left: true, tip: 'Vote account — hover for full address, ⧉ copies it' },
+        { key: 'risk',        label: 'Farmer risk',  tip: 'Composite likelihood of underprovisioned hardware, 0–100, relative to the visible field' },
+        { key: 'ipShared',    label: 'Same IP',      tip: 'Validators answering from this exact IP — >1 means co-located on one box/NAT' },
+        { key: 'stake',       label: 'Stake',        tip: 'Activated stake (XNT) — includes foundation delegation' },
+        { key: 'selfStake',   label: 'Self',         tip: 'Direct (non-foundation) stake: validator self-stake + 3rd-party direct stakers — stakePool = null, same definition as the Validator Terminal' },
+        { key: 'meanEff',     label: 'Mean eff',     tip: 'Average vote credits earned vs max possible across analyzed epochs' },
+        { key: 'sdEff',       label: 'σ',            tip: 'Epoch-to-epoch instability — strong boxes are steady, weak boxes wobble' },
+        { key: 'worstEff',    label: 'Worst ep',     tip: 'Their single worst epoch in the window — a validator&#39;s worst day' },
+        { key: 'clockDrift',  label: 'Clock',        tip: 'Self-reported clock vs cluster consensus, seconds. NTP-tight boxes stay within ±2s' },
+        { key: 'vlatMean',    label: 'Vote lat',     deep: true, tip: 'Mean raw vote landing latency in slots, from vote transactions — the tie-breaker' },
+        { key: 'vlatMax',     label: 'Lat max',      deep: true, tip: 'Worst observed vote latency in the scan window' },
+        { key: 'liveEff',     label: 'Live eff',     lag: true, tip: 'Efficiency over the live watch window — right now, not history' },
+        { key: 'stalls',      label: 'Stalls',       lag: true, tip: 'Sampled moments ≥32 slots behind — micro-outages invisible to credits and delinquency' },
+        { key: 'lagMean',     label: 'Lag μ',        lag: true, tip: 'Mean slots behind tip (network distance + hardware)' },
+        { key: 'lagSd',       label: 'Lag σ',        lag: true, tip: 'Lag variance — the hardware tell; distance shifts the mean, not the variance' },
+        { key: 'lagMax',      label: 'Lag max',      lag: true, tip: 'Worst sampled lag' },
+        { key: 'rootLagLast', label: 'Root lag',     lag: true, tip: 'Slots between rooted slot and tip — replay/disk pressure' },
       ];
 
       function sortVal(r, key) {
@@ -35603,7 +35696,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         document.getElementById('vpTheadRow').innerHTML = cols.map(c => {
           const arrow = S.sortKey === c.key ? ' <span class="vp-arrow">' + (S.sortDir < 0 ? '▼' : '▲') + '</span>' : '';
           const click = c.sortable === false ? '' : ' onclick="vpSetSort(\'' + c.key + '\')"';
-          return '<th class="' + (c.left ? 'vp-left' : '') + '"' + click + '>' + c.label + arrow + '</th>';
+          const tip = c.tip ? ' title="' + c.tip + '"' : '';
+          return '<th class="' + (c.left ? 'vp-left' : '') + '"' + click + tip + '>' + c.label + arrow + '</th>';
         }).join('');
 
         const filter = document.getElementById('vpFilterBox').value.trim().toLowerCase();
@@ -35657,13 +35751,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
               + (hot ? '<b>' + r.ipShared + '×</b>' : '1') + '</td>';
           }
           cells += '<td>' + Math.round(r.stake).toLocaleString() + '</td>';
+          cells += r.selfStake === null
+            ? '<td class="vp-muted" title="api.x1.xyz unavailable">—</td>'
+            : '<td>' + Math.round(r.selfStake).toLocaleString() + '</td>';
           cells += r.epochsCounted === 0
-            ? '<td class="vp-muted">no data</td><td class="vp-muted">—</td><td class="vp-muted">—</td><td class="vp-muted">—</td>'
+            ? '<td class="vp-muted">no data</td><td class="vp-muted">—</td><td class="vp-muted">—</td>'
             : '<td class="' + effClass(r.meanEff) + '">' + pct(r.meanEff) + '</td>'
-              + '<td class="vp-muted">' + r.pctile + '</td>'
               + '<td>' + pct(r.sdEff) + '</td>'
-              + '<td class="' + effClass(r.worstEff) + '" title="epoch ' + r.worstEpoch + '">' + pct(r.worstEff) + '</td>';
-          cells += '<td>' + sparkSvg(r.sparks) + '</td>';
+              + '<td class="' + effClass(r.worstEff) + '" title="epoch ' + r.worstEpoch + ' — their worst day in the window">' + pct(r.worstEff) + '</td>';
           if (r.clockDrift === null) {
             cells += '<td class="vp-muted">—</td>';
           } else {
@@ -35851,7 +35946,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // ── CSV export ──────────────────────────────────────
       function downloadCsv() {
         const q = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
-        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','clock_drift_s','stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples','vote_lat_n','vote_lat_mean_slots','vote_lat_max_slots'];
+        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','clock_drift_s','stake_xnt','self_stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples','vote_lat_n','vote_lat_mean_slots','vote_lat_max_slots'];
         const lines = [head.join(',')];
         for (const r of S.rows) {
           const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : '';
@@ -35861,7 +35956,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             r.riskLowConf ? 'true' : 'false',
             r.ip || '', r.ipShared === null ? '' : r.ipShared, r.subnetShared === null ? '' : r.subnetShared,
             r.clockDrift === null ? '' : r.clockDrift.toFixed(2),
-            r.stake.toFixed(4), r.commission, r.delinquent,
+            r.stake.toFixed(4), r.selfStake === null ? '' : r.selfStake.toFixed(4), r.commission, r.delinquent,
             r.epochsCounted, r.meanEff.toFixed(6), r.sdEff.toFixed(6), r.worstEff.toFixed(6),
             r.worstEpoch === null ? '' : r.worstEpoch, r.pctile === null ? '' : r.pctile,
             r.lagN, r.lagN ? r.lagMean.toFixed(2) : '', lagSd === '' ? '' : lagSd.toFixed(2),
@@ -35888,6 +35983,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       window.vpCopyPk      = copyPk;
       window.vpRenderTable = renderTable;
       window.vpToggleDelinq = toggleDelinq;
+      window.vpMinStakeChange = minStakeChange;
       window.vpDeepScan    = deepScan;
     })();
   </script>
