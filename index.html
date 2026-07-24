@@ -35224,23 +35224,21 @@ Please give me the diagnostic commands to run on my server so you can help me id
             // one box (or hit by one incident) do, exactly. Only signatures
             // OUTSIDE the saturated healthy band count (the ≥0.997-everywhere
             // crowd collides by the hundreds and proves nothing).
-            let trajSig = null;
-            {
-              const sigEffs = [];
-              for (const e of (v.epochCredits || [])) {
-                const ep = Number(Array.isArray(e) ? e[0] : e.epoch);
-                if (ep < S.currentEpoch - 6 || ep >= S.currentEpoch) continue;
-                const cred = Number(Array.isArray(e) ? e[1] : e.credits);
-                const prev = Number(Array.isArray(e) ? e[2] : e.previousCredits);
-                sigEffs.push({ ep, eff: Math.min(1, (cred - prev) / (S.slotsPerEpoch * S.maxCreditsPerSlot)) });
-              }
-              sigEffs.sort((a, b) => a.ep - b.ep);
-              if (sigEffs.length >= 4) {
-                const vals = sigEffs.map(x => x.eff);
-                const distinctive = Math.min(...vals) <= 0.997 || (Math.max(...vals) - Math.min(...vals)) >= 0.004;
-                if (distinctive) trajSig = sigEffs.map(x => x.ep + ':' + x.eff.toFixed(4)).join('|');
-              }
+            // Raw per-epoch trajectory. Distinctiveness is decided LATER,
+            // against the field's own median trajectory — an absolute
+            // threshold here was the v4 bug: nearly every validator dips to
+            // ~0.9949 in some epoch, so the whole healthy field qualified,
+            // collided into giant "twin" groups, and inherited coloc-grade
+            // evidence it had not earned.
+            const trajVals = [];
+            for (const e of (v.epochCredits || [])) {
+              const ep = Number(Array.isArray(e) ? e[0] : e.epoch);
+              if (ep < S.currentEpoch - 6 || ep >= S.currentEpoch) continue;
+              const cred = Number(Array.isArray(e) ? e[1] : e.credits);
+              const prev = Number(Array.isArray(e) ? e[2] : e.previousCredits);
+              trajVals.push({ ep, eff: Math.min(1, (cred - prev) / (S.slotsPerEpoch * S.maxCreditsPerSlot)) });
             }
+            trajVals.sort((a, b) => a.ep - b.ep);
             const n = effs.length;
             let mean = 0, sd = 0, worst = null;
             if (n > 0) {
@@ -35272,7 +35270,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               version: null,
               selfStake: null,
               firstEpoch: firstEpoch,
-              trajSig: trajSig, twinN: 0, fleetMortality: null, subnet16Shared: null,
+              trajVals: trajVals, trajSig: null, twinN: 0, fleetMortality: null, subnet16Shared: null,
               benchWin: 0, benchDN: 0, benchDSum: 0, benchTxN: 0, benchTxSum: 0,
               benchPace: null, benchFill: null, hwScore: null,
               nameGroup: 1, cohortCount: 1, stakeCohort: 1, styleGroup: 1, fleetN: 0,
@@ -35347,6 +35345,45 @@ Please give me the diagnostic commands to run on my server so you can help me id
             r.subnet16Shared = r.subnet16 ? subnet16Count.get(r.subnet16) : null;
           }
 
+          // ── Trajectory distinctiveness, measured against the FIELD ──
+          // On a quiet chain every healthy validator tracks the same
+          // per-epoch efficiency curve, so a shared curve proves nothing.
+          // Only a shared DEPARTURE from that curve is evidence: identical
+          // damage, epoch after epoch, at 4-decimal precision. That is what
+          // independent machines cannot fake.
+          (function assignTrajSignatures() {
+            const perEpoch = new Map();   // epoch -> [eff…]
+            for (const r of rows) {
+              for (const t of (r.trajVals || [])) {
+                if (!(t.eff > 0.5)) continue;   // skip dead/absent epochs
+                if (!perEpoch.has(t.ep)) perEpoch.set(t.ep, []);
+                perEpoch.get(t.ep).push(t.eff);
+              }
+            }
+            const med = new Map();
+            for (const [ep, arr] of perEpoch) {
+              if (arr.length < 10) continue;
+              const a = arr.slice().sort((x, y) => x - y);
+              med.set(ep, a[Math.floor(a.length / 2)]);
+            }
+            for (const r of rows) {
+              const tv = r.trajVals || [];
+              if (tv.length < 4) continue;
+              let big = 0, maxDev = 0;
+              for (const t of tv) {
+                const m = med.get(t.ep);
+                if (m === undefined) continue;
+                const dev = m - t.eff;                 // how far BELOW the field
+                if (dev >= 0.010) big++;
+                if (dev > maxDev) maxDev = dev;
+              }
+              // Distinctive = repeated meaningful damage, or one severe epoch.
+              if (big >= 2 || maxDev >= 0.025) {
+                r.trajSig = tv.map(t => t.ep + ':' + t.eff.toFixed(4)).join('|');
+              }
+            }
+          })();
+
           // Fleet evidence (soft): name template + birth cohort.
           // Name key strips digits/separators so "Shaka1..Shaka5" groups —
           // but "X1-KITANA" vs "X1-GIRLS" stay distinct (on this chain
@@ -35413,8 +35450,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
             if (r.trajSig) sigCounts.set(r.trajSig, (sigCounts.get(r.trajSig) || 0) + 1);
           }
           for (const r of rows) {
-            r.twinN = r.trajSig ? (sigCounts.get(r.trajSig) || 1) : 1;
-            if (r.twinN < 2) r.twinN = 0;
+            let n = r.trajSig ? (sigCounts.get(r.trajSig) || 1) : 1;
+            // A "twin group" larger than this is chain-wide behaviour
+            // (a network-level incident), not co-location — discard it.
+            if (n > 150) n = 1;
+            r.twinN = n < 2 ? 0 : n;
           }
 
           // Fleet mortality: a fleet's death rate transfers to its living
@@ -35435,18 +35475,35 @@ Please give me the diagnostic commands to run on my server so you can help me id
             addMort('s16:' + (r.subnet16 || ''), r.delinquent);
             addMort('tw:' + (r.trajSig || ''), r.delinquent);
           }
+          // Wilson 95% lower bound, not the raw rate: 2 deaths out of 8 is
+          // noise (lower bound ~0.07, scores nothing) while 22 out of 41 is
+          // a finding (lower bound ~0.39). This is what stops a small group
+          // with one unlucky sibling from being treated like a dying fleet.
+          const wilsonLow = (k, n) => {
+            if (n < 8) return null;
+            const z = 1.96, p = k / n, d = 1 + z * z / n;
+            const c = (p + z * z / (2 * n)) / d;
+            const m = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d;
+            return Math.max(0, c - m);
+          };
           for (const r of rows) {
-            let worst = null;
-            const keys = ['nm:' + (nameKeyOf(r.name) || ''), 'st:' + (styleKeyOf(r.name) || ''), 's16:' + (r.subnet16 || ''), 'tw:' + (r.trajSig || '')];
-            for (const k of keys) {
+            let worst = null, worstLabel = null;
+            const keys = [
+              ['name group', 'nm:' + (nameKeyOf(r.name) || '')],
+              ['name style', 'st:' + (styleKeyOf(r.name) || '')],
+              ['/16 subnet', 's16:' + (r.subnet16 || '')],
+              ['trajectory group', 'tw:' + (r.trajSig || '')]
+            ];
+            for (const [label, k] of keys) {
               if (k.endsWith(':')) continue;
               const g = mortGroups.get(k);
-              if (g && g.n >= 4) {
-                const rate = g.dead / g.n;
-                if (worst === null || rate > worst) worst = rate;
-              }
+              if (!g) continue;
+              const lb = wilsonLow(g.dead, g.n);
+              if (lb === null) continue;
+              if (worst === null || lb > worst) { worst = lb; worstLabel = label + ' (' + g.dead + '/' + g.n + ' delinquent)'; }
             }
             r.fleetMortality = worst;
+            r.fleetMortalityWhy = worstLabel;
           }
 
           // Clock drift — validators self-report a timestamp with each vote.
@@ -36071,7 +36128,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             if (r.nameGroup >= 3) fleetBits.push(r.nameGroup + ' matching name pattern');
             if (r.styleGroup >= 4 && r.styleGroup <= 30) fleetBits.push(r.styleGroup + ' matching name style');
             if (r.cohortCount >= 3) fleetBits.push(r.cohortCount + ' born in epoch ' + r.firstEpoch);
-            if (r.fleetMortality !== null && r.fleetMortality >= 0.12) fleetBits.push(Math.round(100 * r.fleetMortality) + '% of this validator\u2019s fleet group is delinquent');
+            if (r.fleetMortality !== null && r.fleetMortality >= 0.12 && r.fleetMortalityWhy) fleetBits.push('fleet mortality: ' + esc(r.fleetMortalityWhy));
             const fleetTip = fleetBits.length ? ' &middot; ' + fleetBits.join(', ') : '';
             if (r.ipShared > 1) {
               cells += '<td class="vp-eff-bad" title="' + esc(r.ip) + fleetTip + '"><b>' + r.ipShared + '×</b></td>';
