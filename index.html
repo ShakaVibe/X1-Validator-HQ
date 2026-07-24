@@ -34917,7 +34917,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </select>
           <button class="vp-btn" id="vpRunBtn" onclick="vpRunProbe()">Run probe</button>
           <button class="vp-btn vp-secondary vp-hidden" id="vpDeepBtn" onclick="vpDeepScan()">Re-scan vote latency</button>
-          <button class="vp-btn vp-secondary vp-hidden" id="vpBenchBtn" onclick="vpLeaderBench()">Leader benchmark (CPU test)</button>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpBenchBtn" onclick="vpLeaderBench()">Re-run CPU benchmark</button>
           <button class="vp-btn vp-secondary vp-hidden" id="vpCsvBtn" onclick="vpDownloadCsv()">Download CSV</button>
           <button class="vp-btn vp-secondary vp-hidden" id="vpLagBtn" onclick="vpToggleLag()">Watch live (catch stalls over time)</button>
           <span id="vpStatus">Idle.</span>
@@ -34970,7 +34970,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </table>
         </div>
         <div class="vp-methodology">
-          <b>Farmer risk v4</b> combines evidence with <b>noisy-OR</b> rather than averaging: P = 1 &minus; &Pi;(1 &minus; w&#7522;&middot;v&#7522;), so independent signals compound and silent ones contribute nothing. (Averaging was the earlier flaw &mdash; one damning signal divided by a dozen quiet ones came out a whisper.) Each signal takes the WORSE of (a) an absolute anchor and (b) a robust outlier score &mdash; how many noise-widths (median&plusmn;MAD, floored at measurement resolution) the value sits above the field&#39;s own baseline. Identical hardware still scores identically, a uniform field still scores ~0, but validators running 3&ndash;10&times; the field&#39;s jitter baseline now register even when the chain is too quiet for absolute thresholds to trip. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>slow block production 22%</b> and <b>thin blocks 14%</b> (leader benchmark &mdash; the only measurement of the validator doing <i>expensive</i> work under a deadline; taken inside its own 4-slot window so geography cancels), <b>vote jitter tail 14%</b> (votes missing the next slot &mdash; the shared-vCPU fingerprint), <b>arrival jitter 12%</b> (&sigma; of position among each block&#39;s votes &mdash; sub-slot latency stability that never saturates; distance shifts the mean, only unstable hardware inflates the &sigma;), <b>vote cadence 12%</b> (missing/bunched vote transactions), <b>epoch-boundary stress 12%</b> (late votes during the ~400 slots after rollover &mdash; the quiet chain&#39;s only guaranteed load spike), <b>slot-1 fumbles 8%</b> + <b>skips 6%</b> (leader-window forensics over ~4.5h &mdash; slow boxes disproportionately miss the first slot of their window), <b>clock drift 4%</b>, <b>live stalls/lag 14%</b> (when the live watch has &ge;5 min). <b>Trajectory twins</b> (identical multi-epoch damage pattern at 4 decimals, outside the saturated band) score coloc-grade inside the co-location component &mdash; independent machines never share exact damage. <b>Fleet mortality 15%</b> (standalone): the delinquency rate of this validator&#39;s fleet group (name / style / /16 / trajectory groups of &ge;4) &mdash; a half-dead fleet indicts its healthy-looking survivors, which is precisely what snapshot metrics can never show. <b>Fleet evidence 15%</b> (matching name pattern after digit-stripping, matching name STYLE template &mdash; e.g. one scheme like "X1-" + all-caps word across many different words, identical birth epoch, or &ge;3 in one /24 subnet &mdash; each capped, since a signal shared by half the chain is demographics, not a fleet; identical self-stake is recorded in the CSV as corroboration but deliberately excluded from scoring) is an <i>amplifier</i>, scaled by the hardware subscore &mdash; a fleet of good boxes gains ~nothing, a fleet of weak boxes gets pushed hard. Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
+          <b>Farmer risk v4</b> combines evidence with <b>noisy-OR</b> rather than averaging: P = 1 &minus; &Pi;(1 &minus; w&#7522;&middot;v&#7522;), so independent signals compound and silent ones contribute nothing. (Averaging was the earlier flaw &mdash; one damning signal divided by a dozen quiet ones came out a whisper.) Each signal takes the WORSE of (a) an absolute anchor and (b) a robust outlier score &mdash; how many noise-widths (median&plusmn;MAD, floored at measurement resolution) the value sits above the field&#39;s own baseline. Identical hardware still scores identically, a uniform field still scores ~0, but validators running 3&ndash;10&times; the field&#39;s jitter baseline now register even when the chain is too quiet for absolute thresholds to trip. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>Slow block production (0.85)</b> and <b>thin blocks (0.50)</b> dominate: the leader benchmark auto-runs with every probe and is the only measurement of the validator doing <i>expensive</i> work under a deadline, taken inside its own 4-slot window so geography cancels &mdash; hardware class is the point of the whole exercise, so it carries the most evidence any signal can. Then <b>vote jitter tail 14%</b> (votes missing the next slot &mdash; the shared-vCPU fingerprint), <b>arrival jitter 12%</b> (&sigma; of position among each block&#39;s votes &mdash; sub-slot latency stability that never saturates; distance shifts the mean, only unstable hardware inflates the &sigma;), <b>vote cadence 12%</b> (missing/bunched vote transactions), <b>epoch-boundary stress 12%</b> (late votes during the ~400 slots after rollover &mdash; the quiet chain&#39;s only guaranteed load spike), <b>slot-1 fumbles 8%</b> + <b>skips 6%</b> (leader-window forensics over ~4.5h &mdash; slow boxes disproportionately miss the first slot of their window), <b>clock drift 4%</b>, <b>live stalls/lag 14%</b> (when the live watch has &ge;5 min). <b>Trajectory twins</b> (identical multi-epoch damage pattern at 4 decimals, outside the saturated band) score coloc-grade inside the co-location component &mdash; independent machines never share exact damage. <b>Fleet mortality 15%</b> (standalone): the delinquency rate of this validator&#39;s fleet group (name / style / /16 / trajectory groups of &ge;4) &mdash; a half-dead fleet indicts its healthy-looking survivors, which is precisely what snapshot metrics can never show. <b>Fleet evidence 15%</b> (matching name pattern after digit-stripping, matching name STYLE template &mdash; e.g. one scheme like "X1-" + all-caps word across many different words, identical birth epoch, or &ge;3 in one /24 subnet &mdash; each capped, since a signal shared by half the chain is demographics, not a fleet; identical self-stake is recorded in the CSV as corroboration but deliberately excluded from scoring) is an <i>amplifier</i>, scaled by the hardware subscore &mdash; a fleet of good boxes gains ~nothing, a fleet of weak boxes gets pushed hard. Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
         </div>
       </div>
 
@@ -35641,14 +35641,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
           // Hardware components first — these also feed the fleet amplifier.
           const hw = [];
           const pushHw = (label, w, v) => { if (v !== null) hw.push({ label, w, v }); };
-          pushHw('efficiency', 0.45, Math.max(
+          pushHw('efficiency', 0.35, Math.max(
             anchored(refEff - r.meanEff, 0.005, 0.08) || 0,
             zb(refEff - r.meanEff, stEffDef, 0.0015, 3, 9) || 0));
-          pushHw('instability \u03c3', 0.45, Math.max(
+          pushHw('instability \u03c3', 0.35, Math.max(
             anchored(r.sdEff, 0.015, 0.12) || 0,
             zb(r.sdEff, stSd, 0.0006) || 0));
-          pushHw('worst epoch', 0.30, anchored(refEff - r.worstEff, 0.02, 0.25));
-          pushHw('clock drift', 0.20, r.clockDrift === null ? null : anchored(Math.abs(r.clockDrift), 2, 30));
+          pushHw('worst epoch', 0.25, anchored(refEff - r.worstEff, 0.02, 0.25));
+          pushHw('clock drift', 0.15, r.clockDrift === null ? null : anchored(Math.abs(r.clockDrift), 2, 30));
           if (S.deepDone && r.vlatN >= 10) {
             // Latency is integer slots, so the MEAN saturates at 1.00 on a
             // quiet chain. The TAIL — fraction of votes that miss the next
@@ -35718,14 +35718,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const pv = Math.max(
               anchored(r.benchPace - stPace.med, 0.04, 0.30) || 0,
               zb(r.benchPace, stPace, 0.02) || 0);
-            pushHw('slow block production', 0.60, pv);
+            pushHw('slow block production', 0.85, pv);
             prodComps.push({ w: 0.6, v: pv });
           }
           if (S.benchDone && r.benchFill !== null && stFill) {
             const fv = Math.max(
               anchored(1 - r.benchFill, 0.06, 0.45) || 0,
               zb(-r.benchFill, stFill, 0.03) || 0);
-            pushHw('thin blocks', 0.35, fv);
+            pushHw('thin blocks', 0.50, fv);
             prodComps.push({ w: 0.4, v: fv });
           }
           // hwScore = production-only class when the benchmark has run,
@@ -36633,7 +36633,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
           renderCharts();   // top-suspects re-ranks with latency-weighted scores
           renderTable();
           const withLat = S.rows.filter(r => r.vlatN >= 5).length;
-          setStatus('Deep scan done: ' + produced + ' blocks over ' + SLOTS + ' slots, latency for ' + withLat + ' validators. Risk re-weighted (45% vote-tx latency).');
+          setStatus('Deep scan done (' + produced + ' blocks, latency for ' + withLat + ' validators). Starting CPU benchmark…');
+          // The benchmark is the only signal measuring EXPENSIVE work —
+          // it always runs, even though it is the slowest stage.
+          await leaderBench();
         } catch (e) {
           console.error('[vote probe] deep scan', e);
           setStatus('Deep scan error: ' + e.message, true);
