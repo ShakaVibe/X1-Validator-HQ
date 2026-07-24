@@ -11662,6 +11662,20 @@
     .vp-r3 { background: rgba(240,185,11,0.12); color: var(--accent-gold);  border-color: rgba(240,185,11,0.35); }
     .vp-r4 { background: rgba(255,171,0,0.14);  color: var(--warning);      border-color: rgba(255,171,0,0.4); }
     .vp-r5 { background: rgba(255,82,82,0.16);  color: var(--danger);       border-color: rgba(255,82,82,0.45); }
+    .vp-suspects { display: flex; flex-direction: column; gap: 0.3rem; max-height: 300px; overflow-y: auto; padding-right: 2px; }
+    .vp-sus-row {
+      display: flex; align-items: center; gap: 0.55rem;
+      padding: 0.32rem 0.5rem; border-radius: 8px; cursor: pointer;
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      transition: background 0.15s ease;
+    }
+    .vp-sus-row:hover { background: var(--bg-card-hover); }
+    .vp-sus-rank { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-dim); width: 1.3rem; text-align: right; flex-shrink: 0; }
+    .vp-sus-name {
+      font-size: 0.78rem; color: var(--text-primary); flex: 1; min-width: 0;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .vp-sus-why { font-size: 0.66rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 38%; flex-shrink: 0; }
     .vp-methodology { font-size: 0.74rem; color: var(--text-dim); margin-top: 0.6rem; max-width: 110ch; line-height: 1.45; }
     .vp-methodology b { color: var(--text-secondary); }
     .vp-foot { color: var(--text-dim); font-size: 0.72rem; margin-top: 1.5rem; font-family: 'JetBrains Mono', monospace; }
@@ -34927,8 +34941,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
           <div class="vp-chart-holder"><canvas id="vpHistChart"></canvas></div>
         </div>
         <div class="vp-panel">
-          <h4>Top suspects <span>&mdash; highest farmer risk, updates as lag/deep-scan data lands</span></h4>
-          <div class="vp-chart-holder"><canvas id="vpScatterChart"></canvas></div>
+          <h4>Top suspects <span>&mdash; highest farmer risk · click a row to filter the table</span></h4>
+          <div id="vpSuspectList" class="vp-suspects"></div>
         </div>
       </div>
 
@@ -34955,7 +34969,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </table>
         </div>
         <div class="vp-methodology">
-          <b>Farmer risk</b> is a percentile composite relative to the current field, 0&ndash;100: with credits history only it weighs <b>vote-efficiency rank 55%</b>, <b>worst-epoch sag 25%</b>, <b>epoch-to-epoch variance 20%</b>. Once the live lag sampler has &ge;5 minutes of data, the weights become <b>eff 35 / worst 15 / variance 10 / lag &sigma; 25 / lag max 10 / root lag 5</b> &mdash; lag variance and max isolate hardware from geography, since network distance shifts the mean but not the variance. A <b>~</b> marks scores resting on fewer than 3 epochs of data. This score ranks who is <i>most consistent with underprovisioned hardware</i>; it is a lead for investigation, not proof of farming. <b>Same IP</b> is deliberately kept out of the score: it is a co-location signal, not a hardware signal &mdash; exact matches mean multiple validators behind one machine/NAT; the tooltip also shows /24 subnet neighbors. High risk <i>plus</i> a shared IP is the strongest combined read. After a <b>Deep scan</b>, raw per-vote landing latency (parsed from vote transactions, before the TVC grace period rounds it into credits) takes <b>45%</b> of the final score, with the prior composite scaled to 55% &mdash; this is the tie-breaker when credit histories all look alike.
+          <b>Farmer risk v2</b> uses absolute anchored scoring: each signal maps a raw measurement onto fixed thresholds, so identical hardware scores identically and a high score requires actually-bad numbers, not just a bad rank. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>raw vote latency 15%</b> (auto deep scan), <b>clock drift 5%</b>, <b>live stalls/lag 15%</b> (when the live watch has &ge;5 min). Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
         </div>
       </div>
 
@@ -34987,7 +35001,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         minStake: 3000,
         deepDone: false,
       };
-      let vpHist = null, vpScatter = null;
+      let vpHist = null;
       const vpImgCache = new Map();   // iconUrl -> Image, shared across chart renders
 
       // The active comparison field: hidden delinquents are excluded from
@@ -35342,69 +35356,71 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return sortedAsc[lo] + (sortedAsc[hi] - sortedAsc[lo]) * (pos - lo);
       }
 
-      // ── FARMER RISK ─────────────────────────────────────
-      // Composite of hardware signals, expressed as a percentile-based score
-      // 0–100 relative to the current field. NOT proof of anything — a
-      // ranking of "how consistent with underprovisioned hardware."
-      //
-      // Credits-only weights:   55% vote-eff rank, 25% worst-epoch sag,
-      //                         20% epoch-to-epoch variance.
-      // With ≥5min lag samples: 35% eff, 15% worst, 10% variance,
-      //                         25% lag σ, 10% lag max, 5% root lag.
-      // (Lag variance/max are weighted because they isolate hardware from
-      // geography — distance shifts the mean, not the variance.)
-      function pctRanks(getter) {
-        const arr = activeRows()
-          .filter(r => r.epochsCounted > 0)
-          .map(r => ({ r, v: getter(r) }))
-          .filter(x => x.v !== null && x.v !== undefined && isFinite(x.v));
-        arr.sort((a, b) => a.v - b.v);
-        const n = Math.max(1, arr.length - 1);
-        const m = new Map();
-        arr.forEach((x, i) => m.set(x.r, 100 * i / n));
-        return m;
+      // ── FARMER RISK v2 — absolute anchored scoring ─────
+      // The old percentile model manufactured separation in a tightly
+      // clustered field (identical boxes landed in different tiers; the
+      // whole top-15 pinned near 95+). Each component now maps a RAW
+      // measurement onto fixed anchors — identical hardware scores
+      // identically, and a high score requires actually-bad numbers:
+      //   coloc  25%  same-IP count          1->0, 2->70, 3->85, >=4->100
+      //   eff    20%  deficit vs field p90   <=0.5pt->0, >=8pt->100
+      //   sd     20%  epoch sigma            <=1.5%->0, >=12%->100
+      //   worst  10%  worst-epoch sag vs p90 <=2pt->0, >=25pt->100
+      //   lat    15%  mean vote latency      <=1.3 slots->0, >=4->100  (deep scan)
+      //   clock   5%  |drift| seconds        <=2s->0, >=30s->100
+      //   live   15%  worst of lag sigma / stalls / lag max            (live watch)
+      // Weights renormalize over the components that have data.
+      function anchored(v, good, bad) {
+        if (v === null || v === undefined || !isFinite(v)) return null;
+        return 100 * Math.max(0, Math.min(1, (v - good) / (bad - good)));
       }
 
       function computeRisk() {
         const act = activeRows();
         const withData = act.filter(r => r.epochsCounted > 0);
-        if (withData.length < 2) { S.rows.forEach(r => { r.risk = null; }); return; }
-        const pEff   = pctRanks(r => r.meanEff);    // low rank = worst eff
-        const pWorst = pctRanks(r => r.worstEff);
-        const pSd    = pctRanks(r => r.sdEff);      // high rank = most unstable
-        const lagReady = S.lagSamples >= 30;        // ~5 min of samples
-        let pLagSd = null, pLagMax = null, pRoot = null;
-        if (lagReady) {
-          pLagSd  = pctRanks(r => r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : null);
-          pLagMax = pctRanks(r => r.lagN > 0 ? r.lagMax : null);
-          pRoot   = pctRanks(r => r.rootLagLast);
-        }
-        for (const r of act) {
-          if (r.epochsCounted === 0) { r.risk = null; continue; }
-          const riskEff   = 100 - (pEff.get(r)   ?? 50);
-          const riskWorst = 100 - (pWorst.get(r) ?? 50);
-          const riskSd    = pSd.get(r) ?? 50;
-          let score;
+        for (const r of S.rows) { r.risk = null; r.riskWhy = ''; }
+        if (withData.length < 2) return;
+
+        // Robust top anchor: the field's p90 efficiency — "what good looks
+        // like on this chain right now", immune to single outliers.
+        const effSorted = withData.map(r => r.meanEff).sort((a, b) => a - b);
+        const refEff = quantile(effSorted, 0.90);
+        const lagReady = S.lagSamples >= 30;
+
+        for (const r of withData) {
+          const comps = [];
+          const push = (label, w, v) => { if (v !== null) comps.push({ label, w, v }); };
+
+          push(r.ipShared > 1 ? 'shared IP ' + r.ipShared + '\u00d7' : 'shared IP', 0.25,
+            r.ipShared === null ? null : (r.ipShared <= 1 ? 0 : r.ipShared === 2 ? 70 : r.ipShared === 3 ? 85 : 100));
+          push('efficiency', 0.20, anchored(refEff - r.meanEff, 0.005, 0.08));
+          push('instability \u03c3', 0.20, anchored(r.sdEff, 0.015, 0.12));
+          push('worst epoch', 0.10, anchored(refEff - r.worstEff, 0.02, 0.25));
+          push('clock drift', 0.05, r.clockDrift === null ? null : anchored(Math.abs(r.clockDrift), 2, 30));
+          if (S.deepDone && r.vlatN >= 10) {
+            push('vote latency', 0.15, anchored(r.vlatSum / r.vlatN, 1.3, 4));
+          }
           if (lagReady && r.lagN > 1) {
-            score = 0.35 * riskEff + 0.15 * riskWorst + 0.10 * riskSd
-                  + 0.25 * (pLagSd.get(r)  ?? 50)
-                  + 0.10 * (pLagMax.get(r) ?? 50)
-                  + 0.05 * (pRoot.get(r)   ?? 50);
-          } else {
-            score = 0.55 * riskEff + 0.25 * riskWorst + 0.20 * riskSd;
+            const lagSd = Math.sqrt(r.lagM2 / (r.lagN - 1));
+            const live = Math.max(
+              anchored(lagSd, 2, 20) || 0,
+              r.stalls > 0 ? Math.min(100, 60 + 10 * r.stalls) : 0,
+              anchored(r.lagMax, 16, 150) || 0
+            );
+            push('live stalls/lag', 0.15, live);
           }
-          r.risk = Math.round(score);
+
+          const wSum = comps.reduce((s, c) => s + c.w, 0);
+          if (!wSum) continue;
+          r.risk = Math.round(comps.reduce((s, c) => s + c.w * c.v, 0) / wSum);
           r.riskLowConf = r.epochsCounted < 3;
-        }
-        // Deep-scan blend: raw vote-tx latency is the finest hardware signal
-        // we have (measured before TVC grace rounding), so once available it
-        // takes 45% of the final score.
-        if (S.deepDone) {
-          const pVlat = pctRanks(r => r.vlatN >= 10 ? r.vlatSum / r.vlatN : null);
-          for (const r of act) {
-            if (r.risk === null || r.vlatN < 10) continue;
-            r.risk = Math.round(0.55 * r.risk + 0.45 * (pVlat.get(r) ?? 50));
-          }
+
+          const drivers = comps
+            .filter(c => c.v >= 25)
+            .sort((a, b) => b.w * b.v - a.w * a.v)
+            .slice(0, 2)
+            .map(c => c.label);
+          r.riskWhy = drivers.length ? 'driven by: ' + drivers.join(', ') : 'no strong negative signals';
         }
       }
 
@@ -35416,37 +35432,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
                 : r.risk >= 20 ? ['LOW', 'vp-r2']
                 :                ['VERY LOW', 'vp-r1'];
         const conf = r.riskLowConf ? ' · thin data (&lt;3 epochs)' : '';
-        const basis = (S.lagSamples >= 30 ? 'credits + live lag' : 'credits history')
-          + (S.deepDone && r.vlatN >= 10 ? ' + vote-tx latency' : '');
-        return '<span class="vp-riskpill ' + t[1] + '" title="Farmer risk ' + r.risk + '/100 (' + basis + ')' + conf + ' — percentile composite, relative to current field, not proof">'
+        return '<span class="vp-riskpill ' + t[1] + '" title="Farmer risk ' + r.risk + '/100 — ' + esc(r.riskWhy || '') + conf + '. Absolute anchored score: identical hardware scores identically.">'
           + r.risk + (r.riskLowConf ? '~' : '') + ' ' + t[0] + '</span>';
-      }
-
-      function renderVerdict(withData) {
-        const el = document.getElementById('vpVerdict');
-        const effs = withData.map(r => r.meanEff);
-        const med = quantile(effs, 0.5), p10 = quantile(effs, 0.10), p90 = quantile(effs, 0.90);
-        const spread = p90 - p10;
-        el.style.display = 'block';
-        if (S.tvc) {
-          el.className = 'vp-tvc';
-          document.getElementById('vpVerdictTitle').textContent = '✓ Timely Vote Credits are ACTIVE on X1 (up to 16 credits/slot)';
-          document.getElementById('vpVerdictBody').innerHTML =
-            'Vote latency is being priced into credits, so this metric is a usable hardware signal. ' +
-            'Median efficiency <b>' + pct(med) + '</b>, p10 <b>' + pct(p10) + '</b>, p90 <b>' + pct(p90) + '</b> ' +
-            '&mdash; a p90&ndash;p10 spread of <b>' + pct(spread) + '</b>. ' +
-            (spread > 0.02
-              ? 'The field separates: the bottom decile is measurably slower than the top. Sort the table by mean efficiency and inspect the bottom cluster.'
-              : 'The spread is narrow &mdash; either the field is genuinely uniform or this signal alone won\u2019t separate it. Lean on lag variance (live sampler) and leader-window forensics next.');
-        } else {
-          el.className = 'vp-pretvc';
-          document.getElementById('vpVerdictTitle').textContent = '⚠ Timely Vote Credits NOT detected (max ≈ 1 credit/slot)';
-          document.getElementById('vpVerdictBody').innerHTML =
-            'Credits appear to pay a flat rate per voted slot, so vote <i>latency</i> is not priced in &mdash; only fully missed votes cost credits. ' +
-            'Efficiency below is "share of slots successfully voted on," a weaker but still nonzero signal. ' +
-            'Median <b>' + pct(med) + '</b>, p10 <b>' + pct(p10) + '</b>. ' +
-            'For real hardware separation, the live lag sampler (variance + max lag) and leader-window analysis will have to carry the load.';
-        }
       }
 
       function renderStats(withData) {
@@ -35545,90 +35532,48 @@ Please give me the diagnostic commands to run on my server so you can help me id
               } }
             },
             scales: {
-              x: { grid: { color: vpGrid }, ticks: { color: vpTick, callback: v => v + '%', font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'mean vote efficiency →  (weak boxes drift left)', color: vpTick } },
-              y: { grid: { color: vpGrid }, ticks: { color: vpTick, callback: v => v + '%', font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'epoch σ  (instability ↑)', color: vpTick } }
+              x: {
+                min: Math.max(0, Math.floor(Math.min(...act.map(r => r.meanEff)) * 100) - 1),
+                max: 100,
+                grid: { color: vpGrid }, ticks: { color: vpTick, callback: v => v + '%', font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'mean vote efficiency →  (weak boxes drift left)', color: vpTick } },
+              y: {
+                min: 0,
+                max: Math.ceil(Math.max(0.02, ...act.map(r => r.sdEff)) * 100) + 2,
+                grid: { color: vpGrid }, ticks: { color: vpTick, callback: v => v + '%', font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'epoch σ  (instability ↑)', color: vpTick } }
             }
           },
           plugins: [medianLines]
         });
 
-        // ── Chart 2: TOP SUSPECTS ─────────────────────────
-        // The mission, as a picture: the 15 highest farmer-risk validators,
-        // named, ranked, colored by tier. Re-renders as lag sampling and
-        // deep-scan data re-weight the score.
+        // ── TOP SUSPECTS list ─────────────────────────────
+        // The mission as a readable list: logo, name, why, risk pill.
+        // Clicking a row filters the table to that validator.
         const suspects = act
           .filter(r => r.risk !== null)
           .sort((a, b) => b.risk - a.risk)
-          .slice(0, 15);
-        // Draw each suspect's on-chain logo at the start of its bar.
-        // Images are cached across renders; broken/missing URLs just skip
-        // (drawImage never reads pixels, so cross-origin icons are fine).
-        const barIcons = {
-          id: 'vpBarIcons',
-          afterDatasetsDraw(chart) {
-            const { ctx, chartArea, scales } = chart;
-            if (!chartArea) return;
-            suspects.forEach((r, i) => {
-              if (!r.iconUrl) return;
-              let img = vpImgCache.get(r.iconUrl);
-              if (!img) {
-                img = new Image();
-                img.decoding = 'async';
-                vpImgCache.set(r.iconUrl, img);
-                img.onload = () => { try { chart.draw(); } catch (e) {} };
-                img.onerror = () => {};
-                img.src = r.iconUrl;
-              }
-              if (!img.complete || !img.naturalWidth) return;
-              const yc = scales.y.getPixelForValue(i);
-              const x0 = chartArea.left + 3, sz = 15;
-              try {
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(x0 + sz / 2, yc, sz / 2, 0, Math.PI * 2);
-                ctx.clip();
-                ctx.drawImage(img, x0, yc - sz / 2, sz, sz);
-                ctx.restore();
-              } catch (e) { ctx.restore(); }
-            });
-          }
-        };
-        if (vpScatter) vpScatter.destroy();
-        vpScatter = new Chart(document.getElementById('vpScatterChart'), {
-          type: 'bar',
-          data: {
-            labels: suspects.map(r => (r.name || r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4)).slice(0, 22)),
-            datasets: [{
-              data: suspects.map(r => r.risk),
-              backgroundColor: suspects.map(r => tierColor(r.risk, 0.7)),
-              borderColor: suspects.map(r => tierColor(r.risk, 1)),
-              borderWidth: 1,
-            }]
-          },
-          plugins: [barIcons],
-          options: {
-            indexAxis: 'y',
-            responsive: true, maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: { callbacks: { label: c => {
-                const r = suspects[c.dataIndex];
-                return 'risk ' + r.risk + ' · eff ' + (r.meanEff * 100).toFixed(2) + '%'
-                  + (r.ipShared > 1 ? ' · ' + r.ipShared + '× same IP' : '');
-              } } }
-            },
-            scales: {
-              x: { min: 0, max: 100, grid: { color: vpGrid }, ticks: { color: vpTick, font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'farmer risk', color: vpTick } },
-              y: { grid: { display: false }, ticks: { color: vpTick, font: { family: "'JetBrains Mono'", size: 9 } } }
-            }
-          }
-        });
+          .slice(0, 12);
+        const listEl = document.getElementById('vpSuspectList');
+        listEl.innerHTML = suspects.map((r, i) => {
+          const letter = esc(((r.name || r.votePubkey).trim()[0] || '?').toUpperCase());
+          const ava = r.iconUrl
+            ? '<img class="vp-ava" src="' + esc(r.iconUrl) + '" alt="" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline-flex\';">'
+              + '<span class="vp-ava-fb" style="display:none;">' + letter + '</span>'
+            : '<span class="vp-ava-fb">' + letter + '</span>';
+          const nm = r.name ? esc(r.name) : (r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4));
+          return '<div class="vp-sus-row" onclick="vpFilterTo(\'' + r.votePubkey + '\')" title="' + r.votePubkey + '&#10;' + esc(r.riskWhy || '') + '&#10;click to filter the table to this validator">'
+            + '<span class="vp-sus-rank">' + (i + 1) + '</span>'
+            + ava
+            + '<span class="vp-sus-name">' + nm + '</span>'
+            + '<span class="vp-sus-why">' + esc((r.riskWhy || '').replace('driven by: ', '')) + '</span>'
+            + riskPill(r)
+            + '</div>';
+        }).join('') || '<div class="vp-muted" style="font-size:0.8rem;">No scored validators in the current filter.</div>';
       }
 
       // ── table ───────────────────────────────────────────
       const COLS = [
-        { key: 'rank',        label: '#',            sortable: false },
-        { key: 'name',        label: 'Validator',    left: true },
+        { key: 'rank',        label: '#',            sortable: false, tip: 'Row number under the current sort' },
+        { key: 'name',        label: 'Validator',    left: true, tip: 'On-chain published name and icon; unnamed validators are themselves a mild low-effort signal' },
         { key: 'votePubkey',  label: 'Vote acct',    left: true, tip: 'Vote account — hover for full address, ⧉ copies it' },
         { key: 'risk',        label: 'Farmer risk',  tip: 'Composite likelihood of underprovisioned hardware, 0–100, relative to the visible field' },
         { key: 'ipShared',    label: 'Same IP',      tip: 'Validators answering from this exact IP — >1 means co-located on one box/NAT' },
@@ -35984,6 +35929,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
       window.vpRenderTable = renderTable;
       window.vpToggleDelinq = toggleDelinq;
       window.vpMinStakeChange = minStakeChange;
+      window.vpFilterTo = function (pk) {
+        const box = document.getElementById('vpFilterBox');
+        box.value = pk;
+        renderTable();
+        document.getElementById('vpTablePanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
       window.vpDeepScan    = deepScan;
     })();
   </script>
