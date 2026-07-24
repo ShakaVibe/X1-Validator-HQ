@@ -34969,7 +34969,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </table>
         </div>
         <div class="vp-methodology">
-          <b>Farmer risk v3</b> uses hybrid scoring: each signal takes the WORSE of (a) an absolute anchor and (b) a robust outlier score &mdash; how many noise-widths (median&plusmn;MAD, floored at measurement resolution) the value sits above the field&#39;s own baseline. Identical hardware still scores identically, a uniform field still scores ~0, but validators running 3&ndash;10&times; the field&#39;s jitter baseline now register even when the chain is too quiet for absolute thresholds to trip. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>vote jitter tail 14%</b> (votes missing the next slot &mdash; the shared-vCPU fingerprint), <b>arrival jitter 12%</b> (&sigma; of position among each block&#39;s votes &mdash; sub-slot latency stability that never saturates; distance shifts the mean, only unstable hardware inflates the &sigma;), <b>vote cadence 12%</b> (missing/bunched vote transactions), <b>slot-1 fumbles 8%</b> + <b>skips 6%</b> (leader-window forensics over ~4.5h &mdash; slow boxes disproportionately miss the first slot of their window), <b>clock drift 4%</b>, <b>live stalls/lag 14%</b> (when the live watch has &ge;5 min). <b>Fleet evidence 15%</b> (matching name pattern after digit-stripping, matching name STYLE template &mdash; e.g. one scheme like "X1-" + all-caps word across many different words, identical birth epoch, or &ge;3 in one /24 subnet &mdash; each capped, since a signal shared by half the chain is demographics, not a fleet; identical self-stake is recorded in the CSV as corroboration but deliberately excluded from scoring) is an <i>amplifier</i>, scaled by the hardware subscore &mdash; a fleet of good boxes gains ~nothing, a fleet of weak boxes gets pushed hard. Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
+          <b>Farmer risk v3</b> uses hybrid scoring: each signal takes the WORSE of (a) an absolute anchor and (b) a robust outlier score &mdash; how many noise-widths (median&plusmn;MAD, floored at measurement resolution) the value sits above the field&#39;s own baseline. Identical hardware still scores identically, a uniform field still scores ~0, but validators running 3&ndash;10&times; the field&#39;s jitter baseline now register even when the chain is too quiet for absolute thresholds to trip. Weights: <b>shared IP 25%</b> (2 validators on one IP &rarr; 70/100, 4+ &rarr; max &mdash; co-location is the purest farmer signal), <b>efficiency deficit vs the field&#39;s p90 20%</b>, <b>epoch instability &sigma; 20%</b>, <b>worst-epoch sag 10%</b>, <b>vote jitter tail 14%</b> (votes missing the next slot &mdash; the shared-vCPU fingerprint), <b>arrival jitter 12%</b> (&sigma; of position among each block&#39;s votes &mdash; sub-slot latency stability that never saturates; distance shifts the mean, only unstable hardware inflates the &sigma;), <b>vote cadence 12%</b> (missing/bunched vote transactions), <b>epoch-boundary stress 12%</b> (late votes during the ~400 slots after rollover &mdash; the quiet chain&#39;s only guaranteed load spike), <b>slot-1 fumbles 8%</b> + <b>skips 6%</b> (leader-window forensics over ~4.5h &mdash; slow boxes disproportionately miss the first slot of their window), <b>clock drift 4%</b>, <b>live stalls/lag 14%</b> (when the live watch has &ge;5 min). <b>Fleet evidence 15%</b> (matching name pattern after digit-stripping, matching name STYLE template &mdash; e.g. one scheme like "X1-" + all-caps word across many different words, identical birth epoch, or &ge;3 in one /24 subnet &mdash; each capped, since a signal shared by half the chain is demographics, not a fleet; identical self-stake is recorded in the CSV as corroboration but deliberately excluded from scoring) is an <i>amplifier</i>, scaled by the hardware subscore &mdash; a fleet of good boxes gains ~nothing, a fleet of weak boxes gets pushed hard. Weights renormalize over available data; hover any risk pill to see which components are driving that score. A <b>~</b> marks scores resting on fewer than 3 epochs. A lead for investigation, not proof.
         </div>
       </div>
 
@@ -35242,6 +35242,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               stalls: 0, liveBase: null, liveEff: null,
               vlatN: 0, vlatSum: 0, vlatMax: 0, vlatTail: 0, vgapMax: 0, _lastVoteBlock: null,
               vposN: 0, vposMean: 0, vposM2: 0,
+              bN: 0, bTail: 0, bGapMax: 0, _bLast: null,
               ledSlots: 0, ledMissed: 0, w1Led: 0, w1Missed: 0,
               version: null,
               selfStake: null,
@@ -35498,6 +35499,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const stDens   = (S.deepDone && S.deepBlocks >= 50)
           ? medMad(withData.filter(r => r.vlatN >= 10).map(r => -(r.vlatN / S.deepBlocks))) : null;  // negated: lower density = worse
         const stGap    = medMad(withData.filter(r => r.vlatN >= 10).map(r => r.vgapMax));
+        const stBTail  = medMad(withData.filter(r => r.bN >= 30).map(r => r.bTail / r.bN));
 
         for (const r of withData) {
           // Hardware components first — these also feed the fleet amplifier.
@@ -35541,6 +35543,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
                 anchored(posSd, 0.13, 0.30) || 0,
                 zb(posSd, stPosSd, 0.012) || 0));
             }
+          }
+          // Epoch-boundary stress: rollover work is the quiet chain's only
+          // guaranteed load spike — late/bunched votes there = weak box.
+          if ((S.boundaryBlocks || 0) >= 50 && r.bN >= 30) {
+            const bTailRate = r.bTail / r.bN;
+            pushHw('epoch-boundary stress', 0.12, Math.max(
+              anchored(bTailRate, 0.02, 0.20) || 0,
+              zb(bTailRate, stBTail, 0.008) || 0,
+              anchored(r.bGapMax, 6, 60) || 0));
           }
           // Leader-window forensics (~4.5h of schedule vs produced blocks).
           if (r.ledSlots >= 16) {
@@ -35794,6 +35805,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         { key: 'clockDrift',  label: 'Clock',        tip: 'Self-reported clock vs cluster consensus, seconds. NTP-tight boxes stay within ±2s' },
         { key: 'vlatTail',    label: 'Late %',       deep: true, tip: 'Fraction of votes that missed the next slot — shared-vCPU jitter fingerprint. Dedicated boxes run ~0%; noisy-neighbor VPSes leak 2–15%. Hover a value for mean latency + cadence details' },
         { key: 'vposSd',      label: 'Jitter',       deep: true, tip: 'Arrival-order jitter: σ of this validator\'s position among the votes inside each block — a SUB-SLOT latency stability measure that does not saturate on a quiet chain. Network distance shifts the mean position; only unstable (shared/oversubscribed) hardware inflates the σ' },
+        { key: 'bTailPct',    label: 'Boundary',     deep: true, tip: 'Late-vote rate during the ~400 slots right after the last epoch boundary — the one guaranteed load event (rewards + stake processing hit every validator at once). Weak boxes leak late votes exactly here while cruising the rest of the epoch' },
         { key: 'skipPct',     label: 'Skip %',       deep: true, tip: 'Missed leader slots over the last ~4.5 hours (schedule vs produced blocks). Hover for the slot-1-of-window breakdown: slow boxes disproportionately fumble the FIRST slot of their 4-slot window even when overall skips round to zero' },
         { key: 'liveEff',     label: 'Live eff',     lag: true, tip: 'Efficiency over the live watch window — right now, not history' },
         { key: 'stalls',      label: 'Stalls',       lag: true, tip: 'Sampled moments ≥32 slots behind — micro-outages invisible to credits and delinquency' },
@@ -35811,6 +35823,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (key === 'vlatTail') return r.vlatN >= 5 ? r.vlatTail / r.vlatN : -Infinity;
         if (key === 'vposSd') return r.vposN >= 30 ? Math.sqrt(r.vposM2 / (r.vposN - 1)) : -Infinity;
         if (key === 'skipPct') return r.ledSlots >= 16 ? r.ledMissed / r.ledSlots : -Infinity;
+        if (key === 'bTailPct') return r.bN >= 30 ? r.bTail / r.bN : -Infinity;
         if (key === 'vlatMean') return r.vlatN > 0 ? r.vlatSum / r.vlatN : -Infinity;
         const v = r[key];
         return (v === null || v === undefined) ? -Infinity : v;
@@ -35952,6 +35965,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
             } else {
               cells += '<td class="vp-muted" title="Fewer than 30 position samples">—</td>';
             }
+            if ((S.boundaryBlocks || 0) >= 50 && r.bN >= 30) {
+              const bt = r.bTail / r.bN;
+              const bcls = bt <= 0.02 ? 'vp-eff-good' : bt <= 0.08 ? 'vp-eff-mid' : 'vp-eff-bad';
+              cells += '<td class="' + bcls + '" title="' + r.bTail + '/' + r.bN + ' votes late during the post-boundary window; longest silent gap there ' + r.bGapMax + ' slots. Compare with steady-state Late % — a big boundary premium means the box chokes the moment real work arrives.">' + (bt * 100).toFixed(1) + '%</td>';
+            } else {
+              cells += '<td class="vp-muted" title="Boundary blocks unavailable or fewer than 30 votes observed there">—</td>';
+            }
             if (r.ledSlots >= 16) {
               const rate = r.ledMissed / r.ledSlots;
               const scls = rate <= 0.001 ? 'vp-eff-good' : rate <= 0.02 ? 'vp-eff-mid' : 'vp-eff-bad';
@@ -36064,6 +36084,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           for (const r of S.rows) {
             r.vlatN = 0; r.vlatSum = 0; r.vlatMax = 0; r.vlatTail = 0; r.vgapMax = 0; r._lastVoteBlock = null;
             r.vposN = 0; r.vposMean = 0; r.vposM2 = 0;
+            r.bN = 0; r.bTail = 0; r.bGapMax = 0; r._bLast = null;
             r.ledSlots = 0; r.ledMissed = 0; r.w1Led = 0; r.w1Missed = 0;
           }
           const byPk = new Map(S.rows.map(r => [r.votePubkey, r]));
@@ -36143,6 +36164,70 @@ Please give me the diagnostic commands to run on my server so you can help me id
               });
             }
           }
+          // Epoch-boundary stress scan — the one guaranteed load event on a
+          // quiet chain. Rollover forces rewards distribution, stake
+          // processing, and schedule computation on every validator; weak
+          // boxes leak late/bunched votes exactly there while dedicated
+          // hardware sails through. Scans ~400 slots right after the last
+          // boundary (skipped gracefully if the RPC no longer has them).
+          try {
+            const epochStartSlot = info.absoluteSlot - info.slotIndex;
+            if (info.slotIndex > 700) {
+              const B0 = epochStartSlot + 20, BSLOTS = 400;
+              let bProduced = 0, bFailed = false;
+              for (let s = B0; s < B0 + BSLOTS && !bFailed; s += BATCH) {
+                const hi = Math.min(s + BATCH - 1, B0 + BSLOTS - 1);
+                setStatus('Deep scan: epoch-boundary stress ' + (s - B0) + '/' + BSLOTS + ' slots…');
+                const body = [];
+                for (let slot = s; slot <= hi; slot++) {
+                  body.push({ jsonrpc: '2.0', id: slot, method: 'getBlock',
+                    params: [slot, { encoding: 'jsonParsed', transactionDetails: 'full', rewards: false, maxSupportedTransactionVersion: 0 }] });
+                }
+                const res = await fetch(VP_RPC, {
+                  method: 'POST', headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(body)
+                });
+                if (!res.ok) { bFailed = true; break; }
+                const batch2 = await res.json();
+                if (!Array.isArray(batch2)) continue;
+                for (const b of batch2) {
+                  const blk = b && b.result;
+                  if (!blk || !Array.isArray(blk.transactions)) continue;
+                  bProduced++;
+                  const blockSlot = Number(b.id);
+                  for (const tx of blk.transactions) {
+                    const ixs = tx?.transaction?.message?.instructions || [];
+                    for (const ix of ixs) {
+                      if (ix.program !== 'vote' || !ix.parsed) continue;
+                      const inf = ix.parsed.info || {};
+                      const r = byPk.get(inf.voteAccount);
+                      if (!r) continue;
+                      let voted = null;
+                      if (inf.vote && Array.isArray(inf.vote.slots) && inf.vote.slots.length) {
+                        voted = Math.max(...inf.vote.slots.map(Number));
+                      } else {
+                        const vsu = inf.voteStateUpdate || inf.towerSync || inf.tower_sync || null;
+                        const locks = vsu && (vsu.lockouts || vsu.lockout);
+                        if (Array.isArray(locks) && locks.length) {
+                          voted = Math.max(...locks.map(l => Number(l && (l.slot !== undefined ? l.slot : l[0]))));
+                        }
+                      }
+                      if (voted === null || !isFinite(voted)) continue;
+                      const lat = blockSlot - voted;
+                      if (lat < 0 || lat > 64) continue;
+                      r.bN++; if (lat >= 2) r.bTail++;
+                      if (r._bLast !== null) r.bGapMax = Math.max(r.bGapMax, blockSlot - r._bLast);
+                      r._bLast = blockSlot;
+                    }
+                  }
+                }
+              }
+              S.boundaryBlocks = bProduced;
+            }
+          } catch (e) {
+            console.warn('[vote probe] boundary scan failed:', e.message);
+          }
+
           // Leader-window forensics: ~2 cheap calls cover ~4.5 hours.
           // getBlocks gives every produced slot number; getLeaderSchedule
           // maps identities to their slots. Miss-by-window-position falls
@@ -36197,7 +36282,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // ── CSV export ──────────────────────────────────────
       function downloadCsv() {
         const q = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
-        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','name_group_count','name_style_count','birth_cohort_count','first_epoch','clock_drift_s','stake_xnt','self_stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples','vote_lat_n','vote_lat_mean_slots','vote_lat_max_slots','vote_late_pct','vote_gap_max_slots','vote_density','stake_cohort_count','arrival_pos_mean','arrival_pos_sd','led_slots','led_missed','w1_led','w1_missed','software_version'];
+        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','name_group_count','name_style_count','birth_cohort_count','first_epoch','clock_drift_s','stake_xnt','self_stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples','vote_lat_n','vote_lat_mean_slots','vote_lat_max_slots','vote_late_pct','vote_gap_max_slots','vote_density','stake_cohort_count','arrival_pos_mean','arrival_pos_sd','boundary_votes','boundary_late_pct','boundary_gap_max','led_slots','led_missed','w1_led','w1_missed','software_version'];
         const lines = [head.join(',')];
         for (const r of S.rows) {
           const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : '';
@@ -36219,6 +36304,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             (r.vlatN && S.deepBlocks >= 50) ? (r.vlatN / S.deepBlocks).toFixed(3) : '',
             r.stakeCohort,
             r.vposN ? r.vposMean.toFixed(4) : '', r.vposN > 1 ? Math.sqrt(r.vposM2 / (r.vposN - 1)).toFixed(4) : '',
+            r.bN, r.bN ? (100 * r.bTail / r.bN).toFixed(2) : '', r.bN ? r.bGapMax : '',
             r.ledSlots, r.ledMissed, r.w1Led, r.w1Missed, q(r.version || '')
           ].join(','));
         }
