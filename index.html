@@ -11497,6 +11497,134 @@
       font-weight: 700;
       text-transform: uppercase;
     }
+
+    /* ═══════════════════════════════════════════════════════
+       VOTE CREDIT PROBE (hidden recon tool)
+       Opened via the faint dot in the Validator Terminal
+       footer. All selectors are vp- prefixed to avoid any
+       collision with the rest of the site.
+       ═══════════════════════════════════════════════════════ */
+    .vp-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      opacity: 0.25;
+      margin-right: 7px;
+      vertical-align: middle;
+      cursor: pointer;
+      transition: opacity 0.2s ease, background 0.2s ease;
+    }
+    .vp-dot:hover { opacity: 0.8; background: var(--accent-cyan); }
+
+    .vp-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100010;
+      background: radial-gradient(ellipse at center, #0d1a30 0%, #0a1020 50%, #060810 100%);
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+    .vp-overlay.open { display: block; }
+    .vp-wrap { max-width: 1280px; margin: 0 auto; }
+    .vp-header { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.35rem; }
+    .vp-header h2 { font-size: 1.35rem; font-weight: 600; color: var(--text-primary); }
+    .vp-header h2 .vp-mono { font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); font-weight: 500; }
+    .vp-close {
+      margin-left: auto;
+      background: var(--bg-secondary); color: var(--text-secondary);
+      border: 1px solid var(--border); border-radius: 8px;
+      width: 34px; height: 34px; font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .vp-close:hover { color: var(--danger); border-color: var(--danger); }
+    .vp-tagline { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.25rem; max-width: 78ch; }
+
+    .vp-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .vp-controls { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+    .vp-controls label { font-size: 0.8rem; color: var(--text-secondary); }
+    .vp-select {
+      background: var(--bg-secondary); color: var(--text-primary);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.45rem 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+    }
+    .vp-btn {
+      background: linear-gradient(135deg, #4da6ff 0%, #00d4ff 100%);
+      color: #001029; border: none; border-radius: 8px;
+      padding: 0.55rem 1.1rem; font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600; font-size: 0.85rem; cursor: pointer;
+    }
+    .vp-btn:hover { filter: brightness(1.1); }
+    .vp-btn:disabled { filter: grayscale(0.6); opacity: 0.55; cursor: not-allowed; }
+    .vp-btn.vp-secondary { background: var(--bg-secondary); color: var(--accent-cyan); border: 1px solid var(--border); }
+    .vp-btn.vp-danger { background: var(--bg-secondary); color: var(--danger); border: 1px solid var(--border); }
+    #vpStatus { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-secondary); }
+    #vpStatus.vp-err { color: var(--danger); }
+    #vpLagNote { font-size: 0.75rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; margin-top: 0.5rem; }
+
+    #vpVerdict { display: none; border-radius: 12px; padding: 1.1rem 1.35rem; margin-bottom: 1rem; border: 1px solid var(--border); }
+    #vpVerdict.vp-tvc { border-color: rgba(0,230,118,0.45); background: linear-gradient(135deg, rgba(0,230,118,0.10), rgba(0,212,255,0.06)); }
+    #vpVerdict.vp-pretvc { border-color: rgba(255,171,0,0.5); background: linear-gradient(135deg, rgba(255,171,0,0.10), rgba(255,82,82,0.05)); }
+    #vpVerdict .vp-v-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--text-primary); }
+    #vpVerdict .vp-v-body { font-size: 0.85rem; color: var(--text-secondary); max-width: 95ch; }
+    #vpVerdict .vp-v-body b { color: var(--text-primary); }
+
+    .vp-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; }
+    .vp-stat { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; padding: 0.7rem 0.85rem; }
+    .vp-stat .vp-k { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); margin-bottom: 0.25rem; }
+    .vp-stat .vp-v { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 500; color: var(--accent-cyan); }
+    .vp-stat .vp-v.vp-plain { color: var(--text-primary); }
+
+    .vp-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 900px) { .vp-charts { grid-template-columns: 1fr; } }
+    .vp-panel h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.6rem; color: var(--text-primary); }
+    .vp-panel h4 span { color: var(--text-dim); font-weight: 400; font-size: 0.75rem; }
+    .vp-chart-holder { position: relative; height: 260px; }
+
+    .vp-tbl-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+    .vp-filter {
+      background: var(--bg-secondary); color: var(--text-primary);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.45rem 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; width: 220px;
+    }
+    .vp-tbl-scroll { overflow-x: auto; }
+    .vp-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .vp-table th {
+      text-align: right; padding: 0.5rem 0.55rem; color: var(--text-secondary);
+      font-weight: 600; border-bottom: 1px solid var(--border);
+      white-space: nowrap; cursor: pointer; user-select: none; background: transparent;
+    }
+    .vp-table th.vp-left, .vp-table td.vp-left { text-align: left; }
+    .vp-table th:hover { color: var(--accent-cyan); }
+    .vp-table th .vp-arrow { color: var(--accent-cyan); font-size: 0.7rem; }
+    .vp-table td {
+      padding: 0.42rem 0.55rem; text-align: right; color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace; border-bottom: 1px solid rgba(30,48,80,0.45);
+      white-space: nowrap;
+    }
+    .vp-table tr:hover td { background: var(--bg-card-hover); }
+    .vp-pk { color: var(--accent-blue); cursor: pointer; }
+    .vp-pk:hover { color: var(--accent-cyan); }
+    .vp-eff-good { color: var(--success); }
+    .vp-eff-mid { color: var(--warning); }
+    .vp-eff-bad { color: var(--danger); }
+    .vp-muted { color: var(--text-dim); }
+    .vp-badge {
+      display: inline-block; padding: 0.05rem 0.4rem; border-radius: 999px;
+      font-size: 0.65rem; font-family: 'Space Grotesk', sans-serif; font-weight: 600;
+    }
+    .vp-badge.vp-delinq { background: rgba(255,82,82,0.15); color: var(--danger); border: 1px solid rgba(255,82,82,0.4); }
+    .vp-badge.vp-new { background: rgba(240,185,11,0.12); color: var(--accent-gold); border: 1px solid rgba(240,185,11,0.35); }
+    .vp-spark { display: inline-block; vertical-align: middle; }
+    .vp-foot { color: var(--text-dim); font-size: 0.72rem; margin-top: 1.5rem; font-family: 'JetBrains Mono', monospace; }
+    .vp-hidden { display: none; }
   </style>
 </head>
 <body>
@@ -34259,7 +34387,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const footerHtml =
           '<footer class="vt-footer">' +
             '<div class="row">' +
-              '<span>Generated ' + isoTime + '</span>' +
+              '<span><span class="vp-dot" onclick="vpOpenProbe()"></span>Generated ' + isoTime + '</span>' +
               '<span>API &middot; <code>' + API + '</code></span>' +
               '<span>Definitions &middot; <b>foundation</b> = <code>stakePool &ne; null</code> &middot; <b>self</b> = direct delegations (validator self-stake + 3rd-party direct stakers)</span>' +
             '</div>' +
@@ -34701,6 +34829,533 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       update();
       setInterval(update, REFRESH_MS);
+    })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════
+       VOTE CREDIT PROBE — hidden hardware-signal recon tool.
+       No visible entry point except the faint dot injected to
+       the left of "Generated" in the Validator Terminal footer.
+       Reads on-chain epochCredits history to measure vote
+       efficiency (a TVC-priced vote-latency proxy) and offers
+       a live lastVote/rootSlot lag sampler. Read-only: makes
+       no transactions, requires no wallet.
+       ═══════════════════════════════════════════════════════ -->
+  <div class="vp-overlay" id="vpOverlay">
+    <div class="vp-wrap">
+      <div class="vp-header">
+        <span class="logo-x1" style="font-size:1.8rem;"><span style="color:#fff;">X</span><span style="color:var(--accent-blue);">1</span></span>
+        <h2>Vote Credit Probe <span class="vp-mono">// hardware signal recon</span></h2>
+        <button class="vp-close" onclick="vpCloseProbe()" title="Close (Esc)">✕</button>
+      </div>
+      <p class="vp-tagline">Reads the on-chain <b>epochCredits</b> history for every vote account and measures how close each validator votes to the theoretical maximum. Slow replay, oversubscribed CPUs, and throttled disks all surface here as lost credits &mdash; even when skip rates show nothing.</p>
+
+      <div class="vp-panel">
+        <div class="vp-controls">
+          <label for="vpEpochSel">Completed epochs to analyze</label>
+          <select id="vpEpochSel" class="vp-select">
+            <option value="5">last 5</option>
+            <option value="10" selected>last 10</option>
+            <option value="20">last 20</option>
+            <option value="40">last 40</option>
+            <option value="60">last 60 (max on-chain)</option>
+          </select>
+          <button class="vp-btn" id="vpRunBtn" onclick="vpRunProbe()">Run probe</button>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpCsvBtn" onclick="vpDownloadCsv()">Download CSV</button>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpLagBtn" onclick="vpToggleLag()">Start live lag sampling</button>
+          <span id="vpStatus">Idle.</span>
+        </div>
+        <div id="vpLagNote" class="vp-hidden">
+          Lag sampler polls every 10s while this view is open. Mean lag &asymp; network distance + hardware; <b>variance and max</b> &asymp; hardware. Let it run 15+ min before trusting the numbers.
+        </div>
+      </div>
+
+      <div id="vpVerdict">
+        <div class="vp-v-title" id="vpVerdictTitle"></div>
+        <div class="vp-v-body" id="vpVerdictBody"></div>
+      </div>
+
+      <div class="vp-panel vp-hidden" id="vpStatsPanel">
+        <div class="vp-stat-grid" id="vpStatGrid"></div>
+      </div>
+
+      <div class="vp-charts vp-hidden" id="vpChartsRow">
+        <div class="vp-panel">
+          <h4>Efficiency distribution <span>&mdash; mean vote efficiency, all validators</span></h4>
+          <div class="vp-chart-holder"><canvas id="vpHistChart"></canvas></div>
+        </div>
+        <div class="vp-panel">
+          <h4>Efficiency vs stake <span>&mdash; log stake axis; farmers cluster low-left</span></h4>
+          <div class="vp-chart-holder"><canvas id="vpScatterChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="vp-panel vp-hidden" id="vpTablePanel">
+        <div class="vp-tbl-head">
+          <h4>Validators <span id="vpTblCount"></span></h4>
+          <input type="text" class="vp-filter" id="vpFilterBox" placeholder="filter by pubkey…" oninput="vpRenderTable()">
+        </div>
+        <div class="vp-tbl-scroll">
+          <table class="vp-table">
+            <thead><tr id="vpTheadRow"></tr></thead>
+            <tbody id="vpTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="vp-foot">Read-only probe &mdash; makes no transactions, signs nothing. Vote efficiency = credits earned &divide; (slots &times; max credits/slot), completed epochs only.</div>
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════
+    // VOTE CREDIT PROBE — module (all names vp-prefixed)
+    // ═══════════════════════════════════════════════════════
+    (function () {
+      const VP_RPC = (typeof RPC_URL !== 'undefined') ? RPC_URL : 'https://rpc.mainnet.x1.xyz';
+      const B58 = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/; // sanitize on-chain pubkeys before DOM injection
+
+      const S = {
+        rows: [],
+        maxCreditsPerSlot: 1,
+        tvc: false,
+        slotsPerEpoch: 0,
+        currentEpoch: 0,
+        epochsAnalyzed: 0,
+        sortKey: 'meanEff',
+        sortDir: -1,
+        lagTimer: null,
+        lagSamples: 0,
+        prevBodyOverflow: '',
+      };
+      let vpHist = null, vpScatter = null;
+
+      function setStatus(msg, isErr) {
+        const el = document.getElementById('vpStatus');
+        el.textContent = msg;
+        el.className = isErr ? 'vp-err' : '';
+      }
+
+      async function rpc(method, params) {
+        const res = await fetch(VP_RPC, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params: params || [] })
+        });
+        if (!res.ok) throw new Error(method + ' HTTP ' + res.status);
+        const j = await res.json();
+        if (j.error) throw new Error(method + ': ' + (j.error.message || JSON.stringify(j.error)));
+        return j.result;
+      }
+
+      // ── open / close ────────────────────────────────────
+      function onKey(e) {
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          closeProbe();
+        }
+      }
+      function openProbe() {
+        S.prevBodyOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        document.getElementById('vpOverlay').classList.add('open');
+        document.addEventListener('keydown', onKey, true);
+        setStatus('Idle. RPC: ' + VP_RPC.replace('https://', ''));
+      }
+      function closeProbe() {
+        document.getElementById('vpOverlay').classList.remove('open');
+        document.body.style.overflow = S.prevBodyOverflow;
+        document.removeEventListener('keydown', onKey, true);
+        if (S.lagTimer) { clearInterval(S.lagTimer); S.lagTimer = null;
+          const b = document.getElementById('vpLagBtn');
+          b.textContent = 'Resume lag sampling'; b.className = 'vp-btn vp-secondary';
+        }
+      }
+
+      // ── core analysis ───────────────────────────────────
+      async function runProbe() {
+        const btn = document.getElementById('vpRunBtn');
+        btn.disabled = true;
+        try {
+          const wantEpochs = parseInt(document.getElementById('vpEpochSel').value, 10);
+
+          setStatus('Fetching epoch info…');
+          const [epochInfo, sched] = await Promise.all([
+            rpc('getEpochInfo'),
+            rpc('getEpochSchedule')
+          ]);
+          S.currentEpoch = epochInfo.epoch;
+          S.slotsPerEpoch = sched.slotsPerEpoch;
+
+          setStatus('Fetching vote accounts…');
+          const va = await rpc('getVoteAccounts', [{ commitment: 'confirmed' }]);
+          const all = [
+            ...va.current.map(v => ({ ...v, delinquent: false })),
+            ...va.delinquent.map(v => ({ ...v, delinquent: true }))
+          ].filter(v => B58.test(v.votePubkey || '') && B58.test(v.nodePubkey || ''));
+
+          setStatus('Analyzing ' + all.length + ' vote accounts…');
+
+          // Pass 1: auto-detect TVC via max credits/slot across the field.
+          let maxCps = 0;
+          for (const v of all) {
+            for (const [ep, cred, prev] of (v.epochCredits || [])) {
+              if (ep >= S.currentEpoch) continue; // partial epoch
+              const earned = cred - prev;
+              if (earned > 0) maxCps = Math.max(maxCps, earned / S.slotsPerEpoch);
+            }
+          }
+          S.tvc = maxCps > 1.5;
+          S.maxCreditsPerSlot = S.tvc ? 16 : 1;
+
+          // Pass 2: per-validator efficiency over last N completed epochs.
+          const minEpoch = S.currentEpoch - wantEpochs;
+          const rows = [];
+          for (const v of all) {
+            const effs = [];
+            for (const [ep, cred, prev] of (v.epochCredits || [])) {
+              if (ep >= S.currentEpoch || ep < minEpoch) continue;
+              const eff = Math.min(1, (cred - prev) / (S.slotsPerEpoch * S.maxCreditsPerSlot));
+              effs.push({ epoch: ep, eff });
+            }
+            effs.sort((a, b) => a.epoch - b.epoch);
+            const n = effs.length;
+            let mean = 0, sd = 0, worst = null;
+            if (n > 0) {
+              mean = effs.reduce((s, e) => s + e.eff, 0) / n;
+              sd = n > 1 ? Math.sqrt(effs.reduce((s, e) => s + (e.eff - mean) ** 2, 0) / (n - 1)) : 0;
+              worst = effs.reduce((m, e) => e.eff < m.eff ? e : m, effs[0]);
+            }
+            rows.push({
+              votePubkey: v.votePubkey,
+              nodePubkey: v.nodePubkey,
+              stake: v.activatedStake / 1e9,
+              commission: Number(v.commission) || 0,
+              delinquent: v.delinquent,
+              epochsCounted: n,
+              meanEff: mean,
+              sdEff: sd,
+              worstEff: worst ? worst.eff : 0,
+              worstEpoch: worst ? worst.epoch : null,
+              sparks: effs.map(e => e.eff),
+              lagN: 0, lagMean: 0, lagM2: 0, lagMax: 0,
+              rootLagLast: null,
+            });
+          }
+
+          const withData = rows.filter(r => r.epochsCounted > 0).sort((a, b) => a.meanEff - b.meanEff);
+          withData.forEach((r, i) => { r.pctile = Math.round(100 * i / Math.max(1, withData.length - 1)); });
+          rows.filter(r => r.epochsCounted === 0).forEach(r => { r.pctile = null; });
+
+          S.rows = rows;
+          S.epochsAnalyzed = wantEpochs;
+
+          renderVerdict(withData);
+          renderStats(withData);
+          renderCharts(withData);
+          renderTable();
+
+          document.getElementById('vpCsvBtn').classList.remove('vp-hidden');
+          document.getElementById('vpLagBtn').classList.remove('vp-hidden');
+          setStatus('Done. ' + all.length + ' validators, epochs ' + minEpoch + '–' + (S.currentEpoch - 1) + '.');
+        } catch (e) {
+          console.error('[vote probe]', e);
+          setStatus('Error: ' + e.message, true);
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      // ── rendering ───────────────────────────────────────
+      function pct(x, dp) { return (100 * x).toFixed(dp === undefined ? 2 : dp) + '%'; }
+
+      function quantile(sortedAsc, q) {
+        if (!sortedAsc.length) return 0;
+        const pos = (sortedAsc.length - 1) * q;
+        const lo = Math.floor(pos), hi = Math.ceil(pos);
+        return sortedAsc[lo] + (sortedAsc[hi] - sortedAsc[lo]) * (pos - lo);
+      }
+
+      function renderVerdict(withData) {
+        const el = document.getElementById('vpVerdict');
+        const effs = withData.map(r => r.meanEff);
+        const med = quantile(effs, 0.5), p10 = quantile(effs, 0.10), p90 = quantile(effs, 0.90);
+        const spread = p90 - p10;
+        el.style.display = 'block';
+        if (S.tvc) {
+          el.className = 'vp-tvc';
+          document.getElementById('vpVerdictTitle').textContent = '✓ Timely Vote Credits are ACTIVE on X1 (up to 16 credits/slot)';
+          document.getElementById('vpVerdictBody').innerHTML =
+            'Vote latency is being priced into credits, so this metric is a usable hardware signal. ' +
+            'Median efficiency <b>' + pct(med) + '</b>, p10 <b>' + pct(p10) + '</b>, p90 <b>' + pct(p90) + '</b> ' +
+            '&mdash; a p90&ndash;p10 spread of <b>' + pct(spread) + '</b>. ' +
+            (spread > 0.02
+              ? 'The field separates: the bottom decile is measurably slower than the top. Sort the table by mean efficiency and inspect the bottom cluster.'
+              : 'The spread is narrow &mdash; either the field is genuinely uniform or this signal alone won\u2019t separate it. Lean on lag variance (live sampler) and leader-window forensics next.');
+        } else {
+          el.className = 'vp-pretvc';
+          document.getElementById('vpVerdictTitle').textContent = '⚠ Timely Vote Credits NOT detected (max ≈ 1 credit/slot)';
+          document.getElementById('vpVerdictBody').innerHTML =
+            'Credits appear to pay a flat rate per voted slot, so vote <i>latency</i> is not priced in &mdash; only fully missed votes cost credits. ' +
+            'Efficiency below is "share of slots successfully voted on," a weaker but still nonzero signal. ' +
+            'Median <b>' + pct(med) + '</b>, p10 <b>' + pct(p10) + '</b>. ' +
+            'For real hardware separation, the live lag sampler (variance + max lag) and leader-window analysis will have to carry the load.';
+        }
+      }
+
+      function renderStats(withData) {
+        const effs = withData.map(r => r.meanEff);
+        const med = quantile(effs, 0.5);
+        const below = withData.filter(r => r.meanEff < med - 0.02).length;
+        const delinq = S.rows.filter(r => r.delinquent).length;
+        const cells = [
+          ['Validators', S.rows.length, 'vp-plain'],
+          ['Delinquent now', delinq, delinq ? '' : 'vp-plain'],
+          ['Slots / epoch', S.slotsPerEpoch.toLocaleString(), 'vp-plain'],
+          ['Max credits / slot', S.maxCreditsPerSlot, 'vp-plain'],
+          ['Median efficiency', pct(med), ''],
+          ['p10 efficiency', pct(quantile(effs, 0.10)), ''],
+          ['p90 efficiency', pct(quantile(effs, 0.90)), ''],
+          ['>2pts below median', below, below ? '' : 'vp-plain'],
+        ];
+        document.getElementById('vpStatGrid').innerHTML = cells.map(c =>
+          '<div class="vp-stat"><div class="vp-k">' + c[0] + '</div><div class="vp-v ' + c[2] + '">' + c[1] + '</div></div>'
+        ).join('');
+        document.getElementById('vpStatsPanel').classList.remove('vp-hidden');
+      }
+
+      const vpGrid = 'rgba(30,48,80,0.6)';
+      const vpTick = '#8a8f98';
+
+      function renderCharts(withData) {
+        document.getElementById('vpChartsRow').classList.remove('vp-hidden');
+        const effs = withData.map(r => r.meanEff);
+        const lo = Math.max(0, Math.floor(Math.min(...effs) * 100) - 1) / 100;
+        const bins = 30;
+        const w = Math.max(0.0005, (1 - lo) / bins);
+        const counts = new Array(bins).fill(0);
+        effs.forEach(e => counts[Math.min(bins - 1, Math.floor((e - lo) / w))]++);
+        const labels = counts.map((_, i) => (100 * (lo + i * w)).toFixed(1) + '%');
+
+        if (vpHist) vpHist.destroy();
+        vpHist = new Chart(document.getElementById('vpHistChart'), {
+          type: 'bar',
+          data: { labels, datasets: [{ data: counts, backgroundColor: 'rgba(0,212,255,0.55)', borderColor: '#00d4ff', borderWidth: 1 }] },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { grid: { color: vpGrid }, ticks: { color: vpTick, maxTicksLimit: 10, font: { family: "'JetBrains Mono'", size: 10 } } },
+              y: { grid: { color: vpGrid }, ticks: { color: vpTick, precision: 0, font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'validators', color: vpTick } }
+            }
+          }
+        });
+
+        if (vpScatter) vpScatter.destroy();
+        vpScatter = new Chart(document.getElementById('vpScatterChart'), {
+          type: 'scatter',
+          data: { datasets: [{
+            data: withData.map(r => ({ x: Math.max(r.stake, 0.001), y: r.meanEff * 100, pk: r.votePubkey })),
+            backgroundColor: withData.map(r => r.delinquent ? 'rgba(255,82,82,0.8)' : 'rgba(77,166,255,0.65)'),
+            pointRadius: 3.5,
+          }]},
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: (c) => c.raw.pk.slice(0, 8) + '…  ' + c.raw.y.toFixed(2) + '% @ ' + Math.round(c.raw.x).toLocaleString() + ' XNT' } }
+            },
+            scales: {
+              x: { type: 'logarithmic', grid: { color: vpGrid }, ticks: { color: vpTick, font: { family: "'JetBrains Mono'", size: 10 } }, title: { display: true, text: 'activated stake (XNT, log)', color: vpTick } },
+              y: { grid: { color: vpGrid }, ticks: { color: vpTick, callback: v => v + '%', font: { family: "'JetBrains Mono'", size: 10 } } }
+            }
+          }
+        });
+      }
+
+      // ── table ───────────────────────────────────────────
+      const COLS = [
+        { key: 'rank',        label: '#',            sortable: false },
+        { key: 'votePubkey',  label: 'Vote account', left: true },
+        { key: 'stake',       label: 'Stake (XNT)' },
+        { key: 'commission',  label: 'Comm' },
+        { key: 'meanEff',     label: 'Mean eff' },
+        { key: 'pctile',      label: 'Pctile' },
+        { key: 'sdEff',       label: 'σ (epochs)' },
+        { key: 'worstEff',    label: 'Worst epoch' },
+        { key: 'sparkline',   label: 'Trend', sortable: false },
+        { key: 'lagMean',     label: 'Lag μ', lag: true },
+        { key: 'lagSd',       label: 'Lag σ', lag: true },
+        { key: 'lagMax',      label: 'Lag max', lag: true },
+        { key: 'rootLagLast', label: 'Root lag', lag: true },
+      ];
+
+      function sortVal(r, key) {
+        if (key === 'lagSd') return r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : -1;
+        const v = r[key];
+        return (v === null || v === undefined) ? -Infinity : v;
+      }
+
+      function setSort(key) {
+        if (S.sortKey === key) S.sortDir *= -1;
+        else { S.sortKey = key; S.sortDir = (key === 'votePubkey') ? 1 : -1; }
+        renderTable();
+      }
+
+      function effClass(e) { return e >= 0.9 ? 'vp-eff-good' : e >= 0.8 ? 'vp-eff-mid' : 'vp-eff-bad'; }
+
+      function sparkSvg(vals) {
+        if (!vals.length) return '<span class="vp-muted">—</span>';
+        const w = 72, h = 18, n = vals.length;
+        const lo = Math.min(...vals), hi = Math.max(...vals);
+        const span = Math.max(0.005, hi - lo);
+        const pts = vals.map((v, i) => {
+          const x = n === 1 ? w / 2 : (i / (n - 1)) * (w - 2) + 1;
+          const y = h - 2 - ((v - lo) / span) * (h - 4);
+          return x.toFixed(1) + ',' + y.toFixed(1);
+        }).join(' ');
+        const color = vals[n - 1] >= vals[0] ? '#00e676' : '#ff5252';
+        return '<svg class="vp-spark" width="' + w + '" height="' + h + '"><polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="1.5"/></svg>';
+      }
+
+      function copyPk(pk, el) {
+        if (!B58.test(pk)) return;
+        navigator.clipboard.writeText(pk).then(() => {
+          const old = el.textContent;
+          el.textContent = 'copied!';
+          setTimeout(() => { el.textContent = old; }, 900);
+        });
+      }
+
+      function renderTable() {
+        const lagOn = S.lagSamples > 0;
+        const cols = COLS.filter(c => !c.lag || lagOn);
+
+        document.getElementById('vpTheadRow').innerHTML = cols.map(c => {
+          const arrow = S.sortKey === c.key ? ' <span class="vp-arrow">' + (S.sortDir < 0 ? '▼' : '▲') + '</span>' : '';
+          const click = c.sortable === false ? '' : ' onclick="vpSetSort(\'' + c.key + '\')"';
+          return '<th class="' + (c.left ? 'vp-left' : '') + '"' + click + '>' + c.label + arrow + '</th>';
+        }).join('');
+
+        const filter = document.getElementById('vpFilterBox').value.trim().toLowerCase();
+        let rows = S.rows.slice();
+        if (filter) rows = rows.filter(r => r.votePubkey.toLowerCase().includes(filter) || r.nodePubkey.toLowerCase().includes(filter));
+        rows.sort((a, b) => {
+          const av = sortVal(a, S.sortKey), bv = sortVal(b, S.sortKey);
+          if (av < bv) return -S.sortDir;
+          if (av > bv) return S.sortDir;
+          return 0;
+        });
+
+        document.getElementById('vpTblCount').textContent = '(' + rows.length + ')';
+        const frag = rows.map((r, i) => {
+          // votePubkey / nodePubkey were validated against base58 at ingest —
+          // safe to inject (site convention: escape/validate all on-chain data).
+          const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : null;
+          const badges =
+            (r.delinquent ? ' <span class="vp-badge vp-delinq">DELINQ</span>' : '') +
+            (r.epochsCounted > 0 && r.epochsCounted < S.epochsAnalyzed ? ' <span class="vp-badge vp-new">' + r.epochsCounted + ' ep</span>' : '');
+          let cells = '<td class="vp-muted">' + (i + 1) + '</td>';
+          cells += '<td class="vp-left"><span class="vp-pk" onclick="vpCopyPk(\'' + r.votePubkey + '\', this)" title="' + r.votePubkey + '&#10;node: ' + r.nodePubkey + '&#10;click to copy">' + r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4) + '</span>' + badges + '</td>';
+          cells += '<td>' + Math.round(r.stake).toLocaleString() + '</td>';
+          cells += '<td>' + r.commission + '%</td>';
+          cells += r.epochsCounted === 0
+            ? '<td class="vp-muted">no data</td><td class="vp-muted">—</td><td class="vp-muted">—</td><td class="vp-muted">—</td>'
+            : '<td class="' + effClass(r.meanEff) + '">' + pct(r.meanEff) + '</td>'
+              + '<td class="vp-muted">' + r.pctile + '</td>'
+              + '<td>' + pct(r.sdEff) + '</td>'
+              + '<td class="' + effClass(r.worstEff) + '" title="epoch ' + r.worstEpoch + '">' + pct(r.worstEff) + '</td>';
+          cells += '<td>' + sparkSvg(r.sparks) + '</td>';
+          if (lagOn) {
+            cells += r.lagN === 0
+              ? '<td class="vp-muted">—</td><td class="vp-muted">—</td><td class="vp-muted">—</td><td class="vp-muted">—</td>'
+              : '<td>' + r.lagMean.toFixed(1) + '</td>'
+                + '<td>' + (lagSd === null ? '—' : lagSd.toFixed(1)) + '</td>'
+                + '<td>' + r.lagMax + '</td>'
+                + '<td>' + (r.rootLagLast === null ? '—' : r.rootLagLast) + '</td>';
+          }
+          return '<tr>' + cells + '</tr>';
+        }).join('');
+        document.getElementById('vpTbody').innerHTML = frag;
+        document.getElementById('vpTablePanel').classList.remove('vp-hidden');
+      }
+
+      // ── live lag sampler ────────────────────────────────
+      async function lagTick() {
+        try {
+          const [epochInfo, va] = await Promise.all([
+            rpc('getEpochInfo', [{ commitment: 'processed' }]),
+            rpc('getVoteAccounts', [{ commitment: 'processed' }])
+          ]);
+          const tip = epochInfo.absoluteSlot;
+          const byPk = new Map(S.rows.map(r => [r.votePubkey, r]));
+          for (const v of [...va.current, ...va.delinquent]) {
+            const r = byPk.get(v.votePubkey);
+            if (!r || !v.lastVote) continue;
+            const lag = Math.max(0, tip - v.lastVote);
+            r.lagN++;
+            const d = lag - r.lagMean;
+            r.lagMean += d / r.lagN;
+            r.lagM2 += d * (lag - r.lagMean);
+            r.lagMax = Math.max(r.lagMax, lag);
+            r.rootLagLast = v.rootSlot ? Math.max(0, tip - v.rootSlot) : null;
+          }
+          S.lagSamples++;
+          const mins = Math.floor(S.lagSamples * 10 / 60);
+          document.getElementById('vpLagBtn').textContent = 'Stop lag sampling (' + S.lagSamples + ' samples, ~' + mins + 'm)';
+          renderTable();
+        } catch (e) {
+          console.warn('[vote probe] lag sample failed:', e.message);
+        }
+      }
+
+      function toggleLag() {
+        const btn = document.getElementById('vpLagBtn');
+        if (S.lagTimer) {
+          clearInterval(S.lagTimer);
+          S.lagTimer = null;
+          btn.textContent = 'Resume lag sampling';
+          btn.className = 'vp-btn vp-secondary';
+        } else {
+          S.lagTimer = setInterval(lagTick, 10000);
+          lagTick();
+          btn.className = 'vp-btn vp-danger';
+          btn.textContent = 'Stop lag sampling…';
+          document.getElementById('vpLagNote').classList.remove('vp-hidden');
+        }
+      }
+
+      // ── CSV export ──────────────────────────────────────
+      function downloadCsv() {
+        const head = ['vote_pubkey','node_pubkey','stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last'];
+        const lines = [head.join(',')];
+        for (const r of S.rows) {
+          const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : '';
+          lines.push([
+            r.votePubkey, r.nodePubkey, r.stake.toFixed(4), r.commission, r.delinquent,
+            r.epochsCounted, r.meanEff.toFixed(6), r.sdEff.toFixed(6), r.worstEff.toFixed(6),
+            r.worstEpoch === null ? '' : r.worstEpoch, r.pctile === null ? '' : r.pctile,
+            r.lagN, r.lagN ? r.lagMean.toFixed(2) : '', lagSd === '' ? '' : lagSd.toFixed(2),
+            r.lagN ? r.lagMax : '', r.rootLagLast === null ? '' : r.rootLagLast
+          ].join(','));
+        }
+        const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'x1_vote_probe_epoch' + S.currentEpoch + '.csv';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+
+      // Expose globals for the dot + inline onclick attributes
+      window.vpOpenProbe   = openProbe;
+      window.vpCloseProbe  = closeProbe;
+      window.vpRunProbe    = runProbe;
+      window.vpToggleLag   = toggleLag;
+      window.vpDownloadCsv = downloadCsv;
+      window.vpSetSort     = setSort;
+      window.vpCopyPk      = copyPk;
+      window.vpRenderTable = renderTable;
     })();
   </script>
 
