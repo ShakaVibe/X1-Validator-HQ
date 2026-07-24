@@ -11615,8 +11615,14 @@
       white-space: nowrap;
     }
     .vp-table tr:hover td { background: var(--bg-card-hover); }
-    .vp-pk { color: var(--accent-blue); cursor: pointer; }
-    .vp-pk:hover { color: var(--accent-cyan); }
+    .vp-pk { color: var(--accent-blue); }
+    .vp-copy {
+      display: inline-block; cursor: pointer; color: var(--text-dim);
+      margin-left: 5px; font-size: 0.82rem; line-height: 1;
+      transition: color 0.15s ease;
+    }
+    .vp-copy:hover { color: var(--accent-cyan); }
+    .vp-copy.vp-copied { color: var(--success); }
     .vp-eff-good { color: var(--success); }
     .vp-eff-mid { color: var(--warning); }
     .vp-eff-bad { color: var(--danger); }
@@ -34892,7 +34898,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             <option value="60">last 60 (max on-chain)</option>
           </select>
           <button class="vp-btn" id="vpRunBtn" onclick="vpRunProbe()">Run probe</button>
-          <label class="vp-chk"><input type="checkbox" id="vpHideDelinq" checked onchange="vpToggleDelinq()"> Hide delinquent</label>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpDeepBtn" onclick="vpDeepScan()">Deep scan (vote latency)</button>
           <button class="vp-btn vp-secondary vp-hidden" id="vpCsvBtn" onclick="vpDownloadCsv()">Download CSV</button>
           <button class="vp-btn vp-secondary vp-hidden" id="vpLagBtn" onclick="vpToggleLag()">Start live lag sampling</button>
           <span id="vpStatus">Idle.</span>
@@ -34925,7 +34931,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
       <div class="vp-panel vp-hidden" id="vpTablePanel">
         <div class="vp-tbl-head">
           <h4>Validators <span id="vpTblCount"></span></h4>
-          <input type="text" class="vp-filter" id="vpFilterBox" placeholder="filter by pubkey…" oninput="vpRenderTable()">
+          <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+            <label class="vp-chk"><input type="checkbox" id="vpHideDelinq" checked onchange="vpToggleDelinq()"> Hide delinquent</label>
+            <input type="text" class="vp-filter" id="vpFilterBox" placeholder="filter by name / pubkey / IP…" oninput="vpRenderTable()">
+          </div>
         </div>
         <div class="vp-tbl-scroll">
           <table class="vp-table">
@@ -34934,7 +34943,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           </table>
         </div>
         <div class="vp-methodology">
-          <b>Farmer risk</b> is a percentile composite relative to the current field, 0&ndash;100: with credits history only it weighs <b>vote-efficiency rank 55%</b>, <b>worst-epoch sag 25%</b>, <b>epoch-to-epoch variance 20%</b>. Once the live lag sampler has &ge;5 minutes of data, the weights become <b>eff 35 / worst 15 / variance 10 / lag &sigma; 25 / lag max 10 / root lag 5</b> &mdash; lag variance and max isolate hardware from geography, since network distance shifts the mean but not the variance. A <b>~</b> marks scores resting on fewer than 3 epochs of data. This score ranks who is <i>most consistent with underprovisioned hardware</i>; it is a lead for investigation, not proof of farming. <b>Same IP</b> is deliberately kept out of the score: it is a co-location signal, not a hardware signal &mdash; exact matches mean multiple validators behind one machine/NAT; the tooltip also shows /24 subnet neighbors. High risk <i>plus</i> a shared IP is the strongest combined read.
+          <b>Farmer risk</b> is a percentile composite relative to the current field, 0&ndash;100: with credits history only it weighs <b>vote-efficiency rank 55%</b>, <b>worst-epoch sag 25%</b>, <b>epoch-to-epoch variance 20%</b>. Once the live lag sampler has &ge;5 minutes of data, the weights become <b>eff 35 / worst 15 / variance 10 / lag &sigma; 25 / lag max 10 / root lag 5</b> &mdash; lag variance and max isolate hardware from geography, since network distance shifts the mean but not the variance. A <b>~</b> marks scores resting on fewer than 3 epochs of data. This score ranks who is <i>most consistent with underprovisioned hardware</i>; it is a lead for investigation, not proof of farming. <b>Same IP</b> is deliberately kept out of the score: it is a co-location signal, not a hardware signal &mdash; exact matches mean multiple validators behind one machine/NAT; the tooltip also shows /24 subnet neighbors. High risk <i>plus</i> a shared IP is the strongest combined read. After a <b>Deep scan</b>, raw per-vote landing latency (parsed from vote transactions, before the TVC grace period rounds it into credits) takes <b>45%</b> of the final score, with the prior composite scaled to 55% &mdash; this is the tie-breaker when credit histories all look alike.
         </div>
       </div>
 
@@ -34963,6 +34972,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         lagSamples: 0,
         prevBodyOverflow: '',
         hideDelinq: true,
+        deepDone: false,
       };
       let vpHist = null, vpScatter = null;
 
@@ -35163,6 +35173,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               lagN: 0, lagMean: 0, lagM2: 0, lagMax: 0,
               rootLagLast: null,
               stalls: 0, liveBase: null, liveEff: null,
+              vlatN: 0, vlatSum: 0, vlatMax: 0,
             });
           }
 
@@ -35245,11 +35256,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
           S.rows = rows;
           S.epochsAnalyzed = wantEpochs;
+          S.deepDone = false;   // new field, previous scan no longer applies
 
           recomputeAndRender();
 
           document.getElementById('vpCsvBtn').classList.remove('vp-hidden');
           document.getElementById('vpLagBtn').classList.remove('vp-hidden');
+          document.getElementById('vpDeepBtn').classList.remove('vp-hidden');
           setStatus('Done. ' + all.length + ' validators, epochs ' + minEpoch + '–' + (S.currentEpoch - 1) + '.');
         } catch (e) {
           console.error('[vote probe]', e);
@@ -35323,6 +35336,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
           r.risk = Math.round(score);
           r.riskLowConf = r.epochsCounted < 3;
         }
+        // Deep-scan blend: raw vote-tx latency is the finest hardware signal
+        // we have (measured before TVC grace rounding), so once available it
+        // takes 45% of the final score.
+        if (S.deepDone) {
+          const pVlat = pctRanks(r => r.vlatN >= 10 ? r.vlatSum / r.vlatN : null);
+          for (const r of act) {
+            if (r.risk === null || r.vlatN < 10) continue;
+            r.risk = Math.round(0.55 * r.risk + 0.45 * (pVlat.get(r) ?? 50));
+          }
+        }
       }
 
       function riskPill(r) {
@@ -35333,7 +35356,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
                 : r.risk >= 20 ? ['LOW', 'vp-r2']
                 :                ['VERY LOW', 'vp-r1'];
         const conf = r.riskLowConf ? ' · thin data (&lt;3 epochs)' : '';
-        const basis = S.lagSamples >= 30 ? 'credits + live lag' : 'credits history only';
+        const basis = (S.lagSamples >= 30 ? 'credits + live lag' : 'credits history')
+          + (S.deepDone && r.vlatN >= 10 ? ' + vote-tx latency' : '');
         return '<span class="vp-riskpill ' + t[1] + '" title="Farmer risk ' + r.risk + '/100 (' + basis + ')' + conf + ' — percentile composite, relative to current field, not proof">'
           + r.risk + (r.riskLowConf ? '~' : '') + ' ' + t[0] + '</span>';
       }
@@ -35453,6 +35477,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         { key: 'worstEff',    label: 'Worst epoch' },
         { key: 'sparkline',   label: 'Trend', sortable: false },
         { key: 'clockDrift',  label: 'Clock drift' },
+        { key: 'vlatMean',    label: 'Vote lat μ', deep: true },
+        { key: 'vlatMax',     label: 'Lat max', deep: true },
         { key: 'liveEff',     label: 'Live eff', lag: true },
         { key: 'stalls',      label: 'Stalls', lag: true },
         { key: 'lagMean',     label: 'Lag μ', lag: true },
@@ -35465,6 +35491,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (key === 'lagSd') return r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : -1;
         if (key === 'name') return r.name ? r.name.toLowerCase() : '\uffff' + r.votePubkey.toLowerCase();
         if (key === 'clockDrift') return r.clockDrift === null ? -Infinity : Math.abs(r.clockDrift);
+        if (key === 'vlatMean') return r.vlatN > 0 ? r.vlatSum / r.vlatN : -Infinity;
         const v = r[key];
         return (v === null || v === undefined) ? -Infinity : v;
       }
@@ -35495,14 +35522,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (!B58.test(pk)) return;
         navigator.clipboard.writeText(pk).then(() => {
           const old = el.textContent;
-          el.textContent = 'copied!';
-          setTimeout(() => { el.textContent = old; }, 900);
+          el.textContent = '✓';
+          el.classList.add('vp-copied');
+          setTimeout(() => { el.textContent = old; el.classList.remove('vp-copied'); }, 900);
         });
       }
 
       function renderTable() {
         const lagOn = S.lagSamples > 0;
-        const cols = COLS.filter(c => !c.lag || lagOn);
+        const cols = COLS.filter(c => (!c.lag || lagOn) && (!c.deep || S.deepDone));
 
         document.getElementById('vpTheadRow').innerHTML = cols.map(c => {
           const arrow = S.sortKey === c.key ? ' <span class="vp-arrow">' + (S.sortDir < 0 ? '▼' : '▲') + '</span>' : '';
@@ -35545,7 +35573,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
             : '<span class="vp-name vp-unnamed">unnamed</span>';
           let cells = '<td class="vp-muted">' + (i + 1) + '</td>';
           cells += '<td class="vp-left">' + ava + nameHtml + '</td>';
-          cells += '<td class="vp-left"><span class="vp-pk" onclick="vpCopyPk(\'' + r.votePubkey + '\', this)" title="' + r.votePubkey + '&#10;node: ' + r.nodePubkey + '&#10;click to copy">' + r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4) + '</span>' + badges + '</td>';
+          cells += '<td class="vp-left"><span class="vp-pk" title="' + r.votePubkey + '&#10;node: ' + r.nodePubkey + '">' + r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4) + '</span>'
+            + '<span class="vp-copy" onclick="vpCopyPk(\'' + r.votePubkey + '\', this)" title="Copy vote account address">⧉</span>' + badges + '</td>';
           cells += '<td>' + riskPill(r) + '</td>';
           // r.ip comes from getClusterNodes gossip and was shape-validated in
           // ipOf(); esc() it anyway before injection (site convention).
@@ -35575,6 +35604,16 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const cls = ad <= 2 ? 'vp-muted' : ad <= 10 ? 'vp-eff-mid' : 'vp-eff-bad';
             cells += '<td class="' + cls + '" title="Self-reported vote timestamp vs cluster consensus. NTP-disciplined boxes stay within ~1–2s; large drift = neglected machine">'
               + (r.clockDrift > 0 ? '+' : '') + r.clockDrift.toFixed(1) + 's</td>';
+          }
+          if (S.deepDone) {
+            if (r.vlatN >= 5) {
+              const m = r.vlatSum / r.vlatN;
+              const mcls = m <= 1.5 ? 'vp-eff-good' : m <= 2.5 ? 'vp-eff-mid' : 'vp-eff-bad';
+              cells += '<td class="' + mcls + '" title="Mean vote landing latency (slots) over ' + r.vlatN + ' observed votes — raw, measured from vote transactions BEFORE the TVC grace period rounds it away">' + m.toFixed(2) + '</td>';
+              cells += '<td class="' + (r.vlatMax >= 8 ? 'vp-eff-bad' : 'vp-muted') + '" title="Worst observed vote latency in the scan window">' + r.vlatMax + '</td>';
+            } else {
+              cells += '<td class="vp-muted" title="Fewer than 5 votes observed in the scan window">—</td><td class="vp-muted">—</td>';
+            }
           }
           if (lagOn) {
             const liveCell = r.liveEff === null
@@ -35657,10 +35696,93 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }
       }
 
+      // ── DEEP SCAN — raw vote-transaction latency ────────
+      // Fetches recent blocks and parses every vote transaction. A vote for
+      // slot N landing in slot N+k reveals per-vote latency k directly —
+      // BEFORE the TVC grace period quantizes it into credits. Two validators
+      // both earning full credits can still show mean latency 1.1 vs 1.9;
+      // that gap is pure hardware + network, and it breaks the ties the
+      // epoch averages can't.
+      async function deepScan() {
+        if (!S.rows.length) { setStatus('Run the probe first.', true); return; }
+        const btn = document.getElementById('vpDeepBtn');
+        btn.disabled = true;
+        try {
+          const SLOTS = 200, BATCH = 20;
+          const info = await rpc('getEpochInfo', [{ commitment: 'confirmed' }]);
+          const tip = info.absoluteSlot - 5;   // stay behind the un-settled tip
+          for (const r of S.rows) { r.vlatN = 0; r.vlatSum = 0; r.vlatMax = 0; }
+          const byPk = new Map(S.rows.map(r => [r.votePubkey, r]));
+          let scanned = 0, produced = 0;
+          for (let s = tip - SLOTS + 1; s <= tip; s += BATCH) {
+            const hi = Math.min(s + BATCH - 1, tip);
+            setStatus('Deep scan: ' + scanned + '/' + SLOTS + ' slots…');
+            const body = [];
+            for (let slot = s; slot <= hi; slot++) {
+              body.push({
+                jsonrpc: '2.0', id: slot, method: 'getBlock',
+                params: [slot, { encoding: 'jsonParsed', transactionDetails: 'full', rewards: false, maxSupportedTransactionVersion: 0 }]
+              });
+            }
+            const res = await fetch(VP_RPC, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(body)
+            });
+            if (!res.ok) throw new Error('getBlock batch HTTP ' + res.status);
+            const batch = await res.json();
+            scanned += (hi - s + 1);
+            if (!Array.isArray(batch)) continue;
+            for (const b of batch) {
+              const blk = b && b.result;
+              if (!blk || !Array.isArray(blk.transactions)) continue;   // skipped slot
+              produced++;
+              const blockSlot = Number(b.id);
+              for (const tx of blk.transactions) {
+                const ixs = tx?.transaction?.message?.instructions || [];
+                for (const ix of ixs) {
+                  if (ix.program !== 'vote' || !ix.parsed) continue;
+                  const inf = ix.parsed.info || {};
+                  const vaPk = inf.voteAccount;
+                  if (!vaPk) continue;
+                  const r = byPk.get(vaPk);
+                  if (!r) continue;
+                  // Newest slot this tx votes on, across instruction shapes:
+                  // legacy vote (slots[]), (compact)updateVoteState / towerSync (lockouts[])
+                  let voted = null;
+                  if (inf.vote && Array.isArray(inf.vote.slots) && inf.vote.slots.length) {
+                    voted = Math.max(...inf.vote.slots.map(Number));
+                  } else {
+                    const vsu = inf.voteStateUpdate || inf.towerSync || inf.tower_sync || null;
+                    const locks = vsu && (vsu.lockouts || vsu.lockout);
+                    if (Array.isArray(locks) && locks.length) {
+                      voted = Math.max(...locks.map(l => Number(l && (l.slot !== undefined ? l.slot : l[0]))));
+                    }
+                  }
+                  if (voted === null || !isFinite(voted)) continue;
+                  const lat = blockSlot - voted;
+                  if (lat < 0 || lat > 64) continue;   // anomalies / deep catch-up
+                  r.vlatN++; r.vlatSum += lat; r.vlatMax = Math.max(r.vlatMax, lat);
+                }
+              }
+            }
+          }
+          S.deepDone = true;
+          computeRisk();
+          renderTable();
+          const withLat = S.rows.filter(r => r.vlatN >= 5).length;
+          setStatus('Deep scan done: ' + produced + ' blocks over ' + SLOTS + ' slots, latency for ' + withLat + ' validators. Risk re-weighted (45% vote-tx latency).');
+        } catch (e) {
+          console.error('[vote probe] deep scan', e);
+          setStatus('Deep scan error: ' + e.message, true);
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
       // ── CSV export ──────────────────────────────────────
       function downloadCsv() {
         const q = s => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
-        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','clock_drift_s','stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples'];
+        const head = ['vote_pubkey','node_pubkey','name','farmer_risk','risk_low_confidence','ip','ip_shared_count','subnet24_shared_count','clock_drift_s','stake_xnt','commission_pct','delinquent','epochs_counted','mean_efficiency','stddev_efficiency','worst_epoch_efficiency','worst_epoch','percentile','lag_samples','lag_mean_slots','lag_stddev_slots','lag_max_slots','root_lag_last','live_efficiency','stall_samples','vote_lat_n','vote_lat_mean_slots','vote_lat_max_slots'];
         const lines = [head.join(',')];
         for (const r of S.rows) {
           const lagSd = r.lagN > 1 ? Math.sqrt(r.lagM2 / (r.lagN - 1)) : '';
@@ -35675,7 +35797,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
             r.worstEpoch === null ? '' : r.worstEpoch, r.pctile === null ? '' : r.pctile,
             r.lagN, r.lagN ? r.lagMean.toFixed(2) : '', lagSd === '' ? '' : lagSd.toFixed(2),
             r.lagN ? r.lagMax : '', r.rootLagLast === null ? '' : r.rootLagLast,
-            r.liveEff === null ? '' : r.liveEff.toFixed(6), r.lagN ? r.stalls : ''
+            r.liveEff === null ? '' : r.liveEff.toFixed(6), r.lagN ? r.stalls : '',
+            r.vlatN, r.vlatN ? (r.vlatSum / r.vlatN).toFixed(3) : '', r.vlatN ? r.vlatMax : ''
           ].join(','));
         }
         const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
@@ -35696,6 +35819,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       window.vpCopyPk      = copyPk;
       window.vpRenderTable = renderTable;
       window.vpToggleDelinq = toggleDelinq;
+      window.vpDeepScan    = deepScan;
     })();
   </script>
 
