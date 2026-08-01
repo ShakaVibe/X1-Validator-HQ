@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-01T19:38:51.663Z",
-  "totalNodes": 612,
-  "totalLocations": 608,
+  "lastUpdated": "2026-08-01T21:12:12.719Z",
+  "totalNodes": 613,
+  "totalLocations": 609,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4258,6 +4258,13 @@
       "city": "Pleasant View",
       "lat": 41.3072,
       "lon": -111.992
+    },
+    "5.196.64.42": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -4275,7 +4282,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 54
+      "count": 55
     },
     "KE": {
       "name": "Kenya",
