@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-01T14:02:13.629Z",
-  "totalNodes": 617,
-  "totalLocations": 613,
+  "lastUpdated": "2026-08-01T15:31:56.467Z",
+  "totalNodes": 612,
+  "totalLocations": 608,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1494,13 +1494,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "51.89.217.130": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5081,
-      "lon": -0.1278
-    },
     "193.34.212.143": {
       "country": "Poland",
       "countryCode": "PL",
@@ -2473,20 +2466,6 @@
       "city": "Warsaw",
       "lat": 52.2372,
       "lon": 21.0123
-    },
-    "146.59.84.132": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
-    },
-    "146.59.82.106": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "51.210.3.234": {
       "country": "France",
@@ -3468,20 +3447,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "51.38.147.239": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
-    "51.38.144.158": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wroclaw",
-      "lat": 51.098,
-      "lon": 17.0321
-    },
     "162.246.16.230": {
       "country": "United States",
       "countryCode": "US",
@@ -4298,7 +4263,7 @@
   "countries": {
     "PL": {
       "name": "Poland",
-      "count": 88
+      "count": 84
     },
     "FI": {
       "name": "Finland",
@@ -4334,7 +4299,7 @@
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 5
+      "count": 4
     },
     "SG": {
       "name": "Singapore",
