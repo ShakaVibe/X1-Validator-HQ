@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-03T20:03:10.777Z",
-  "totalNodes": 613,
-  "totalLocations": 609,
+  "lastUpdated": "2026-08-03T21:34:02.328Z",
+  "totalNodes": 614,
+  "totalLocations": 610,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4265,6 +4265,13 @@
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
+    },
+    "65.109.39.56": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -4274,7 +4281,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 67
+      "count": 68
     },
     "US": {
       "name": "United States",
