@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-03T11:49:31.804Z",
+  "lastUpdated": "2026-08-03T15:21:16.266Z",
   "totalNodes": 613,
   "totalLocations": 609,
   "locations": {
@@ -4252,25 +4252,29 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "104.250.143.66": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Pleasant View",
-      "lat": 41.3072,
-      "lon": -111.992
-    },
     "5.196.64.42": {
       "country": "France",
       "countryCode": "FR",
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "169.58.110.30": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
     }
   },
   "countries": {
+    "PL": {
+      "name": "Poland",
+      "count": 84
+    },
     "US": {
       "name": "United States",
-      "count": 207
+      "count": 206
     },
     "DE": {
       "name": "Germany",
@@ -4280,17 +4284,13 @@
       "name": "Canada",
       "count": 21
     },
-    "PL": {
-      "name": "Poland",
-      "count": 84
+    "FR": {
+      "name": "France",
+      "count": 56
     },
     "FI": {
       "name": "Finland",
       "count": 67
-    },
-    "FR": {
-      "name": "France",
-      "count": 55
     },
     "NL": {
       "name": "The Netherlands",
@@ -4300,6 +4300,10 @@
       "name": "Sweden",
       "count": 5
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 4
+    },
     "KE": {
       "name": "Kenya",
       "count": 7
@@ -4307,10 +4311,6 @@
     "SG": {
       "name": "Singapore",
       "count": 1
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 4
     }
   }
 }
