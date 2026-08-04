@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-04T10:59:00.860Z",
-  "totalNodes": 614,
-  "totalLocations": 610,
+  "lastUpdated": "2026-08-04T14:44:44.877Z",
+  "totalNodes": 624,
+  "totalLocations": 620,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4272,6 +4272,76 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "135.181.11.138": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.181.11.132": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.181.11.129": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.181.11.136": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.181.11.133": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.181.11.134": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.181.11.137": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.181.11.130": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.181.11.135": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.181.11.131": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -4293,7 +4363,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 68
+      "count": 78
     },
     "FR": {
       "name": "France",
