@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-05T23:25:29.683Z",
+  "lastUpdated": "2026-08-06T03:45:43.056Z",
   "totalNodes": 623,
   "totalLocations": 619,
   "locations": {
@@ -2775,13 +2775,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "75.119.156.130": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "65.19.133.254": {
       "country": "United States",
       "countryCode": "US",
@@ -4335,6 +4328,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "62.171.157.131": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1169,
+      "lon": 8.6837
     }
   },
   "countries": {
@@ -4352,7 +4352,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 56
+      "count": 55
     },
     "KE": {
       "name": "Kenya",
@@ -4368,7 +4368,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 137
+      "count": 138
     },
     "CA": {
       "name": "Canada",
