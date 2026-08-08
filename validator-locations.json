@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-07T22:59:00.136Z",
-  "totalNodes": 628,
-  "totalLocations": 622,
+  "lastUpdated": "2026-08-08T02:24:40.810Z",
+  "totalNodes": 625,
+  "totalLocations": 619,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2684,13 +2684,6 @@
       "lat": 52.2297,
       "lon": 21.0122
     },
-    "65.109.107.138": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "149.50.108.127": {
       "country": "Poland",
       "countryCode": "PL",
@@ -2753,20 +2746,6 @@
       "city": "Stockholm",
       "lat": 59.3287,
       "lon": 18.0717
-    },
-    "185.16.39.96": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1783,
-      "lon": 21.0602
-    },
-    "185.16.39.50": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1783,
-      "lon": 21.0602
     },
     "163.245.197.62": {
       "country": "United States",
@@ -4361,7 +4340,7 @@
   "countries": {
     "PL": {
       "name": "Poland",
-      "count": 84
+      "count": 82
     },
     "US": {
       "name": "United States",
@@ -4381,7 +4360,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 77
+      "count": 76
     },
     "NL": {
       "name": "The Netherlands",
