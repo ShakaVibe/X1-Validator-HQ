@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-08-09T20:56:33.065Z",
-  "totalNodes": 624,
+  "lastUpdated": "2026-08-09T22:54:20.510Z",
+  "totalNodes": 625,
   "totalLocations": 620,
   "locations": {
     "45.94.82.34": {
@@ -2537,13 +2537,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "173.225.109.202": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "69.169.101.203": {
       "country": "United States",
       "countryCode": "US",
@@ -4342,36 +4335,19 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "185.53.155.129": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Bielsko-Biala",
+      "lat": 49.8207,
+      "lon": 19.0512
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 79
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 77
-    },
     "US": {
       "name": "United States",
-      "count": 212
-    },
-    "FR": {
-      "name": "France",
-      "count": 56
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 25
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
+      "count": 211
     },
     "DE": {
       "name": "Germany",
@@ -4381,13 +4357,37 @@
       "name": "Canada",
       "count": 21
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 4
+    "PL": {
+      "name": "Poland",
+      "count": 81
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 77
+    },
+    "FR": {
+      "name": "France",
+      "count": 56
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 25
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SG": {
       "name": "Singapore",
       "count": 1
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 4
     }
   }
 }
