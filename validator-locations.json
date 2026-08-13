@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-12T23:05:39.417Z",
-  "totalNodes": 620,
-  "totalLocations": 615,
+  "lastUpdated": "2026-08-13T03:03:17.531Z",
+  "totalNodes": 619,
+  "totalLocations": 614,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -177,13 +177,6 @@
       "city": "Whippany",
       "lat": 40.8207,
       "lon": -74.4231
-    },
-    "205.209.118.242": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "65.21.90.233": {
       "country": "Finland",
@@ -4316,7 +4309,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 210
+      "count": 209
     },
     "DE": {
       "name": "Germany",
