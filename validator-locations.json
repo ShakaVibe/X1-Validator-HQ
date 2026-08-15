@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-08-15T08:49:13.771Z",
-  "totalNodes": 614,
+  "lastUpdated": "2026-08-15T10:42:49.424Z",
+  "totalNodes": 615,
   "totalLocations": 610,
   "locations": {
     "45.94.82.34": {
@@ -2187,13 +2187,6 @@
       "lat": 45.5029,
       "lon": -73.5723
     },
-    "95.214.55.7": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1783,
-      "lon": 21.0602
-    },
     "161.129.65.14": {
       "country": "United States",
       "countryCode": "US",
@@ -4231,13 +4224,6 @@
       "lat": 41.3072,
       "lon": -111.992
     },
-    "75.119.156.130": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "64.20.40.146": {
       "country": "United States",
       "countryCode": "US",
@@ -4272,16 +4258,30 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
+    },
+    "135.181.7.90": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "206.72.200.14": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
     "PL": {
       "name": "Poland",
-      "count": 77
+      "count": 76
     },
     "US": {
       "name": "United States",
-      "count": 208
+      "count": 209
     },
     "DE": {
       "name": "Germany",
@@ -4293,11 +4293,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 56
+      "count": 55
     },
     "FI": {
       "name": "Finland",
-      "count": 73
+      "count": 75
     },
     "NL": {
       "name": "The Netherlands",
