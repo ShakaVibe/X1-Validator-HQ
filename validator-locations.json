@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-16T07:04:16.093Z",
-  "totalNodes": 616,
-  "totalLocations": 611,
+  "lastUpdated": "2026-08-16T08:51:06.885Z",
+  "totalNodes": 617,
+  "totalLocations": 612,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3174,13 +3174,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "95.214.54.88": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.1783,
-      "lon": 21.0602
-    },
     "158.69.52.15": {
       "country": "Canada",
       "countryCode": "CA",
@@ -4279,6 +4272,20 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
+    },
+    "95.214.55.7": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
+    },
+    "75.119.156.130": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
     }
   },
   "countries": {
@@ -4304,7 +4311,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 55
+      "count": 56
     },
     "NL": {
       "name": "The Netherlands",
