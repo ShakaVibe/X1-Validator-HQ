@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-16T10:43:16.968Z",
-  "totalNodes": 617,
-  "totalLocations": 612,
+  "lastUpdated": "2026-08-16T13:04:39.158Z",
+  "totalNodes": 616,
+  "totalLocations": 611,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -765,13 +765,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "45.94.81.210": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "65.21.128.122": {
       "country": "Finland",
@@ -3167,13 +3160,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "205.209.115.118": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "158.69.52.15": {
       "country": "Canada",
       "countryCode": "CA",
@@ -4286,6 +4272,13 @@
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
+    },
+    "45.141.226.186": {
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "city": "London",
+      "lat": 51.5072,
+      "lon": -0.127586
     }
   },
   "countries": {
@@ -4299,7 +4292,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 209
+      "count": 208
     },
     "FR": {
       "name": "France",
@@ -4311,7 +4304,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 25
+      "count": 24
     },
     "SE": {
       "name": "Sweden",
@@ -4327,7 +4320,7 @@
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 4
+      "count": 5
     },
     "SG": {
       "name": "Singapore",
