@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-16T22:41:30.768Z",
+  "lastUpdated": "2026-08-17T01:57:46.210Z",
   "totalNodes": 616,
   "totalLocations": 611,
   "locations": {
@@ -4286,9 +4286,29 @@
       "name": "Poland",
       "count": 75
     },
+    "FI": {
+      "name": "Finland",
+      "count": 76
+    },
     "US": {
       "name": "United States",
       "count": 208
+    },
+    "FR": {
+      "name": "France",
+      "count": 56
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 24
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
     },
     "DE": {
       "name": "Germany",
@@ -4298,29 +4318,9 @@
       "name": "Canada",
       "count": 21
     },
-    "FR": {
-      "name": "France",
-      "count": 56
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 76
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 24
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "SG": {
       "name": "Singapore",
