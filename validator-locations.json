@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-17T14:48:49.449Z",
-  "totalNodes": 613,
-  "totalLocations": 608,
+  "lastUpdated": "2026-08-17T16:49:59.804Z",
+  "totalNodes": 612,
+  "totalLocations": 607,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4182,13 +4182,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "169.58.110.30": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "159.195.198.168": {
       "country": "Germany",
       "countryCode": "DE",
@@ -4261,10 +4254,6 @@
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 73
-    },
     "US": {
       "name": "United States",
       "count": 208
@@ -4277,24 +4266,28 @@
       "name": "Canada",
       "count": 21
     },
-    "FR": {
-      "name": "France",
-      "count": 56
+    "PL": {
+      "name": "Poland",
+      "count": 73
     },
     "FI": {
       "name": "Finland",
       "count": 75
     },
+    "FR": {
+      "name": "France",
+      "count": 55
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 24
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
     "SE": {
       "name": "Sweden",
+      "count": 5
+    },
+    "GB": {
+      "name": "United Kingdom",
       "count": 5
     },
     "KE": {
