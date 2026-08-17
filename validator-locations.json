@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-17T07:26:55.821Z",
+  "lastUpdated": "2026-08-17T09:03:56.036Z",
   "totalNodes": 613,
   "totalLocations": 609,
   "locations": {
@@ -3125,13 +3125,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "149.50.108.105": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "149.50.110.21": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4265,6 +4258,13 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "149.50.116.93": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
