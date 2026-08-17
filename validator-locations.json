@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-17T05:02:08.480Z",
-  "totalNodes": 616,
-  "totalLocations": 611,
+  "lastUpdated": "2026-08-17T07:26:55.821Z",
+  "totalNodes": 613,
+  "totalLocations": 609,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -905,13 +905,6 @@
       "city": "Dallas",
       "lat": 32.7767,
       "lon": -96.797
-    },
-    "65.108.205.235": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "146.59.47.13": {
       "country": "Poland",
@@ -2691,13 +2684,6 @@
       "lat": 45.3161,
       "lon": -73.8736
     },
-    "205.209.101.222": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "65.108.71.178": {
       "country": "Finland",
       "countryCode": "FI",
@@ -4203,13 +4189,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "185.53.155.129": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Bielsko-Biala",
-      "lat": 49.8207,
-      "lon": 19.0512
-    },
     "149.50.108.47": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4279,16 +4258,43 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "205.209.112.74": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "PL": {
       "name": "Poland",
+      "count": 73
+    },
+    "FI": {
+      "name": "Finland",
       "count": 75
     },
     "US": {
       "name": "United States",
       "count": 208
+    },
+    "FR": {
+      "name": "France",
+      "count": 56
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 24
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
     },
     "DE": {
       "name": "Germany",
@@ -4298,29 +4304,9 @@
       "name": "Canada",
       "count": 21
     },
-    "FR": {
-      "name": "France",
-      "count": 56
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 76
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 24
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "SG": {
       "name": "Singapore",
