@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-18T10:50:32.507Z",
-  "totalNodes": 600,
-  "totalLocations": 596,
+  "lastUpdated": "2026-08-18T13:13:41.866Z",
+  "totalNodes": 601,
+  "totalLocations": 597,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4174,6 +4174,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "45.129.183.164": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
     }
   },
   "countries": {
@@ -4199,7 +4206,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 126
+      "count": 127
     },
     "NL": {
       "name": "The Netherlands",
