@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-18T03:11:49.370Z",
+  "lastUpdated": "2026-08-18T04:55:46.626Z",
   "totalNodes": 600,
   "totalLocations": 596,
   "locations": {
@@ -72,13 +72,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "5.39.218.188": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3759,
-      "lon": 4.8975
     },
     "65.108.65.53": {
       "country": "Finland",
@@ -4174,6 +4167,13 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
+    },
+    "65.108.205.235": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -4195,7 +4195,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 75
+      "count": 76
     },
     "FR": {
       "name": "France",
@@ -4203,7 +4203,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 24
+      "count": 23
     },
     "SE": {
       "name": "Sweden",
