@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-19T18:57:13.217Z",
-  "totalNodes": 599,
-  "totalLocations": 595,
+  "lastUpdated": "2026-08-19T20:48:56.326Z",
+  "totalNodes": 600,
+  "totalLocations": 596,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4167,6 +4167,13 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
+    },
+    "198.96.94.26": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
@@ -4176,7 +4183,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 206
+      "count": 207
     },
     "CA": {
       "name": "Canada",
