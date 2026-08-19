@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-18T22:44:40.293Z",
-  "totalNodes": 601,
-  "totalLocations": 597,
+  "lastUpdated": "2026-08-19T01:55:53.288Z",
+  "totalNodes": 599,
+  "totalLocations": 595,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3965,13 +3965,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "135.181.11.138": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "135.181.11.132": {
       "country": "Finland",
       "countryCode": "FI",
@@ -4001,13 +3994,6 @@
       "lon": 24.9347
     },
     "135.181.11.134": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "135.181.11.137": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
@@ -4184,40 +4170,40 @@
     }
   },
   "countries": {
+    "PL": {
+      "name": "Poland",
+      "count": 74
+    },
     "US": {
       "name": "United States",
       "count": 207
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 127
     },
     "CA": {
       "name": "Canada",
       "count": 21
     },
-    "PL": {
-      "name": "Poland",
-      "count": 74
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 76
-    },
     "FR": {
       "name": "France",
       "count": 55
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 74
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 127
     },
     "NL": {
       "name": "The Netherlands",
       "count": 23
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
     "GB": {
       "name": "United Kingdom",
+      "count": 5
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 5
     },
     "KE": {
