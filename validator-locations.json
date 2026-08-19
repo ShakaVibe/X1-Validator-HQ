@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-19T13:14:55.042Z",
-  "totalNodes": 600,
-  "totalLocations": 596,
+  "lastUpdated": "2026-08-19T14:56:56.099Z",
+  "totalNodes": 599,
+  "totalLocations": 595,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1913,13 +1913,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "159.195.84.232": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4423,
-      "lon": 11.0191
     },
     "45.136.31.65": {
       "country": "Germany",
@@ -4168,12 +4161,12 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "173.225.109.202": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7876,
-      "lon": -74.06
+    "188.68.36.54": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
     }
   },
   "countries": {
@@ -4183,7 +4176,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 207
+      "count": 206
     },
     "CA": {
       "name": "Canada",
