@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-19T03:14:32.257Z",
+  "lastUpdated": "2026-08-19T04:55:46.684Z",
   "totalNodes": 599,
   "totalLocations": 595,
   "locations": {
@@ -163,13 +163,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "173.225.101.150": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Whippany",
-      "lat": 40.8207,
-      "lon": -74.4231
     },
     "65.21.90.233": {
       "country": "Finland",
@@ -4167,43 +4160,50 @@
       "city": "Żory",
       "lat": 50.043,
       "lon": 18.6838
+    },
+    "51.255.32.85": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 74
-    },
     "US": {
       "name": "United States",
-      "count": 207
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 21
-    },
-    "FR": {
-      "name": "France",
-      "count": 55
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 74
+      "count": 206
     },
     "DE": {
       "name": "Germany",
       "count": 127
     },
+    "FR": {
+      "name": "France",
+      "count": 56
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 21
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 74
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 74
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 23
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
     "SE": {
       "name": "Sweden",
+      "count": 5
+    },
+    "GB": {
+      "name": "United Kingdom",
       "count": 5
     },
     "KE": {
