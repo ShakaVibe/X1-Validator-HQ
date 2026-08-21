@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-21T07:12:21.901Z",
-  "totalNodes": 600,
-  "totalLocations": 596,
+  "lastUpdated": "2026-08-21T09:02:01.662Z",
+  "totalNodes": 601,
+  "totalLocations": 597,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4174,6 +4174,13 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
+    },
+    "38.58.180.92": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5247,
+      "lon": -111.8638
     }
   },
   "countries": {
@@ -4181,41 +4188,41 @@
       "name": "Poland",
       "count": 74
     },
+    "FI": {
+      "name": "Finland",
+      "count": 74
+    },
     "US": {
       "name": "United States",
-      "count": 206
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 21
+      "count": 207
     },
     "FR": {
       "name": "France",
       "count": 56
     },
-    "FI": {
-      "name": "Finland",
-      "count": 74
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 128
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "NL": {
       "name": "The Netherlands",
       "count": 23
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
     "SE": {
       "name": "Sweden",
       "count": 5
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "DE": {
+      "name": "Germany",
+      "count": 128
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 21
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 5
     },
     "SG": {
       "name": "Singapore",
