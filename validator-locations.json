@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-21T19:02:03.062Z",
-  "totalNodes": 601,
-  "totalLocations": 597,
+  "lastUpdated": "2026-08-21T20:43:56.006Z",
+  "totalNodes": 600,
+  "totalLocations": 596,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -79,13 +79,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "216.219.86.130": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "205.209.113.166": {
       "country": "United States",
@@ -4188,41 +4181,41 @@
       "name": "Poland",
       "count": 74
     },
-    "US": {
-      "name": "United States",
-      "count": 206
-    },
     "FI": {
       "name": "Finland",
       "count": 74
     },
-    "CA": {
-      "name": "Canada",
-      "count": 21
+    "US": {
+      "name": "United States",
+      "count": 205
     },
     "FR": {
       "name": "France",
       "count": 57
     },
-    "DE": {
-      "name": "Germany",
-      "count": 128
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "NL": {
       "name": "The Netherlands",
       "count": 23
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
     "SE": {
       "name": "Sweden",
       "count": 5
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "DE": {
+      "name": "Germany",
+      "count": 128
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 21
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 5
     },
     "SG": {
       "name": "Singapore",
