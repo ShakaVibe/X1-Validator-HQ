@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-21T09:02:01.662Z",
+  "lastUpdated": "2026-08-21T10:52:39.211Z",
   "totalNodes": 601,
   "totalLocations": 597,
   "locations": {
@@ -298,13 +298,6 @@
       "lon": -74.0544
     },
     "209.159.154.102": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "64.20.42.206": {
       "country": "United States",
       "countryCode": "US",
       "city": "Secaucus",
@@ -4181,6 +4174,13 @@
       "city": "Draper",
       "lat": 40.5247,
       "lon": -111.8638
+    },
+    "51.91.253.20": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
@@ -4194,11 +4194,11 @@
     },
     "US": {
       "name": "United States",
-      "count": 207
+      "count": 206
     },
     "FR": {
       "name": "France",
-      "count": 56
+      "count": 57
     },
     "KE": {
       "name": "Kenya",
