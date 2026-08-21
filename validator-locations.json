@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-20T22:49:24.185Z",
-  "totalNodes": 602,
-  "totalLocations": 598,
+  "lastUpdated": "2026-08-21T02:00:49.033Z",
+  "totalNodes": 601,
+  "totalLocations": 597,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4154,13 +4154,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "188.68.36.54": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
     "198.96.94.26": {
       "country": "United States",
       "countryCode": "US",
@@ -4199,10 +4192,6 @@
       "name": "United States",
       "count": 207
     },
-    "DE": {
-      "name": "Germany",
-      "count": 129
-    },
     "CA": {
       "name": "Canada",
       "count": 21
@@ -4214,6 +4203,10 @@
     "FI": {
       "name": "Finland",
       "count": 74
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 128
     },
     "NL": {
       "name": "The Netherlands",
