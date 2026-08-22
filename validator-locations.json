@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-21T22:45:17.599Z",
-  "totalNodes": 600,
-  "totalLocations": 596,
+  "lastUpdated": "2026-08-22T01:53:48.120Z",
+  "totalNodes": 598,
+  "totalLocations": 594,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4147,20 +4147,6 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "89.58.52.109": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
-    "37.120.178.161": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
     "38.58.180.92": {
       "country": "United States",
       "countryCode": "US",
@@ -4177,40 +4163,40 @@
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 205
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 128
-    },
-    "FR": {
-      "name": "France",
-      "count": 57
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 21
-    },
     "PL": {
       "name": "Poland",
       "count": 74
+    },
+    "US": {
+      "name": "United States",
+      "count": 205
     },
     "FI": {
       "name": "Finland",
       "count": 74
     },
+    "CA": {
+      "name": "Canada",
+      "count": 21
+    },
+    "FR": {
+      "name": "France",
+      "count": 57
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 126
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 23
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
     "GB": {
       "name": "United Kingdom",
+      "count": 5
+    },
+    "SE": {
+      "name": "Sweden",
       "count": 5
     },
     "KE": {
