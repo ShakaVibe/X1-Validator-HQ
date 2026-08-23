@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-23T14:44:18.666Z",
-  "totalNodes": 597,
-  "totalLocations": 593,
+  "lastUpdated": "2026-08-23T16:46:30.078Z",
+  "totalNodes": 598,
+  "totalLocations": 594,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2628,13 +2628,6 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "57.129.101.110": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "195.3.223.238": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4153,6 +4146,20 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "135.181.11.137": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "135.181.11.138": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -4166,7 +4173,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 74
+      "count": 76
     },
     "CA": {
       "name": "Canada",
@@ -4178,7 +4185,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 126
+      "count": 125
     },
     "NL": {
       "name": "The Netherlands",
