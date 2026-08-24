@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-24T13:25:21.924Z",
-  "totalNodes": 599,
-  "totalLocations": 595,
+  "lastUpdated": "2026-08-24T15:04:40.534Z",
+  "totalNodes": 600,
+  "totalLocations": 596,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4167,6 +4167,13 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
+    },
+    "57.129.101.110": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1162,
+      "lon": 8.6693
     }
   },
   "countries": {
@@ -4192,7 +4199,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 126
+      "count": 127
     },
     "NL": {
       "name": "The Netherlands",
