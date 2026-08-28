@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-28T06:10:52.974Z",
-  "totalNodes": 601,
-  "totalLocations": 597,
+  "lastUpdated": "2026-08-28T18:50:19.793Z",
+  "totalNodes": 599,
+  "totalLocations": 595,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1017,13 +1017,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "157.180.9.120": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "209.159.154.82": {
       "country": "United States",
@@ -4133,13 +4126,6 @@
       "lat": 49.4527,
       "lon": 11.0783
     },
-    "57.129.101.110": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1162,
-      "lon": 8.6693
-    },
     "205.209.113.190": {
       "country": "United States",
       "countryCode": "US",
@@ -4194,7 +4180,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 74
+      "count": 73
     },
     "CA": {
       "name": "Canada",
@@ -4206,7 +4192,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 127
+      "count": 126
     },
     "NL": {
       "name": "The Netherlands",
