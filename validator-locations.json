@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-30T00:26:29.396Z",
-  "totalNodes": 599,
-  "totalLocations": 595,
+  "lastUpdated": "2026-08-30T08:23:32.294Z",
+  "totalNodes": 598,
+  "totalLocations": 594,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -219,13 +219,6 @@
       "city": "Hattersheim",
       "lat": 50.0845,
       "lon": 8.4719
-    },
-    "69.164.249.2": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Dallas",
-      "lat": 32.7767,
-      "lon": -96.797
     },
     "65.109.88.43": {
       "country": "Finland",
@@ -4184,7 +4177,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 207
+      "count": 206
     },
     "KE": {
       "name": "Kenya",
