@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-03T12:52:54.414Z",
-  "totalNodes": 598,
-  "totalLocations": 594,
+  "lastUpdated": "2026-09-03T17:54:09.431Z",
+  "totalNodes": 595,
+  "totalLocations": 591,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1816,13 +1816,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "102.210.25.129": {
-      "country": "Kenya",
-      "countryCode": "KE",
-      "city": "Nairobi",
-      "lat": -1.2841,
-      "lon": 36.8155
-    },
     "152.53.249.250": {
       "country": "Germany",
       "countryCode": "DE",
@@ -2039,13 +2032,6 @@
       "city": "Beauharnois",
       "lat": 45.3161,
       "lon": -73.8736
-    },
-    "102.210.25.131": {
-      "country": "Kenya",
-      "countryCode": "KE",
-      "city": "Imara Daima Estate",
-      "lat": -1.32323,
-      "lon": 36.8802
     },
     "145.239.134.7": {
       "country": "Poland",
@@ -2452,13 +2438,6 @@
       "city": "Draper",
       "lat": 40.5084,
       "lon": -111.8838
-    },
-    "149.50.110.61": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "185.189.46.23": {
       "country": "Sweden",
@@ -4112,13 +4091,6 @@
       "lat": 46.1012,
       "lon": -123.2068
     },
-    "169.58.110.30": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "195.3.221.104": {
       "country": "Poland",
       "countryCode": "PL",
@@ -4160,28 +4132,39 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "5.135.140.32": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 74
+    "US": {
+      "name": "United States",
+      "count": 206
     },
-    "FI": {
-      "name": "Finland",
-      "count": 75
+    "DE": {
+      "name": "Germany",
+      "count": 125
     },
     "FR": {
       "name": "France",
       "count": 56
     },
-    "US": {
-      "name": "United States",
-      "count": 206
+    "CA": {
+      "name": "Canada",
+      "count": 20
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "PL": {
+      "name": "Poland",
+      "count": 73
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 75
     },
     "NL": {
       "name": "The Netherlands",
@@ -4191,21 +4174,17 @@
       "name": "Sweden",
       "count": 5
     },
-    "DE": {
-      "name": "Germany",
-      "count": 125
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
     },
-    "CA": {
-      "name": "Canada",
-      "count": 20
-    },
     "SG": {
       "name": "Singapore",
       "count": 1
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 5
     }
   }
 }
