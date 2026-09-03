@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-03T07:14:35.532Z",
-  "totalNodes": 599,
-  "totalLocations": 595,
+  "lastUpdated": "2026-09-03T12:52:54.414Z",
+  "totalNodes": 598,
+  "totalLocations": 594,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -541,13 +541,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "144.76.108.242": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "168.119.194.87": {
       "country": "Germany",
@@ -4161,12 +4154,12 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "158.69.54.196": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5075,
-      "lon": -73.5887
+    "144.76.108.210": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -4208,7 +4201,7 @@
     },
     "CA": {
       "name": "Canada",
-      "count": 21
+      "count": 20
     },
     "SG": {
       "name": "Singapore",
