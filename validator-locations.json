@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-04T11:28:44.872Z",
-  "totalNodes": 596,
-  "totalLocations": 592,
+  "lastUpdated": "2026-09-04T16:28:28.365Z",
+  "totalNodes": 598,
+  "totalLocations": 594,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4146,6 +4146,20 @@
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
+    },
+    "102.210.25.131": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
+    },
+    "144.76.108.242": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
@@ -4155,7 +4169,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 125
+      "count": 126
     },
     "FR": {
       "name": "France",
@@ -4181,6 +4195,10 @@
       "name": "Sweden",
       "count": 5
     },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
@@ -4188,10 +4206,6 @@
     "SG": {
       "name": "Singapore",
       "count": 1
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 5
     }
   }
 }
