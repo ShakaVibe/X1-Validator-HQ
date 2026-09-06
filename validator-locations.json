@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-06T15:33:51.635Z",
-  "totalNodes": 597,
-  "totalLocations": 593,
+  "lastUpdated": "2026-09-06T18:24:56.602Z",
+  "totalNodes": 594,
+  "totalLocations": 590,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2313,28 +2313,7 @@
       "lat": 40.7687,
       "lon": -111.886
     },
-    "38.97.61.115": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "38.97.61.116": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
-    "38.246.115.149": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
-    "38.147.105.98": {
       "country": "United States",
       "countryCode": "US",
       "city": "Draper",
@@ -4162,7 +4141,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 207
+      "count": 204
     },
     "FI": {
       "name": "Finland",
