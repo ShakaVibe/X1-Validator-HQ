@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-06T04:49:52.798Z",
-  "totalNodes": 598,
-  "totalLocations": 594,
+  "lastUpdated": "2026-09-06T11:06:28.192Z",
+  "totalNodes": 597,
+  "totalLocations": 593,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3664,13 +3664,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "89.144.55.83": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Bad Soden am Taunus",
-      "lat": 50.1592,
-      "lon": 8.48174
-    },
     "65.109.85.251": {
       "country": "Finland",
       "countryCode": "FI",
@@ -4167,10 +4160,6 @@
       "name": "United States",
       "count": 207
     },
-    "DE": {
-      "name": "Germany",
-      "count": 126
-    },
     "FR": {
       "name": "France",
       "count": 57
@@ -4186,6 +4175,10 @@
     "FI": {
       "name": "Finland",
       "count": 75
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 125
     },
     "NL": {
       "name": "The Netherlands",
