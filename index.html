@@ -2349,7 +2349,12 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      pointer-events: none;
+      pointer-events: none;     /* don't block globe dragging... */
+    }
+
+    .globe-stat[title] {
+      pointer-events: auto;     /* ...but let the explanatory tooltip show on hover */
+      cursor: help;
     }
 
     .globe-stat {
@@ -15900,6 +15905,10 @@
         });
 
         document.getElementById('totalValidators').textContent = totalValidatorsCount;
+        // Keep the globe's "X of Y validators located" chip in sync with the header.
+        if (typeof renderGlobeStats === 'function' && typeof globeState !== 'undefined' && globeState.points.length) {
+          renderGlobeStats(globeState.points, globeState.countries);
+        }
         document.getElementById('totalStake').textContent = formatCompact(lamportsToXNT(totalStake));
         document.getElementById('currentEpoch').textContent = epochInfo.epoch;
         document.getElementById('currentSlot').textContent = formatCompact(slot);
@@ -18339,7 +18348,7 @@
     const TOPOJSON_LIB_URL   = 'https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js';
     const WORLD_ATLAS_URL    = 'https://unpkg.com/world-atlas@2.0.2/countries-110m.json';
     const GLOBE_HOME_VIEW    = { lat: 30, lng: -35, altitude: 2.0 };  // Atlantic view: US + Europe in frame
-    const GLOBE_ROTATE_SPEED = 0.5;                                  // OrbitControls.autoRotateSpeed (~2 min per revolution)
+    const GLOBE_ROTATE_SPEED = 0.9;                                  // OrbitControls.autoRotateSpeed (~65 s per revolution)
     const GLOBE_HUB_COUNT    = 12;                                   // cities that get pulsing rings
     const GLOBE_ARC_HUBS     = 6;                                    // top cities joined by arcs
 
@@ -18769,13 +18778,23 @@
       }
     }
 
+    // The globe can only place validators that are visible in gossip with a
+    // public IP, so "located" is always <= the header's vote-account total
+    // (which includes offline/delinquent validators). Show both so the gap is
+    // explicit rather than looking like a bug.
     function renderGlobeStats(points, countries) {
       const el = document.getElementById('globeStats');
       if (!el) return;
-      const validators = Object.values(countries).reduce((s, c) => s + (c.count || 0), 0) ||
+      const located = Object.values(countries).reduce((s, c) => s + (c.count || 0), 0) ||
         points.reduce((s, p) => s + p.count, 0);
+      const total = (typeof allValidators !== 'undefined' && allValidators && allValidators.length > located)
+        ? allValidators.length : null;
+      const note = 'Validators seen in gossip with a public IP. Offline / delinquent validators have no address to place on the map.';
+      const locatedChip = total
+        ? `<div class="globe-stat" title="${note}"><b>${located}</b> of <b>${total}</b> validators located</div>`
+        : `<div class="globe-stat" title="${note}"><b>${located}</b> validators located</div>`;
       el.innerHTML =
-        `<div class="globe-stat"><b>${validators}</b> validators</div>` +
+        locatedChip +
         `<div class="globe-stat"><b>${Object.keys(countries).length}</b> countries</div>` +
         `<div class="globe-stat"><b>${points.length}</b> cities</div>`;
     }
