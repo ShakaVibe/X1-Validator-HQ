@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-07T12:46:22.353Z",
-  "totalNodes": 597,
-  "totalLocations": 593,
+  "lastUpdated": "2026-09-07T18:46:05.252Z",
+  "totalNodes": 598,
+  "totalLocations": 594,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4153,6 +4153,13 @@
       "city": "Ypsilanti",
       "lat": 42.244,
       "lon": -83.5823
+    },
+    "157.180.9.120": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -4174,7 +4181,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 75
+      "count": 76
     },
     "DE": {
       "name": "Germany",
