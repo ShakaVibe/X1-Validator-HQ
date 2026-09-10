@@ -160,6 +160,16 @@
       box-sizing: border-box;
     }
 
+    /* Keyboard focus: one visible ring everywhere (buttons, links, tabs, table
+       controls). Only shows for keyboard/AT focus — mouse clicks don't ring.
+       Inputs keep their own :focus border/glow styles (those rules are more
+       specific and set outline: none). */
+    :focus-visible {
+      outline: 2px solid var(--accent-cyan);
+      outline-offset: 2px;
+    }
+    :focus:not(:focus-visible) { outline: none; }
+
     body {
       font-family: 'Space Grotesk', sans-serif;
       background: radial-gradient(ellipse at center, #0d1a30 0%, #0a1020 50%, #060810 100%);
