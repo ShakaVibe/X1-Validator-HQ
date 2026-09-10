@@ -44,6 +44,8 @@ data/scores.json              canonical validator scores — written hourly by A
 data/history.json             7-day rolling history behind the scores
 validator-locations.json      geo data — written every 2h by Action
 data/terminal.json            Validator Terminal snapshot — written hourly by Action (added 2026-09-10)
+data/delegation.json          Delegation Program snapshot — same Action, same commit (added 2026-09-10)
+scripts/build-delegation-snapshot.js  builds data/delegation.json from api.delegation.mainnet.x1.xyz
 scripts/build-terminal-snapshot.js  builds data/terminal.json from api.x1.xyz
 scripts/compute-scores.js     score generator (Node 20, zero deps)
 scripts/test-compute-scores.js  mock-RPC tests for the above
@@ -58,8 +60,12 @@ CNAME / .nojekyll / _headers  Pages config
 
 ## 4. Architecture notes worth remembering
 
-- **Data sources:** `https://rpc.mainnet.x1.xyz` (JSON-RPC, most tabs) and `https://api.x1.xyz`
-  (REST, used by the Validator Terminal). Also `api.xdex.xyz` (XNT price), `ipwho.is`,
+- **Data sources:** `https://rpc.mainnet.x1.xyz` (JSON-RPC, most tabs), `https://api.x1.xyz`
+  (REST, Validator Terminal) and **`https://api.delegation.mainnet.x1.xyz`** (the X1 Foundation's
+  delegation API behind delegation.x1.xyz — `/v1/config`, `/v1/validators/` (one page, limit 2000,
+  fields: status, failingCriteria, selfStake, delegation.totalStake, voteMetrics[3 epochs],
+  blockProductionMetrics, removalScore, stakeMultiplierBps, metadata.name), `/v1/stake_pool`).
+  Read server-side only (Action) — CORS from the browser is unverified. Also `api.xdex.xyz` (XNT price), `ipwho.is`,
   `api.github.com`. CSP `connect-src` in `index.html` (~line 87) must list any new host.
 - **RPC throttle + circuit breaker** (`installRpcThrottle`, ~line 14949): wraps `window.fetch`
   for the RPC URL only — max 3 in flight, retry on 429, breaker trips after 6 network failures
@@ -77,27 +83,58 @@ CNAME / .nojekyll / _headers  Pages config
 
 ## 5. To-do list
 
-### Open
-- [ ] **First run of the snapshot Action:** after pushing, go to GitHub → Actions →
-      "Update Validator Terminal snapshot" → Run workflow. Confirm it commits `data/terminal.json`
-      (~0.7 MB). Until it exists the site silently falls back to the live API.
-- [ ] **Verify on the live site** after Pages redeploys: Validator Terminal should show
-      "Hourly snapshot · auto-refresh 1h" in the header corner and load in well under a second;
-      click **Live** to confirm the live path still works (progress "x MB of ~13 MB"); no console
-      errors.
-- [ ] Ask people who reported the error which device/network they were on (mobile? VPN?) — helps
-      confirm the diagnosis.
+The full prioritized backlog (97 items with IDs) lives on the **"X1 Validator HQ Roadmap"** Claude
+artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs below match it.
 
-### Ideas / backlog
-- [ ] Consider showing a "loading… this tab downloads ~13 MB" hint on the Validator Terminal
-      nav button for first-time visitors.
-- [ ] The bot adds ~36 commits/day; consider moving data files to a `data` branch someday
-      (see SCORING-DEPLOYMENT.md "Operational notes").
+### Phase 0 — this week (safety + quick wins)
+- [x] **S1–S6** done 2026-09-10 (session 1, batch 2) — see Session Log
+- [x] **B1, R1, R2** done 2026-09-10
+- [x] **A1, A2** done 2026-09-10 — failure alerts open/comment a GitHub issue titled
+      "[bot] <workflow> is failing"; optional Telegram if repo secrets `TELEGRAM_BOT_TOKEN` +
+      `TELEGRAM_CHAT_ID` are set
+- [ ] **D1** `<meta name="description">` + Open Graph + Twitter tags + 1200×630 og.png
+- [ ] **P1** `defer` on Chart.js and web3.js `<script>` tags (97, 115)
+- [ ] **X1** global `:focus-visible` rule; **U2**(part) active nav tab on first load
+- [ ] **M1** Terminal `.vt-tbl-wrap { overflow-x: auto }` (11408); **M4** 16 px inputs under
+      `(pointer: coarse)`; **U3** Globe in the nav / rename "Network" → "Live"
+- [ ] **B10/F7** use `canonicalScores.latestVersion` instead of GitHub releases (Tachyon has no releases)
+
+### Phase 1 — weeks 2–4 (addressable + observable)
+- [ ] **U1** hash router (`#/v/<vote>`, `#/leaderboard/<cat>`, `#/compare/a,b,c`, `#/terminal`,
+      `#/live`) + Share button on the validator card
+- [ ] **F10** `data/status.json` + `data/events.json`; stable `scores.json` schema; /status page
+- [ ] **F4** fleet health board in My Data Center (issues first)
+- [ ] **F7** version tracker from gossip (+ v4.0 feature-gate feed)
+- [x] **F1** Delegation Program eligibility checker — done 2026-09-10 (see Session Log). Follow-ups:
+      - [ ] Bootstrap Bonus checker (docs.x1.xyz/validating/validator-rewards/bootstrap-bonus)
+      - [ ] Data Center summary line ("3 approved · 1 failing") + fleet board column (F4)
+      - [ ] Alert on eligibility loss once F3 exists
+- [ ] **M2/M3** mobile nav + stats grid; **P2** startup diet
+
+### Phase 2 — weeks 5–8 (memory + push)
+- [ ] **F2** per-validator history charts (`history.json` + api.x1.xyz `*Last10Epochs`)
+- [ ] **F3** Telegram alerts (5-min heartbeat workflow + `/watch <vote>` bot), then Discord webhook
+- [ ] **F6** score coach ("+3.0 if you upgrade"); publish `interp()` anchors in scores.json
+- [ ] **F5** public profile pages + OG share cards generated by the Action
+- [ ] **F8** rewards ledger + CSV; **F9** change feeds; **F11** APR per validator
+
+### Phase 3 — ongoing (platform)
+- [ ] **C1** split `index.html` (css + core + per-tab files, plain `<script src>`)
+- [ ] **C2** replace 254 inline `onclick` with delegated listeners → drop `unsafe-inline`
+- [ ] **C3/C4** single RPC transport; normalise records at ingestion
+- [ ] **P6/D5** PWA shell, light theme; **C8** public changelog
+
+### Open small items
+- [ ] Ask people who reported the terminal error which device/network they were on.
+- [ ] After the next hourly snapshot run, confirm the header stake-account count matches Live.
 
 ### Done
 - [x] 2026-09-10 — Local clone set up at `~/Desktop/X1VHQ`, folder linked to Claude.
 - [x] 2026-09-10 — Diagnosed + hardened Validator Terminal loading (see Session Log).
 - [x] 2026-09-10 — Hourly terminal snapshot Action + snapshot-first loader (see Session Log).
+- [x] 2026-09-10 — Verified on live site: snapshot 911 KB raw / 515 KB gzipped, loads in ~0.25s;
+      Live button pulls 13 MB and works; no console errors.
+- [x] 2026-09-10 — Deep audit (4 reviews) → Roadmap artifact + `docs/audit-2026-09-10/`.
 
 ## 6. Session log
 
@@ -139,5 +176,60 @@ CNAME / .nojekyll / _headers  Pages config
 - Snapshot format v1 (keep `VALIDATOR_FIELDS` in the script and `inflateSnapshot` in sync):
   `{version, generatedAt, source, counts, truncated, cluster, validatorFields, stakeFields,
   validators: [[...fields]], stakes: {votePubkey: [[stakePubkey, amount, delegatedStake, status, isPool]]}}`
-- **Not yet pushed** at the time of writing — Shaka to run the push commands in §2, then trigger
-  the snapshot workflow once by hand (see To-do).
+- Pushed; snapshot workflow triggered by hand and committed `data/terminal.json`
+  (724 validators, 7,275 delegated stake accounts). Verified live in the browser (see Done).
+- Follow-up fix, same session: snapshot now also carries undelegated stake accounts under the
+  `""` key so the "N stake accounts" header matches Live (7,406 vs 7,275 before). Pushed at end
+  of session; takes effect on the next hourly run.
+- Shaka's Chrome lost WebGL (GPU process crash count 5 → globe fallback message). Site was fine;
+  `chrome://restart` fixes it. Not a site bug.
+- **Deep audit.** Four parallel reviews (code, UX/mobile/perf/a11y, feature inventory + gaps,
+  ecosystem research) + live measurements in the desktop-app browser + a direct look at
+  x1watch.xyz's data feeds. Output: the **"X1 Validator HQ Roadmap"** artifact (97 findings,
+  do-first list, phases, competitor table, official delegation criteria) and the raw reports in
+  `docs/audit-2026-09-10/`. §5 above is the prioritized list.
+- **Batch 2 — security + reliability (pushed same day):**
+  - S1 `safeUrl()` now returns `escHtml(v)`; S2 `escAttrJs()` escapes `&` first; S3/S4 Manage
+    Validator + staking-calc `onclick` args escaped and numbers coerced; S5 all raw name/iconUrl
+    sinks escaped incl. the 2-second next-leaders strip and every first-letter placeholder;
+    S6 Chart.js `<script>` has SRI (`sha512-CQBW…`, verified by hashing the CDN file).
+    Helper unit tests pass (breakout, entity bypass, js: scheme).
+  - B1 portfolio load/save guarded; R1 20 s per-attempt timeout inside `throttledFetch`
+    (combined with caller signals); R2 aborts no longer count toward the circuit breaker —
+    timeouts retry once, caller aborts pass straight through. Mock-tested: hang frees its slot,
+    429 retry still works, breaker stays closed.
+  - A1 geo workflow: `concurrency` group + rebase-and-retry push loop + `[skip ci]`; scores
+    workflow gets the same retry loop; A2 all three workflows post to a GitHub issue on failure
+    (needs `issues: write`, granted in each workflow) and optionally Telegram.
+- **Batch 3 — Delegation Program eligibility checker (F1):**
+  - Found the Foundation's real API by reading delegation.x1.xyz's JS bundle:
+    `api.delegation.mainnet.x1.xyz`. Config today: minSelfStake 5,000 XNT, maxCommission 10%,
+    maxTotalStake 3,000,000 XNT, maxValidatorStakePct 1, voteCreditsThresholdPct 92,
+    skipRateTolerancePct 10 (additive pts over network avg), minValidatorVersion 3.1.14,
+    strikePenaltyBps 2000, strikeDecayEpochs 4. failingCriteria values seen: minSelfStake (312),
+    delinquent (38), maxSkipRate (35), minVoteCredits (25), minValidatorVersion (22),
+    noVersionInfo (7). 703 enrolled, 21 not enrolled, 332 receiving stake. Shaka_Vibes_1..5 are
+    the top 4 delegations (~980–990k XNT each).
+  - `scripts/build-delegation-snapshot.js` → `data/delegation.json` (keyed by vote account, one
+    record per line, ~200 KB); added as a `continue-on-error` step to the terminal snapshot
+    workflow (same commit). Mock-tested incl. 503 retry.
+  - `index.html`: new **DELEGATION PROGRAM** IIFE module after the Terminal module — evaluates
+    each validator against the criteria with headroom text ("Short by 880 XNT", "Upgrade to
+    3.1.14"), authoritative ✓/✗ from the Foundation's failingCriteria; renders a "Delegation
+    Program" box in every validator card (`.deleg-section` placeholder + MutationObserver so
+    Lookup / Data Center / Compare cards all get it) and a new **Delegation** nav tab
+    (criteria tiles, counts, searchable/sortable/filterable table, "My Data Center" filter,
+    click name → Lookup). Globals: `delegOpen`, `delegRefresh`, `delegEvaluate(vote)`.
+  - Needs one manual Action run after push to create `data/delegation.json` (Actions → "Update
+    Validator Terminal snapshot" → Run workflow); until then cards show nothing and the tab says
+    "not available".
+- Key facts learned: (1) validator names/iconUrls reach the DOM unescaped in ~10 places and
+  `safeUrl`/`escAttrJs` are bypassable — Critical because the site signs wallet txs; (2) on a
+  375 px phone only 2 of 7 tabs are visible and the Terminal expands the layout viewport to
+  1,456 px; (3) x1watch.xyz (ANL Protocol, PL) is the main competitor: Telegram alerts, synced
+  watchlist, node agent (disk/slot-lag/auto-restart), Delegation Program page with official
+  criteria + per-validator Approved/Rejected/failing_criteria + delegated amount, APR per
+  validator, responsive app. It lacks a score, leaderboards, compare, terminal, calculators,
+  management. (4) Tachyon has no GitHub releases — version must come from gossip; x1watch reads
+  slot_time_ms 370 and epoch_total_slots 216,000 live. (5) `data/history.json` is written hourly
+  and read by nothing — it's the raw material for history charts.

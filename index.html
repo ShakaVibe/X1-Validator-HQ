@@ -96,7 +96,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <!-- Validator globe: globe.gl (three.js) is lazy-loaded from unpkg by
        loadGlobeLibrary() the first time the map initialises, so the ~1.9MB
        bundle never blocks first paint. Country outlines come from the
@@ -11050,6 +11050,77 @@
     }
     .vt-stale button:hover { background: rgba(0, 212, 255, 0.12); }
 
+    /* ═══ Delegation Program (card section + tab) ═══ */
+    .deleg-section { margin: 0.9rem 0 0.25rem; }
+    .deleg-box {
+      border: 1px solid var(--border); border-radius: 12px; background: var(--bg-secondary);
+      padding: 0.8rem 1rem;
+    }
+    .deleg-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.55rem; }
+    .deleg-title { font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
+    .deleg-title a { color: var(--accent-cyan); text-decoration: none; font-weight: 500; text-transform: none; letter-spacing: 0; margin-left: 0.5rem; font-size: 0.75rem; }
+    .deleg-title a:hover { text-decoration: underline; }
+    .deleg-status { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 999px; white-space: nowrap; }
+    .deleg-status.ok   { background: rgba(0, 230, 118, 0.12); color: var(--success); }
+    .deleg-status.warn { background: rgba(255, 171, 0, 0.14); color: var(--warning); }
+    .deleg-status.bad  { background: rgba(255, 82, 82, 0.14); color: var(--danger); }
+    .deleg-status.na   { background: rgba(138, 143, 152, 0.14); color: var(--text-secondary); }
+    .deleg-amount { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-primary); }
+    .deleg-amount small { color: var(--text-secondary); font-family: inherit; }
+    .deleg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.4rem 0.9rem; }
+    .deleg-row { display: grid; grid-template-columns: 18px 1fr; gap: 0.45rem; align-items: start; font-size: 0.8rem; line-height: 1.35; }
+    .deleg-row .ic { font-weight: 700; text-align: center; }
+    .deleg-row.ok .ic { color: var(--success); }
+    .deleg-row.bad .ic { color: var(--danger); }
+    .deleg-row.na .ic { color: var(--text-dim); }
+    .deleg-row .lbl { color: var(--text-secondary); }
+    .deleg-row .val { color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+    .deleg-row.bad .val { color: var(--danger); }
+    .deleg-row .hint { color: var(--warning); font-size: 0.74rem; display: block; }
+    .deleg-foot { margin-top: 0.55rem; font-size: 0.7rem; color: var(--text-dim); display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .deleg-strikes { color: var(--warning); font-size: 0.75rem; margin-top: 0.4rem; }
+
+    /* Tab */
+    .deleg-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; margin: 0 0 1.2rem; }
+    .deleg-tile { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 0.8rem 0.9rem; }
+    .deleg-tile .v { font-family: 'JetBrains Mono', monospace; font-size: 1.15rem; font-weight: 700; color: var(--accent-cyan); line-height: 1.1; }
+    .deleg-tile .k { font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.3rem; letter-spacing: 0.03em; text-transform: uppercase; }
+    .deleg-tile.count .v { color: var(--text-primary); }
+    .deleg-tile.count.ok .v { color: var(--success); }
+    .deleg-tile.count.warn .v { color: var(--warning); }
+    .deleg-tile.count.bad .v { color: var(--danger); }
+    .deleg-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.9rem; }
+    .deleg-controls input {
+      flex: 1 1 220px; min-width: 0; padding: 0.6rem 0.9rem; font-size: 16px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg-secondary); color: var(--text-primary); font-family: inherit;
+    }
+    .deleg-controls input:focus { outline: 2px solid var(--accent-cyan); outline-offset: 1px; }
+    .deleg-seg { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+    .deleg-seg button {
+      padding: 0.45rem 0.85rem; border-radius: 999px; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      border: 1px solid var(--border); background: var(--bg-secondary); color: var(--text-secondary); font-family: inherit;
+    }
+    .deleg-seg button[aria-pressed="true"] { background: rgba(0, 212, 255, 0.14); border-color: var(--accent-cyan); color: var(--accent-cyan); }
+    .deleg-seg button:focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 2px; }
+    .deleg-tbl-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); }
+    .deleg-tbl { width: 100%; border-collapse: collapse; font-size: 0.82rem; min-width: 860px; }
+    .deleg-tbl th, .deleg-tbl td { padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--border); text-align: left; white-space: nowrap; }
+    .deleg-tbl th { font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-secondary); background: var(--bg-secondary); position: sticky; top: 0; cursor: pointer; user-select: none; }
+    .deleg-tbl th.sorted { color: var(--accent-cyan); }
+    .deleg-tbl td.n { font-family: 'JetBrains Mono', monospace; text-align: right; font-variant-numeric: tabular-nums; }
+    .deleg-tbl th.n { text-align: right; }
+    .deleg-tbl tr.mine td { background: rgba(0, 212, 255, 0.06); }
+    .deleg-tbl tr:hover td { background: var(--bg-card-hover); }
+    .deleg-tbl td.name { max-width: 220px; overflow: hidden; text-overflow: ellipsis; cursor: pointer; color: var(--text-primary); }
+    .deleg-tbl td.name:hover { color: var(--accent-cyan); text-decoration: underline; }
+    .deleg-tbl td.name small { color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; margin-left: 0.4rem; }
+    .deleg-tbl .fc { color: var(--danger); font-size: 0.75rem; }
+    .deleg-tbl .fc.none { color: var(--text-dim); }
+    .deleg-empty { padding: 2rem; text-align: center; color: var(--text-secondary); }
+    .deleg-note { font-size: 0.78rem; color: var(--text-secondary); margin: 0.9rem 0 0; line-height: 1.5; }
+    .deleg-note a { color: var(--accent-cyan); }
+    @media (max-width: 600px) { .deleg-grid { grid-template-columns: 1fr; } }
+
     /* Ticker */
     /* Header */
     .vt-head {
@@ -12002,6 +12073,10 @@
         <span class="tab-icon">🏆</span>
         <span class="tab-label">Leaderboards</span>
       </button>
+      <button class="tab" onclick="switchTab('delegation')">
+        <span class="tab-icon">🏛️</span>
+        <span class="tab-label">Delegation</span>
+      </button>
       <button class="tab" onclick="switchTab('compare')">
         <span class="tab-icon">⚖️</span>
         <span class="tab-label">Compare <span id="compareCount"></span></span>
@@ -12317,6 +12392,31 @@
     </div>
 
     <!-- Calculators Tab -->
+    <!-- Delegation Program tab: official X1 Foundation criteria + per-validator
+         status, fed by data/delegation.json (hourly snapshot of
+         api.delegation.mainnet.x1.xyz). Rendered by the DELEGATION PROGRAM
+         module near the end of the file. -->
+    <div class="tab-content" id="delegationTab">
+      <section class="search-section">
+        <h1>🏛️ Delegation <span>Program</span></h1>
+        <p>X1 Foundation stake delegation — official criteria and every validator's status</p>
+      </section>
+      <div id="delegTiles" class="deleg-tiles"></div>
+      <div class="deleg-controls">
+        <input type="search" id="delegSearch" placeholder="Search name, vote or identity…" aria-label="Search validators">
+        <div class="deleg-seg" id="delegFilter" role="group" aria-label="Status filter">
+          <button data-f="all" aria-pressed="true">All</button>
+          <button data-f="approved" aria-pressed="false">Approved</button>
+          <button data-f="delegated" aria-pressed="false">Receiving stake</button>
+          <button data-f="failing" aria-pressed="false">Failing criteria</button>
+          <button data-f="rejected" aria-pressed="false">Rejected</button>
+          <button data-f="mine" aria-pressed="false">My Data Center</button>
+        </div>
+      </div>
+      <div id="delegTable"></div>
+      <p class="deleg-note" id="delegNote"></p>
+    </div>
+
     <div class="tab-content" id="calculatorsTab">
       <div class="calculators-nav">
         <button class="calc-nav-btn active" onclick="switchCalculator('staking')">💰 Staking Rewards</button>
@@ -14764,7 +14864,12 @@
       // Escape for a single-quoted JS string sitting inside an HTML attribute.
       // Order matters: backslash first, then the characters that could break
       // out of either the JS string or the surrounding HTML attribute.
+      // `&` FIRST: the HTML parser decodes entities (&#39; -> ') before the
+      // JS engine sees the string, so an unescaped & lets a value like
+      // x&#39;);alert(1);// close the JS string. Escaping & to &amp; makes
+      // the parser hand JS a literal ampersand instead.
       return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;')
         .replace(/\\/g, '\\\\')
         .replace(/'/g, '\\&#39;')
         .replace(/"/g, '&quot;')
@@ -14777,9 +14882,13 @@
       if (v === '') return '';
       // Allow only http(s) and protocol-relative URLs. Reject anything else,
       // including javascript:, data:, vbscript:, and control-char tricks.
-      if (/^https?:\/\//i.test(v)) return v;
-      if (/^\/\//.test(v)) return v;          // protocol-relative //host/...
-      if (/^\//.test(v) && !/^\/\//.test(v)) return v; // site-relative /path
+      // Every caller interpolates the result into an HTML attribute
+      // (src="..."), so the value must also be HTML-escaped — otherwise a
+      // URL containing "> breaks out of the attribute. Scheme check alone
+      // was not enough.
+      if (/^https?:\/\//i.test(v)) return escHtml(v);
+      if (/^\/\//.test(v)) return escHtml(v);          // protocol-relative //host/...
+      if (/^\//.test(v) && !/^\/\//.test(v)) return escHtml(v); // site-relative /path
       return '';
     }
 
@@ -14973,6 +15082,9 @@
       const MAX_RETRIES_NET   = 1;   // network / CORS: fail fast, don't hammer
       const BASE_BACKOFF      = 500; // ms
       const MAX_BACKOFF       = 8000;
+      const REQUEST_TIMEOUT_MS = 20000; // a request that never returns used to
+                                        // hold one of the 3 throttle slots
+                                        // forever; three of those froze the app
 
       // ── Circuit breaker ───────────────────────────────────────
       // When the RPC is unreachable (CORS blocked, DNS failing, server
@@ -15056,8 +15168,19 @@
         try {
           let lastErr;
           for (let attempt = 0; attempt <= MAX_RETRIES_429; attempt++) {
+            // Per-attempt timeout, combined with any signal the caller passed.
+            const ctrl = new AbortController();
+            const callerSignal = options && options.signal;
+            let callerAborted = false;
+            const onCallerAbort = () => { callerAborted = true; ctrl.abort(); };
+            if (callerSignal) {
+              if (callerSignal.aborted) onCallerAbort();
+              else callerSignal.addEventListener('abort', onCallerAbort, { once: true });
+            }
+            const timer = setTimeout(() => ctrl.abort(), REQUEST_TIMEOUT_MS);
+            const attemptOptions = Object.assign({}, options || {}, { signal: ctrl.signal });
             try {
-              const response = await originalFetch(url, options);
+              const response = await originalFetch(url, attemptOptions);
 
               // 429 = server is alive and asking us to slow down. Back off
               // and retry — but do NOT count this toward the circuit breaker.
@@ -15093,15 +15216,34 @@
               cbRecordSuccess();
               return response;
             } catch (e) {
+              lastErr = e;
+              // R2: an abort is NOT an outage. If the caller aborted, hand
+              // the error straight back (retrying with a dead signal is
+              // pointless). If OUR timeout fired, treat it as a slow server:
+              // one retry, no breaker penalty.
+              if (e && e.name === 'AbortError') {
+                if (callerAborted) throw e;
+                lastErr = new Error('RPC request timed out after ' + (REQUEST_TIMEOUT_MS / 1000) + 's');
+                lastErr.name = 'TimeoutError';
+                if (attempt < MAX_RETRIES_NET) {
+                  await new Promise(r => setTimeout(r, backoffDelay(attempt)));
+                  continue;
+                }
+                throw lastErr;
+              }
               // Network error / CORS block / DNS failure land here — these
               // are the genuine outages the circuit breaker is meant for.
-              lastErr = e;
+              // (A 429 with stripped CORS headers also lands here as a bare
+              // TypeError; the retry below covers that case too.)
               cbRecordFail();
               if (attempt < MAX_RETRIES_NET && !cbIsOpen()) {
                 await new Promise(r => setTimeout(r, backoffDelay(attempt)));
                 continue;
               }
               throw lastErr;
+            } finally {
+              clearTimeout(timer);
+              if (callerSignal) callerSignal.removeEventListener('abort', onCallerAbort);
             }
           }
           throw lastErr || new Error('RPC request failed after retries');
@@ -15119,7 +15261,20 @@
     let _searchRequestId = 0;          // monotonic counter; stale searches abort
     let _searchDebounce = null;        // debounce timer for the lookup input
     let validatorInfoCache = {};
-    let myPortfolio = JSON.parse(localStorage.getItem('x1Portfolio') || '[]');
+    // Guarded: this is a top-level statement in the main script block, so an
+    // unparseable value (partial write, extension, manual edit) used to throw
+    // at script-eval time and leave the whole site as a dead shell.
+    let myPortfolio = (function loadPortfolioSafe() {
+      try {
+        const raw = localStorage.getItem('x1Portfolio');
+        const parsed = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(parsed)) return [];
+        return parsed.filter(v => typeof v === 'string' && v.length > 0);
+      } catch (e) {
+        console.warn('[portfolio] localStorage x1Portfolio unreadable — starting empty', e);
+        return [];
+      }
+    })();
     let rewardsHistory = {};
     let inflationRewardsCache = {}; // Cache for inflation rewards by vote account
     let currentEpochNumber = null;
@@ -17623,7 +17778,7 @@
               </div>
             </div>
             <div class="manage-validator-btn-wrapper">
-              <button class="manage-validator-btn" onclick="openManageValidator('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.rewardsBalance}, ${validator.commission}, '${validator.nodePubkey || ''}', '${validator.iconUrl || ''}')">
+              <button class="manage-validator-btn" onclick="openManageValidator('${escAttrJs(validator.voteAccount)}', '${escAttrJs(validator.name)}', ${Number(validator.rewardsBalance) || 0}, ${Number(validator.commission) || 0}, '${escAttrJs(validator.nodePubkey || '')}', '${escAttrJs(validator.iconUrl || '')}')">
                 ⚙️ Manage Validator
               </button>
             </div>
@@ -17702,6 +17857,8 @@
               </div>
             </div>
           </div>
+
+          <div class="deleg-section" data-vote="${escHtml(validator.voteAccount)}"></div>
 
           <div class="validator-action-buttons">
             <button class="validator-expand-btn stake-details-btn" onclick="toggleStakeDetails('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.activatedStake}, ${validator.commission}, this)">
@@ -17999,7 +18156,13 @@
 
     // Portfolio management
     function savePortfolio() {
-      localStorage.setItem('x1Portfolio', JSON.stringify(myPortfolio));
+      try {
+        localStorage.setItem('x1Portfolio', JSON.stringify(myPortfolio));
+      } catch (e) {
+        // Quota exceeded / Safari private mode — keep the in-memory list working.
+        console.warn('[portfolio] could not persist x1Portfolio', e);
+        if (typeof showToast === 'function') showToast('Could not save your Data Center list in this browser (storage blocked).');
+      }
       updatePortfolioCount();
     }
 
@@ -19614,9 +19777,9 @@
                 let logoHtml;
                 if (v.iconUrl) {
                   logoHtml = `<img class="leaderboard-logo" src="${safeUrl(v.iconUrl)}" alt="${escHtml(v.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                              <div class="leaderboard-logo-placeholder" style="display:none;">${v.name.charAt(0).toUpperCase()}</div>`;
+                              <div class="leaderboard-logo-placeholder" style="display:none;">${escHtml(v.name.charAt(0).toUpperCase())}</div>`;
                 } else {
-                  logoHtml = `<div class="leaderboard-logo-placeholder">${v.name.charAt(0).toUpperCase()}</div>`;
+                  logoHtml = `<div class="leaderboard-logo-placeholder">${escHtml(v.name.charAt(0).toUpperCase())}</div>`;
                 }
                 
                 return `
@@ -19666,9 +19829,9 @@
         let logoHtml;
         if (v.iconUrl) {
           logoHtml = `<img class="leaderboard-logo" src="${safeUrl(v.iconUrl)}" alt="${escHtml(v.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                      <div class="leaderboard-logo-placeholder" style="display:none;">${v.name.charAt(0).toUpperCase()}</div>`;
+                      <div class="leaderboard-logo-placeholder" style="display:none;">${escHtml(v.name.charAt(0).toUpperCase())}</div>`;
         } else {
-          logoHtml = `<div class="leaderboard-logo-placeholder">${v.name.charAt(0).toUpperCase()}</div>`;
+          logoHtml = `<div class="leaderboard-logo-placeholder">${escHtml(v.name.charAt(0).toUpperCase())}</div>`;
         }
         
         // Stats based on category
@@ -19918,9 +20081,9 @@
         let logoHtml;
         if (r.iconUrl) {
           logoHtml = `<img class="leaderboard-logo" src="${safeUrl(r.iconUrl)}" alt="${escHtml(r.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                      <div class="leaderboard-logo-placeholder" style="display:none;">${r.name.charAt(0).toUpperCase()}</div>`;
+                      <div class="leaderboard-logo-placeholder" style="display:none;">${escHtml(r.name.charAt(0).toUpperCase())}</div>`;
         } else {
-          logoHtml = `<div class="leaderboard-logo-placeholder">${r.name.charAt(0).toUpperCase()}</div>`;
+          logoHtml = `<div class="leaderboard-logo-placeholder">${escHtml(r.name.charAt(0).toUpperCase())}</div>`;
         }
 
         // Stat block — depends on source selector
@@ -20000,8 +20163,8 @@
           resultsContainer.innerHTML = matches.map(v => {
             const logoHtml = v.iconUrl
               ? `<img class="compare-search-result-logo" src="${safeUrl(v.iconUrl)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                 <div class="compare-search-result-logo-placeholder" style="display:none;">${v.name.charAt(0).toUpperCase()}</div>`
-              : `<div class="compare-search-result-logo-placeholder">${v.name.charAt(0).toUpperCase()}</div>`;
+                 <div class="compare-search-result-logo-placeholder" style="display:none;">${escHtml(v.name.charAt(0).toUpperCase())}</div>`
+              : `<div class="compare-search-result-logo-placeholder">${escHtml(v.name.charAt(0).toUpperCase())}</div>`;
 
             return `
               <div class="compare-search-result" onclick="addToComparison('${v.votePubkey}')">
@@ -20119,8 +20282,8 @@
         if (validator) {
           const logoHtml = validator.iconUrl
             ? `<img class="compare-slot-logo" src="${safeUrl(validator.iconUrl)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-               <div class="compare-slot-logo-placeholder" style="display:none;">${validator.name.charAt(0).toUpperCase()}</div>`
-            : `<div class="compare-slot-logo-placeholder">${validator.name.charAt(0).toUpperCase()}</div>`;
+               <div class="compare-slot-logo-placeholder" style="display:none;">${escHtml(validator.name.charAt(0).toUpperCase())}</div>`
+            : `<div class="compare-slot-logo-placeholder">${escHtml(validator.name.charAt(0).toUpperCase())}</div>`;
 
           const scoreColor = getPerformanceBarColor(validator.performanceScore);
 
@@ -20418,6 +20581,10 @@
       if (tab === 'leaderboard') {
         loadLeaderboard();
       }
+
+      if (tab === 'delegation' && typeof window.delegOpen === 'function') {
+        window.delegOpen();
+      }
       
       if (tab === 'calculators') {
         initializeCalculators();
@@ -20680,7 +20847,7 @@
         document.getElementById('stakingCurrentStake').innerHTML = `
           <span style="color: var(--success);">✓ Stake breakdown loaded</span> - 
           Self: ${formatNumber(breakdownData.selfStake, 0)} | Delegated: ${formatNumber(breakdownData.delegatedStake, 0)} | Commission: ${commission}%
-          <span style="color: var(--accent-cyan); cursor: pointer; margin-left: 0.5rem;" onclick="openStakeBreakdown('${validatorSelect.value}', '${validatorName}', ${currentStake}, ${commission})">🔍</span>
+          <span style="color: var(--accent-cyan); cursor: pointer; margin-left: 0.5rem;" onclick="openStakeBreakdown('${escAttrJs(validatorSelect.value)}', '${escAttrJs(validatorName)}', ${Number(currentStake) || 0}, ${Number(commission) || 0})">🔍</span>
         `;
       } else {
         stakingCalcData.selfStake = 0;
@@ -20688,7 +20855,7 @@
         stakingCalcData.hasBreakdown = false;
         document.getElementById('stakingCurrentStake').innerHTML = `
           Total stake: ${formatNumber(currentStake, 0)} XNT | Commission: ${commission}%
-          <span style="color: var(--accent-gold); cursor: pointer; margin-left: 0.5rem;" onclick="fetchAndShowBreakdown('${validatorSelect.value}', '${validatorName}', ${currentStake}, ${commission})">🔍 Retry</span>
+          <span style="color: var(--accent-gold); cursor: pointer; margin-left: 0.5rem;" onclick="fetchAndShowBreakdown('${escAttrJs(validatorSelect.value)}', '${escAttrJs(validatorName)}', ${Number(currentStake) || 0}, ${Number(commission) || 0})">🔍 Retry</span>
         `;
       }
       
@@ -22078,9 +22245,9 @@
         const initial = v.name ? v.name.charAt(0).toUpperCase() : 'V';
         let logoHtml;
         if (v.iconUrl) {
-          logoHtml = `<img src="${safeUrl(v.iconUrl)}" alt="${initial}" onerror="this.style.display='none';this.parentElement.textContent='${escAttrJs(initial)}';">`;
+          logoHtml = `<img src="${safeUrl(v.iconUrl)}" alt="${escHtml(initial)}" onerror="this.style.display='none';this.parentElement.textContent='${escAttrJs(initial)}';">`;
         } else {
-          logoHtml = initial;
+          logoHtml = escHtml(initial);
         }
         
         return `
@@ -22347,9 +22514,9 @@
       // Generate logo HTML
       const firstLetter = validatorName.charAt(0).toUpperCase();
       const logoHtml = validatorIcon 
-        ? `<img class="perf-breakdown-logo" src="${validatorIcon}" alt="${escHtml(validatorName)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-           <div class="perf-breakdown-logo-placeholder" style="display:none;">${firstLetter}</div>`
-        : `<div class="perf-breakdown-logo-placeholder">${firstLetter}</div>`;
+        ? `<img class="perf-breakdown-logo" src="${safeUrl(validatorIcon)}" alt="${escHtml(validatorName)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+           <div class="perf-breakdown-logo-placeholder" style="display:none;">${escHtml(firstLetter)}</div>`
+        : `<div class="perf-breakdown-logo-placeholder">${escHtml(firstLetter)}</div>`;
       
       // Update the modal with validator-specific scores
       const breakdownSection = document.getElementById('perfBreakdownSection');
@@ -22358,7 +22525,7 @@
           <div class="perf-breakdown-header">
             <div class="perf-breakdown-identity">
               ${logoHtml}
-              <h4>${validatorName}</h4>
+              <h4>${escHtml(validatorName)}</h4>
             </div>
             <div class="perf-breakdown-total">Score: <span class="${getScoreColorClass(totalScore)}">${totalScore.toFixed(2)}</span></div>
           </div>
@@ -22723,7 +22890,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       body.innerHTML = `
         <div class="stake-selection-loading">
           <div class="loading-spinner-small"></div>
-          <span>Loading stake accounts for ${validatorName}...</span>
+          <span>Loading stake accounts for ${escHtml(validatorName)}...</span>
         </div>
       `;
       
@@ -23248,7 +23415,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         <div class="stake-breakdown-header">
           ${iconHtml}
           <div class="stake-breakdown-header-info">
-            <h3>${displayName || voteAccount.slice(0,8) + '...'}</h3>
+            <h3>${escHtml(displayName || voteAccount.slice(0,8) + '...')}</h3>
             <p>${formatNumber(total, 0)} XNT total • ${accountCount} stake accounts</p>
           </div>
         </div>
@@ -31249,18 +31416,18 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const initial = fullName.charAt(0).toUpperCase();
             let logoHtml;
             if (info && info.iconUrl) {
-              logoHtml = `<div class="leader-next-logo"><img src="${safeUrl(info.iconUrl)}" alt="${initial}" onerror="this.style.display='none';this.parentElement.textContent='${escAttrJs(initial)}';"></div>`;
+              logoHtml = `<div class="leader-next-logo"><img src="${safeUrl(info.iconUrl)}" alt="${escHtml(initial)}" onerror="this.style.display='none';this.parentElement.textContent='${escAttrJs(initial)}';"></div>`;
             } else {
-              logoHtml = `<div class="leader-next-logo">${initial}</div>`;
+              logoHtml = `<div class="leader-next-logo">${escHtml(initial)}</div>`;
             }
             const isClickable = info && info.votePubkey;
-            const clickAttr = isClickable ? `onclick="lookupValidator('${info.votePubkey}')"` : '';
+            const clickAttr = isClickable ? `onclick="lookupValidator('${escAttrJs(info.votePubkey)}')"` : '';
             const clickClass = isClickable ? ' clickable' : '';
-            const titleAttr = isClickable ? `title="View ${fullName} in Validator Lookup"` : `title="${fullName}"`;
+            const titleAttr = isClickable ? `title="View ${escHtml(fullName)} in Validator Lookup"` : `title="${escHtml(fullName)}"`;
             return `
               <div class="leader-next-item${clickClass}" ${clickAttr} ${titleAttr}>
                 ${logoHtml}
-                <span class="leader-next-name">${name}</span>
+                <span class="leader-next-name">${escHtml(name)}</span>
               </div>
             `;
           }).join('');
@@ -31648,7 +31815,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           return {
             style: `background:${bg};color:#fff;`,
             inner: initial
-                 + `<img src="${safeUrl(esc(info.iconUrl))}" alt="${initial}" `
+                 + `<img src="${safeUrl(info.iconUrl)}" alt="${initial}" `
                  +      `style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" `
                  +      `onerror="this.remove()">`
           };
@@ -34576,9 +34743,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const logoEl = document.getElementById('slotModalLogo');
       if (vInfo?.iconUrl) {
         logoEl.innerHTML = `<img class="slot-modal-logo" src="${safeUrl(vInfo.iconUrl)}" alt=""
-          onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=slot-modal-logo-ph>${name.charAt(0).toUpperCase()}</div>')">`;
+          onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=slot-modal-logo-ph>${escAttrJs(escHtml(name.charAt(0).toUpperCase()))}</div>')">`;
       } else {
-        logoEl.innerHTML = `<div class="slot-modal-logo-ph">${name.charAt(0).toUpperCase()}</div>`;
+        logoEl.innerHTML = `<div class="slot-modal-logo-ph">${escHtml(name.charAt(0).toUpperCase())}</div>`;
       }
       document.getElementById('slotModalName').textContent = name;
       document.getElementById('slotModalAddr').textContent = voteAccount.slice(0, 22) + '…';
@@ -34864,8 +35031,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
         });
         const stakes = [];
         for (const [votePubkey, rows] of Object.entries(doc.stakes)) {
+          // "" = stake accounts not delegated to any validator; compute()
+          // skips them but they count toward the header total, like live.
           for (const row of rows) {
-            const s = { votePubkey };
+            const s = { votePubkey: votePubkey || null };
             sf.forEach((f, i) => { s[f] = row[i]; });
             // compute() only tests stakePool for truthiness; the snapshot
             // stores it as 0/1.
@@ -35579,6 +35748,323 @@ Please give me the diagnostic commands to run on my server so you can help me id
       window.vtClose = close;
       window.vtRetry = () => refresh(false);       // snapshot first, then live
       window.vtRefreshLive = () => refresh(true);  // "Live" button: api.x1.xyz first
+    })();
+
+
+    // ═══════════════════════════════════════════════════════
+    // DELEGATION PROGRAM — eligibility checker + tab
+    // Data: data/delegation.json, written hourly by
+    // scripts/build-delegation-snapshot.js from the X1 Foundation's own
+    // delegation API (api.delegation.mainnet.x1.xyz — the feed behind
+    // delegation.x1.xyz). Status and failingCriteria come straight from
+    // the Foundation; this module only adds the numbers next to each
+    // criterion so an operator can see how far they are from passing.
+    // ═══════════════════════════════════════════════════════
+    (function () {
+      const URL_ = 'data/delegation.json';
+      const MAX_AGE_MS = 6 * 3600000;          // warn (not hide) when older than 6h
+      const PORTAL = 'https://delegation.x1.xyz/';
+      let _doc = null, _loading = null, _err = null;
+      let _filter = 'all', _query = '', _sortKey = 'ds', _sortDir = -1;
+
+      const esc  = s => String(s ?? '').replace(/[<>&"']/g, c => ({ '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;' }[c]));
+      const xnt  = (lamports, d = 0) => (Number(lamports || 0) / 1e9).toLocaleString('en-US', { maximumFractionDigits: d });
+      const pct  = (n, d = 1) => (n == null || isNaN(n)) ? '—' : Number(n).toFixed(d) + '%';
+      const short = pk => pk ? pk.slice(0, 4) + '…' + pk.slice(-4) : '';
+      const fmtTime = iso => { const d = new Date(iso); return isNaN(d) ? '' : d.toISOString().replace('T', ' ').slice(0, 16) + ' UTC'; };
+
+      function semver(v) {
+        const m = String(v || '').match(/(\d+)\.(\d+)\.(\d+)/);
+        return m ? [+m[1], +m[2], +m[3]] : null;
+      }
+      function semverGte(a, b) {
+        const x = semver(a), y = semver(b);
+        if (!x || !y) return false;
+        for (let i = 0; i < 3; i++) { if (x[i] !== y[i]) return x[i] > y[i]; }
+        return true;
+      }
+
+      async function load(force) {
+        if (_doc && !force) return _doc;
+        if (_loading) return _loading;
+        _loading = (async () => {
+          try {
+            const r = await fetch(URL_ + '?t=' + Math.floor(Date.now() / 300000), { cache: 'no-cache' });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            const d = await r.json();
+            if (!d || d.version !== 1 || !d.validators) throw new Error('unexpected format');
+            _doc = d; _err = null;
+            return d;
+          } catch (e) {
+            _err = e; console.warn('[delegation] snapshot unavailable:', e.message);
+            throw e;
+          } finally { _loading = null; }
+        })();
+        return _loading;
+      }
+
+      // ── Evaluate one validator against the criteria ────────────────
+      // Returns { status, statusClass, statusText, rows[], delegated, strikes }
+      function evaluate(vote) {
+        const d = _doc; if (!d) return null;
+        const e = d.validators[vote];
+        const c = d.config || {}, cl = d.cluster || {};
+        if (!e) return { status: 'none', statusClass: 'na', statusText: 'Not participating', rows: [], delegated: 0 };
+
+        const fc = new Set(e.fc || []);
+        const rows = [];
+        const add = (key, ok, label, value, hint) => rows.push({ key, ok, label, value, hint });
+
+        // Active (not delinquent)
+        add('delinquent', !fc.has('delinquent') && !e.dq, 'Active validator', e.dq ? 'delinquent' : 'voting', e.dq ? 'Delinquent validators are removed immediately.' : '');
+
+        // Self-stake
+        const minSelf = Number(c.minSelfStake || 0), self = Number(e.ss || 0);
+        const selfOk = !fc.has('minSelfStake') && self >= minSelf;
+        add('minSelfStake', selfOk, 'Self-stake ≥ ' + xnt(minSelf) + ' XNT', xnt(self) + ' XNT',
+            selfOk ? '' : 'Short by ' + xnt(minSelf - self) + ' XNT');
+
+        // Commission
+        const cmOk = e.cm == null ? null : (!fc.has('maxCommission') && e.cm <= Number(c.maxCommissionPercent));
+        add('maxCommission', cmOk, 'Commission ≤ ' + c.maxCommissionPercent + '%', e.cm == null ? '—' : e.cm + '%',
+            cmOk === false ? 'Lower commission to ' + c.maxCommissionPercent + '% or below' : '');
+
+        // Vote credits vs network average
+        let vcOk = null, vcVal = '—', vcHint = '';
+        if (e.vc != null && cl.avgVoteCreditsPct) {
+          const ratio = (e.vc / cl.avgVoteCreditsPct) * 100;
+          vcOk = !fc.has('minVoteCredits') && ratio >= Number(c.voteCreditsThresholdPct);
+          vcVal = ratio.toFixed(0) + '% of network avg';
+          if (!vcOk) vcHint = ratio >= Number(c.voteCreditsThresholdPct)
+            ? 'Flagged by the Foundation over recent epochs (latest epoch ' + e.ep + ' shown)'
+            : 'Need ≥ ' + c.voteCreditsThresholdPct + '% — credits at ' + pct(e.vc) + ' of max vs network ' + pct(cl.avgVoteCreditsPct) + ' (epoch ' + e.ep + ')';
+        } else if (fc.has('minVoteCredits')) { vcOk = false; vcHint = 'Below the ' + c.voteCreditsThresholdPct + '% threshold'; }
+        add('minVoteCredits', vcOk, 'Vote credits ≥ ' + c.voteCreditsThresholdPct + '% of avg', vcVal, vcHint);
+
+        // Skip rate vs network average + tolerance
+        let skOk = null, skVal = '—', skHint = '';
+        if (e.sk != null && cl.skipRatePct != null) {
+          const limit = Number(cl.skipRatePct) + Number(c.skipRateTolerancePct || 0);
+          skOk = !fc.has('maxSkipRate') && e.sk <= limit;
+          skVal = pct(e.sk, 2) + (e.ls ? ' · ' + e.ls + ' slots' : '');
+          if (!skOk) skHint = e.sk <= limit
+            ? 'Flagged by the Foundation over recent epochs (latest epoch ' + e.ep + ' shown)'
+            : 'Limit ' + pct(limit, 2) + ' (network ' + pct(cl.skipRatePct, 2) + ' + ' + c.skipRateTolerancePct + ' pts), epoch ' + e.ep;
+        } else if (fc.has('maxSkipRate')) { skOk = false; skHint = 'Above the network average + ' + c.skipRateTolerancePct + ' pts'; }
+        add('maxSkipRate', skOk, 'Skip rate ≤ avg + ' + c.skipRateTolerancePct + ' pts', skVal, skHint);
+
+        // Version
+        const noVer = fc.has('noVersionInfo') || !semver(e.ver);
+        const verOk = !noVer && !fc.has('minValidatorVersion') && semverGte(e.ver, c.minValidatorVersion);
+        add('minValidatorVersion', verOk, 'Tachyon ≥ ' + c.minValidatorVersion, noVer ? 'unknown' : 'v' + e.ver,
+            verOk ? '' : (noVer ? 'No version reported in gossip' : 'Upgrade to ' + c.minValidatorVersion + ' or newer'));
+
+        // Total stake caps
+        const maxTotal = Number(c.maxTotalStake || 0), as = Number(e.as || 0);
+        const capOk = (maxTotal ? as <= maxTotal : true) && (e.np == null || c.maxValidatorStakePct == null || e.np <= Number(c.maxValidatorStakePct));
+        add('maxStake', capOk, 'Total stake ≤ ' + xnt(maxTotal) + ' XNT · ≤ ' + c.maxValidatorStakePct + '% of network',
+            xnt(as) + ' XNT · ' + (e.np == null ? '—' : e.np.toFixed(3) + '%'), capOk ? '' : 'Over the stake cap — delegation is reduced');
+
+        const failing = rows.filter(r => r.ok === false).length;
+        const delegated = Number(e.ds || 0), transient = Number(e.tr || 0);
+        let status, statusClass, statusText;
+        if (e.st === 'Rejected') { status = 'rejected'; statusClass = 'bad'; statusText = 'Rejected'; }
+        else if (fc.size > 0 || failing > 0) { status = 'failing'; statusClass = 'warn'; statusText = 'Not meeting ' + (fc.size || failing) + ' criteri' + ((fc.size || failing) === 1 ? 'on' : 'a'); }
+        else if (delegated > 0) { status = 'delegated'; statusClass = 'ok'; statusText = 'Approved · receiving stake'; }
+        else { status = 'approved'; statusClass = 'ok'; statusText = 'Approved · awaiting delegation'; }
+        return { entry: e, status, statusClass, statusText, rows, delegated, transient, strikes: e.rs || 0, multiplier: e.mb };
+      }
+
+      // ── Card section ──────────────────────────────────────────────
+      function renderCard(el) {
+        const vote = el.dataset.vote; if (!vote) return;
+        if (!_doc) {
+          el.innerHTML = _err
+            ? '<div class="deleg-box"><div class="deleg-head"><span class="deleg-title">Delegation Program</span><span class="deleg-status na">status unavailable</span></div></div>'
+            : '';
+          return;
+        }
+        const r = evaluate(vote);
+        const stale = Date.now() - Date.parse(_doc.generatedAt) > MAX_AGE_MS;
+        const titleHtml = '<span class="deleg-title">Delegation Program<a href="' + PORTAL + '" target="_blank" rel="noopener noreferrer">delegation.x1.xyz ↗</a></span>';
+        if (r.status === 'none') {
+          el.innerHTML = '<div class="deleg-box"><div class="deleg-head">' + titleHtml +
+            '<span class="deleg-status na">Not participating</span></div>' +
+            '<div class="deleg-note" style="margin:0">This validator is not enrolled in the X1 Foundation delegation program. Operators can enrol from the portal; validators that meet the criteria receive foundation stake.</div></div>';
+          return;
+        }
+        const rowsHtml = r.rows.map(row => {
+          const cls = row.ok === false ? 'bad' : (row.ok === true ? 'ok' : 'na');
+          const ic  = row.ok === false ? '✗' : (row.ok === true ? '✓' : '·');
+          return '<div class="deleg-row ' + cls + '"><span class="ic">' + ic + '</span><span><span class="lbl">' + esc(row.label) + '</span> — <span class="val">' + esc(row.value) + '</span>' +
+                 (row.hint ? '<span class="hint">' + esc(row.hint) + '</span>' : '') + '</span></div>';
+        }).join('');
+        const amount = r.delegated > 0
+          ? '<span class="deleg-amount">' + xnt(r.delegated) + ' <small>XNT delegated</small>' + (r.transient > 0 ? ' <small>· ' + xnt(r.transient) + ' in transit</small>' : '') + '</span>'
+          : '';
+        const strikes = r.strikes > 0
+          ? '<div class="deleg-strikes">⚠ ' + r.strikes + ' removal strike' + (r.strikes === 1 ? '' : 's') + (r.multiplier != null ? ' · stake multiplier ' + (r.multiplier / 100).toFixed(0) + '%' : '') + ' (decays over ' + (_doc.config.strikeDecayEpochs || '?') + ' epochs)</div>'
+          : '';
+        el.innerHTML =
+          '<div class="deleg-box">' +
+            '<div class="deleg-head">' + titleHtml + '<span style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap">' + amount +
+              '<span class="deleg-status ' + r.statusClass + '">' + esc(r.statusText) + '</span></span></div>' +
+            '<div class="deleg-grid">' + rowsHtml + '</div>' + strikes +
+            '<div class="deleg-foot"><span>Official status from the X1 Foundation delegation API</span><span>Updated ' + esc(fmtTime(_doc.generatedAt)) + (stale ? ' · ⚠ may be stale' : '') + '</span>' +
+              (_doc.config.emergencyPause ? '<span style="color:var(--danger)">Program paused</span>' : '') + '</div>' +
+          '</div>';
+      }
+
+      function hydrateAll(root) {
+        (root || document).querySelectorAll('.deleg-section').forEach(renderCard);
+      }
+
+      // Cards are rendered by several code paths (lookup, Data Center,
+      // compare); watch the DOM instead of hooking each one.
+      const mo = new MutationObserver(muts => {
+        let found = false;
+        for (const m of muts) for (const n of m.addedNodes) {
+          if (n.nodeType !== 1) continue;
+          if (n.matches && n.matches('.deleg-section')) { found = true; renderCard(n); }
+          else if (n.querySelector && n.querySelector('.deleg-section')) { found = true; hydrateAll(n); }
+        }
+        if (found && !_doc && !_loading) load().then(() => hydrateAll()).catch(() => hydrateAll());
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+
+      // ── Tab ───────────────────────────────────────────────────────
+      const COLS = [
+        { key: 'name', label: 'Validator', n: false },
+        { key: 'status', label: 'Status', n: false },
+        { key: 'fc', label: 'Failing', n: false },
+        { key: 'ss', label: 'Self-stake', n: true },
+        { key: 'ds', label: 'Delegated', n: true },
+        { key: 'vcRatio', label: 'Credits vs avg', n: true },
+        { key: 'sk', label: 'Skip', n: true },
+        { key: 'cm', label: 'Comm', n: true },
+        { key: 'ver', label: 'Version', n: false },
+        { key: 'rs', label: 'Strikes', n: true },
+      ];
+      const FC_LABEL = { minSelfStake: 'self-stake', delinquent: 'delinquent', minValidatorVersion: 'version', minVoteCredits: 'vote credits', maxSkipRate: 'skip rate', noVersionInfo: 'no version', maxCommission: 'commission' };
+
+      function rowsForTable() {
+        const d = _doc, cl = d.cluster || {};
+        const mine = new Set((typeof myPortfolio !== 'undefined' && Array.isArray(myPortfolio)) ? myPortfolio : []);
+        const out = [];
+        for (const [vote, e] of Object.entries(d.validators)) {
+          const r = evaluate(vote);
+          out.push({
+            vote, e, r,
+            name: e.name || short(vote),
+            status: r.status,
+            fc: (e.fc || []).map(k => FC_LABEL[k] || k).join(', '),
+            ss: Number(e.ss || 0), ds: Number(e.ds || 0),
+            vcRatio: (e.vc != null && cl.avgVoteCreditsPct) ? (e.vc / cl.avgVoteCreditsPct) * 100 : -1,
+            sk: e.sk == null ? -1 : e.sk, cm: e.cm == null ? -1 : e.cm, ver: e.ver || '', rs: e.rs || 0,
+            mine: mine.has(vote),
+          });
+        }
+        return out;
+      }
+
+      function renderTab() {
+        const tiles = document.getElementById('delegTiles');
+        const table = document.getElementById('delegTable');
+        const note  = document.getElementById('delegNote');
+        if (!tiles || !table) return;
+        if (!_doc) {
+          tiles.innerHTML = '';
+          table.innerHTML = '<div class="deleg-empty">' + (_err ? 'Delegation data is not available right now (' + esc(_err.message) + '). <a href="' + PORTAL + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent-cyan)">Open the Foundation portal ↗</a>' : 'Loading delegation data…') + '</div>';
+          return;
+        }
+        const c = _doc.config, cl = _doc.cluster || {}, k = _doc.counts || {};
+        tiles.innerHTML =
+          '<div class="deleg-tile"><div class="v">' + xnt(c.minSelfStake) + ' XNT</div><div class="k">Min self-stake</div></div>' +
+          '<div class="deleg-tile"><div class="v">≤ ' + c.maxCommissionPercent + '%</div><div class="k">Max commission</div></div>' +
+          '<div class="deleg-tile"><div class="v">≥ ' + c.voteCreditsThresholdPct + '%</div><div class="k">Vote credits vs network avg</div></div>' +
+          '<div class="deleg-tile"><div class="v">avg + ' + c.skipRateTolerancePct + ' pts</div><div class="k">Max skip rate (avg ' + pct(cl.skipRatePct, 2) + ')</div></div>' +
+          '<div class="deleg-tile"><div class="v">v' + esc(c.minValidatorVersion) + '</div><div class="k">Min Tachyon version</div></div>' +
+          '<div class="deleg-tile"><div class="v">' + xnt(c.maxTotalStake) + '</div><div class="k">Max total stake (XNT) · ' + c.maxValidatorStakePct + '% of network</div></div>' +
+          '<div class="deleg-tile count ok"><div class="v">' + (k.approved ?? '—') + '</div><div class="k">Approved</div></div>' +
+          '<div class="deleg-tile count warn"><div class="v">' + (k.notMeetingCriteria ?? '—') + '</div><div class="k">Failing ≥ 1 criterion</div></div>' +
+          '<div class="deleg-tile count bad"><div class="v">' + (k.rejected ?? '—') + '</div><div class="k">Rejected</div></div>' +
+          '<div class="deleg-tile count"><div class="v">' + (k.activeDelegations ?? '—') + '</div><div class="k">Receiving foundation stake</div></div>';
+
+        let rows = rowsForTable();
+        const q = _query.trim().toLowerCase();
+        if (q) rows = rows.filter(r => (r.e.name || '').toLowerCase().includes(q) || r.vote.toLowerCase().includes(q) || (r.e.id || '').toLowerCase().includes(q));
+        if (_filter === 'approved')  rows = rows.filter(r => r.status === 'approved' || r.status === 'delegated');
+        if (_filter === 'delegated') rows = rows.filter(r => r.ds > 0);
+        if (_filter === 'failing')   rows = rows.filter(r => r.status === 'failing');
+        if (_filter === 'rejected')  rows = rows.filter(r => r.status === 'rejected');
+        if (_filter === 'mine')      rows = rows.filter(r => r.mine);
+        const col = COLS.find(x => x.key === _sortKey) || COLS[4];
+        rows.sort((a, b) => {
+          const x = a[col.key], y = b[col.key];
+          const cmp = col.n ? (x - y) : String(x).localeCompare(String(y));
+          return cmp * _sortDir || (b.ds - a.ds);
+        });
+
+        const head = '<tr>' + COLS.map(cn => '<th class="' + (cn.n ? 'n ' : '') + (cn.key === _sortKey ? 'sorted' : '') + '" data-k="' + cn.key + '">' + esc(cn.label) + (cn.key === _sortKey ? (_sortDir < 0 ? ' ▼' : ' ▲') : '') + '</th>').join('') + '</tr>';
+        const body = rows.length ? rows.map(r => {
+          const st = r.r;
+          return '<tr class="' + (r.mine ? 'mine' : '') + '">' +
+            '<td class="name" data-vote="' + esc(r.vote) + '" title="Open in Validator Lookup">' + esc(r.name) + '<small>' + esc(short(r.vote)) + '</small>' + (r.mine ? ' <span class="vt-tag-x1" style="font-size:8px">MINE</span>' : '') + '</td>' +
+            '<td><span class="deleg-status ' + st.statusClass + '" style="font-size:0.72rem">' + esc(st.statusText.replace(' · awaiting delegation', '').replace(' · receiving stake', '')) + '</span></td>' +
+            '<td class="fc ' + (r.fc ? '' : 'none') + '">' + (r.fc ? esc(r.fc) : '—') + '</td>' +
+            '<td class="n">' + xnt(r.ss) + '</td>' +
+            '<td class="n">' + (r.ds > 0 ? xnt(r.ds) : '<span style="color:var(--text-dim)">—</span>') + '</td>' +
+            '<td class="n">' + (r.vcRatio >= 0 ? r.vcRatio.toFixed(0) + '%' : '—') + '</td>' +
+            '<td class="n">' + (r.sk >= 0 ? pct(r.sk, 2) : '—') + '</td>' +
+            '<td class="n">' + (r.cm >= 0 ? r.cm + '%' : '—') + '</td>' +
+            '<td>' + esc(r.ver || '?') + '</td>' +
+            '<td class="n">' + (r.rs ? '<span style="color:var(--warning)">' + r.rs + '</span>' : '0') + '</td>' +
+          '</tr>';
+        }).join('') : '<tr><td colspan="' + COLS.length + '"><div class="deleg-empty">No validators match.</div></td></tr>';
+        table.innerHTML = '<div class="deleg-tbl-wrap"><table class="deleg-tbl"><thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>';
+
+        const stale = Date.now() - Date.parse(_doc.generatedAt) > MAX_AGE_MS;
+        note.innerHTML = rows.length + ' of ' + _doc.validatorCount + ' enrolled validators shown · ' + (k.notParticipating ?? '?') + ' validators are not enrolled. ' +
+          'Status and failing criteria are the X1 Foundation\'s own, read from its delegation API and refreshed hourly (last ' + esc(fmtTime(_doc.generatedAt)) + (stale ? ', <span style="color:var(--warning)">may be stale</span>' : '') + '). ' +
+          'Criteria are re-checked every epoch; a validator that stops meeting them loses its delegation immediately and collects a removal strike (−' + ((c.strikePenaltyBps || 0) / 100) + '% stake multiplier per strike, decaying over ' + (c.strikeDecayEpochs || '?') + ' epochs). ' +
+          '<a href="' + PORTAL + '" target="_blank" rel="noopener noreferrer">Foundation portal ↗</a>';
+      }
+
+      function wireTab() {
+        const f = document.getElementById('delegFilter');
+        const s = document.getElementById('delegSearch');
+        const t = document.getElementById('delegTable');
+        if (!f || f.dataset.wired) return;
+        f.dataset.wired = '1';
+        f.addEventListener('click', e => {
+          const b = e.target.closest('button[data-f]'); if (!b) return;
+          _filter = b.dataset.f;
+          f.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+          renderTab();
+        });
+        let deb = null;
+        s.addEventListener('input', () => { clearTimeout(deb); deb = setTimeout(() => { _query = s.value; renderTab(); }, 120); });
+        t.addEventListener('click', e => {
+          const th = e.target.closest('th[data-k]');
+          if (th) { const k = th.dataset.k; if (_sortKey === k) _sortDir = -_sortDir; else { _sortKey = k; _sortDir = COLS.find(c => c.key === k).n ? -1 : 1; } renderTab(); return; }
+          const td = e.target.closest('td.name[data-vote]');
+          if (td && typeof window.lookupValidator === 'function') { window.switchTab('lookup'); window.lookupValidator(td.dataset.vote); }
+        });
+      }
+
+      async function open() {
+        wireTab();
+        renderTab();
+        try { await load(); } catch (e) { /* renderTab shows the error */ }
+        renderTab();
+      }
+
+      window.delegOpen = open;
+      window.delegRefresh = () => load(true).then(() => { hydrateAll(); renderTab(); });
+      window.delegEvaluate = evaluate;   // for other modules (fleet board later)
+
+      // Pre-warm so card sections render on first lookup without a wait.
+      setTimeout(() => load().then(() => hydrateAll()).catch(() => {}), 2500);
     })();
   </script>
 

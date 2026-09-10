@@ -106,11 +106,14 @@ async function main() {
 
   // Group stake accounts by vote pubkey so the (incompressible) 44-char vote
   // key is written once per validator instead of once per stake account.
+  // Stake accounts that are not delegated to any validator go under the ""
+  // key: the terminal ignores them for the table but counts them in the
+  // "N stake accounts" header, so the snapshot and live figures match.
   const stakes = {};
   let stakeCount = 0;
   for (const s of sRes.rows) {
-    if (!s || !s.votePubkey) continue;
-    (stakes[s.votePubkey] ||= []).push(pick(s, STAKE_FIELDS));
+    if (!s || !s.stakePubkey) continue;
+    (stakes[s.votePubkey || ''] ||= []).push(pick(s, STAKE_FIELDS));
     stakeCount++;
   }
 

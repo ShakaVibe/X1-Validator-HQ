@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: update-scores
@@ -41,7 +42,37 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "chore: update canonical scores [skip ci]"
-            # Rebase in case another push landed while we ran
-            git pull --rebase origin ${GITHUB_REF_NAME}
-            git push
+            # Rebase in case another push landed while we ran; retry a few times
+            # (the geo and terminal bots push to main too).
+            for i in 1 2 3 4 5; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && exit 0
+              echo "push attempt $i failed; retrying in 10s"
+              sleep 10
+            done
+            echo "Could not push after 5 attempts" >&2
+            exit 1
+          fi
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          TITLE="[bot] ${{ github.workflow }} is failing"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Run failed at $(date -u +'%Y-%m-%d %H:%M UTC'): $RUN_URL"
+          # One open issue per workflow: comment if it exists, else create it.
+          EXISTING=$(gh issue list --repo "${{ github.repository }}" --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number' || true)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "${{ github.repository }}" --body "$BODY" || true
+          else
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" --body "$BODY" --label bot-failure || \
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" --body "$BODY" || true
+          fi
+          # Optional Telegram ping (set TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID in repo secrets).
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+              -d chat_id="$TELEGRAM_CHAT_ID" -d text="⚠️ $TITLE — $RUN_URL" > /dev/null || true
           fi
