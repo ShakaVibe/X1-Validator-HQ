@@ -11032,6 +11032,23 @@
       font-weight: 600;
     }
     .vt-error button:hover { background: rgba(0, 212, 255, 0.12); }
+    .vt-error-hint { color: var(--vt-dim); font-size: 10.5px; margin: -4px auto 1.1rem; max-width: 440px; line-height: 1.5; opacity: 0.85; }
+    .vt-stale {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      margin: 0 0 12px; padding: 8px 12px;
+      border: 1px solid var(--vt-amber); border-radius: 3px;
+      background: rgba(255, 176, 0, 0.07);
+      color: var(--vt-amber); font-size: 11px; line-height: 1.5;
+    }
+    .vt-stale-icon { font-size: 14px; }
+    .vt-stale-why { color: var(--vt-dim); font-size: 10.5px; }
+    .vt-stale button {
+      margin-left: auto;
+      background: transparent; color: var(--vt-amber); border: 1px solid var(--vt-amber);
+      padding: 4px 10px; font-family: inherit; font-size: 10px; letter-spacing: 0.12em;
+      text-transform: uppercase; cursor: pointer; border-radius: 2px; font-weight: 600;
+    }
+    .vt-stale button:hover { background: rgba(0, 212, 255, 0.12); }
 
     /* Ticker */
     /* Header */
@@ -34680,28 +34697,145 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const shortPk = pk => pk.slice(0,6) + '…' + pk.slice(-4);
 
       // ── Fetch ─────────────────────────────────────────
-      async function getAll(path, q = {}) {
-        const out = [];
-        for (let offset = 0; ; offset += PAGE) {
-          const u = new URL(API + path);
-          for (const [k,v] of Object.entries({ ...q, limit: PAGE, offset })) u.searchParams.set(k, String(v));
-          const r = await fetch(u);
-          if (!r.ok) throw new Error(path + ' HTTP ' + r.status);
-          const page = await r.json();
-          out.push(...page);
-          if (page.length < PAGE || offset >= MAX_OFFSET) return out;
+      // api.x1.xyz serves these payloads UNCOMPRESSED and they are big:
+      // /v1/stakes?includeInactive=true is ~11 MB (~7.4k stake accounts as
+      // of Sep 2026 — every entry embeds its full validator + pool objects)
+      // and /v1/validators is ~2 MB. On a slow or flaky connection (mobile,
+      // hotel wifi, VPN) that transfer gets cut off mid-stream, which the
+      // browser reports only as a bare "Failed to fetch". The original
+      // loader had no timeout, no retry and no fallback, so one hiccup on
+      // any of the three requests killed the whole terminal.
+      //
+      // Every API call now: streams the body (so the loading screen can
+      // show real download progress), aborts only if the stream STALLS
+      // (no bytes for STALL_MS — a slow-but-steady connection is never
+      // punished), and retries with backoff on network errors / 429 / 5xx.
+      const STALL_MS      = 30000;   // abort if no bytes arrive for 30s
+      const FETCH_RETRIES = 3;       // attempts per request
+      const BYTES_KEY     = 'vtLastLoadBytes'; // remembers last full-load size
+      let _progress = { bytes: 0, expected: 0, note: '' };
+      let _fetchedAt = null;         // Date of the data currently on screen
+
+      function fmtMB(b) { return (b / 1048576).toFixed(1) + ' MB'; }
+
+      function reportProgress(note) {
+        if (note !== undefined) _progress.note = note;
+        const el = document.querySelector('#vtContent .vt-loading-detail');
+        if (!el) return;
+        const got = fmtMB(_progress.bytes);
+        const exp = _progress.expected ? ' of ~' + fmtMB(_progress.expected) : '';
+        el.textContent =
+          'Fetching validator and stake data from api.x1.xyz… ' + got + exp +
+          (_progress.note ? ' · ' + _progress.note : '');
+      }
+
+      function describeError(e, path) {
+        const m = (e && e.message) || String(e);
+        if (e && e.name === 'AbortError') {
+          return new Error('Connection to api.x1.xyz stalled while downloading ' + path +
+            ' (no data for ' + (STALL_MS / 1000) + 's). This is a large download (~13 MB) — ' +
+            'check your connection and retry.');
         }
+        if (e && e.name === 'TypeError') { // "Failed to fetch" / "Load failed"
+          return new Error('Could not reach api.x1.xyz for ' + path + ' (' + m + '). ' +
+            'Either the API is temporarily unavailable or the ~13 MB download was ' +
+            'interrupted. Retried ' + FETCH_RETRIES + '× — please try again in a moment.');
+        }
+        return e instanceof Error ? e : new Error(m);
+      }
+
+      async function apiGet(path, q = {}) {
+        const u = new URL(API + path);
+        for (const [k, v] of Object.entries(q)) u.searchParams.set(k, String(v));
+        let lastErr = null;
+        for (let attempt = 0; attempt < FETCH_RETRIES; attempt++) {
+          const ctrl = new AbortController();
+          let timer = null;
+          const bump = () => { clearTimeout(timer); timer = setTimeout(() => ctrl.abort(), STALL_MS); };
+          let counted = 0;
+          try {
+            bump();
+            const r = await fetch(u, { signal: ctrl.signal, cache: 'no-store' });
+            if (r.status === 429 || r.status >= 500) {
+              throw new Error(path + ' HTTP ' + r.status);          // retryable
+            }
+            if (!r.ok) {
+              const err = new Error(path + ' HTTP ' + r.status);    // 4xx: don't retry
+              err.noRetry = true;
+              throw err;
+            }
+            let text;
+            if (r.body && typeof r.body.getReader === 'function') {
+              const reader = r.body.getReader();
+              const chunks = [];
+              for (;;) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                bump();
+                chunks.push(value);
+                counted += value.byteLength;
+                _progress.bytes += value.byteLength;
+                reportProgress();
+              }
+              const buf = new Uint8Array(counted);
+              let off = 0;
+              for (const c of chunks) { buf.set(c, off); off += c.byteLength; }
+              text = new TextDecoder().decode(buf);
+            } else {
+              text = await r.text();
+              counted = text.length;
+              _progress.bytes += counted;
+              reportProgress();
+            }
+            clearTimeout(timer);
+            return JSON.parse(text);
+          } catch (e) {
+            clearTimeout(timer);
+            lastErr = e;
+            _progress.bytes -= counted;                 // roll back the partial download
+            if (e && e.noRetry) break;
+            if (attempt < FETCH_RETRIES - 1) {
+              const delay = 1000 * Math.pow(2, attempt) + Math.random() * 500;
+              console.warn('[VT] ' + path + ' failed (' + ((e && e.message) || e) + ') — retry ' +
+                (attempt + 2) + '/' + FETCH_RETRIES + ' in ' + Math.round(delay) + 'ms');
+              reportProgress('retrying ' + path + ' (' + (attempt + 2) + '/' + FETCH_RETRIES + ')');
+              await new Promise(res => setTimeout(res, delay));
+              reportProgress('');
+            }
+          }
+        }
+        throw describeError(lastErr, path);
+      }
+
+      async function getAll(path, q = {}) {
+        // The API rejects offset > 5000 ("offset must not be greater than
+        // 5000"), so the old loop (offset += 10000) would 400 the moment a
+        // list passed 10k rows. Max reachable is limit=10000 at offset 0
+        // plus limit=10000 at offset 5000 = 15k rows, deduped on the
+        // overlap. ~7.4k stakes today; revisit if it ever nears 15k.
+        const first = await apiGet(path, { ...q, limit: PAGE, offset: 0 });
+        if (!Array.isArray(first)) throw new Error(path + ' returned unexpected data');
+        if (first.length < PAGE) return first;
+        const second = await apiGet(path, { ...q, limit: PAGE, offset: MAX_OFFSET });
+        const keyOf = x => x.stakePubkey || x.votePubkey || JSON.stringify(x);
+        const seen = new Set(first.map(keyOf));
+        const out = first.slice();
+        for (const x of second) if (!seen.has(keyOf(x))) { seen.add(keyOf(x)); out.push(x); }
+        if (second.length >= PAGE) console.warn('[VT] ' + path + ' may be truncated at 15k rows (API offset cap)');
+        return out;
       }
 
       async function fetchAll() {
+        _progress = { bytes: 0, expected: 0, note: '' };
+        try { _progress.expected = parseInt(localStorage.getItem(BYTES_KEY) || '0', 10) || 0; } catch (e) {}
+        reportProgress('');
         const [cluster, validators, stakes] = await Promise.all([
-          fetch(API + '/v1/cluster').then(r => {
-            if (!r.ok) throw new Error('cluster HTTP ' + r.status);
-            return r.json();
-          }),
+          apiGet('/v1/cluster'),
           getAll('/v1/validators'),
           getAll('/v1/stakes', { includeInactive: true }),
         ]);
+        try { localStorage.setItem(BYTES_KEY, String(_progress.bytes)); } catch (e) {}
+        _fetchedAt = new Date();
         return { cluster, validators, stakes };
       }
 
@@ -34815,7 +34949,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       function render() {
         if (!_computed) return;
         const { rows, agg, pct, cluster, stakesCount } = _computed;
-        const isoTime = new Date().toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+        const isoTime = (_fetchedAt || new Date()).toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
 
         const trs = rows.map((r, i) => {
           const { v, b, selfPct } = r;
@@ -35277,7 +35411,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
             }
           }
         } catch (e) {
-          showError(e);
+          // A failed REFRESH used to wipe a perfectly good table and replace
+          // it with the error screen — with the 1h auto-refresh, one blip
+          // meant anyone who left the tab open came back to "Failed to load
+          // terminal data". Keep what we have and show a notice instead.
+          if (_computed) showStaleNotice(e);
+          else showError(e);
         } finally {
           ['vtRefreshBtn', 'vtCornerRefresh'].forEach(id => {
             const b = document.getElementById(id);
@@ -35292,8 +35431,28 @@ Please give me the diagnostic commands to run on my server so you can help me id
           '<div class="vt-error">' +
             '<div class="vt-error-title">Failed to load terminal data</div>' +
             '<div class="vt-error-detail">' + esc((err && err.message) || String(err)) + '</div>' +
+            '<div class="vt-error-hint">The terminal downloads the full stake list from api.x1.xyz (~13 MB, uncompressed). ' +
+              'Slow or unstable connections are the usual cause — the other tabs on this site do not need this download.</div>' +
             '<button onclick="vtRetry()">Retry</button>' +
           '</div>';
+      }
+
+      function showStaleNotice(err) {
+        const content = document.getElementById('vtContent');
+        if (!content) return;
+        let n = document.getElementById('vtStaleNotice');
+        if (!n) {
+          n = document.createElement('div');
+          n.id = 'vtStaleNotice';
+          n.className = 'vt-stale';
+          content.insertBefore(n, content.firstChild);
+        }
+        const asOf = _fetchedAt ? _fetchedAt.toISOString().replace('T', ' ').slice(0, 19) + ' UTC' : 'earlier';
+        n.innerHTML =
+          '<span class="vt-stale-icon">&#9888;</span> ' +
+          '<span>Refresh failed — showing data from <b>' + asOf + '</b>. ' +
+          '<span class="vt-stale-why">' + esc((err && err.message) || String(err)) + '</span></span> ' +
+          '<button onclick="vtRetry()">Retry now</button>';
       }
 
       // ── Open / close ──────────────────────────────────
