@@ -95,13 +95,17 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [x] **D1** done 2026-09-10 — description/OG/Twitter/canonical/theme-color meta, `og.png`
       (1200×630, generated with PIL — regenerate if branding changes), `apple-touch-icon.png`,
       `icon-512.png`, `manifest.webmanifest`
-- [ ] **P1** `defer` on Chart.js and web3.js `<script>` tags (97, 115)
+- [x] **P1** done 2026-09-10 — `defer` on Chart.js and web3.js
 - [ ] **X1** global `:focus-visible` rule; **U2**(part) active nav tab on first load
 - [x] **M1/M2/M3/M4** done 2026-09-10 — terminal table scrolls in its own container under
       1500 px with two sticky columns; nav is a 4-col grid on phones; stats bar 4×2 grid; compact
       header; 16 px inputs + 44 px targets under `(pointer: coarse)`; terminal no longer
       auto-focuses search on touch. **U3** Globe in nav / rename "Network" still open.
-- [ ] **B10/F7** use `canonicalScores.latestVersion` instead of GitHub releases (Tachyon has no releases)
+- [x] **B10/F7** done 2026-09-10 — `computeLatestVersion()` (highest semver on ≥3 gossip nodes,
+      or scores.json's `latestVersion` if newer), `buildVersionStats()` → `window.versionStats`,
+      version adoption strip on the Network tab (`#verStrip`, stake-weighted bar + legend, shows
+      validators behind and the delegation minimum). GitHub releases call + `MINIMUM_KNOWN_VERSION`
+      floor removed; `api.github.com` dropped from CSP. Card badge now says "Update to v3.1.14".
 
 ### Phase 1 — weeks 2–4 (addressable + observable)
 - [x] **U1** done 2026-09-10 — `Router` (defined just above `switchTab`): `#/lookup/<vote>`
@@ -112,12 +116,12 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
       validator's name/score.
 - [ ] **F10** `data/status.json` + `data/events.json`; stable `scores.json` schema; /status page
 - [ ] **F4** fleet health board in My Data Center (issues first)
-- [ ] **F7** version tracker from gossip (+ v4.0 feature-gate feed)
+- [x] **F7** version tracker — done (see Phase 0). v4.0 feature-gate feed still open.
 - [x] **F1** Delegation Program eligibility checker — done 2026-09-10 (see Session Log). Follow-ups:
       - [ ] Bootstrap Bonus checker (docs.x1.xyz/validating/validator-rewards/bootstrap-bonus)
       - [ ] Data Center summary line ("3 approved · 1 failing") + fleet board column (F4)
       - [ ] Alert on eligibility loss once F3 exists
-- [ ] **P2** startup diet
+- [x] **P2** partial 2026-09-10 — leader schedule lazy (R6), TPS light poll (P8), fonts non-blocking (P4). Still open: sessionStorage cache for identities/supply, fast-path stats bar.
 
 ### Phase 2 — weeks 5–8 (memory + push)
 - [ ] **F2** per-validator history charts (`history.json` + api.x1.xyz `*Last10Epochs`)
@@ -236,6 +240,18 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `set()` until `start()` has applied the initial deep link (called from `init()` right after
   `loadNetworkStats()`), so renders during page load can't clobber it. Unit-tested in node.
   Also escaped the card's first-letter placeholder and version badge (leftovers from batch 2).
+- **Batch 6 — delegation tile + version tracker + startup diet:** Shaka rejected the first
+  delegation card section (4-column text grid, ~180 px) and then the one-line bar; what he
+  wanted was **a stat tile like the others** ("Delegation" · value = delegated XNT / Failing /
+  Rejected / — · sub "XNT · Approved" or "N unmet" · **Details** link) opening a modal
+  (`#delegationModal`, `openDelegationModal(vote)`) with the ✓/✗ criteria list, headroom
+  hints, strikes and the Foundation note. Previewed with Playwright before pushing. **Lesson:
+  new per-validator data goes in the stat grid with a Details link, like Breakdown/Classify —
+  never a new section on the card.**
+  Version tracker: see B10/F7 in §5. Startup diet (P1/P4/R6/P8): `defer` on Chart.js + web3.js
+  (`isValidPubkey` falls back to a base58 regex until web3 loads), Google Fonts non-blocking,
+  leader schedule no longer loaded at page load (on demand by Network tab / chips / Slot
+  Explorer), TPS polls 1 sample instead of 720 when the Network tab is not active.
 - Key facts learned: (1) validator names/iconUrls reach the DOM unescaped in ~10 places and
   `safeUrl`/`escAttrJs` are bypassable — Critical because the site signs wallet txs; (2) on a
   375 px phone only 2 of 7 tabs are visible and the Terminal expands the layout viewport to
