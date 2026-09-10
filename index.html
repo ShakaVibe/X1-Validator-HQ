@@ -36259,7 +36259,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
         else                              { value = 'Approved';     color = 'var(--success)';   sub = 'awaiting delegation'; }
         valueEl.textContent = value; valueEl.style.color = color;
         valueEl.style.fontSize = (value.length > 9 && !/^[\d,]+$/.test(value)) ? '1.05rem' : '';
-        subEl.outerHTML = '<div class="stat-sub-row"><span class="stat-subtext">' + esc(sub) + '</span>' + (r.status === 'none' ? '<a class="rb-open-link" href="' + PORTAL + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Enrol ↗</a>' : details) + '</div>';
+        // Idempotent: renderCard can run twice (observer + post-load hydrate),
+        // so replace the whole sub-row if one already exists.
+        const rowHtml = '<div class="stat-sub-row"><span class="stat-subtext">' + esc(sub) + '</span>' + (r.status === 'none' ? '<a class="rb-open-link" href="' + PORTAL + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Enrol ↗</a>' : details) + '</div>';
+        const existingRow = el.querySelector('.stat-sub-row');
+        if (existingRow) existingRow.outerHTML = rowHtml; else subEl.outerHTML = rowHtml;
       }
 
       function closeDelegationModalImpl() {

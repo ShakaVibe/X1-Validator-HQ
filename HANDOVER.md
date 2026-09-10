@@ -1,10 +1,19 @@
 # X1 Validator HQ — Session Handover
 
-> **How to use this file:** at the start of a new chat, attach or paste this file and say
+> **How to use this file:** at the start of a new chat, attach this file and say
 > "here's the handover, let's continue." Claude reads it, asks you to link the `X1VHQ`
-> folder (Add folder → `Desktop/X1VHQ`), and picks up from the to-do list.
+> folder (Add folder → `Desktop/X1VHQ`), runs `git pull`, and picks up from §5.
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
+
+> **Start here next session (as of 2026-09-10 evening):**
+> 1. `cd ~/Desktop/X1VHQ && git pull` — three bots commit hourly.
+> 2. Verify the last push on the live site: Delegation tile shows one "Details" link (a
+>    double-render was fixed in the final commit of session 1; confirm it deployed).
+> 3. Next build, in Shaka's priority order: **Fleet health board (F4)** → **History charts (F2)**
+>    → **Alerts (F3, design first)**. Roadmap artifact: "X1 Validator HQ Roadmap".
+> 4. UI rule learned the hard way: per-validator data goes in the **stat grid as a tile with a
+>    Details link** (like Breakdown / Classify) — never a new section or bar on the card.
 
 ---
 
@@ -107,7 +116,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
       validators behind and the delegation minimum). GitHub releases call + `MINIMUM_KNOWN_VERSION`
       floor removed; `api.github.com` dropped from CSP. Card badge now says "Update to v3.1.14".
 
-### Phase 1 — weeks 2–4 (addressable + observable)
+### Phase 1 — weeks 2–4 (addressable + observable) — NEXT: F4, then F2, then F3 design
 - [x] **U1** done 2026-09-10 — `Router` (defined just above `switchTab`): `#/lookup/<vote>`
       (alias `#/v/`), `#/leaderboard/<cat>`, `#/compare/a,b,c,d`, `#/calculators/<calc>`,
       `#/live`, `#/terminal`, `#/datacenter`, `#/delegation`, `#/globe`; back/forward work;
@@ -137,6 +146,10 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] **P6/D5** PWA shell, light theme; **C8** public changelog
 
 ### Open small items
+- [ ] Confirm the Delegation tile shows a single "Details" link on the live site (fix pushed
+      end of session 1).
+- [ ] `_to_delete/` in the repo folder holds the Python patch scripts from session 1 (gitignored);
+      Shaka can delete the folder any time.
 - [ ] Ask people who reported the terminal error which device/network they were on.
 - [ ] After the next hourly snapshot run, confirm the header stake-account count matches Live.
 
@@ -252,6 +265,15 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   (`isValidPubkey` falls back to a base58 regex until web3 loads), Google Fonts non-blocking,
   leader schedule no longer loaded at page load (on demand by Network tab / chips / Slot
   Explorer), TPS polls 1 sample instead of 720 when the Network tab is not active.
+- **Batch 7 — end of day:** live-verified the tile/modal/version-strip push; found and fixed a
+  double "Details" link (renderCard ran twice: MutationObserver + post-load hydrate — now
+  idempotent). Roadmap artifact updated with done marks. Telegram announcement drafted for the
+  Delegation feature (in chat, not saved).
+- **Session 1 totals:** 8 pushes. Shipped: Terminal hardening + snapshot; security S1–S6;
+  B1/R1/R2; workflow rebase/retry + failure alerts (A1/A2); OG/meta/icons/manifest (D1);
+  mobile pass (M1–M4); hash router + Share (U1); Delegation Program checker — tile, modal, tab,
+  hourly snapshot (F1); version tracker + adoption strip (F7/B10); startup diet
+  (P1/P4/R6/P8); HANDOVER + docs/audit + roadmap artifact.
 - Key facts learned: (1) validator names/iconUrls reach the DOM unescaped in ~10 places and
   `safeUrl`/`escAttrJs` are bypassable — Critical because the site signs wallet txs; (2) on a
   375 px phone only 2 of 7 tabs are visible and the Terminal expands the layout viewport to
