@@ -43,11 +43,14 @@ index.html                    the whole site (all tabs, all JS)
 data/scores.json              canonical validator scores — written hourly by Action
 data/history.json             7-day rolling history behind the scores
 validator-locations.json      geo data — written every 2h by Action
+data/terminal.json            Validator Terminal snapshot — written hourly by Action (added 2026-09-10)
+scripts/build-terminal-snapshot.js  builds data/terminal.json from api.x1.xyz
 scripts/compute-scores.js     score generator (Node 20, zero deps)
 scripts/test-compute-scores.js  mock-RPC tests for the above
 generate-geo.js               geo updater run by the Action
 .github/workflows/update-scores.yml     hourly, minute :07  (commits data/*.json)
 .github/workflows/update-geo-data.yml   every 2h, minute :21 (commits validator-locations.json)
+.github/workflows/update-terminal-snapshot.yml  hourly, minute :37 (commits data/terminal.json)
 vendor/solana-web3.js-1.98.4.iife.min.js
 SCORING-DEPLOYMENT.md         design doc for the canonical scoring system (formula v2)
 CNAME / .nojekyll / _headers  Pages config
@@ -67,20 +70,21 @@ CNAME / .nojekyll / _headers  Pages config
   No `Content-Encoding`, no `Cache-Control`. `offset` is capped at 5000 (400 above that).
   The API allowed 8 parallel `/v1/cluster` calls with no 429.
 - **Validator Terminal module** starts at the `// VALIDATOR TERMINAL — client-side module`
-  banner (~line 34656). It is an IIFE exposing `window.vtOpen / vtClose / vtRetry`.
+  banner (~line 34670). It is an IIFE exposing `window.vtOpen / vtClose / vtRetry / vtRefreshLive`.
+  Data source order: `data/terminal.json` snapshot (hourly, same origin) → live api.x1.xyz.
 - **Scores** are canonical (computed server-side by the Action) with an in-browser fallback if
   `data/scores.json` is missing or >3h stale — see `SCORING-DEPLOYMENT.md`.
 
 ## 5. To-do list
 
 ### Open
-- [ ] **Verify the Validator Terminal fix on the live site** after the push (load the tab, watch
-      the "x MB of ~13 MB" progress, try Retry, confirm no console errors).
-- [ ] **Decide: publish a compact terminal snapshot via GitHub Action** (`data/terminal.json`).
-      The client-side fix makes loads resilient, but the root cause is the 13 MB uncompressed
-      download from api.x1.xyz. An hourly Action could pre-digest it into ~300–600 KB (gzipped by
-      Pages to ~100 KB); the tab would load instantly from that and refresh live in the
-      background. This is the real fix for phone users. Needs Shaka's go-ahead.
+- [ ] **First run of the snapshot Action:** after pushing, go to GitHub → Actions →
+      "Update Validator Terminal snapshot" → Run workflow. Confirm it commits `data/terminal.json`
+      (~0.7 MB). Until it exists the site silently falls back to the live API.
+- [ ] **Verify on the live site** after Pages redeploys: Validator Terminal should show
+      "Hourly snapshot · auto-refresh 1h" in the header corner and load in well under a second;
+      click **Live** to confirm the live path still works (progress "x MB of ~13 MB"); no console
+      errors.
 - [ ] Ask people who reported the error which device/network they were on (mobile? VPN?) — helps
       confirm the diagnosis.
 
@@ -93,6 +97,7 @@ CNAME / .nojekyll / _headers  Pages config
 ### Done
 - [x] 2026-09-10 — Local clone set up at `~/Desktop/X1VHQ`, folder linked to Claude.
 - [x] 2026-09-10 — Diagnosed + hardened Validator Terminal loading (see Session Log).
+- [x] 2026-09-10 — Hourly terminal snapshot Action + snapshot-first loader (see Session Log).
 
 ## 6. Session log
 
@@ -117,4 +122,22 @@ CNAME / .nojekyll / _headers  Pages config
   - Timestamps ("Updated…", "Generated…") now reflect fetch time, not render time.
 - Verified: all inline scripts pass `node --check`; mock-fetch test of the new loader confirmed
   retries, dedup pagination (12k rows → 12k unique), progress bytes and error text.
-- **Not yet pushed** at the time of writing — Shaka to run the push commands in §2.
+- **Terminal snapshot (root-cause fix), same session:**
+  - New `scripts/build-terminal-snapshot.js` (Node 20, zero deps): fetches cluster + validators +
+    stakes from api.x1.xyz with retries, keeps only the 10 validator fields and 5 stake fields the
+    terminal uses, groups stakes by vote key, writes `data/terminal.json` one record per line
+    (small git diffs). Tested against a mock API incl. 503 retry and the 2-page (>10k) path.
+  - New `.github/workflows/update-terminal-snapshot.yml`: hourly at :37, commits with
+    `[skip ci]`, rebase-and-retry push loop (three bots now push to `main`: :07 scores,
+    :21 geo, :37 terminal).
+  - `index.html` terminal module: `fetchSnapshot()` / `inflateSnapshot()` / `loadData(preferLive)`.
+    Opening the tab and the hourly auto-refresh load the snapshot (same-origin, ~0.7 MB raw,
+    gzipped by Pages); snapshot missing or >3h old → live API. New **Live** button in the header
+    corner (`vtRefreshLive`) forces a live fetch, falling back to the snapshot if that fails.
+    Header + footer now say which source is on screen and when it was generated.
+  - Mock-tested all branches: snapshot ok / stale / 404 / live-preferred with API down / up.
+- Snapshot format v1 (keep `VALIDATOR_FIELDS` in the script and `inflateSnapshot` in sync):
+  `{version, generatedAt, source, counts, truncated, cluster, validatorFields, stakeFields,
+  validators: [[...fields]], stakes: {votePubkey: [[stakePubkey, amount, delegatedStake, status, isPool]]}}`
+- **Not yet pushed** at the time of writing — Shaka to run the push commands in §2, then trigger
+  the snapshot workflow once by hand (see To-do).
