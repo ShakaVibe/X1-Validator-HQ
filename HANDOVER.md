@@ -92,16 +92,24 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [x] **A1, A2** done 2026-09-10 — failure alerts open/comment a GitHub issue titled
       "[bot] <workflow> is failing"; optional Telegram if repo secrets `TELEGRAM_BOT_TOKEN` +
       `TELEGRAM_CHAT_ID` are set
-- [ ] **D1** `<meta name="description">` + Open Graph + Twitter tags + 1200×630 og.png
+- [x] **D1** done 2026-09-10 — description/OG/Twitter/canonical/theme-color meta, `og.png`
+      (1200×630, generated with PIL — regenerate if branding changes), `apple-touch-icon.png`,
+      `icon-512.png`, `manifest.webmanifest`
 - [ ] **P1** `defer` on Chart.js and web3.js `<script>` tags (97, 115)
 - [ ] **X1** global `:focus-visible` rule; **U2**(part) active nav tab on first load
-- [ ] **M1** Terminal `.vt-tbl-wrap { overflow-x: auto }` (11408); **M4** 16 px inputs under
-      `(pointer: coarse)`; **U3** Globe in the nav / rename "Network" → "Live"
+- [x] **M1/M2/M3/M4** done 2026-09-10 — terminal table scrolls in its own container under
+      1500 px with two sticky columns; nav is a 4-col grid on phones; stats bar 4×2 grid; compact
+      header; 16 px inputs + 44 px targets under `(pointer: coarse)`; terminal no longer
+      auto-focuses search on touch. **U3** Globe in nav / rename "Network" still open.
 - [ ] **B10/F7** use `canonicalScores.latestVersion` instead of GitHub releases (Tachyon has no releases)
 
 ### Phase 1 — weeks 2–4 (addressable + observable)
-- [ ] **U1** hash router (`#/v/<vote>`, `#/leaderboard/<cat>`, `#/compare/a,b,c`, `#/terminal`,
-      `#/live`) + Share button on the validator card
+- [x] **U1** done 2026-09-10 — `Router` (defined just above `switchTab`): `#/lookup/<vote>`
+      (alias `#/v/`), `#/leaderboard/<cat>`, `#/compare/a,b,c,d`, `#/calculators/<calc>`,
+      `#/live`, `#/terminal`, `#/datacenter`, `#/delegation`, `#/globe`; back/forward work;
+      🔗 Share button on every validator card (native share sheet on phones, clipboard on desktop).
+      Follow-up: static per-validator pages with OG cards (F5) so shared links unfurl with the
+      validator's name/score.
 - [ ] **F10** `data/status.json` + `data/events.json`; stable `scores.json` schema; /status page
 - [ ] **F4** fleet health board in My Data Center (issues first)
 - [ ] **F7** version tracker from gossip (+ v4.0 feature-gate feed)
@@ -109,7 +117,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
       - [ ] Bootstrap Bonus checker (docs.x1.xyz/validating/validator-rewards/bootstrap-bonus)
       - [ ] Data Center summary line ("3 approved · 1 failing") + fleet board column (F4)
       - [ ] Alert on eligibility loss once F3 exists
-- [ ] **M2/M3** mobile nav + stats grid; **P2** startup diet
+- [ ] **P2** startup diet
 
 ### Phase 2 — weeks 5–8 (memory + push)
 - [ ] **F2** per-validator history charts (`history.json` + api.x1.xyz `*Last10Epochs`)
@@ -223,6 +231,11 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   - Needs one manual Action run after push to create `data/delegation.json` (Actions → "Update
     Validator Terminal snapshot" → Run workflow); until then cards show nothing and the tab says
     "not available".
+- **Batch 4 — mobile + link previews:** see D1 and M1–M4 in §5.
+- **Batch 5 — shareable URLs (U1):** hash router + Share button (see §5). Router ignores
+  `set()` until `start()` has applied the initial deep link (called from `init()` right after
+  `loadNetworkStats()`), so renders during page load can't clobber it. Unit-tested in node.
+  Also escaped the card's first-letter placeholder and version badge (leftovers from batch 2).
 - Key facts learned: (1) validator names/iconUrls reach the DOM unescaped in ~10 places and
   `safeUrl`/`escAttrJs` are bypassable — Critical because the site signs wallet txs; (2) on a
   375 px phone only 2 of 7 tabs are visible and the Terminal expands the layout viewport to

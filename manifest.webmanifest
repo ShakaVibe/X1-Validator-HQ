@@ -1,0 +1,13 @@
+{
+  "name": "X1 Validator Headquarters",
+  "short_name": "X1 Val HQ",
+  "description": "Live dashboard and management tool for validators on the X1 blockchain.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a1020",
+  "theme_color": "#0a1020",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
