@@ -90,8 +90,27 @@
     form-action 'self';
     upgrade-insecure-requests;
   ">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>X1 Validator Headquarters</title>
+  <meta name="description" content="Live dashboard for X1 blockchain validators: official hourly scores, Foundation Delegation Program status, leader &amp; skip monitor, stake breakdown, leaderboards, compare and calculators.">
+  <link rel="canonical" href="https://x1valhq.xyz/">
+  <meta name="theme-color" content="#0a1020">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="X1 Validator Headquarters">
+  <meta property="og:title" content="X1 Validator Headquarters">
+  <meta property="og:description" content="Live dashboard for X1 validators — hourly official scores, Delegation Program eligibility, leader &amp; skip monitor, stake breakdown, leaderboards and calculators.">
+  <meta property="og:url" content="https://x1valhq.xyz/">
+  <meta property="og:image" content="https://x1valhq.xyz/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="X1 Validator Headquarters — live dashboard for X1 validators">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="X1 Validator Headquarters">
+  <meta name="twitter:description" content="Live dashboard for X1 validators — hourly official scores, Delegation Program eligibility, leader &amp; skip monitor, stake breakdown, leaderboards and calculators.">
+  <meta name="twitter:image" content="https://x1valhq.xyz/og.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%2300d4ff' width='32' height='32' rx='6'/><text x='50%' y='55%' font-family='Arial' font-size='18' font-weight='bold' fill='%23001029' text-anchor='middle' dominant-baseline='middle'>X1</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11050,6 +11069,75 @@
     }
     .vt-stale button:hover { background: rgba(0, 212, 255, 0.12); }
 
+
+    /* ═══ Mobile pass (audit M1–M4, 2026-09-10) ═══ */
+    /* iOS Safari zooms the page when a focused input is under 16px. */
+    @media (pointer: coarse) {
+      input[type="text"], input[type="search"], input[type="number"], input:not([type]), select, textarea {
+        font-size: 16px !important;
+      }
+      button, .tab, .leaderboard-cat-btn, .calc-nav-btn { min-height: 44px; }
+    }
+
+    /* Validator Terminal: the 24-column table used to force the page's layout
+       viewport to ~1,450px on phones (body overflow-x hidden + wrap overflow
+       visible), so the whole site rendered zoomed-out. Scroll the table inside
+       its own container instead; the first two columns stay pinned. */
+    @media (max-width: 1500px) {
+      .vt-tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+      table.vt-data th:nth-child(1), table.vt-data td:nth-child(1) { position: sticky; left: 0; z-index: 2; background: var(--bg-card); }
+      table.vt-data th:nth-child(2), table.vt-data td:nth-child(2) { position: sticky; left: var(--vt-col1-w, 36px); z-index: 2; background: var(--bg-card); box-shadow: 4px 0 8px -4px rgba(0,0,0,0.5); }
+      .vt-tip { min-width: min(460px, calc(100vw - 2rem)); max-width: calc(100vw - 2rem); }
+    }
+
+    @media (max-width: 768px) {
+      /* Nav: 8 tabs as a 4-column grid (2 rows) instead of a horizontal scroller
+         that showed 2 of 7 tabs with no affordance. */
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.45rem;
+        overflow: visible;
+        margin-bottom: 1.25rem;
+      }
+      .tab {
+        flex-direction: column;
+        min-height: 60px;
+        padding: 0.45rem 0.25rem;
+        font-size: 0.68rem;
+        line-height: 1.15;
+        white-space: normal;
+        gap: 0.25rem;
+        overflow-wrap: anywhere;
+      }
+      .tab .tab-icon { font-size: 1.05rem; height: 20px; }
+      .tab .tab-label { display: block; width: 100%; }
+
+      /* Header: single compact row, links become small chips */
+      header { padding: 0.75rem 1rem; gap: 0.6rem; }
+      .header-links { gap: 0.6rem; font-size: 0.78rem; flex-wrap: wrap; justify-content: center; }
+
+      /* Stats bar: 4 × 2 grid, no ragged wrapping */
+      .network-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.35rem 0;
+        padding: 0.6rem 0.4rem;
+      }
+      .network-stat { border-right: none; padding: 0.2rem 0.15rem; min-width: 0; }
+      .network-stat-value { font-size: 0.95rem; }
+
+      /* Globe: scale with the screen, let the page scroll over it */
+      #validatorMap, .globe-container { touch-action: pan-y; }
+    }
+    @media (max-width: 480px) {
+      .tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.35rem; }
+      .tab { font-size: 0.64rem; min-height: 56px; }
+      .network-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .network-stat-value { font-size: 0.85rem; }
+      .network-stat-label { font-size: 0.58rem; }
+    }
+
     /* ═══ Delegation Program (card section + tab) ═══ */
     .deleg-section { margin: 0.9rem 0 0.25rem; }
     .deleg-box {
@@ -17622,7 +17710,7 @@
       }
 
       // Generate logo or placeholder
-      const firstLetter = validator.name.charAt(0).toUpperCase();
+      const firstLetter = escHtml(validator.name.charAt(0).toUpperCase());
       const logoHtml = validator.iconUrl 
         ? `<img class="validator-logo" src="${safeUrl(validator.iconUrl)}" alt="${escHtml(validator.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
            <div class="validator-logo-placeholder" style="display:none;">${firstLetter}</div>`
@@ -17633,9 +17721,9 @@
       if (validator.version) {
         const outdated = isVersionOutdated(validator.version);
         if (outdated) {
-          versionHtml = `<span class="version-badge outdated">v${validator.version}</span><span class="version-update-warning" title="Latest version: v${window.latestValidatorVersion}">⚠️ Update Available</span>`;
+          versionHtml = `<span class="version-badge outdated">v${escHtml(validator.version)}</span><span class="version-update-warning" title="Latest version: v${window.latestValidatorVersion}">⚠️ Update Available</span>`;
         } else {
-          versionHtml = `<span class="version-badge">v${validator.version}</span>`;
+          versionHtml = `<span class="version-badge">v${escHtml(validator.version)}</span>`;
         }
       }
 
@@ -17861,6 +17949,9 @@
           <div class="deleg-section" data-vote="${escHtml(validator.voteAccount)}"></div>
 
           <div class="validator-action-buttons">
+            <button class="validator-expand-btn share-btn" onclick="shareValidator('${escAttrJs(validator.voteAccount)}', '${escAttrJs(validator.name)}', this)" title="Copy a link to this validator">
+              <span>🔗 Share</span>
+            </button>
             <button class="validator-expand-btn stake-details-btn" onclick="toggleStakeDetails('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.activatedStake}, ${validator.commission}, this)">
               <span>Stake Details</span>
               <span class="arrow">▼</span>
@@ -18010,6 +18101,7 @@
           if (isStale()) return;
           if (!validator) { showError(); return; }
           container.innerHTML = renderValidatorCard(validator, true, false);
+          if (typeof Router !== 'undefined') Router.set('/lookup/' + validator.voteAccount);
           document.getElementById('resultCount').textContent = '1';
           document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
           fetchLastEpochForCards([validator]);
@@ -18040,6 +18132,7 @@
           if (isStale()) return;
           if (!info) { showError(); return; }
           container.innerHTML = renderValidatorCard(info, true, false);
+          if (typeof Router !== 'undefined' && info.voteAccount) Router.set('/lookup/' + info.voteAccount);
           document.getElementById('resultCount').textContent = '1';
           document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
           fetchLastEpochForCards([info]);
@@ -19445,6 +19538,7 @@
     
     function switchLeaderboard(category) {
       currentLeaderboard = category;
+      if (typeof Router !== 'undefined') Router.set('/leaderboard/' + category);
       
       // Update active button
       document.querySelectorAll('.leaderboard-cat-btn').forEach(btn => btn.classList.remove('active'));
@@ -20270,6 +20364,10 @@
 
     function renderComparison() {
       updateCompareCount();
+      if (typeof Router !== 'undefined') {
+        const votes = compareValidators.map(v => v.votePubkey).filter(Boolean);
+        Router.set(votes.length ? '/compare/' + votes.join(',') : '/compare');
+      }
       const slotsContainer = document.getElementById('compareSlots');
       const tableContainer = document.getElementById('compareTableContainer');
       const emptyState = document.getElementById('compareEmptyState');
@@ -20506,6 +20604,117 @@
     // Modify the existing selectValidatorForSearch to handle compare mode
     const originalSelectValidatorForSearch = typeof selectValidatorForSearch === 'function' ? selectValidatorForSearch : null;
     
+
+    // ═══════════════════════════════════════════════════════
+    // ROUTER — hash routes so every tab / validator / leaderboard /
+    // comparison is linkable and back/forward work.
+    //   #/lookup/<vote>          (alias #/v/<vote>)
+    //   #/leaderboard/<category>
+    //   #/compare/<vote>,<vote>,…
+    //   #/calculators/<staking|compound|unstaking|breakeven>
+    //   #/live  #/terminal  #/datacenter  #/delegation  #/globe
+    // Tab handlers call Router.set(); hashchange/popstate call
+    // Router.apply(), which replays the route through the same handlers
+    // with `applying` set so they don't push it back.
+    // ═══════════════════════════════════════════════════════
+    const Router = (function () {
+      const TAB_TO_ROUTE = { skipmonitor: '/live', vtterminal: '/terminal', lookup: '/lookup', portfolio: '/datacenter',
+                             leaderboard: '/leaderboard', compare: '/compare', calculators: '/calculators', delegation: '/delegation', map: '/globe' };
+      const ROUTE_TO_TAB = Object.fromEntries(Object.entries(TAB_TO_ROUTE).map(([t, r]) => [r.slice(1), t]));
+      const PK = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+      let applying = false;
+      let started = false;
+
+      function current() { return decodeURIComponent((location.hash || '').replace(/^#/, '')); }
+
+      function set(route) {
+        // Ignore route pushes until start() has applied the initial deep
+        // link — otherwise a render during page load would clobber it.
+        if (applying || !started) return;
+        const next = '#' + route;
+        if (location.hash === next) return;
+        try { history.pushState(null, '', next); } catch (e) { location.hash = route; }
+      }
+
+      function onTab(tab) {
+        if (applying || !started) return;
+        const base = TAB_TO_ROUTE[tab];
+        if (!base) return;
+        // Don't clobber a more specific route for the same tab (e.g. we are
+        // already at #/lookup/<vote> and lookupValidator just switched tabs).
+        if (current().startsWith(base + '/')) return;
+        set(base);
+      }
+
+      function apply(route) {
+        const parts = route.replace(/^\/+/, '').split('/').filter(Boolean);
+        if (!parts.length) return false;
+        let [head, ...rest] = parts;
+        if (head === 'v') head = 'lookup';
+        const tab = ROUTE_TO_TAB[head];
+        if (!tab) return false;
+        applying = true;
+        try {
+          if (tab === 'lookup' && rest[0] && PK.test(rest[0])) {
+            lookupValidator(rest[0]);
+          } else if (tab === 'leaderboard' && rest[0]) {
+            switchTab('leaderboard');
+            const btn = document.querySelector(`.leaderboard-cat-btn[onclick="switchLeaderboard('${rest[0]}')"]`);
+            if (btn) switchLeaderboard(rest[0]);
+          } else if (tab === 'compare' && rest[0]) {
+            switchTab('compare');
+            const votes = rest[0].split(',').filter(v => PK.test(v)).slice(0, 4);
+            const have = new Set(compareValidators.map(v => v.votePubkey));
+            (async () => {
+              for (const v of votes) { if (!have.has(v)) { try { await addToComparison(v); } catch (e) { console.warn('[router] compare add failed', v, e); } } }
+            })();
+          } else if (tab === 'calculators' && rest[0]) {
+            switchTab('calculators');
+            const btn = document.querySelector(`.calc-nav-btn[onclick="switchCalculator('${rest[0]}')"]`);
+            if (btn) switchCalculator(rest[0]);
+          } else {
+            switchTab(tab);
+          }
+        } finally { applying = false; }
+        return true;
+      }
+
+      function start() {
+        if (started) return; started = true;
+        window.addEventListener('hashchange', () => apply(current()));
+        window.addEventListener('popstate', () => apply(current()));
+        const r = current();
+        if (r) apply(r);
+      }
+
+      function link(route) { return location.origin + location.pathname + '#' + route; }
+
+      return { set, onTab, apply, start, link, get applying() { return applying; } };
+    })();
+
+    // Share a validator: native share sheet on phones, clipboard elsewhere.
+    async function shareValidator(voteAccount, name, buttonEl) {
+      const url = Router.link('/lookup/' + voteAccount);
+      const title = (name ? name + ' — ' : '') + 'X1 Validator HQ';
+      try {
+        if (navigator.share && window.matchMedia && window.matchMedia('(pointer: coarse)').matches) {
+          await navigator.share({ title, url });
+          return;
+        }
+        await navigator.clipboard.writeText(url);
+        if (typeof showToast === 'function') showToast('Link copied: ' + url);
+        if (buttonEl) {
+          const orig = buttonEl.innerHTML;
+          buttonEl.innerHTML = '<span>✓ Copied</span>';
+          setTimeout(() => { buttonEl.innerHTML = orig; }, 1500);
+        }
+      } catch (e) {
+        if (e && e.name === 'AbortError') return;   // user dismissed the share sheet
+        console.warn('[share] failed', e);
+        window.prompt('Copy this link:', url);
+      }
+    }
+
     function switchTab(tab) {
       // Move the network stats + epoch panel into the Validator Terminal
       // tab's slot (between vt-head and the KPI grid) when that tab is
@@ -20611,6 +20820,11 @@
         document.body.classList.remove('active-vtterminal');
         if (typeof window.vtClose === 'function') window.vtClose();
       }
+
+      // Keep the URL in sync so every tab is linkable (Router below). Tabs
+      // with their own sub-state (lookup, leaderboard, compare, calculators)
+      // push a more specific route from their own handlers.
+      if (typeof Router !== 'undefined') Router.onTab(tab);
     }
 
     // =========================================
@@ -20622,6 +20836,7 @@
     let currentEpochData = null;
     
     function switchCalculator(calc) {
+      if (typeof Router !== 'undefined') Router.set('/calculators/' + calc);
       // Update nav buttons
       document.querySelectorAll('.calc-nav-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelector(`.calc-nav-btn[onclick="switchCalculator('${calc}')"]`).classList.add('active');
@@ -31692,6 +31907,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // Then load network stats
       await loadNetworkStats();
       updatePortfolioCount();
+
+      // Deep link (#/lookup/<vote>, #/leaderboard/<cat>, #/compare/a,b, …)
+      if (typeof Router !== 'undefined') Router.start();
       
       // Initialize map in background (don't await - let it load independently)
       setTimeout(() => {
@@ -35404,6 +35622,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         function syncToolsHeight() {
           const h = Math.ceil(tools.getBoundingClientRect().height) || 48;
           document.documentElement.style.setProperty('--vt-tools-h', h + 'px');
+          // Width of the first column, so the second sticky column pins right after it.
+          const th1 = document.querySelector('#vtTbl thead th');
+          if (th1) document.documentElement.style.setProperty('--vt-col1-w', Math.ceil(th1.getBoundingClientRect().width) + 'px');
         }
         syncToolsHeight();
         window.addEventListener('resize', syncToolsHeight);
@@ -35627,7 +35848,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
         }, { passive: true });
 
         // Auto-focus search shortly after render
-        setTimeout(() => { try { search.focus(); } catch (e) {} }, 50);
+        // Desktop only — on touch devices this popped the keyboard every time
+        // the tab opened.
+        if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+          setTimeout(() => { try { search.focus(); } catch (e) {} }, 50);
+        }
       }
 
       // ── Auto-refresh timer ────────────────────────────
@@ -35869,7 +36094,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const delegated = Number(e.ds || 0), transient = Number(e.tr || 0);
         let status, statusClass, statusText;
         if (e.st === 'Rejected') { status = 'rejected'; statusClass = 'bad'; statusText = 'Rejected'; }
-        else if (fc.size > 0 || failing > 0) { status = 'failing'; statusClass = 'warn'; statusText = 'Not meeting ' + (fc.size || failing) + ' criteri' + ((fc.size || failing) === 1 ? 'on' : 'a'); }
+        else if (fc.size > 0 || failing > 0) {
+          // The Foundation's list can stop at the first failure (a validator
+          // with 2 XNT self-stake is flagged only for minSelfStake even when
+          // it is also delinquent); count what the checklist below shows so
+          // the headline never contradicts the rows.
+          const nFail = Math.max(fc.size, failing);
+          status = 'failing'; statusClass = 'warn'; statusText = 'Not meeting ' + nFail + ' criteri' + (nFail === 1 ? 'on' : 'a');
+        }
         else if (delegated > 0) { status = 'delegated'; statusClass = 'ok'; statusText = 'Approved · receiving stake'; }
         else { status = 'approved'; statusClass = 'ok'; statusText = 'Approved · awaiting delegation'; }
         return { entry: e, status, statusClass, statusText, rows, delegated, transient, strikes: e.rs || 0, multiplier: e.mb };
