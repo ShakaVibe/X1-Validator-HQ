@@ -61,7 +61,7 @@
                    code, so 'https:' here is low-risk; the meaningful protection
                    (no data exfiltration) is enforced by the tight connect-src.
          connect : self + X1 RPC (https + wss) + api.x1.xyz + api.xdex.xyz
-                   + ipwho.is + api.github.com
+                   + ipwho.is
                    + unpkg (world-atlas country outlines for the globe).
                    NOTE: wss://rpc.mainnet.x1.xyz is required — @solana/web3.js
                    opens a WebSocket to the RPC for signature/account
@@ -84,7 +84,7 @@
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https:;
-    connect-src 'self' https://rpc.mainnet.x1.xyz wss://rpc.mainnet.x1.xyz https://api.x1.xyz https://api.xdex.xyz https://ipwho.is https://api.github.com https://unpkg.com;
+    connect-src 'self' https://rpc.mainnet.x1.xyz wss://rpc.mainnet.x1.xyz https://api.x1.xyz https://api.xdex.xyz https://ipwho.is https://unpkg.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
@@ -114,8 +114,9 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%2300d4ff' width='32' height='32' rx='6'/><text x='50%' y='55%' font-family='Arial' font-size='18' font-weight='bold' fill='%23001029' text-anchor='middle' dominant-baseline='middle'>X1</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <!-- Validator globe: globe.gl (three.js) is lazy-loaded from unpkg by
        loadGlobeLibrary() the first time the map initialises, so the ~1.9MB
        bundle never blocks first paint. Country outlines come from the
@@ -131,7 +132,7 @@
 
        If you ever replace this file, you MUST recompute the integrity hash below
        (sha384 of the file, base64-encoded) or the browser will refuse to load it. -->
-  <script src="vendor/solana-web3.js-1.98.4.iife.min.js"
+  <script defer src="vendor/solana-web3.js-1.98.4.iife.min.js"
           integrity="sha384-I45YF+S0YGWIolUyTksLk9TNtTqaDgZg8e6T1OoBoJvvFmphqYNIPZw3Kl0TkZNN"
           crossorigin="anonymous"></script>
   <style>
@@ -3349,6 +3350,7 @@
     .rb-open-link:hover {
       text-decoration: underline;
     }
+    a.rb-open-link { text-decoration: none; }
 
     /* ===== Reward Breakdown modal ===== */
     .rb-loading,
@@ -9816,6 +9818,26 @@
       border-radius: 10px;
       margin-top: 0.75rem;
     }
+    .ver-strip {
+      margin-top: 0.75rem;
+      padding: 0.6rem 1rem 0.7rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .ver-strip-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .ver-strip-label { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
+    .ver-strip-summary { font-size: 0.8rem; color: var(--text-secondary); }
+    .ver-strip-summary b { color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+    .ver-behind { color: var(--warning); }
+    .ver-bar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: var(--bg-secondary); gap: 1px; }
+    .ver-seg { height: 100%; min-width: 2px; }
+    .ver-legend { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; margin-top: 0.5rem; font-size: 0.74rem; color: var(--text-secondary); }
+    .ver-leg { display: inline-flex; align-items: center; gap: 0.35rem; font-family: 'JetBrains Mono', monospace; }
+    .ver-leg i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+    .ver-leg b { color: var(--success); font-weight: 600; }
+    .ver-leg em { color: #a78bfa; font-style: normal; }
+    .ver-leg-n { color: var(--text-dim); }
     .tps-strip-head {
       display: flex;
       align-items: center;
@@ -11084,7 +11106,9 @@
        visible), so the whole site rendered zoomed-out. Scroll the table inside
        its own container instead; the first two columns stay pinned. */
     @media (max-width: 1500px) {
-      .vt-tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+      /* The terminal's own rule (.vt-tbl-wrap { overflow: visible }) comes later
+         in the cascade, so this one needs higher specificity. */
+      .vt-overlay .vt-tbl-wrap, #vtContent .vt-tbl-wrap { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
       table.vt-data th:nth-child(1), table.vt-data td:nth-child(1) { position: sticky; left: 0; z-index: 2; background: var(--bg-card); }
       table.vt-data th:nth-child(2), table.vt-data td:nth-child(2) { position: sticky; left: var(--vt-col1-w, 36px); z-index: 2; background: var(--bg-card); box-shadow: 4px 0 8px -4px rgba(0,0,0,0.5); }
       .vt-tip { min-width: min(460px, calc(100vw - 2rem)); max-width: calc(100vw - 2rem); }
@@ -11138,35 +11162,31 @@
       .network-stat-label { font-size: 0.58rem; }
     }
 
-    /* ═══ Delegation Program (card section + tab) ═══ */
-    .deleg-section { margin: 0.9rem 0 0.25rem; }
-    .deleg-box {
-      border: 1px solid var(--border); border-radius: 12px; background: var(--bg-secondary);
-      padding: 0.8rem 1rem;
-    }
-    .deleg-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.55rem; }
-    .deleg-title { font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
-    .deleg-title a { color: var(--accent-cyan); text-decoration: none; font-weight: 500; text-transform: none; letter-spacing: 0; margin-left: 0.5rem; font-size: 0.75rem; }
-    .deleg-title a:hover { text-decoration: underline; }
-    .deleg-status { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0.65rem; border-radius: 999px; white-space: nowrap; }
+    /* ═══ Delegation Program (stat tile + modal + tab) ═══ */
+    .deleg-status { display: inline-flex; align-items: center; font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; white-space: nowrap; }
     .deleg-status.ok   { background: rgba(0, 230, 118, 0.12); color: var(--success); }
     .deleg-status.warn { background: rgba(255, 171, 0, 0.14); color: var(--warning); }
     .deleg-status.bad  { background: rgba(255, 82, 82, 0.14); color: var(--danger); }
     .deleg-status.na   { background: rgba(138, 143, 152, 0.14); color: var(--text-secondary); }
-    .deleg-amount { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-primary); }
-    .deleg-amount small { color: var(--text-secondary); font-family: inherit; }
-    .deleg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.4rem 0.9rem; }
-    .deleg-row { display: grid; grid-template-columns: 18px 1fr; gap: 0.45rem; align-items: start; font-size: 0.8rem; line-height: 1.35; }
-    .deleg-row .ic { font-weight: 700; text-align: center; }
-    .deleg-row.ok .ic { color: var(--success); }
-    .deleg-row.bad .ic { color: var(--danger); }
-    .deleg-row.na .ic { color: var(--text-dim); }
-    .deleg-row .lbl { color: var(--text-secondary); }
-    .deleg-row .val { color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
-    .deleg-row.bad .val { color: var(--danger); }
-    .deleg-row .hint { color: var(--warning); font-size: 0.74rem; display: block; }
-    .deleg-foot { margin-top: 0.55rem; font-size: 0.7rem; color: var(--text-dim); display: flex; gap: 0.75rem; flex-wrap: wrap; }
-    .deleg-strikes { color: var(--warning); font-size: 0.75rem; margin-top: 0.4rem; }
+    /* modal */
+    .dm-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+    .dm-amount { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--text-primary); }
+    .dm-amount small { color: var(--text-secondary); font-size: 0.72rem; font-family: 'Space Grotesk', sans-serif; margin-left: 0.3rem; }
+    .dm-rows { display: flex; flex-direction: column; gap: 0.35rem; }
+    .dm-row { display: grid; grid-template-columns: 22px 1fr auto; gap: 0.5rem; align-items: baseline; padding: 0.5rem 0.7rem; border-radius: 8px; background: var(--bg-secondary); font-size: 0.82rem; }
+    .dm-row .ic { font-weight: 700; text-align: center; }
+    .dm-row.ok .ic { color: var(--success); }
+    .dm-row.bad .ic { color: var(--danger); }
+    .dm-row.na .ic { color: var(--text-dim); }
+    .dm-row .lbl { color: var(--text-primary); }
+    .dm-row .val { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text-secondary); text-align: right; white-space: nowrap; }
+    .dm-row.bad .val { color: var(--danger); }
+    .dm-row .hint { grid-column: 2 / 4; color: var(--warning); font-size: 0.74rem; }
+    .dm-strikes { margin-top: 0.7rem; padding: 0.5rem 0.7rem; border-radius: 8px; background: rgba(255, 171, 0, 0.08); color: var(--warning); font-size: 0.78rem; }
+    .dm-foot { margin-top: 0.9rem; font-size: 0.72rem; color: var(--text-dim); line-height: 1.5; }
+    .dm-foot a { color: var(--accent-cyan); text-decoration: none; }
+    .dm-foot a:hover { text-decoration: underline; }
+    .dm-empty { padding: 1rem 0; color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; }
 
     /* Tab */
     .deleg-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; margin: 0 0 1.2rem; }
@@ -12830,6 +12850,8 @@
           </div>
         </div>
 
+        <div class="ver-strip" id="verStrip" hidden></div>
+
         <div class="leader-schedule-section">
           <div class="leader-current" id="currentLeaderCard">
             <div class="leader-logo" id="currentLeaderLogo">?</div>
@@ -13155,6 +13177,24 @@
       <div class="modal-body" id="rewardBreakdownBody">
         <div class="rb-loading"><div class="loading-spinner-small"></div><span>Computing reward distribution…</span></div>
       </div>
+    </div>
+  </div>
+
+  <!-- Delegation Program modal — opened from the Delegation stat tile on a
+       validator card; body rendered by the DELEGATION PROGRAM module. -->
+  <div class="modal-overlay" id="delegationModal" onclick="if(event.target===this)closeDelegationModal()">
+    <div class="modal" style="max-width: 560px;">
+      <div class="modal-header">
+        <div class="modal-brand-head">
+          <div class="x1-logo-brand"><span class="x-char">X</span><span class="one-char">1</span></div>
+          <div class="brand-title">
+            <div class="brand-title-main">Delegation Program</div>
+            <div class="brand-title-sub" id="delegationModalSub">X1 Foundation stake delegation · official status</div>
+          </div>
+        </div>
+        <button class="modal-close" aria-label="Close" onclick="closeDelegationModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="delegationModalBody"></div>
     </div>
   </div>
 
@@ -14992,6 +15032,9 @@
     function isValidPubkey(addr) {
       const v = String(addr == null ? '' : addr).trim();
       if (v.length < 32 || v.length > 44) return false; // cheap pre-filter
+      // web3.js is loaded with `defer`; until it arrives, accept the base58
+      // shape (32–44 chars, no 0/O/I/l) — the on-curve check runs once it is here.
+      if (typeof solanaWeb3 === 'undefined') return /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v);
       try {
         // Throws on invalid base58 or wrong byte length.
         const pk = new solanaWeb3.PublicKey(v);
@@ -15894,6 +15937,97 @@
       if (!version || !window.latestValidatorVersion) return false;
       return compareVersions(version, window.latestValidatorVersion) < 0;
     }
+
+    // Highest semver run by >= MIN_NODES gossip nodes (ignores one-off test
+    // builds). `serverHint` is scores.json's latestVersion, computed the same
+    // way an hour ago on the Action — use it if it is newer than what this
+    // browser can see (e.g. a partial getClusterNodes response).
+    function computeLatestVersion(versionMap, serverHint) {
+      const MIN_NODES = 3;
+      const counts = {};
+      Object.values(versionMap || {}).forEach(v => {
+        if (v && /^\d+\.\d+\.\d+$/.test(v)) counts[v] = (counts[v] || 0) + 1;
+      });
+      let latest = null;
+      for (const [ver, n] of Object.entries(counts)) {
+        if (n >= MIN_NODES && (!latest || compareVersions(ver, latest) > 0)) latest = ver;
+      }
+      if (serverHint && /^\d+\.\d+\.\d+$/.test(serverHint) && (!latest || compareVersions(serverHint, latest) > 0)) latest = serverHint;
+      // Last resort: the most common version among peers.
+      if (!latest) {
+        const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+        latest = top ? top[0] : null;
+      }
+      return latest;
+    }
+
+    // { latest, totalNodes, totalStake, rows: [{version, nodes, validators, stake, stakePct, behind}] }
+    function buildVersionStats(validators, clusterNodes, latest) {
+      const byVer = {};
+      let totalStake = 0;
+      (validators || []).forEach(v => {
+        const ver = v.version || 'unknown';
+        const row = byVer[ver] || (byVer[ver] = { version: ver, nodes: 0, validators: 0, stake: 0, delinquent: 0 });
+        row.validators++;
+        row.stake += Number(v.activatedStake) || 0;
+        if (v.delinquent) row.delinquent++;
+        totalStake += Number(v.activatedStake) || 0;
+      });
+      // gossip nodes (includes RPC/non-voting nodes) — informational count
+      (clusterNodes || []).forEach(n => {
+        const ver = n.version || 'unknown';
+        const row = byVer[ver] || (byVer[ver] = { version: ver, nodes: 0, validators: 0, stake: 0, delinquent: 0 });
+        row.nodes++;
+      });
+      const rows = Object.values(byVer).map(r => ({
+        ...r,
+        stakePct: totalStake ? (r.stake / totalStake) * 100 : 0,
+        behind: r.version !== 'unknown' && latest ? compareVersions(r.version, latest) < 0 : null,
+        ahead:  r.version !== 'unknown' && latest ? compareVersions(r.version, latest) > 0 : null,
+      })).sort((a, b) => b.stake - a.stake || b.validators - a.validators);
+      const onLatest = rows.find(r => r.version === latest);
+      return {
+        latest,
+        generatedAt: Date.now(),
+        totalStake,
+        totalValidators: (validators || []).length,
+        totalNodes: (clusterNodes || []).length,
+        latestStakePct: onLatest ? onLatest.stakePct : 0,
+        latestValidators: onLatest ? onLatest.validators : 0,
+        behindValidators: rows.filter(r => r.behind).reduce((s, r) => s + r.validators, 0),
+        behindStakePct: rows.filter(r => r.behind).reduce((s, r) => s + r.stakePct, 0),
+        rows,
+      };
+    }
+
+    // Network tab strip: stake-weighted adoption bar + legend.
+    function renderVersionStrip() {
+      const el = document.getElementById('verStrip');
+      const vs = window.versionStats;
+      if (!el || !vs || !vs.rows.length) return;
+      const palette = ['var(--success)', 'var(--accent-cyan)', 'var(--warning)', 'var(--danger)', '#a78bfa', '#f472b6', '#94a3b8'];
+      const shown = vs.rows.filter(r => r.stakePct >= 0.05 || r.validators >= 3).slice(0, 7);
+      const other = vs.rows.filter(r => !shown.includes(r));
+      const otherStake = other.reduce((s, r) => s + r.stakePct, 0), otherVals = other.reduce((s, r) => s + r.validators, 0);
+      const colorFor = (r, i) => r.version === vs.latest ? 'var(--success)' : (r.ahead ? '#a78bfa' : (r.version === 'unknown' ? '#94a3b8' : palette[Math.min(i + 2, palette.length - 1)]));
+      const segs = shown.map((r, i) => `<div class="ver-seg" style="width:${Math.max(r.stakePct, 0.4)}%;background:${colorFor(r, i)}" title="v${escHtml(r.version)} · ${r.validators} validators · ${r.stakePct.toFixed(1)}% of stake"></div>`).join('')
+        + (otherVals ? `<div class="ver-seg" style="width:${Math.max(otherStake, 0.4)}%;background:#475569" title="${otherVals} others · ${otherStake.toFixed(1)}% of stake"></div>` : '');
+      const legend = shown.map((r, i) => `<span class="ver-leg"><i style="background:${colorFor(r, i)}"></i>v${escHtml(r.version)}${r.version === vs.latest ? ' <b>latest</b>' : (r.ahead ? ' <em>pre-release</em>' : '')} <span class="ver-leg-n">${r.validators} · ${r.stakePct.toFixed(1)}%</span></span>`).join('')
+        + (otherVals ? `<span class="ver-leg"><i style="background:#475569"></i>${other.length} other${other.length === 1 ? '' : 's'} <span class="ver-leg-n">${otherVals} · ${otherStake.toFixed(1)}%</span></span>` : '');
+      const minDeleg = (window.delegationConfig && window.delegationConfig.minValidatorVersion) || null;
+      el.innerHTML = `
+        <div class="ver-strip-head">
+          <span class="ver-strip-label">Client versions · Tachyon</span>
+          <span class="ver-strip-summary">
+            <b>v${escHtml(vs.latest || '?')}</b> latest in use ·
+            <span class="${vs.behindValidators ? 'ver-behind' : ''}">${vs.behindValidators} validator${vs.behindValidators === 1 ? '' : 's'} behind (${vs.behindStakePct.toFixed(1)}% of stake)</span>
+            ${minDeleg ? ` · delegation minimum <b>v${escHtml(minDeleg)}</b>` : ''}
+          </span>
+        </div>
+        <div class="ver-bar" role="img" aria-label="Share of stake by client version">${segs}</div>
+        <div class="ver-legend">${legend}</div>`;
+      el.hidden = false;
+    }
     
     // Get version status with gradient scoring
     function getVersionStatus(version) {
@@ -16114,45 +16248,14 @@
           }
         });
 
-        // Determine the latest validator version from GitHub releases (authoritative source)
-        // Using /releases instead of /tags to avoid picking up upstream anza-xyz/agave tags
-        // which are higher version numbers but not actual X1 releases
-        try {
-          const ghResp = await fetch('https://api.github.com/repos/x1-labs/tachyon/releases?per_page=10');
-          if (ghResp.ok) {
-            const releases = await ghResp.json();
-            const versions = releases
-              .filter(r => !r.prerelease && !r.draft)
-              .map(r => r.tag_name.replace(/^v/, ''))
-              .filter(v => /^\d+\.\d+\.\d+$/.test(v));
-            if (versions.length > 0) {
-              window.latestValidatorVersion = versions.sort(compareVersions).pop();
-            }
-          }
-        } catch (e) {
-          console.warn('Could not fetch latest version from GitHub releases, falling back to cluster peers:', e);
-        }
-
-        // Minimum known version floor — update this whenever a new release ships
-        // so the site never treats an older version as "current" even if GitHub lags
-        const MINIMUM_KNOWN_VERSION = '2.2.20';
-        if (!window.latestValidatorVersion || compareVersions(window.latestValidatorVersion, MINIMUM_KNOWN_VERSION) < 0) {
-          window.latestValidatorVersion = MINIMUM_KNOWN_VERSION;
-        }
-
-        // Fallback: derive from cluster peers if GitHub fetch failed
-        // Use the most common version (mode) among peers, not the highest,
-        // to avoid a single rogue node with a bad version string flagging everyone else
-        if (!window.latestValidatorVersion) {
-          const allVersions = Object.values(versionMap).filter(v => v);
-          if (allVersions.length > 0) {
-            const versionCounts = {};
-            allVersions.forEach(v => { versionCounts[v] = (versionCounts[v] || 0) + 1; });
-            // Use the most common version as the baseline "latest"
-            window.latestValidatorVersion = Object.entries(versionCounts)
-              .sort((a, b) => b[1] - a[1])[0][0];
-          }
-        }
+        // Latest validator version — from the network itself, not GitHub.
+        // Tachyon (x1-labs/tachyon) publishes no GitHub releases, so the old
+        // releases call always failed and a hard-coded floor (2.2.20) became
+        // "latest" while the cluster ran 3.1.14 — nobody was ever flagged as
+        // outdated. Rule (same as scripts/compute-scores.js): the highest
+        // semver run by at least 3 gossip nodes. The hourly scores.json
+        // carries the server's answer too; prefer whichever is newer.
+        window.latestValidatorVersion = computeLatestVersion(versionMap, window.canonicalScores && window.canonicalScores.latestVersion);
 
         const currentValidators = voteAccounts.current || [];
         const delinquentValidators = voteAccounts.delinquent || [];
@@ -16204,6 +16307,11 @@
             version: versionMap[v.nodePubkey] || null
           };
         });
+
+        // Version adoption (nodes + stake per version) for the tracker strip
+        // and the "Update available" badge.
+        window.versionStats = buildVersionStats(allValidators, clusterNodes, window.latestValidatorVersion);
+        renderVersionStrip();
 
         // Sort by stake descending to get ranks
         allValidators.sort((a, b) => b.activatedStake - a.activatedStake);
@@ -17721,7 +17829,7 @@
       if (validator.version) {
         const outdated = isVersionOutdated(validator.version);
         if (outdated) {
-          versionHtml = `<span class="version-badge outdated">v${escHtml(validator.version)}</span><span class="version-update-warning" title="Latest version: v${window.latestValidatorVersion}">⚠️ Update Available</span>`;
+          versionHtml = `<span class="version-badge outdated">v${escHtml(validator.version)}</span><span class="version-update-warning" title="Latest version in use: v${escHtml(window.latestValidatorVersion)}${window.versionStats ? ' (' + window.versionStats.latestStakePct.toFixed(0) + '% of stake)' : ''}">⚠️ Update to v${escHtml(window.latestValidatorVersion)}</span>`;
         } else {
           versionHtml = `<span class="version-badge">v${escHtml(validator.version)}</span>`;
         }
@@ -17934,6 +18042,12 @@
               <div class="stat-value ${skipColor}">${skipRateDisplay}</div>
               <div class="stat-subtext">${skipLabel}</div>
             </div>
+
+            <div class="stat-item deleg-section" data-vote="${escHtml(validator.voteAccount)}" title="X1 Foundation Delegation Program — official status and delegated stake. Click Details for the criteria checklist.">
+              <div class="stat-label">Delegation</div>
+              <div class="stat-value" style="color: var(--text-dim);">…</div>
+              <div class="stat-subtext">Program</div>
+            </div>
             
             <div class="stat-item perf-score-wrapper" onclick="openPerfExplainerModal(event, '${validator.voteAccount}')">
               <div class="stat-label">Performance (7D) <span class="perf-info-icon">?</span></div>
@@ -17945,8 +18059,6 @@
               </div>
             </div>
           </div>
-
-          <div class="deleg-section" data-vote="${escHtml(validator.voteAccount)}"></div>
 
           <div class="validator-action-buttons">
             <button class="validator-expand-btn share-btn" onclick="shareValidator('${escAttrJs(validator.voteAccount)}', '${escAttrJs(validator.name)}', this)" title="Copy a link to this validator">
@@ -31355,6 +31467,20 @@ Please give me the diagnostic commands to run on my server so you can help me id
       if (tpsFetching) return;
       tpsFetching = true;
       try {
+        // Off the Network tab only the top-bar number is visible: poll one
+        // sample (~100 B) instead of 720 (~60 KB). Opening the tab triggers a
+        // full load (SkipMonitor.start → loadTpsSamples).
+        const wantFull = document.body.classList.contains('active-skipmonitor') || !tpsSamplesCache || !tpsSamplesCache.length;
+        if (!wantFull) {
+          const one = await rpcCall('getRecentPerformanceSamples', [1]);
+          const s0 = Array.isArray(one) && one[0];
+          if (s0 && s0.samplePeriodSecs > 0) {
+            const latest = s0.numTransactions / s0.samplePeriodSecs;
+            const topEl = document.getElementById('networkTps');
+            if (topEl) topEl.textContent = (typeof formatCompact === 'function') ? formatCompact(Math.round(latest)) : Math.round(latest).toLocaleString();
+          }
+          return;
+        }
         // Always fetch the full 720 samples (12h) on every poll. This
         // ensures the 12-hour view always reflects the RPC's current
         // authoritative state, so any client querying at the same moment
@@ -31920,10 +32046,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
         });
       }, 500);
       
-      // Load leader schedule and TPS
-      loadLeaderSchedule();
-      // First TPS load does a full 720-sample backfill; subsequent polls
-      // only pull 1 sample (the latest) and shift it into the cache.
+      // The multi-MB leader schedule is loaded on demand (Network tab,
+      // next-leader chips, Slot Explorer all call loadLeaderSchedule() when
+      // they need it) — not for every visitor at page load.
+
+      // TPS: full 720-sample history is only needed for the Network tab's
+      // sparkline; other tabs just need the latest number for the top bar.
       loadTpsSamples();
 
       // Leader card only exists on the Network Live tab, so don't poll when
@@ -34989,7 +35117,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
     // Close on Escape
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeSlotModal();
+      if (e.key === 'Escape') { closeSlotModal(); if (typeof closeDelegationModal === 'function') closeDelegationModal(); }
     });
 
     init();
@@ -36019,6 +36147,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
             const d = await r.json();
             if (!d || d.version !== 1 || !d.validators) throw new Error('unexpected format');
             _doc = d; _err = null;
+            window.delegationConfig = d.config;
+            if (typeof renderVersionStrip === 'function') renderVersionStrip();
             return d;
           } catch (e) {
             _err = e; console.warn('[delegation] snapshot unavailable:', e.message);
@@ -36041,7 +36171,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const add = (key, ok, label, value, hint) => rows.push({ key, ok, label, value, hint });
 
         // Active (not delinquent)
-        add('delinquent', !fc.has('delinquent') && !e.dq, 'Active validator', e.dq ? 'delinquent' : 'voting', e.dq ? 'Delinquent validators are removed immediately.' : '');
+        add('delinquent', !fc.has('delinquent') && !e.dq, 'Active validator',
+            e.dq ? 'delinquent' : (fc.has('delinquent') ? 'delinquent recently' : 'voting'),
+            e.dq ? 'Delinquent validators are removed immediately.' : (fc.has('delinquent') ? 'Flagged delinquent by the Foundation in a recent check' : ''));
 
         // Self-stake
         const minSelf = Number(c.minSelfStake || 0), self = Number(e.ss || 0);
@@ -36110,41 +36242,73 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // ── Card section ──────────────────────────────────────────────
       function renderCard(el) {
         const vote = el.dataset.vote; if (!vote) return;
+        const valueEl = el.querySelector('.stat-value'), subEl = el.querySelector('.stat-subtext');
+        if (!valueEl || !subEl) return;
         if (!_doc) {
-          el.innerHTML = _err
-            ? '<div class="deleg-box"><div class="deleg-head"><span class="deleg-title">Delegation Program</span><span class="deleg-status na">status unavailable</span></div></div>'
-            : '';
+          valueEl.textContent = _err ? 'n/a' : '…'; valueEl.style.color = 'var(--text-dim)';
+          subEl.textContent = _err ? 'status unavailable' : 'Program';
           return;
         }
         const r = evaluate(vote);
+        const details = '<span class="rb-open-link" onclick="event.stopPropagation();openDelegationModal(\'' + esc(vote) + '\')">Details</span>';
+        let value, color, sub;
+        if (r.status === 'none')          { value = '—';            color = 'var(--text-dim)'; sub = 'Not enrolled'; }
+        else if (r.status === 'rejected') { value = 'Rejected';     color = 'var(--danger)';   sub = Math.max((r.entry.fc || []).length, 1) + ' unmet'; }
+        else if (r.status === 'failing')  { const n = Math.max((r.entry.fc || []).length, r.rows.filter(x => x.ok === false).length); value = 'Failing'; color = 'var(--warning)'; sub = n + ' criteri' + (n === 1 ? 'on' : 'a') + ' unmet'; }
+        else if (r.delegated > 0)         { value = xnt(r.delegated); color = 'var(--success)'; sub = 'XNT · Approved'; }
+        else                              { value = 'Approved';     color = 'var(--success)';   sub = 'awaiting delegation'; }
+        valueEl.textContent = value; valueEl.style.color = color;
+        valueEl.style.fontSize = (value.length > 9 && !/^[\d,]+$/.test(value)) ? '1.05rem' : '';
+        subEl.outerHTML = '<div class="stat-sub-row"><span class="stat-subtext">' + esc(sub) + '</span>' + (r.status === 'none' ? '<a class="rb-open-link" href="' + PORTAL + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Enrol ↗</a>' : details) + '</div>';
+      }
+
+      function closeDelegationModalImpl() {
+        const m = document.getElementById('delegationModal'); if (m) m.style.display = 'none';
+      }
+
+      async function openDelegationModalImpl(vote) {
+        const m = document.getElementById('delegationModal'), body = document.getElementById('delegationModalBody');
+        if (!m || !body) return;
+        m.style.display = 'flex';
+        body.innerHTML = '<div class="rb-loading"><div class="loading-spinner-small"></div><span>Loading official status…</span></div>';
+        try { await load(); } catch (e) {}
+        if (!_doc) { body.innerHTML = '<div class="dm-empty">The delegation snapshot is not available right now. <a href="' + PORTAL + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent-cyan)">Open the Foundation portal ↗</a></div>'; return; }
+        const r = evaluate(vote);
+        const name = (r.entry && r.entry.name) || (typeof allValidators !== 'undefined' && (allValidators.find(v => v.votePubkey === vote) || {}).name) || short(vote);
+        const sub = document.getElementById('delegationModalSub'); if (sub) sub.textContent = name;
         const stale = Date.now() - Date.parse(_doc.generatedAt) > MAX_AGE_MS;
-        const titleHtml = '<span class="deleg-title">Delegation Program<a href="' + PORTAL + '" target="_blank" rel="noopener noreferrer">delegation.x1.xyz ↗</a></span>';
+        const foot = '<div class="dm-foot">Status and failing criteria are the X1 Foundation\'s own, read from its delegation API and refreshed hourly (updated ' + esc(fmtTime(_doc.generatedAt)) + (stale ? ', <span style="color:var(--warning)">may be stale</span>' : '') + '). ' +
+          'Criteria are re-checked every epoch; a validator that stops meeting them loses its delegation immediately. <a href="' + PORTAL + '" target="_blank" rel="noopener noreferrer">Foundation portal ↗</a></div>';
         if (r.status === 'none') {
-          el.innerHTML = '<div class="deleg-box"><div class="deleg-head">' + titleHtml +
-            '<span class="deleg-status na">Not participating</span></div>' +
-            '<div class="deleg-note" style="margin:0">This validator is not enrolled in the X1 Foundation delegation program. Operators can enrol from the portal; validators that meet the criteria receive foundation stake.</div></div>';
+          body.innerHTML = '<div class="dm-head"><span class="deleg-status na">Not enrolled</span></div>' +
+            '<div class="dm-empty">This validator is not enrolled in the X1 Foundation delegation program. Operators enrol on the portal; validators that meet the criteria below receive foundation stake.</div>' +
+            renderCriteriaSummary() + foot;
           return;
         }
-        const rowsHtml = r.rows.map(row => {
+        const rows = r.rows.map(row => {
           const cls = row.ok === false ? 'bad' : (row.ok === true ? 'ok' : 'na');
-          const ic  = row.ok === false ? '✗' : (row.ok === true ? '✓' : '·');
-          return '<div class="deleg-row ' + cls + '"><span class="ic">' + ic + '</span><span><span class="lbl">' + esc(row.label) + '</span> — <span class="val">' + esc(row.value) + '</span>' +
-                 (row.hint ? '<span class="hint">' + esc(row.hint) + '</span>' : '') + '</span></div>';
+          const ic = row.ok === false ? '✗' : (row.ok === true ? '✓' : '·');
+          return '<div class="dm-row ' + cls + '"><span class="ic">' + ic + '</span><span class="lbl">' + esc(row.label) + '</span><span class="val">' + esc(row.value) + '</span>' +
+                 (row.ok === false && row.hint ? '<span class="hint">' + esc(row.hint) + '</span>' : '') + '</div>';
         }).join('');
         const amount = r.delegated > 0
-          ? '<span class="deleg-amount">' + xnt(r.delegated) + ' <small>XNT delegated</small>' + (r.transient > 0 ? ' <small>· ' + xnt(r.transient) + ' in transit</small>' : '') + '</span>'
-          : '';
+          ? '<span class="dm-amount">' + xnt(r.delegated) + '<small>XNT delegated' + (r.transient > 0 ? ' · ' + xnt(r.transient) + ' in transit' : '') + '</small></span>'
+          : '<span class="dm-amount" style="color:var(--text-secondary);font-size:0.85rem">No foundation stake delegated</span>';
         const strikes = r.strikes > 0
-          ? '<div class="deleg-strikes">⚠ ' + r.strikes + ' removal strike' + (r.strikes === 1 ? '' : 's') + (r.multiplier != null ? ' · stake multiplier ' + (r.multiplier / 100).toFixed(0) + '%' : '') + ' (decays over ' + (_doc.config.strikeDecayEpochs || '?') + ' epochs)</div>'
+          ? '<div class="dm-strikes">⚠ ' + r.strikes + ' removal strike' + (r.strikes === 1 ? '' : 's') + (r.multiplier != null ? ' · stake multiplier ' + (r.multiplier / 100).toFixed(0) + '%' : '') + ' · decays over ' + (_doc.config.strikeDecayEpochs || '?') + ' epochs</div>'
           : '';
-        el.innerHTML =
-          '<div class="deleg-box">' +
-            '<div class="deleg-head">' + titleHtml + '<span style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap">' + amount +
-              '<span class="deleg-status ' + r.statusClass + '">' + esc(r.statusText) + '</span></span></div>' +
-            '<div class="deleg-grid">' + rowsHtml + '</div>' + strikes +
-            '<div class="deleg-foot"><span>Official status from the X1 Foundation delegation API</span><span>Updated ' + esc(fmtTime(_doc.generatedAt)) + (stale ? ' · ⚠ may be stale' : '') + '</span>' +
-              (_doc.config.emergencyPause ? '<span style="color:var(--danger)">Program paused</span>' : '') + '</div>' +
-          '</div>';
+        body.innerHTML = '<div class="dm-head">' + amount + '<span class="deleg-status ' + r.statusClass + '">' + esc(r.statusText) + '</span></div>' +
+          '<div class="dm-rows">' + rows + '</div>' + strikes + foot;
+      }
+
+      function renderCriteriaSummary() {
+        const c = _doc.config || {}, cl = _doc.cluster || {};
+        const items = [
+          ['Self-stake', '≥ ' + xnt(c.minSelfStake) + ' XNT'], ['Commission', '≤ ' + c.maxCommissionPercent + '%'],
+          ['Vote credits', '≥ ' + c.voteCreditsThresholdPct + '% of network avg'], ['Skip rate', '≤ network avg + ' + c.skipRateTolerancePct + ' pts'],
+          ['Tachyon version', '≥ v' + c.minValidatorVersion], ['Total stake', '≤ ' + xnt(c.maxTotalStake) + ' XNT · ≤ ' + c.maxValidatorStakePct + '% of network'], ['Status', 'not delinquent'],
+        ];
+        return '<div class="dm-rows">' + items.map(([l, v]) => '<div class="dm-row na"><span class="ic">·</span><span class="lbl">' + esc(l) + '</span><span class="val">' + esc(v) + '</span></div>').join('') + '</div>';
       }
 
       function hydrateAll(root) {
@@ -36294,6 +36458,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       window.delegOpen = open;
       window.delegRefresh = () => load(true).then(() => { hydrateAll(); renderTab(); });
       window.delegEvaluate = evaluate;   // for other modules (fleet board later)
+      window.openDelegationModal = openDelegationModalImpl;
+      window.closeDelegationModal = closeDelegationModalImpl;
 
       // Pre-warm so card sections render on first lookup without a wait.
       setTimeout(() => load().then(() => hydrateAll()).catch(() => {}), 2500);
