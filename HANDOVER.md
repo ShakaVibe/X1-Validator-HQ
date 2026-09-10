@@ -6,14 +6,16 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-09-10 evening):**
+> **Start here next session (as of 2026-09-10, after session 2):**
 > 1. `cd ~/Desktop/X1VHQ && git pull` — three bots commit hourly.
-> 2. Verify the last push on the live site: Delegation tile shows one "Details" link (a
->    double-render was fixed in the final commit of session 1; confirm it deployed).
+> 2. Session 1's push is verified live (single Details link; snapshot and Live both 7,434 stake
+>    accounts). Session 2 was a hygiene pass — verify its push landed (Tab to a nav button: cyan ring).
 > 3. Next build, in Shaka's priority order: **Fleet health board (F4)** → **History charts (F2)**
 >    → **Alerts (F3, design first)**. Roadmap artifact: "X1 Validator HQ Roadmap".
 > 4. UI rule learned the hard way: per-validator data goes in the **stat grid as a tile with a
 >    Details link** (like Breakdown / Classify) — never a new section or bar on the card.
+> 5. Nav decision (session 2): **no Globe tab**. The globe stays the home page, reachable via the
+>    logo; no nav button is highlighted on the home page and that's intended.
 
 ---
 
@@ -44,6 +46,10 @@ git push
 
 GitHub Pages redeploys automatically on every push to `main` (takes ~1–2 min).
 Claude edits files directly in the linked `X1VHQ` folder; Shaka runs the git commands in Terminal.
+Claude's shell can *read* git state (`git status/log/diff/fetch`) but its git leaves stale
+`.git/index.lock` / `.git/objects/maintenance.lock` files behind (it can't unlink). If Shaka's
+`git add` fails with "index.lock exists", `rm .git/index.lock` — Claude should check and remove
+them before handing over the push commands.
 
 ## 3. Repo map
 
@@ -105,11 +111,15 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
       (1200×630, generated with PIL — regenerate if branding changes), `apple-touch-icon.png`,
       `icon-512.png`, `manifest.webmanifest`
 - [x] **P1** done 2026-09-10 — `defer` on Chart.js and web3.js
-- [ ] **X1** global `:focus-visible` rule; **U2**(part) active nav tab on first load
+- [x] **X1** done 2026-09-10 (session 2) — global `:focus-visible` ring (2 px cyan, offset 2 px),
+      `:focus:not(:focus-visible) { outline: none }` so mouse clicks don't ring; inputs keep their
+      own :focus styles. **U2** closed: deep links already highlight their tab; home (globe) shows
+      no active tab by design.
 - [x] **M1/M2/M3/M4** done 2026-09-10 — terminal table scrolls in its own container under
       1500 px with two sticky columns; nav is a 4-col grid on phones; stats bar 4×2 grid; compact
       header; 16 px inputs + 44 px targets under `(pointer: coarse)`; terminal no longer
-      auto-focuses search on touch. **U3** Globe in nav / rename "Network" still open.
+      auto-focuses search on touch. **U3** closed 2026-09-10 (session 2): Shaka chose no Globe tab,
+      "Network" label stays.
 - [x] **B10/F7** done 2026-09-10 — `computeLatestVersion()` (highest semver on ≥3 gossip nodes,
       or scores.json's `latestVersion` if newer), `buildVersionStats()` → `window.versionStats`,
       version adoption strip on the Network tab (`#verStrip`, stake-weighted bar + legend, shows
@@ -146,12 +156,9 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] **P6/D5** PWA shell, light theme; **C8** public changelog
 
 ### Open small items
-- [ ] Confirm the Delegation tile shows a single "Details" link on the live site (fix pushed
-      end of session 1).
 - [ ] `_to_delete/` in the repo folder holds the Python patch scripts from session 1 (gitignored);
       Shaka can delete the folder any time.
 - [ ] Ask people who reported the terminal error which device/network they were on.
-- [ ] After the next hourly snapshot run, confirm the header stake-account count matches Live.
 
 ### Done
 - [x] 2026-09-10 — Local clone set up at `~/Desktop/X1VHQ`, folder linked to Claude.
@@ -160,6 +167,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [x] 2026-09-10 — Verified on live site: snapshot 911 KB raw / 515 KB gzipped, loads in ~0.25s;
       Live button pulls 13 MB and works; no console errors.
 - [x] 2026-09-10 — Deep audit (4 reviews) → Roadmap artifact + `docs/audit-2026-09-10/`.
+- [x] 2026-09-10 (session 2) — Live-verified session 1's final push: one Details link on the
+      Delegation tile; terminal header shows 7,434 stake accounts on both snapshot and Live.
 
 ## 6. Session log
 
@@ -284,3 +293,21 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   management. (4) Tachyon has no GitHub releases — version must come from gossip; x1watch reads
   slot_time_ms 370 and epoch_total_slots 216,000 live. (5) `data/history.json` is written hourly
   and read by nothing — it's the raw material for history charts.
+
+### 2026-09-10 — Session 2 (hygiene pass, ~1 hour)
+- `git pull` clean (no bot commits had landed since cb48789 — the :07 scores run hadn't fired
+  yet; GitHub cron is often late). Cloud sandbox cannot reach x1valhq.xyz (proxy 403), so live
+  checks run in the desktop-app browser; Playwright previews use a staged copy of `index.html`.
+- **Verified live:** Delegation tile renders exactly one "Details" link
+  (`.rb-open-link` → `openDelegationModal`). Terminal header: snapshot 7,434 stake accounts,
+  Live (`vtRefreshLive`, 13 MB) 7,434 — the undelegated-`""`-key fix from session 1 works.
+- **X1** global `:focus-visible` rule added just above `body {}` in the `<style>` block.
+  Playwright-checked: keyboard focus on a nav tab → `solid 2px rgb(0,212,255)`, offset 2 px,
+  follows the 10 px radius; mouse click → no outline. The 13 existing `outline: none` rules are
+  all on inputs with their own `:focus` border/glow and still win (more specific).
+- **U2/U3 decision:** Shaka chose **no Globe tab**. Deep links (`#/lookup/…`, `#/terminal`, …)
+  already set `.tab.active` via `switchTab`; the globe home page intentionally highlights nothing.
+  "Network" label unchanged. Both items closed.
+- Still open from "Open small items": `_to_delete/` cleanup; ask terminal-error reporters about
+  device/network.
+- One commit to push at end of session (index.html + HANDOVER.md).
