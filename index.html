@@ -34839,6 +34839,88 @@ Please give me the diagnostic commands to run on my server so you can help me id
         return { cluster, validators, stakes };
       }
 
+      // ── Hourly snapshot (preferred source) ────────────
+      // A GitHub Action (.github/workflows/update-terminal-snapshot.yml →
+      // scripts/build-terminal-snapshot.js) pre-digests the ~13 MB api.x1.xyz
+      // payload into data/terminal.json (~0.6 MB, gzipped by Pages) once an
+      // hour. We load that first — it is served from this same origin, so it
+      // is fast and reliable on any connection — and only fall back to the
+      // live API when the snapshot is missing or stale. The "Live" button in
+      // the header forces a live fetch for anyone who wants up-to-the-minute
+      // numbers.
+      const SNAPSHOT_URL        = 'data/terminal.json';
+      const SNAPSHOT_MAX_AGE_MS = 3 * 3600000;   // >3h old = stale → go live
+      let _source = null;                         // 'snapshot' | 'live'
+
+      function inflateSnapshot(doc) {
+        if (!doc || doc.version !== 1 || !Array.isArray(doc.validators) || !doc.stakes) {
+          throw new Error('snapshot has an unexpected format');
+        }
+        const vf = doc.validatorFields, sf = doc.stakeFields;
+        const validators = doc.validators.map(row => {
+          const v = {};
+          vf.forEach((f, i) => { v[f] = row[i]; });
+          return v;
+        });
+        const stakes = [];
+        for (const [votePubkey, rows] of Object.entries(doc.stakes)) {
+          for (const row of rows) {
+            const s = { votePubkey };
+            sf.forEach((f, i) => { s[f] = row[i]; });
+            // compute() only tests stakePool for truthiness; the snapshot
+            // stores it as 0/1.
+            s.stakePool = s.stakePool ? true : null;
+            stakes.push(s);
+          }
+        }
+        return { cluster: doc.cluster, validators, stakes };
+      }
+
+      async function fetchSnapshot() {
+        const el = document.querySelector('#vtContent .vt-loading-detail');
+        if (el) el.textContent = 'Loading hourly snapshot…';
+        // 5-minute cache-bust key, same convention as data/scores.json
+        const r = await fetch(SNAPSHOT_URL + '?t=' + Math.floor(Date.now() / 300000), { cache: 'no-cache' });
+        if (!r.ok) throw new Error('snapshot HTTP ' + r.status);
+        const doc = await r.json();
+        const gen = Date.parse(doc.generatedAt);
+        if (!gen) throw new Error('snapshot has no generatedAt');
+        const age = Date.now() - gen;
+        if (age > SNAPSHOT_MAX_AGE_MS) {
+          throw new Error('snapshot is ' + Math.round(age / 3600000) + 'h old');
+        }
+        if (doc.truncated) console.warn('[VT] snapshot flagged as truncated (API offset cap)');
+        const data = inflateSnapshot(doc);
+        _fetchedAt = new Date(gen);
+        _source = 'snapshot';
+        console.info('[VT] loaded snapshot generated ' + doc.generatedAt +
+          ' (' + data.validators.length + ' validators, ' + data.stakes.length + ' stake accounts)');
+        return data;
+      }
+
+      // preferLive = true  → live API first, snapshot as a safety net
+      // preferLive = false → snapshot first, live API only if it is unusable
+      async function loadData(preferLive) {
+        if (!preferLive) {
+          try { return await fetchSnapshot(); }
+          catch (e) { console.warn('[VT] snapshot unavailable (' + e.message + ') — fetching live'); }
+        }
+        try {
+          const data = await fetchAll();
+          _source = 'live';
+          return data;
+        } catch (e) {
+          if (preferLive) {
+            try {
+              const data = await fetchSnapshot();
+              console.warn('[VT] live fetch failed (' + e.message + ') — showing snapshot instead');
+              return data;
+            } catch (e2) { /* fall through to the live error */ }
+          }
+          throw e;
+        }
+      }
+
       // ── Compute breakdown + aggregates ────────────────
       function compute(raw) {
         const { cluster, validators, stakes } = raw;
@@ -35011,9 +35093,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
             '</div>' +
             '<div class="vt-refresh-corner">' +
               '<div class="info">' +
-                '<div class="lbl">Auto-refresh: every 1h</div>' +
+                '<div class="lbl">' + (_source === 'live' ? 'Live from api.x1.xyz' : 'Hourly snapshot &middot; auto-refresh 1h') + '</div>' +
                 '<div class="upd">Updated ' + isoTime + '</div>' +
               '</div>' +
+              '<button id="vtCornerRefresh" onclick="vtRefreshLive()" title="Fetch live data straight from api.x1.xyz (~13 MB download)">' +
+                '<span class="vt-refresh-icon">&#x21bb;</span> Live' +
+              '</button>' +
             '</div>' +
           '</header>';
 
@@ -35111,7 +35196,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
           '<footer class="vt-footer">' +
             '<div class="row">' +
               '<span><span class="vp-dot" onclick="vpOpenProbe()"></span>Generated ' + isoTime + '</span>' +
-              '<span>API &middot; <code>' + API + '</code></span>' +
+              '<span>Source &middot; ' + (_source === 'live'
+                  ? 'live <code>' + API + '</code>'
+                  : 'hourly snapshot <code>' + SNAPSHOT_URL + '</code> (built from <code>' + API + '</code>)') + '</span>' +
               '<span>Definitions &middot; <b>foundation</b> = <code>stakePool &ne; null</code> &middot; <b>self</b> = direct delegations (validator self-stake + 3rd-party direct stakers)</span>' +
             '</div>' +
             '<div class="row" style="margin-top:6px;">' +
@@ -35377,7 +35464,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // ── Auto-refresh timer ────────────────────────────
       function startAutoRefresh() {
         stopAutoRefresh();
-        _autoTimer = setInterval(refresh, AUTO_REFRESH_MS);
+        _autoTimer = setInterval(() => refresh(false), AUTO_REFRESH_MS);
       }
       function stopAutoRefresh() {
         if (_autoTimer) { clearInterval(_autoTimer); _autoTimer = null; }
@@ -35385,7 +35472,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       // ── Refresh (re-fetch + re-render) ────────────────
       // Preserves the user's current sort / filter / search across the refresh.
-      async function refresh() {
+      async function refresh(preferLive) {
         startAutoRefresh();  // reset the 1h timer on every refresh (manual or auto)
 
         // Capture search input value before render() wipes the DOM
@@ -35399,7 +35486,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         });
 
         try {
-          _data = await fetchAll();
+          _data = await loadData(!!preferLive);
           _computed = compute(_data);
           render();
           // Restore search query (wireUp recreated the input)
@@ -35474,7 +35561,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             '<div class="vt-loading-detail">Fetching validator and stake data from api.x1.xyz…</div>' +
           '</div>';
         try {
-          _data = await fetchAll();
+          _data = await loadData(false);
           _computed = compute(_data);
           render();
           startAutoRefresh();
@@ -35490,7 +35577,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // Expose globals for switchTab + inline onclick attributes
       window.vtOpen  = open;
       window.vtClose = close;
-      window.vtRetry = refresh;
+      window.vtRetry = () => refresh(false);       // snapshot first, then live
+      window.vtRefreshLive = () => refresh(true);  // "Live" button: api.x1.xyz first
     })();
   </script>
 

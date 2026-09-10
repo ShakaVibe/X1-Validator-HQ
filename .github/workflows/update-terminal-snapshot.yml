@@ -1,0 +1,56 @@
+name: Update Validator Terminal snapshot
+
+# Pre-digests api.x1.xyz (~13 MB uncompressed) into data/terminal.json
+# (~0.6 MB) so the Validator Terminal tab loads instantly, even on phones.
+# See scripts/build-terminal-snapshot.js and HANDOVER.md.
+
+on:
+  schedule:
+    # Hourly at :37 — offset from the scores (:07) and geo (:21) workflows so
+    # the three bots don't race each other to push.
+    - cron: '37 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-terminal-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build snapshot
+        run: node scripts/build-terminal-snapshot.js
+        env:
+          X1_API_URL: https://api.x1.xyz
+
+      - name: Commit updated snapshot
+        run: |
+          git config user.name "x1hq-terminal-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/terminal.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: update terminal snapshot [skip ci]"
+          # Another bot may have pushed while we ran — rebase and retry a few times.
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push && exit 0
+            echo "push attempt $i failed; retrying in 10s"
+            sleep 10
+          done
+          echo "Could not push after 5 attempts" >&2
+          exit 1
