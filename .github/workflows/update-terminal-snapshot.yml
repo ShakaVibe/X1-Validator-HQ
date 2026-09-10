@@ -1,8 +1,14 @@
 name: Update Validator Terminal snapshot
 
-# Pre-digests api.x1.xyz (~13 MB uncompressed) into data/terminal.json
-# (~0.6 MB) so the Validator Terminal tab loads instantly, even on phones.
-# See scripts/build-terminal-snapshot.js and HANDOVER.md.
+# Two hourly snapshots in one run (one bot, one commit):
+#   data/terminal.json   — api.x1.xyz stakes/validators pre-digested (~0.7 MB)
+#                          so the Validator Terminal loads instantly on phones
+#   data/delegation.json — X1 Foundation Delegation Program status per
+#                          validator + official criteria (from
+#                          api.delegation.mainnet.x1.xyz), for the
+#                          eligibility checker and the Delegation tab
+# See scripts/build-terminal-snapshot.js, scripts/build-delegation-snapshot.js
+# and HANDOVER.md.
 
 on:
   schedule:
@@ -13,6 +19,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: update-terminal-snapshot
@@ -31,21 +38,30 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Build snapshot
+      - name: Build terminal snapshot
         run: node scripts/build-terminal-snapshot.js
         env:
           X1_API_URL: https://api.x1.xyz
 
-      - name: Commit updated snapshot
+      - name: Build delegation snapshot
+        # continue-on-error: a Foundation API outage must not block the
+        # terminal snapshot; the site keeps showing the previous
+        # delegation.json (stamped with its generatedAt) until the next run.
+        continue-on-error: true
+        run: node scripts/build-delegation-snapshot.js
+        env:
+          X1_DELEGATION_API: https://api.delegation.mainnet.x1.xyz
+
+      - name: Commit updated snapshots
         run: |
           git config user.name "x1hq-terminal-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/terminal.json
+          git add data/terminal.json data/delegation.json
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "chore: update terminal snapshot [skip ci]"
+          git commit -m "chore: update terminal + delegation snapshots [skip ci]"
           # Another bot may have pushed while we ran — rebase and retry a few times.
           for i in 1 2 3 4 5; do
             git pull --rebase origin "${GITHUB_REF_NAME}" && git push && exit 0
@@ -54,3 +70,27 @@ jobs:
           done
           echo "Could not push after 5 attempts" >&2
           exit 1
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          TITLE="[bot] ${{ github.workflow }} is failing"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Run failed at $(date -u +'%Y-%m-%d %H:%M UTC'): $RUN_URL"
+          # One open issue per workflow: comment if it exists, else create it.
+          EXISTING=$(gh issue list --repo "${{ github.repository }}" --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number' || true)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "${{ github.repository }}" --body "$BODY" || true
+          else
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" --body "$BODY" --label bot-failure || \
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" --body "$BODY" || true
+          fi
+          # Optional Telegram ping (set TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID in repo secrets).
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+              -d chat_id="$TELEGRAM_CHAT_ID" -d text="⚠️ $TITLE — $RUN_URL" > /dev/null || true
+          fi
