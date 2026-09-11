@@ -3357,6 +3357,15 @@
     .last-epoch-value-row .stat-change {
       margin-top: 0;
     }
+    .power-pill {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em;
+      padding: 0.3rem 0.65rem; border-radius: 999px;
+      color: var(--warning); background: rgba(255, 171, 0, 0.10); border: 1px solid rgba(255, 171, 0, 0.35);
+      white-space: nowrap;
+    }
+    .power-pill[hidden] { display: none; }
+
     .rb-open-link {
       color: var(--accent-cyan);
       font-size: 0.65rem;
@@ -12126,6 +12135,7 @@
       <a href="https://docs.x1.xyz/validating/create-a-read-only-node" target="_blank" rel="noopener noreferrer">Launch My Validator</a>
       <a href="https://github.com/ShakaVibe/X1-Validator-HQ" target="_blank" rel="noopener noreferrer">GitHub</a>
 
+      <span id="powerSaverPill" class="power-pill" hidden title="No activity for a few minutes — live updates are slowed to once a minute and the globe is paused. Move the mouse to resume.">⏸ Live updates paused</span>
       <span class="header-pill-slot xnt-hidden" id="xntPillSlot">
         <div class="xnt-price-pill" id="xntPricePill" title="XNT price — live from api.x1.xyz">
           <div class="xnt-pill-inner">
@@ -18782,7 +18792,8 @@
     const TOPOJSON_LIB_URL   = 'https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js';
     const WORLD_ATLAS_URL    = 'https://unpkg.com/world-atlas@2.0.2/countries-110m.json';
     const GLOBE_HOME_VIEW    = { lat: 30, lng: -35, altitude: 2.0 };  // Atlantic view: US + Europe in frame
-    const GLOBE_ROTATE_SPEED = 0.9;                                  // OrbitControls.autoRotateSpeed (~65 s per revolution)
+    const GLOBE_ROTATE_SPEED = 0.9;
+    const GLOBE_AUTOROTATE_MS = 60 * 1000;   // spin for a minute after load, then rest                                  // OrbitControls.autoRotateSpeed (~65 s per revolution)
     const GLOBE_HUB_COUNT    = 12;                                   // cities that get pulsing rings
     const GLOBE_ARC_HUBS     = 6;                                    // top cities joined by arcs
 
@@ -18807,6 +18818,8 @@
       userPaused: false,    // pause button pressed
       hoverPaused: false,   // pointer is over the globe
       resumeTimer: null,
+      rotateUntil: 0,       // auto-rotation stops after this timestamp (power)
+      loopTimer: null,      // pauses the WebGL render loop once nothing moves
       landFeatures: null,   // GeoJSON features for hexPolygons
       landCountries: new Set()
     };
@@ -18921,7 +18934,29 @@
     function applyRotationState() {
       if (!validatorMap) return;
       const controls = validatorMap.controls();
-      controls.autoRotate = !globeState.userPaused && !globeState.hoverPaused && !globeState.selectedCountry;
+      const idle = (typeof PowerSaver !== 'undefined') && !PowerSaver.isActive();
+      const expired = Date.now() > globeState.rotateUntil;
+      controls.autoRotate = !globeState.userPaused && !globeState.hoverPaused && !globeState.selectedCountry && !idle && !expired;
+      globeScheduleLoop();
+    }
+
+    // Render-on-demand: three.js redraws 60× a second for as long as the
+    // animation loop runs. With rotation off and nobody touching the globe
+    // there is nothing to draw, so pause the loop ~1.5 s after the last
+    // movement (long enough for OrbitControls damping to settle) and resume
+    // it on the next pointer/wheel event or when rotation restarts.
+    function globeScheduleLoop() {
+      if (!validatorMap) return;
+      clearTimeout(globeState.loopTimer);
+      const controls = validatorMap.controls();
+      const idle = (typeof PowerSaver !== 'undefined') && !PowerSaver.isActive();
+      if (controls.autoRotate && !idle) { validatorMap.resumeAnimation(); return; }
+      validatorMap.resumeAnimation();   // draw the settle frames…
+      globeState.loopTimer = setTimeout(() => {
+        if (!validatorMap) return;
+        if (validatorMap.controls().autoRotate && PowerSaver.isActive()) return;
+        validatorMap.pauseAnimation();  // …then stop until something moves
+      }, 1500);
     }
 
     // NOTE: only toggle attributes here — never rebuild the button's inner
@@ -18942,7 +18977,7 @@
 
     function toggleGlobeRotation() {
       globeState.userPaused = !globeState.userPaused;
-      if (!globeState.userPaused) clearGlobeSelection();
+      if (!globeState.userPaused) { clearGlobeSelection(); globeState.rotateUntil = Date.now() + GLOBE_AUTOROTATE_MS; }
       renderRotateButton();
       applyRotationState();
     }
@@ -19046,6 +19081,12 @@
       const controls = globe.controls();
       controls.autoRotate = true;
       controls.autoRotateSpeed = GLOBE_ROTATE_SPEED;
+      globeState.rotateUntil = Date.now() + GLOBE_AUTOROTATE_MS;
+      setTimeout(() => applyRotationState(), GLOBE_AUTOROTATE_MS + 50);
+      // Retina screens: 2× pixel ratio is 4× the fragments for a decorative
+      // globe. 1.5 is visually indistinguishable here and much cheaper.
+      try { globe.renderer().setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5)); } catch (e) {}
+      if (typeof PowerSaver !== 'undefined') PowerSaver.onChange(() => applyRotationState());
       controls.enablePan = false;
       controls.enableDamping = true;
       controls.dampingFactor = 0.08;
@@ -19065,18 +19106,22 @@
         wrapper.addEventListener('pointerdown', pause);
         wrapper.addEventListener('pointerleave', resume);
         wrapper.addEventListener('touchend', resume, { passive: true });
+        // Any movement over the globe keeps the render loop alive; it pauses
+        // itself 1.5 s after the last event (globeScheduleLoop).
+        ['pointermove', 'wheel', 'touchmove'].forEach(ev => wrapper.addEventListener(ev, globeScheduleLoop, { passive: true }));
+        controls.addEventListener('change', globeScheduleLoop);
       }
 
       // Save GPU/CPU when the globe is scrolled away, on another tab, or the
       // browser tab is hidden.
       if ('IntersectionObserver' in window && wrapper) {
         const io = new IntersectionObserver(entries => {
-          entries.forEach(e => e.isIntersecting ? globe.resumeAnimation() : globe.pauseAnimation());
+          entries.forEach(e => e.isIntersecting ? applyRotationState() : globe.pauseAnimation());
         }, { threshold: 0.05 });
         io.observe(wrapper);
       }
       document.addEventListener('visibilitychange', () => {
-        if (document.hidden) globe.pauseAnimation(); else globe.resumeAnimation();
+        if (document.hidden) globe.pauseAnimation(); else applyRotationState();
       });
 
       // Keep the canvas sized to its container.
@@ -20765,6 +20810,75 @@
     // Modify the existing selectValidatorForSearch to handle compare mode
     const originalSelectValidatorForSearch = typeof selectValidatorForSearch === 'function' ? selectValidatorForSearch : null;
     
+
+
+    // ═══════════════════════════════════════════════════════
+    // POWER SAVER — idle + hidden-tab throttling.
+    // A window left open used to work exactly as hard as one being used:
+    // the globe rendered 60 fps forever and the Network tab fired ~100 RPC
+    // calls a minute even when hidden. Now:
+    //   • hidden tab, or no mouse/keyboard/touch for IDLE_AFTER_MS → "idle"
+    //   • every poller asks PowerSaver.gate(key) before doing work; while
+    //     idle a key is allowed through once per IDLE_EVERY_MS (60 s)
+    //   • the globe stops rotating and its render loop pauses while idle
+    //   • any activity ends idle immediately; pollers catch up on their next
+    //     tick (2–3 s for the fast ones)
+    // ═══════════════════════════════════════════════════════
+    const PowerSaver = (function () {
+      const IDLE_AFTER_MS = 3 * 60 * 1000;
+      const IDLE_EVERY_MS = 60 * 1000;
+      let lastActivity = Date.now();
+      let idle = false;
+      let timer = null;
+      const lastAllowed = {};
+      const listeners = new Set();
+
+      function hidden() { return typeof document !== 'undefined' && document.hidden; }
+      function isActive() { return !idle && !hidden(); }
+
+      function setIdle(v) {
+        if (idle === v) return;
+        idle = v;
+        document.body.classList.toggle('power-idle', idle);
+        const pill = document.getElementById('powerSaverPill');
+        if (pill) pill.hidden = !idle;
+        listeners.forEach(fn => { try { fn(isActive()); } catch (e) {} });
+        if (window.x1hqDebug) console.info('[power] ' + (idle ? 'idle — live updates slowed' : 'active — live updates resumed'));
+      }
+
+      function armTimer() {
+        clearTimeout(timer);
+        timer = setTimeout(() => setIdle(true), IDLE_AFTER_MS);
+      }
+
+      function activity() {
+        lastActivity = Date.now();
+        if (idle) setIdle(false);
+        armTimer();
+      }
+
+      // Pollers call this; returns true when the work should run now.
+      function gate(key, idleEveryMs) {
+        if (isActive()) return true;
+        const every = idleEveryMs || IDLE_EVERY_MS;
+        const now = Date.now();
+        if (!lastAllowed[key] || now - lastAllowed[key] >= every) { lastAllowed[key] = now; return true; }
+        return false;
+      }
+
+      function onChange(fn) { listeners.add(fn); return () => listeners.delete(fn); }
+
+      ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach(ev =>
+        window.addEventListener(ev, activity, { passive: true, capture: true }));
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) { clearTimeout(timer); setIdle(true); }
+        else activity();
+      });
+      armTimer();
+
+      // forceIdle(true/false) exists for testing from the console.
+      return { gate, isActive, onChange, forceIdle: v => { clearTimeout(timer); setIdle(!!v); if (!v) armTimer(); }, get idle() { return idle; }, get lastActivity() { return lastActivity; } };
+    })();
 
     // ═══════════════════════════════════════════════════════
     // ROUTER — hash routes so every tab / validator / leaderboard /
@@ -31198,6 +31312,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       async function sync() {
         if (syncing) return;
         if (!document.querySelector('.vh-next-leader')) return; // no chips → no RPC
+        if (!PowerSaver.gate('leader.countdown')) return;
         syncing = true;
         try {
           const info = await rpcCall('getEpochInfo');
@@ -31547,6 +31662,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
     async function loadTpsSamples() {
       if (tpsFetching) return;
+      if (!PowerSaver.gate('tps', 5 * 60 * 1000)) return;
       tpsFetching = true;
       try {
         // Off the Network tab only the top-bar number is visible: poll one
@@ -32038,6 +32154,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
     function renderEpochBar() {
       if (!_epochBaseline) return;
+      if (document.hidden) return;
       const fill = document.getElementById('epochProgressFill');
       const pctEl = document.getElementById('epochPercent');
       const timeEl = document.getElementById('epochTimeRemaining');
@@ -32074,6 +32191,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
     }
 
     async function resyncEpochBaseline() {
+      if (!PowerSaver.gate('epoch.resync', 5 * 60 * 1000)) return;
       try {
         const epochInfo = await rpcCall('getEpochInfo');
         // Keep the displayed epoch # and absolute slot fresh too, since
@@ -32141,7 +32259,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // running on every page (~3,600 RPC calls/hour) to running only while
       // Network Live is active.
       setInterval(() => {
-        if (document.body.classList.contains('active-skipmonitor')) {
+        if (document.body.classList.contains('active-skipmonitor') && PowerSaver.gate('leader.card')) {
           updateCurrentLeader();
         }
       }, 2000);
@@ -32378,6 +32496,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       async function pollHour() {
         if (!state || !state.running) return;
+        if (!PowerSaver.gate('skipmon.hour', 5 * 60 * 1000)) return;
         try {
           const epochInfo  = await rpcCall('getEpochInfo');
           if (!state || !state.running) return;
@@ -32398,6 +32517,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       async function pollEpoch() {
         if (!state || !state.running) return;
+        if (!PowerSaver.gate('skipmon.epoch', 10 * 60 * 1000)) return;
         try {
           // No range param → current epoch to date
           const prod = await rpcCall('getBlockProduction');
@@ -32594,6 +32714,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       async function tick() {
         if (!state || !state.running) return;
+        if (!PowerSaver.gate('skipmon.tick')) return;
         try {
           const epochInfo = await rpcCall('getEpochInfo');
 
@@ -33701,13 +33822,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
             state.running = false;
             return;
           }
+          if (!state || !state.running) return;   // tab left during the load
         }
 
         await tick();
+        // The user may have left the tab during the awaits above; stop()
+        // already ran and cleared (null) timers — don't create new ones now.
+        if (!state || !state.running) return;
+        if (pollTimer) clearInterval(pollTimer);
         pollTimer  = setInterval(tick,        POLL_INTERVAL_MS);
         // UI ticker: re-runs stats + timeline every second so the NOW marker
         // advances smoothly between RPC ticks via interpolated head.
         uiTimer    = setInterval(() => {
+          if (!PowerSaver.isActive()) return;   // nothing to animate for nobody
           renderStats();
           renderTimeline();
         }, UI_TICK_MS);
@@ -33746,6 +33873,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         safely(() => {
           if (typeof loadNetworkEpochHistory === 'function') loadNetworkEpochHistory();
         }, 20000);
+        if (hourTimer)  clearInterval(hourTimer);
+        if (epochTimer) clearInterval(epochTimer);
         hourTimer  = setInterval(pollHour,  HOUR_POLL_MS);
         epochTimer = setInterval(pollEpoch, EPOCH_POLL_MS);
         // 15-minute refresh is plenty — the loader's per-epoch cache returns
@@ -36647,6 +36776,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
 
       async function update() {
+        if (typeof PowerSaver !== 'undefined' && !PowerSaver.gate('xnt.price', 10 * 60 * 1000)) return;
         try {
           const r = await fetch(PRICE_URL, { headers: { accept: 'application/json' } });
           if (!r.ok) throw new Error('xdex HTTP ' + r.status);

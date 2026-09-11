@@ -353,3 +353,26 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   should NOT be the focus and all eight metrics should stay equal — none of the above landed.
   PNGs are in the chat; working files not in the repo. Revisit with references from Shaka
   (sites whose look he likes) before drawing again.
+
+### 2026-09-11 — Session 3, afternoon: power saver
+- Shaka asked why the page is "one of the biggest drags on a system" when left open. Measured:
+  JS heap flat at 60–70 MB (memory is NOT the issue); Network tab fires ~100 RPC calls/min even
+  when the tab is hidden; globe renders 60 fps with auto-rotate forever while visible; nothing
+  slows down when nobody is there.
+- Added **`PowerSaver`** (defined just above `Router`): idle after 3 min without
+  pointer/key/wheel/touch/scroll, or when the tab is hidden. `PowerSaver.gate(key, idleEveryMs)`
+  is called at the top of every poller — SkipMonitor tick (60 s when idle) / pollHour (5 min) /
+  pollEpoch (10 min) / UI ticker (off), current-leader 2 s poller, LeaderCountdown sync, TPS
+  (5 min), epoch resync (5 min), epoch bar (off when hidden), XNT pill (10 min). Any activity ends
+  idle instantly; fast pollers catch up on their next tick. Amber "⏸ Live updates paused" pill in
+  the header while idle. `PowerSaver.forceIdle(true/false)` for testing from the console.
+- **Globe:** auto-rotates for 60 s after load (`GLOBE_AUTOROTATE_MS`), then rests; the pause/
+  resume button restarts a 60 s spin. Render-on-demand: `globeScheduleLoop()` pauses the
+  three.js loop 1.5 s after the last movement and resumes on pointer/wheel/touch or controls
+  'change'; idle → rotation off + loop paused. Pixel ratio capped at 1.5. IntersectionObserver
+  now defers to `applyRotationState()` instead of unconditionally resuming.
+- **B3 fixed:** SkipMonitor.start() re-checks `state.running` after each await and clears any
+  existing timer before creating one — quick tab flips no longer leak poller sets.
+- Verified with a node harness (idle gating, activity wake, hidden→idle→visible). Live check
+  after deploy: `PowerSaver.forceIdle(true)` in the console should show the pill, stop the
+  globe, and cut Network-tab RPC to ~1/min.
