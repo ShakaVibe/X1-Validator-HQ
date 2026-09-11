@@ -325,3 +325,12 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   Verified by injecting the CSS into the live site at 1010 px: header above row 1, nothing clipped.
 - Lesson: when a table wrap becomes a scroll container, re-check every `position: sticky`
   inside it (both `top` and `left` offsets now measure from the wrap).
+- **Morning quick wins (same session):**
+  - Data Center summary gets a sixth tile, **Foundation Delegation**: total XNT delegated across
+    the portfolio, "n/m approved", and "k failing" (hover for names); clicking it opens the
+    Delegation tab filtered to My Data Center (`delegFilterMine`). Rendered by
+    `renderPortfolioSummary()` in the delegation module, refreshed whenever the portfolio
+    summary numbers update.
+  - Calculators now default to the **live XNT price** from the header pill (`window.xntPriceUsd`,
+    set by the pill's `update()`; `applyLiveXntPrice()` fills `#stakingPrice` / `#breakevenPrice`
+    unless the user has typed a value — `data-user-set`). U9 closed.
