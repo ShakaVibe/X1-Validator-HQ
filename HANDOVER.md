@@ -346,3 +346,10 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
     "Rewards Balance" (it is the vote-account balance sum — U9 fully closed).
   - Data Center summary grid pinned to 6 equal columns (3 on ≤900 px, 2 on ≤480 px) so the
     six tiles never wrap to a second row; Playwright-verified at 1180/1000 px, full number shown.
+- **Card redesign — shelved.** Shaka asked for mockups of a different validator-card layout (no
+  code changes). Explored: A ledger strip, B score-first, C health tiles, D fleet rows, then
+  Editorial / Bold block (hero numbers), then Ruled grid / Ledger (all metrics equal, no boxes).
+  Shaka's feedback: too many equal boxes and a generic look are the complaints, but the score
+  should NOT be the focus and all eight metrics should stay equal — none of the above landed.
+  PNGs are in the chat; working files not in the repo. Revisit with references from Shaka
+  (sites whose look he likes) before drawing again.
