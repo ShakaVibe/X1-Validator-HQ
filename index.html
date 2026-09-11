@@ -1319,10 +1319,12 @@
 
     .portfolio-summary {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 1rem;
       padding: 1.5rem;
     }
+    @media (max-width: 900px) { .portfolio-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (max-width: 480px) { .portfolio-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
     .portfolio-summary-wrapper .combined-chart-section {
       border-top: 1px solid var(--border);
@@ -6865,6 +6867,20 @@
       cursor: pointer;
     }
 
+    .leaderboard-item.mine {
+      border-color: rgba(0, 212, 255, 0.45);
+      background: rgba(0, 212, 255, 0.05);
+    }
+    .lb-mine-tag {
+      display: inline-block; vertical-align: middle; margin-left: 0.4rem;
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em;
+      padding: 0.1rem 0.4rem; border-radius: 4px;
+      background: rgba(0, 212, 255, 0.15); color: var(--accent-cyan);
+    }
+    /* Data Center summary values: shrink a little on narrower windows so
+       "6,017,816.03" is not clipped in a six-column row. */
+    .portfolio-stat-value { font-size: clamp(1rem, 1.5vw, 1.4rem); }
+
     .leaderboard-item:hover {
       border-color: var(--accent-blue);
       transform: translateX(5px);
@@ -12335,7 +12351,7 @@
             </div>
             <div class="portfolio-stat">
               <div class="portfolio-stat-value" id="totalPortfolioRewards" style="color: var(--warning);">0.00</div>
-              <div class="portfolio-stat-label">Total Rewards (XNT)</div>
+              <div class="portfolio-stat-label" title="Sum of your validators' vote-account balances — the same figure as each card's Rewards Balance">Rewards Balance (XNT)</div>
             </div>
             <div class="portfolio-stat">
               <div class="portfolio-stat-value" id="portfolioLastEpochRewards" style="color: var(--success);">0.00</div>
@@ -12345,13 +12361,13 @@
               <div class="portfolio-stat-value" id="avgPortfolioPerf">0.0</div>
               <div class="portfolio-stat-label">Avg Performance (7D)</div>
             </div>
-            <div class="portfolio-stat">
-              <div class="portfolio-stat-value" id="activePortfolioCount" style="color: var(--accent-cyan);">0/0</div>
-              <div class="portfolio-stat-label">Active</div>
-            </div>
             <div class="portfolio-stat portfolio-stat-clickable" id="portfolioDelegation" title="X1 Foundation stake delegated to your validators. Click to see them on the Delegation tab." onclick="switchTab('delegation'); if (typeof delegFilterMine === 'function') delegFilterMine();">
               <div class="portfolio-stat-value" id="portfolioDelegationValue" style="color: var(--text-dim);">…</div>
               <div class="portfolio-stat-label" id="portfolioDelegationLabel">Foundation Delegation</div>
+            </div>
+            <div class="portfolio-stat">
+              <div class="portfolio-stat-value" id="activePortfolioCount" style="color: var(--accent-cyan);">0/0</div>
+              <div class="portfolio-stat-label">Active</div>
             </div>
           </div>
 
@@ -18238,6 +18254,7 @@
           const validator = await getValidatorInfo(voteToFetch).catch(() => null);
           if (isStale()) return;
           if (!validator) { showError(); return; }
+          destroyCardCharts();
           container.innerHTML = renderValidatorCard(validator, true, false);
           if (typeof Router !== 'undefined') Router.set('/lookup/' + validator.voteAccount);
           document.getElementById('resultCount').textContent = '1';
@@ -18269,6 +18286,7 @@
           const info = await getValidatorInfo(matches[0].votePubkey).catch(() => null);
           if (isStale()) return;
           if (!info) { showError(); return; }
+          destroyCardCharts();
           container.innerHTML = renderValidatorCard(info, true, false);
           if (typeof Router !== 'undefined' && info.voteAccount) Router.set('/lookup/' + info.voteAccount);
           document.getElementById('resultCount').textContent = '1';
@@ -18553,7 +18571,11 @@
           window.validatorColorMap[v.voteAccount] = index;
         });
 
-        // Render validator cards (also sorted alphabetically)
+        // Render validator cards (also sorted alphabetically). The old cards'
+        // canvases are gone, so drop their Chart instances too — otherwise
+        // toggleChart() thinks the chart already exists and leaves the new
+        // canvas blank (and the old instance leaks).
+        destroyCardCharts();
         document.getElementById('portfolioValidatorResults').innerHTML = sortedValidators.map(v => renderValidatorCard(v, false, true)).join('');
 
         // Now that the cards exist, fetch each validator's rewards ONCE and
@@ -20016,11 +20038,11 @@
                 }
                 
                 return `
-                  <div class="leaderboard-item newest-item" onclick="lookupValidator('${v.votePubkey}')">
+                  <div class="leaderboard-item newest-item${myPortfolio.includes(v.votePubkey) ? ' mine' : ''}" onclick="lookupValidator('${v.votePubkey}')">
                     <div class="newest-badge">🆕</div>
                     <div class="leaderboard-validator">
                       ${logoHtml}
-                      <div class="leaderboard-name">${escHtml(v.name)}</div>
+                      <div class="leaderboard-name">${escHtml(v.name)}${myPortfolio.includes(v.votePubkey) ? ' <span class="lb-mine-tag" title="In your Data Center">MINE</span>' : ''}</div>
                     </div>
                     <div class="leaderboard-stats">
                       <div class="leaderboard-stat">
@@ -20172,11 +20194,11 @@
         }
         
         return `
-          <div class="leaderboard-item ${itemClass}" onclick="lookupValidator('${v.votePubkey}')">
+          <div class="leaderboard-item ${itemClass}${myPortfolio.includes(v.votePubkey) ? ' mine' : ''}" onclick="lookupValidator('${v.votePubkey}')">
             <div class="leaderboard-rank ${rankClass}">${rankDisplay}</div>
             <div class="leaderboard-validator">
               ${logoHtml}
-              <div class="leaderboard-name">${escHtml(v.name)}</div>
+              <div class="leaderboard-name">${escHtml(v.name)}${myPortfolio.includes(v.votePubkey) ? ' <span class="lb-mine-tag" title="In your Data Center">MINE</span>' : ''}</div>
             </div>
             <div class="leaderboard-stats">
               ${statsHtml}
@@ -20346,11 +20368,11 @@
         }
 
         return `
-          <div class="leaderboard-item ${itemClass}" onclick="lookupValidator('${r.votePubkey}')">
+          <div class="leaderboard-item ${itemClass}${myPortfolio.includes(r.votePubkey) ? ' mine' : ''}" onclick="lookupValidator('${r.votePubkey}')">
             <div class="leaderboard-rank ${rankClass}">${rankDisplay}</div>
             <div class="leaderboard-validator">
               ${logoHtml}
-              <div class="leaderboard-name">${escHtml(r.name)}</div>
+              <div class="leaderboard-name">${escHtml(r.name)}${myPortfolio.includes(r.votePubkey) ? ' <span class="lb-mine-tag" title="In your Data Center">MINE</span>' : ''}</div>
             </div>
             <div class="leaderboard-stats">
               ${statsHtml}
@@ -21026,8 +21048,15 @@
       }
     }
     
+    let calculatorsPortfolioSig = '';
     async function initializeCalculators() {
-      if (calculatorsInitialized) return;
+      // Validators added to My Data Center after the first visit used to be
+      // missing from the dropdowns for the rest of the session. Rebuild them
+      // whenever the portfolio changed; bind the one-off listeners only once.
+      const sig = (myPortfolio || []).slice().sort().join(',');
+      if (calculatorsInitialized && sig === calculatorsPortfolioSig) return;
+      const firstRun = !calculatorsInitialized;
+      calculatorsPortfolioSig = sig;
       
       // Make sure we have network data loaded for validator info
       if (!allValidators || allValidators.length === 0) {
@@ -21081,16 +21110,18 @@
         breakevenSelect.innerHTML = '<option value="">-- No validators in Data Center --</option><option value="custom">✏️ Custom Values</option>';
       }
       
-      // Initialize all calculators with default values (show empty states)
-      onStakingValidatorChange();
-      calculateCompoundGrowth();
-      calculateBreakeven();
-      
-      // Setup unstaking when dropdown
-      document.getElementById('unstakingWhen').addEventListener('change', function() {
-        const customInput = document.getElementById('unstakingCustomEpoch');
-        customInput.style.display = this.value === 'custom' ? 'block' : 'none';
-      });
+      if (firstRun) {
+        // Initialize all calculators with default values (show empty states)
+        onStakingValidatorChange();
+        calculateCompoundGrowth();
+        calculateBreakeven();
+
+        // Setup unstaking when dropdown
+        document.getElementById('unstakingWhen').addEventListener('change', function() {
+          const customInput = document.getElementById('unstakingCustomEpoch');
+          customInput.style.display = this.value === 'custom' ? 'block' : 'none';
+        });
+      }
       
       calculatorsInitialized = true;
     }
@@ -22693,12 +22724,10 @@
       if (!myPortfolio.includes(voteAccount)) {
         myPortfolio.push(voteAccount);
         savePortfolio();
-        renderValidatorList(allValidators.filter(v => {
-          const search = document.getElementById('validatorSearchInput').value.toLowerCase();
-          return v.name.toLowerCase().includes(search) || 
-                 v.votePubkey.toLowerCase().includes(search) ||
-                 v.nodePubkey.toLowerCase().includes(search);
-        }));
+        // Re-render the current filtered view. (Passing the array straight into
+        // renderValidatorList() hit its `append` parameter, so clicking "+ Add"
+        // used to append the next 100 rows and never flip the button to "Added".)
+        filterValidatorList();
       }
     }
 
@@ -29876,6 +29905,15 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
 
         // Toggle chart visibility and initialize
+    function destroyCardCharts() {
+      if (typeof chartInstances !== 'object' || !chartInstances) return;
+      Object.keys(chartInstances).forEach(k => {
+        if (!k.startsWith('chart-')) return;
+        try { chartInstances[k].destroy(); } catch (e) {}
+        delete chartInstances[k];
+      });
+    }
+
     async function toggleChart(chartId, button) {
       const section = document.getElementById(chartId + '-section');
       const isExpanded = section.classList.contains('expanded');
