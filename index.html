@@ -1380,6 +1380,9 @@
       background-clip: text;
     }
 
+    .portfolio-stat-clickable { cursor: pointer; border-radius: 10px; transition: background 0.15s; }
+    .portfolio-stat-clickable:hover { background: var(--bg-card-hover); }
+    .portfolio-stat-label .warn { color: var(--warning); }
     .portfolio-stat-label {
       font-size: 0.7rem;
       color: var(--text-secondary);
@@ -12346,6 +12349,10 @@
               <div class="portfolio-stat-value" id="activePortfolioCount" style="color: var(--accent-cyan);">0/0</div>
               <div class="portfolio-stat-label">Active</div>
             </div>
+            <div class="portfolio-stat portfolio-stat-clickable" id="portfolioDelegation" title="X1 Foundation stake delegated to your validators. Click to see them on the Delegation tab." onclick="switchTab('delegation'); if (typeof delegFilterMine === 'function') delegFilterMine();">
+              <div class="portfolio-stat-value" id="portfolioDelegationValue" style="color: var(--text-dim);">…</div>
+              <div class="portfolio-stat-label" id="portfolioDelegationLabel">Foundation Delegation</div>
+            </div>
           </div>
 
           <!-- Combined Portfolio Chart - inside same box -->
@@ -12606,7 +12613,7 @@
             
             <div class="calc-input-group">
               <label>XNT Price (USD)</label>
-              <input type="number" id="stakingPrice" placeholder="1.00" value="1.00" min="0" step="0.01" oninput="renderStakingResults()">
+              <input type="number" id="stakingPrice" placeholder="1.00" value="1.00" min="0" step="0.0001" oninput="this.dataset.userSet='1'; renderStakingResults()" title="Defaults to the live XNT price from the header; type to override">
               <div class="calc-input-hint">Current price of XNT in USD</div>
             </div>
           </div>
@@ -12806,7 +12813,7 @@
             </div>
             <div class="calc-input-group" id="breakevenPriceGroup">
               <label>Current XNT Price (USD)</label>
-              <input type="number" id="breakevenPrice" placeholder="Price" value="1.00" min="0" step="0.01" oninput="calculateBreakeven()">
+              <input type="number" id="breakevenPrice" placeholder="Price" value="1.00" min="0" step="0.0001" oninput="this.dataset.userSet='1'; calculateBreakeven()" title="Defaults to the live XNT price from the header; type to override">
             </div>
           </div>
           <div class="calc-results" id="breakevenResults">
@@ -18528,6 +18535,7 @@
         avgPerfEl.textContent = formatNumber(avgPerf, 1);
         avgPerfEl.style.color = getPerformanceBarColor(avgPerf);
         document.getElementById('activePortfolioCount').textContent = `${activeCount}/${validators.length}`;
+        if (typeof window.delegPortfolioSummary === 'function') window.delegPortfolioSummary();
         document.getElementById('portfolioResultCount').textContent = validators.length;
         document.getElementById('portfolioUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
 
@@ -20966,8 +20974,25 @@
     let compoundChartInstance = null;
     let currentEpochData = null;
     
+    // Fill the price inputs with the live XNT price unless the user typed one.
+    function applyLiveXntPrice() {
+      const price = window.xntPriceUsd;
+      if (!(price > 0)) return;
+      const v = price >= 1 ? price.toFixed(2) : price.toFixed(4);
+      [['stakingPrice', 'renderStakingResults'], ['breakevenPrice', 'calculateBreakeven']].forEach(([id, fn]) => {
+        const el = document.getElementById(id);
+        if (!el || el.dataset.userSet === '1') return;
+        if (el.value === v) return;
+        el.value = v; el.placeholder = v;
+        const panel = el.closest('.calculator-panel');
+        if (panel && panel.classList.contains('active') && typeof window[fn] === 'function') { try { window[fn](); } catch (e) {} }
+      });
+    }
+    window.applyLiveXntPrice = applyLiveXntPrice;
+
     function switchCalculator(calc) {
       if (typeof Router !== 'undefined') Router.set('/calculators/' + calc);
+      applyLiveXntPrice();
       // Update nav buttons
       document.querySelectorAll('.calc-nav-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelector(`.calc-nav-btn[onclick="switchCalculator('${calc}')"]`).classList.add('active');
@@ -36336,7 +36361,38 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
       function hydrateAll(root) {
         (root || document).querySelectorAll('.deleg-section').forEach(renderCard);
+        renderPortfolioSummary();
       }
+
+      // My Data Center summary tile: total foundation stake across the
+      // portfolio, how many are approved, and who is failing.
+      function renderPortfolioSummary() {
+        const valueEl = document.getElementById('portfolioDelegationValue');
+        const labelEl = document.getElementById('portfolioDelegationLabel');
+        if (!valueEl || !labelEl) return;
+        const votes = (typeof myPortfolio !== 'undefined' && Array.isArray(myPortfolio)) ? myPortfolio : [];
+        if (!_doc || !votes.length) { valueEl.textContent = _err ? 'n/a' : (votes.length ? '…' : '—'); valueEl.style.color = 'var(--text-dim)'; labelEl.textContent = 'Foundation Delegation'; return; }
+        let total = 0, approved = 0, enrolled = 0; const failing = [];
+        for (const v of votes) {
+          const r = evaluate(v); if (!r || r.status === 'none') continue;
+          enrolled++;
+          total += r.delegated || 0;
+          if (r.status === 'approved' || r.status === 'delegated') approved++;
+          else failing.push((r.entry && r.entry.name) || short(v));
+        }
+        const compact = n => n >= 1e6 ? (n / 1e6).toFixed(2) + 'M' : n >= 1e3 ? (n / 1e3).toFixed(1) + 'K' : String(Math.round(n));
+        valueEl.textContent = total > 0 ? compact(total / 1e9) : (enrolled ? '0' : '—');
+        valueEl.style.color = total > 0 ? 'var(--success)' : 'var(--text-secondary)';
+        const parts = ['XNT delegated'];
+        if (enrolled) parts.push(approved + '/' + enrolled + ' approved');
+        if (failing.length) parts.push('<span class="warn" title="' + esc(failing.join(', ')) + '">' + failing.length + ' failing</span>');
+        if (!enrolled) parts.push('none enrolled');
+        labelEl.innerHTML = parts.join(' · ');
+      }
+      window.delegPortfolioSummary = renderPortfolioSummary;
+      window.delegFilterMine = () => {
+        const b = document.querySelector('#delegFilter button[data-f="mine"]'); if (b) b.click();
+      };
 
       // Cards are rendered by several code paths (lookup, Data Center,
       // compare); watch the DOM instead of hooking each one.
@@ -36562,6 +36618,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
           elPrice.textContent = fmtPrice(price);
           if (elChange) { elChange.textContent = ''; elChange.className = 'xnt-pill-change'; }
+          // Share the live price with the calculators (they defaulted to $1.00).
+          window.xntPriceUsd = price;
+          if (typeof window.applyLiveXntPrice === 'function') window.applyLiveXntPrice();
 
           if (slot) slot.classList.remove('xnt-hidden');
         } catch (e) {
