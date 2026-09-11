@@ -311,3 +311,17 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Still open from "Open small items": `_to_delete/` cleanup; ask terminal-error reporters about
   device/network.
 - One commit to push at end of session (index.html + HANDOVER.md).
+
+### 2026-09-11 — Session 3 (quick fix, ~15 min)
+- Shaka reported two Validator Terminal display bugs at ~1000 px window width: the column
+  header row floating in the middle of the table, and the self-stake percentile row cut off on
+  the right. Both were side effects of session 1's mobile fix (M1): once `.vt-tbl-wrap` became
+  a horizontal scroll container (≤1500 px), the `thead th { position: sticky; top: 48px }` rule
+  measured `top` from the wrap instead of the page (header sat 48 px into the rows); the
+  percentile grid (1 head + 7 values, `1fr` each) overflowed its `overflow: hidden` box below
+  ~1380 px.
+- Fix: inside the ≤1500 px block, `.vt-overlay table.vt-data thead th { top: 0 }`; new
+  `@media (max-width: 1380px)` for `.vt-pctrow` → 4 columns with the head spanning full width.
+  Verified by injecting the CSS into the live site at 1010 px: header above row 1, nothing clipped.
+- Lesson: when a table wrap becomes a scroll container, re-check every `position: sticky`
+  inside it (both `top` and `left` offsets now measure from the wrap).

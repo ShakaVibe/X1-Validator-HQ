@@ -11119,6 +11119,10 @@
       /* The terminal's own rule (.vt-tbl-wrap { overflow: visible }) comes later
          in the cascade, so this one needs higher specificity. */
       .vt-overlay .vt-tbl-wrap, #vtContent .vt-tbl-wrap { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+      /* Inside a scroll container the header row's sticky `top` is measured
+         from the wrap, not the page, so it floated 48px down into the rows.
+         Pin it to the wrap's top edge instead (it stays in normal flow). */
+      .vt-overlay table.vt-data thead th { top: 0; }
       table.vt-data th:nth-child(1), table.vt-data td:nth-child(1) { position: sticky; left: 0; z-index: 2; background: var(--bg-card); }
       table.vt-data th:nth-child(2), table.vt-data td:nth-child(2) { position: sticky; left: var(--vt-col1-w, 36px); z-index: 2; background: var(--bg-card); box-shadow: 4px 0 8px -4px rgba(0,0,0,0.5); }
       .vt-tip { min-width: min(460px, calc(100vw - 2rem)); max-width: calc(100vw - 2rem); }
@@ -11450,6 +11454,11 @@
       border-right: 1px solid var(--border);
     }
     .vt-pctrow > div:last-child { border-right: none; }
+    @media (max-width: 1380px) {
+      .vt-pctrow { grid-template-columns: repeat(4, 1fr); }
+      .vt-pctrow .head { grid-column: 1 / -1; border-bottom: 1px solid var(--border); }
+      .vt-pctrow > div:nth-child(5) { border-right: none; }
+    }
     .vt-pctrow .head {
       background: rgba(0, 212, 255, 0.06);
       color: var(--accent-cyan);
