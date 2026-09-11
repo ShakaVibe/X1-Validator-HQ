@@ -6,16 +6,19 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-09-10, after session 2):**
+> **Start here next session (as of 2026-09-11 evening):**
 > 1. `cd ~/Desktop/X1VHQ && git pull` — three bots commit hourly.
-> 2. Session 1's push is verified live (single Details link; snapshot and Live both 7,434 stake
->    accounts). Session 2 was a hygiene pass — verify its push landed (Tab to a nav button: cyan ring).
+> 2. Verify the power-saver push on the live site: open the console, run
+>    `PowerSaver.forceIdle(true)` → amber "Live updates paused" pill appears, globe stops,
+>    Network-tab RPC drops to ~1/min; `PowerSaver.forceIdle(false)` restores. Also confirm the
+>    globe rests ~60 s after load and wakes on drag.
 > 3. Next build, in Shaka's priority order: **Fleet health board (F4)** → **History charts (F2)**
 >    → **Alerts (F3, design first)**. Roadmap artifact: "X1 Validator HQ Roadmap".
-> 4. UI rule learned the hard way: per-validator data goes in the **stat grid as a tile with a
->    Details link** (like Breakdown / Classify) — never a new section or bar on the card.
-> 5. Nav decision (session 2): **no Globe tab**. The globe stays the home page, reachable via the
->    logo; no nav button is highlighted on the home page and that's intended.
+> 4. Card redesign is shelved; Shaka liked the "as Apple would" mockup on the site palette
+>    (light-weight tiles + settings-style chevron list + segmented control) — revisit only with
+>    his go-ahead. Rule: per-validator data goes in the stat grid with a Details link.
+> 5. Housekeeping: `_to_delete/` (patch scripts) and `Claude outputs/` (mockup PNGs) are
+>    gitignored folders in the repo dir — safe to delete.
 
 ---
 
@@ -376,3 +379,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Verified with a node harness (idle gating, activity wake, hidden→idle→visible). Live check
   after deploy: `PowerSaver.forceIdle(true)` in the console should show the pill, stop the
   globe, and cut Network-tab RPC to ~1/min.
+- **Session 3 totals (2026-09-11):** 4 pushes — terminal header/percentile fix; Data Center
+  delegation tile + live XNT price in calculators; audit bugs B4/B5/B7 + MINE tags + summary grid
+  fixes; power saver + globe render-on-demand + B3. Card redesign explored and shelved (Apple-style
+  on site palette was the one Shaka liked).
