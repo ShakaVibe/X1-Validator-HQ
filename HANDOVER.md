@@ -334,3 +334,15 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   - Calculators now default to the **live XNT price** from the header pill (`window.xntPriceUsd`,
     set by the pill's `update()`; `applyLiveXntPrice()` fills `#stakingPrice` / `#breakevenPrice`
     unless the user has typed a value — `data-user-set`). U9 closed.
+  - Bug fixes from the audit: **B5** browse-modal "+ Add" re-renders the filtered list
+    (`filterValidatorList()`) instead of appending the next page; **B4** `destroyCardCharts()`
+    drops stale per-card Chart instances whenever Lookup/Data Center re-render cards (charts
+    were blank after a re-render); **B7** calculators rebuild their Data Center dropdowns when
+    the portfolio changes (signature check), listeners bound once.
+  - **F15 (part):** Data Center validators get a cyan border + "MINE" tag on every leaderboard.
+    "Where am I" rank for validators outside the top 50 still open.
+  - Data Center summary: Delegation tile moved before Active (Shaka's request); values use
+    `clamp()` font-size so "6,017,816.03" is not clipped; "Total Rewards" relabelled
+    "Rewards Balance" (it is the vote-account balance sum — U9 fully closed).
+  - Data Center summary grid pinned to 6 equal columns (3 on ≤900 px, 2 on ≤480 px) so the
+    six tiles never wrap to a second row; Playwright-verified at 1180/1000 px, full number shown.
