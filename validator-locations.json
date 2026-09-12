@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-12T18:29:41.072Z",
-  "totalNodes": 596,
-  "totalLocations": 592,
+  "lastUpdated": "2026-09-12T22:24:15.576Z",
+  "totalNodes": 595,
+  "totalLocations": 591,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3762,13 +3762,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "5.196.64.42": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "135.181.11.132": {
       "country": "Finland",
       "countryCode": "FI",
@@ -4153,9 +4146,13 @@
       "name": "United States",
       "count": 204
     },
+    "NL": {
+      "name": "Netherlands",
+      "count": 23
+    },
     "FR": {
       "name": "France",
-      "count": 57
+      "count": 56
     },
     "CA": {
       "name": "Canada",
@@ -4172,10 +4169,6 @@
     "FI": {
       "name": "Finland",
       "count": 76
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 23
     },
     "SE": {
       "name": "Sweden",
