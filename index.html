@@ -15334,10 +15334,27 @@
         return false;
       }
 
+      // Per-method call counter for diagnosing RPC load: in the console,
+      // `rpcStats.byMethod` / `rpcStats.total` / `rpcStats.reset()`.
+      const rpcStats = { total: 0, byMethod: {}, since: Date.now(),
+        reset() { this.total = 0; this.byMethod = {}; this.since = Date.now(); } };
+      window.rpcStats = rpcStats;
+      function countRpc(options) {
+        rpcStats.total++;
+        try {
+          const b = options && typeof options.body === 'string' ? JSON.parse(options.body) : null;
+          for (const x of (Array.isArray(b) ? b : [b])) {
+            const m = (x && x.method) || '?';
+            rpcStats.byMethod[m] = (rpcStats.byMethod[m] || 0) + 1;
+          }
+        } catch (e) { rpcStats.byMethod['?'] = (rpcStats.byMethod['?'] || 0) + 1; }
+      }
+
       window.fetch = async function throttledFetch(url, options) {
         if (!isRpcUrl(url)) {
           return originalFetch(url, options);
         }
+        countRpc(options);
 
         // Short-circuit immediately if the breaker is open. No fetch, no
         // queue slot, no console spam — just a fast reject so callers can
