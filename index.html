@@ -29686,65 +29686,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
           
           delegators.sort((a, b) => b.amount - a.amount);
           
-          // Fetch validator's inflation rewards for multiple time periods
-          let derivedBaseAPY = 8; // Default fallback
-          let historicalAPY = {
-            days7: null,
-            days30: null,
-            days90: null,
-            days365: null
-          };
-          
-          try {
-            // Fetch up to 365 epochs (days) of rewards (vote account + self-stake)
-            const validatorRewards = await fetchTotalValidatorRewards(voteAccount, commission, 365);
-            
-            if (validatorRewards && validatorRewards.length > 0) {
-              // Calculate APY for different time periods
-              const divisor = selfStake + (delegatedStake * commission / 100);
-              
-              const calcPeriodAPY = (days) => {
-                const periodRewards = validatorRewards.slice(0, Math.min(days, validatorRewards.length));
-                if (periodRewards.length < days * 0.8) return null; // Need at least 80% of expected data
-                
-                const totalRewardsXNT = periodRewards.reduce((sum, r) => sum + r.amount, 0) / 1e9;
-                const avgEpochRewardsXNT = totalRewardsXNT / periodRewards.length;
-                const annualizedRewards = avgEpochRewardsXNT * epochsPerYear();
-                
-                // Derive baseAPY: annualRewards = baseAPY * (selfStake + delegatedStake * commission%)
-                const baseAPY = divisor > 0 ? (annualizedRewards / divisor) * 100 : 8;
-                
-                // Calculate validator earnings using baseAPY (same as Staking Calculator)
-                const selfEarnings = selfStake * (baseAPY / 100);
-                const commEarnings = delegatedStake * (baseAPY / 100) * (commission / 100);
-                const totalEarnings = selfEarnings + commEarnings;
-                
-                // Validator APY = total earnings / self-stake * 100
-                const validatorAPY = selfStake > 0 ? (totalEarnings / selfStake) * 100 : baseAPY;
-                
-                return {
-                  earnings: totalRewardsXNT,
-                  epochCount: periodRewards.length,
-                  avgDaily: annualizedRewards / 365.25,
-                  validatorAPY: validatorAPY,
-                  baseAPY: baseAPY
-                };
-              };
-              
-              historicalAPY.days7 = calcPeriodAPY(7);
-              historicalAPY.days30 = calcPeriodAPY(30);
-              historicalAPY.days90 = calcPeriodAPY(90);
-              historicalAPY.days365 = calcPeriodAPY(365);
-              
-              // Use 7-day APY as the primary derived APY
-              if (historicalAPY.days7) {
-                derivedBaseAPY = historicalAPY.days7.baseAPY;
-              }
-            }
-          } catch (e) {
-            console.warn('Could not fetch validator rewards for APY calculation:', e);
-          }
-          
+          // The stake split is ready now — show it. The APY needs reward
+          // history, which used to be fetched here for 365 epochs (~730 RPC
+          // calls through a 3-slot queue = minutes of "analyzing rewards…").
+          // Now: render immediately with the APY marked as calculating, fetch
+          // 30 epochs (enough for the 7-day and 30-day figures) in the
+          // background, and fill the APY in when it arrives.
           const breakdownData = {
             selfStake,
             delegatedStake,
@@ -29753,13 +29700,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
             selfStakeAccounts,
             accountCount: data.result.length,
             detectionMethod: detectionMethod,
-            derivedBaseAPY: derivedBaseAPY,
-            historicalAPY: historicalAPY
+            derivedBaseAPY: 8,
+            historicalAPY: {},
+            apyPending: true
           };
-          
-          // Cache
+
+          // Cache the split right away (APY is added below when known)
           stakeBreakdownCache[voteAccount] = { timestamp: Date.now(), data: breakdownData };
-          
+
           // Store for calculator
           if (!window.stakeBreakdownData) window.stakeBreakdownData = {};
           window.stakeBreakdownData[voteAccount] = {
@@ -29769,10 +29717,51 @@ Please give me the diagnostic commands to run on my server so you can help me id
             commission,
             delegatorCount: delegators.length
           };
-          
+
           renderInlineStakeBreakdown(section, breakdownData, validatorName, totalStake, commission, voteAccount);
           section.dataset.loaded = 'true';
-          
+
+          // ── APY, in the background ──
+          (async () => {
+            const APY_EPOCHS = 30;
+            let derivedBaseAPY = 8;
+            const historicalAPY = { days7: null, days30: null, days90: null, days365: null };
+            try {
+              const validatorRewards = await fetchTotalValidatorRewards(voteAccount, commission, APY_EPOCHS);
+              if (validatorRewards && validatorRewards.length > 0) {
+                const divisor = selfStake + (delegatedStake * commission / 100);
+                const calcPeriodAPY = (days) => {
+                  const periodRewards = validatorRewards.slice(0, Math.min(days, validatorRewards.length));
+                  if (periodRewards.length < days * 0.8) return null; // Need at least 80% of expected data
+                  const totalRewardsXNT = periodRewards.reduce((sum, r) => sum + r.amount, 0) / 1e9;
+                  const avgEpochRewardsXNT = totalRewardsXNT / periodRewards.length;
+                  const annualizedRewards = avgEpochRewardsXNT * epochsPerYear();
+                  const baseAPY = divisor > 0 ? (annualizedRewards / divisor) * 100 : 8;
+                  const selfEarnings = selfStake * (baseAPY / 100);
+                  const commEarnings = delegatedStake * (baseAPY / 100) * (commission / 100);
+                  const totalEarnings = selfEarnings + commEarnings;
+                  const validatorAPY = selfStake > 0 ? (totalEarnings / selfStake) * 100 : baseAPY;
+                  return { earnings: totalRewardsXNT, epochCount: periodRewards.length, avgDaily: annualizedRewards / 365.25, validatorAPY, baseAPY };
+                };
+                historicalAPY.days7 = calcPeriodAPY(7);
+                historicalAPY.days30 = calcPeriodAPY(30);
+                if (historicalAPY.days7) derivedBaseAPY = historicalAPY.days7.baseAPY;
+              }
+            } catch (e) {
+              console.warn('Could not fetch validator rewards for APY calculation:', e);
+            }
+            breakdownData.derivedBaseAPY = derivedBaseAPY;
+            breakdownData.historicalAPY = historicalAPY;
+            breakdownData.apyPending = false;
+            stakeBreakdownCache[voteAccount] = { timestamp: Date.now(), data: breakdownData };
+            // Re-render only if this section is still showing (user may have
+            // collapsed it or the cards were re-rendered meanwhile).
+            const live = document.getElementById('stake-' + voteAccount + '-section');
+            if (live && live.classList.contains('expanded') && live.dataset.loaded === 'true') {
+              renderInlineStakeBreakdown(live, breakdownData, validatorName, totalStake, commission, voteAccount);
+            }
+          })();
+
         } catch (err) {
           console.error('Error fetching stake breakdown:', err);
           const errorMsg = err.name === 'AbortError' ? 'Request timed out' : 'Error loading data';
@@ -29921,9 +29910,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
                   ${historicalAPY.days365 ? `<option value="365">1-year avg</option>` : ''}
                 </select>
               </div>
-              <div class="stake-inline-apy-value" id="apy-value-${voteAccount.slice(0,8)}">${historicalAPY.days7 ? formatNumber(historicalAPY.days7.validatorAPY, 2) : '—'}%</div>
+              <div class="stake-inline-apy-value" id="apy-value-${voteAccount.slice(0,8)}">${historicalAPY.days7 ? formatNumber(historicalAPY.days7.validatorAPY, 2) + '%' : (data.apyPending ? '<span style="font-size:0.8em;color:var(--text-secondary)">calculating…</span>' : '—%')}</div>
               <div class="stake-inline-apy-note">
-                <span id="apy-earnings-${voteAccount.slice(0,8)}">${historicalAPY.days7 ? formatNumber(historicalAPY.days7.earnings, 2) + ' XNT earned' : ''}</span>
+                <span id="apy-earnings-${voteAccount.slice(0,8)}">${historicalAPY.days7 ? formatNumber(historicalAPY.days7.earnings, 2) + ' XNT earned' : (data.apyPending ? 'Reading the last 30 epochs of rewards' : '')}</span>
               </div>
             </div>
             
