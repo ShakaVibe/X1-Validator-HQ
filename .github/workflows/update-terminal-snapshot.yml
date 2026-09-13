@@ -7,8 +7,13 @@ name: Update Validator Terminal snapshot
 #                          validator + official criteria (from
 #                          api.delegation.mainnet.x1.xyz), for the
 #                          eligibility checker and the Delegation tab
-# See scripts/build-terminal-snapshot.js, scripts/build-delegation-snapshot.js
-# and HANDOVER.md.
+#   data/rewards.json    — per-validator inflation-reward ledger (vote +
+#                          self-stake, last 36 epochs) so Stake Details /
+#                          earnings trend / APY read one file instead of
+#                          60 RPC calls per card. Incremental: ~10 RPC
+#                          calls a day once the backfill exists.
+# See scripts/build-terminal-snapshot.js, scripts/build-delegation-snapshot.js,
+# scripts/build-rewards-ledger.js and HANDOVER.md.
 
 on:
   schedule:
@@ -52,16 +57,28 @@ jobs:
         env:
           X1_DELEGATION_API: https://api.delegation.mainnet.x1.xyz
 
+      - name: Build rewards ledger
+        # continue-on-error: an RPC hiccup must not block the other two
+        # snapshots; the previous rewards.json stays and the site tops up
+        # missing epochs live. The script only rewrites the file on success.
+        continue-on-error: true
+        run: node scripts/build-rewards-ledger.js
+        env:
+          X1_RPC_URL: https://rpc.mainnet.x1.xyz
+          LEDGER_EPOCHS: '36'
+
       - name: Commit updated snapshots
         run: |
           git config user.name "x1hq-terminal-bot"
           git config user.email "actions@users.noreply.github.com"
           git add data/terminal.json data/delegation.json
+          # rewards.json does not exist until the ledger step's first success
+          if [ -f data/rewards.json ]; then git add data/rewards.json; fi
           if git diff --cached --quiet; then
             echo "No changes to commit"
             exit 0
           fi
-          git commit -m "chore: update terminal + delegation snapshots [skip ci]"
+          git commit -m "chore: update terminal + delegation + rewards snapshots [skip ci]"
           # Another bot may have pushed while we ran — rebase and retry a few times.
           for i in 1 2 3 4 5; do
             git pull --rebase origin "${GITHUB_REF_NAME}" && git push && exit 0

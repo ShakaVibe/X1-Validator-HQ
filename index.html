@@ -15693,10 +15693,76 @@
       return cached ? cached.data : [];
     }
 
+    // ===========================================================
+    // REWARDS LEDGER — data/rewards.json, written hourly by
+    // scripts/build-rewards-ledger.js (see HANDOVER.md). Per vote
+    // account: vote reward + self-stake reward for each of the last
+    // ~36 completed epochs, lamports, aligned to doc.epochs.
+    // fetchTotalValidatorRewards() reads this first and only asks the
+    // RPC for epochs the ledger does not cover (normally none — at most
+    // the newest epoch right after a boundary), which turns 60 RPC
+    // round-trips per card into zero.
+    // ===========================================================
+    const RewardsLedger = (function () {
+      const URL_ = 'data/rewards.json';
+      const MAX_AGE_MS = 48 * 3600 * 1000;   // older → bot is broken, ignore it
+      const REFRESH_MS = 10 * 60 * 1000;
+      let doc = null, loadedAt = 0, promise = null, failedAt = 0;
+
+      async function load() {
+        if (doc && Date.now() - loadedAt < REFRESH_MS) return doc;
+        if (promise) return promise;
+        if (!doc && failedAt && Date.now() - failedAt < REFRESH_MS) return null; // don't hammer a 404
+        promise = (async () => {
+          try {
+            // 5-minute cache-bust key, same convention as data/scores.json
+            const r = await fetch(URL_ + '?t=' + Math.floor(Date.now() / 300000), { cache: 'no-cache' });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            const d = await r.json();
+            if (!d || d.v !== 1 || !Array.isArray(d.epochs) || !d.validators) throw new Error('unexpected shape');
+            const gen = Date.parse(d.generatedAt);
+            if (!gen || Date.now() - gen > MAX_AGE_MS) throw new Error('stale (' + d.generatedAt + ')');
+            d._index = new Map(d.epochs.map((e, i) => [e, i]));
+            doc = d; loadedAt = Date.now(); failedAt = 0;
+            console.info('[ledger] rewards.json: epochs ' + d.epochs[0] + '..' + d.epochs[d.epochs.length - 1] +
+              ', ' + Object.keys(d.validators).length + ' validators, generated ' + d.generatedAt);
+          } catch (e) {
+            console.warn('[ledger] unavailable (' + e.message + ') — rewards will come from live RPC');
+            failedAt = Date.now();
+          } finally { promise = null; }
+          return doc; // previous copy (if any) survives a failed refresh
+        })();
+        return promise;
+      }
+
+      // Reward rows for the requested epochs, in the shape
+      // fetchTotalValidatorRewards() returns. `self` is the ledger's
+      // self-stake account list for the validator (null if unknown).
+      function rows(voteAccount, epochs, commission) {
+        const out = new Map();
+        const e = doc && doc.validators[voteAccount];
+        if (!e) return { rows: out, self: null };
+        for (const ep of epochs) {
+          const i = doc._index.get(ep);
+          if (i === undefined) continue;
+          const v = e.v ? e.v[i] : null;
+          const sv = e.s ? e.s[i] : null;
+          out.set(ep, { epoch: ep, amount: (v || 0) + (sv || 0), indexed: v != null, postBalance: 0, commission });
+        }
+        return { rows: out, self: Array.isArray(e.self) ? e.self : [] };
+      }
+
+      return { load, rows, get doc() { return doc; }, get generatedAt() { return doc ? doc.generatedAt : null; } };
+    })();
+    window.RewardsLedger = RewardsLedger;
+
     // Cache for total validator rewards (vote + self-stake)
     let totalRewardsCache = {};
 
     // Fetch TOTAL validator rewards (vote account commission + self-stake rewards)
+    // for the last `numEpochs` completed epochs, newest first. Rows come from
+    // the hourly rewards ledger (data/rewards.json) whenever it covers the
+    // epoch; only uncovered epochs go to the RPC (fetchTotalValidatorRewardsLive).
     async function fetchTotalValidatorRewards(voteAccount, commission, numEpochs = 30) {
       // Check cache first
       const cacheKey = `${voteAccount}_total_${numEpochs}`;
@@ -15710,13 +15776,64 @@
         const epochInfo = await getEpochInfoCached();
         currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
 
-        // Step 1: Fetch vote account rewards (commission) in parallel
         // Start from currentEpoch - 1 to exclude the current incomplete epoch
         const epochsToFetch = [];
         for (let i = 1; i <= Math.min(numEpochs, currentEpochNumber); i++) {
           epochsToFetch.push(currentEpochNumber - i);
         }
 
+        // Ledger first — unless this visitor hand-classified the validator's
+        // self-stake accounts (the ledger only knows withdrawer matching).
+        let ledgerRows = new Map(), knownSelf = null;
+        const userSel = typeof getSelfStakeSelections === 'function' ? getSelfStakeSelections(voteAccount) : null;
+        if (!hasUserClassification(userSel)) {
+          await RewardsLedger.load();
+          const got = RewardsLedger.rows(voteAccount, epochsToFetch, commission);
+          ledgerRows = got.rows; knownSelf = got.self;
+        }
+
+        // Whatever the ledger lacks goes to the RPC: normally nothing, the
+        // newest epoch right after a boundary, or everything when the ledger
+        // is unavailable. A cell the bot saw as un-indexed in one of the two
+        // newest epochs is re-checked live too (RPC may have caught up since).
+        const missing = epochsToFetch.filter(ep => {
+          const r = ledgerRows.get(ep);
+          return !r || (!r.indexed && ep >= currentEpochNumber - 2);
+        });
+        const liveRows = missing.length
+          ? await fetchTotalValidatorRewardsLive(voteAccount, commission, missing, knownSelf)
+          : [];
+
+        const byEpoch = new Map(ledgerRows);
+        for (const r of liveRows) byEpoch.set(r.epoch, r);
+        const rewards = Array.from(byEpoch.values()).sort((a, b) => b.epoch - a.epoch);
+
+        // Cache only if the most recent epoch has real indexed data.
+        // Caching a not-yet-indexed result would poison the cache for 5 minutes
+        // and force users to see stale zeros.
+        if (rewards.length > 0 && rewards[0].indexed) {
+          totalRewardsCache[cacheKey] = { timestamp: Date.now(), data: rewards };
+        }
+        if (ledgerRows.size) {
+          console.log(`[ledger] ${voteAccount.slice(0,8)}...: ${ledgerRows.size} epochs from ledger, ${missing.length} live`);
+        }
+        return rewards;
+      } catch (e) {
+        console.error('Error fetching total validator rewards:', e);
+        // Fallback to just vote account rewards
+        return fetchInflationRewards(voteAccount, numEpochs);
+      }
+    }
+
+    // Live RPC path: one getInflationReward per epoch for the vote account,
+    // plus one per epoch for its self-stake accounts. `knownSelfAccounts`
+    // (from the ledger) skips the getAccountInfo + getProgramAccounts
+    // discovery. Returns rows for `epochsToFetch` only; never caches.
+    async function fetchTotalValidatorRewardsLive(voteAccount, commission, epochsToFetch, knownSelfAccounts) {
+      try {
+        let selfStakeAccounts = [];
+
+        // Step 1: Fetch vote account rewards (commission) in parallel
         const voteRewardsPromises = epochsToFetch.map(async (epoch) => {
           try {
             const response = await fetch(RPC_URL, {
@@ -15743,8 +15860,12 @@
         });
 
         // Step 2: Fetch vote account info to get authorizedWithdrawer
+        // (steps 2–4 are skipped when the ledger already knows the self-stake list)
         let voteAccountWithdrawer = null;
-        try {
+        let stakeData = { result: [] };
+        if (Array.isArray(knownSelfAccounts)) {
+          selfStakeAccounts = knownSelfAccounts;
+        } else try {
           const voteAcctResponse = await fetch(RPC_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -15764,6 +15885,7 @@
         }
 
         // Step 3: Fetch stake accounts delegated to this validator
+        if (!Array.isArray(knownSelfAccounts)) {
         const stakeResponse = await fetch(RPC_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -15780,7 +15902,8 @@
             ]
           })
         });
-        const stakeData = await stakeResponse.json();
+        stakeData = await stakeResponse.json();
+        }
 
         // Wait for vote rewards
         const voteRewardsResults = await Promise.all(voteRewardsPromises);
@@ -15793,9 +15916,9 @@
 
         // Step 4: Identify self-stake accounts using WITHDRAWER MATCHING
         // (same method as stake breakdown - much more accurate than reward rate analysis)
-        let selfStakeAccounts = [];
-        
-        if (stakeData.result && stakeData.result.length > 0 && voteAccountWithdrawer) {
+        if (Array.isArray(knownSelfAccounts)) {
+          // already set from the ledger
+        } else if (stakeData.result && stakeData.result.length > 0 && voteAccountWithdrawer) {
           // Check for user selections first
           const userSelections = typeof getSelfStakeSelections === 'function' ? getSelfStakeSelections(voteAccount) : null;
           
@@ -15880,23 +16003,11 @@
           }))
           .sort((a, b) => b.epoch - a.epoch);
 
-        // Cache only if the most recent epoch has real indexed data.
-        // Caching a not-yet-indexed result would poison the cache for 5 minutes
-        // and force users to see stale zeros.
-        if (rewards.length > 0 && rewards[0].indexed) {
-          totalRewardsCache[cacheKey] = {
-            timestamp: Date.now(),
-            data: rewards
-          };
-        }
-
-        console.log(`Total rewards for ${voteAccount.slice(0,8)}...: vote + ${selfStakeAccounts.length} self-stake accounts, ${rewards.length} epochs`);
-        
+        console.log(`Live rewards for ${voteAccount.slice(0,8)}...: vote + ${selfStakeAccounts.length} self-stake accounts, ${rewards.length} epochs`);
         return rewards;
       } catch (e) {
-        console.error('Error fetching total validator rewards:', e);
-        // Fallback to just vote account rewards
-        return fetchInflationRewards(voteAccount, numEpochs);
+        console.error('Error fetching live validator rewards:', e);
+        return [];
       }
     }
 
@@ -32216,6 +32327,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
     // Initialize
     async function init() {
+      // Warm the hourly rewards ledger (data/rewards.json) in the background
+      // so the first validator card's rewards don't wait on the download.
+      if (typeof RewardsLedger !== 'undefined') RewardsLedger.load().catch(() => {});
+
       // Fetch rewards history first if API is configured
       await fetchRewardsHistory();
       
