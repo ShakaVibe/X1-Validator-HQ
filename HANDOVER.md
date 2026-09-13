@@ -503,3 +503,20 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `permissions: actions: write` is what lets GITHUB_TOKEN dispatch (workflow_dispatch is the
   documented exception to "GITHUB_TOKEN events don't trigger workflows"). Public repo → free
   minutes. To stop it: cancel the run AND disable the workflow, or the cron restarts it.
+
+### 2026-09-13 — Session 4, evening: under-the-hood #1 — stake split RPC diet
+- Decision on "stake split from files": **not worth it** as originally framed. Serving the
+  self/delegated split from `terminal.json` would mean downloading ~600 KB gz for what is a
+  few KB of `getProgramAccounts` per validator; the file only wins on RPC independence. Kept the
+  RPC call but stripped everything around it:
+  - The three stake-split sites (Stake Selection modal ~23360, `toggleStakeDetails` ~29620,
+    Data Center portfolio loop ~30440) each did `getEpochInfo` + `getInflationReward` for every
+    stake account (epoch-1, then epoch-2 if empty) + `getAccountInfo` for the vote withdrawer.
+    The reward probe fed only a debug `console.log` (`rewardRate` / `hasReward`, leftovers of the
+    old reward-rate heuristic) — deleted, 262 lines gone.
+  - New `getVoteWithdrawer(vote)` (next to `classifyStakeSource`): reads `w` from the rewards
+    ledger, `getAccountInfo` only as fallback. All three sites use it.
+  - Net: Stake Details open 4 → **1 RPC call** (the `getProgramAccounts` scan); portfolio loop
+    4 → 1 per validator; Stake Selection modal 4 → 1.
+- Tooling note: `device_commit_files` re-used a stale staged copy when the same staged filename
+  was reused — stage under a NEW filename each time (or write via device_bash heredoc/base64).
