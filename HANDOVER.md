@@ -6,12 +6,13 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-09-11 evening):**
+> **Start here next session (as of 2026-09-13):**
 > 1. `cd ~/Desktop/X1VHQ && git pull` — three bots commit hourly.
-> 2. Verify the power-saver push on the live site: open the console, run
->    `PowerSaver.forceIdle(true)` → amber "Live updates paused" pill appears, globe stops,
->    Network-tab RPC drops to ~1/min; `PowerSaver.forceIdle(false)` restores. Also confirm the
->    globe rests ~60 s after load and wakes on drag.
+> 2. Verify the **rewards ledger** is alive: `https://x1valhq.xyz/data/rewards.json` exists
+>    (~700 KB, `epochs` covers the last 36 completed epochs, `generatedAt` < 2 h old). On the
+>    site, open a validator → Stake Details: the split renders in ~1 s and the APY line fills in
+>    within a second or two (console shows `[ledger] …: 30 epochs from ledger, 0 live`). If the
+>    file is missing, run Actions → "Update Validator Terminal snapshot" → Run workflow once.
 > 3. Next build, in Shaka's priority order: **Fleet health board (F4)** → **History charts (F2)**
 >    → **Alerts (F3, design first)**. Roadmap artifact: "X1 Validator HQ Roadmap".
 > 4. Card redesign is shelved; Shaka liked the "as Apple would" mockup on the site palette
@@ -63,6 +64,9 @@ data/history.json             7-day rolling history behind the scores
 validator-locations.json      geo data — written every 2h by Action
 data/terminal.json            Validator Terminal snapshot — written hourly by Action (added 2026-09-10)
 data/delegation.json          Delegation Program snapshot — same Action, same commit (added 2026-09-10)
+data/rewards.json             per-validator reward ledger, last 36 epochs — same Action (added 2026-09-13)
+scripts/build-rewards-ledger.js  builds data/rewards.json from the RPC, incrementally
+scripts/test-rewards-ledger.js   mock-RPC tests for the above (`node scripts/test-rewards-ledger.js`)
 scripts/build-delegation-snapshot.js  builds data/delegation.json from api.delegation.mainnet.x1.xyz
 scripts/build-terminal-snapshot.js  builds data/terminal.json from api.x1.xyz
 scripts/compute-scores.js     score generator (Node 20, zero deps)
@@ -70,7 +74,7 @@ scripts/test-compute-scores.js  mock-RPC tests for the above
 generate-geo.js               geo updater run by the Action
 .github/workflows/update-scores.yml     hourly, minute :07  (commits data/*.json)
 .github/workflows/update-geo-data.yml   every 2h, minute :21 (commits validator-locations.json)
-.github/workflows/update-terminal-snapshot.yml  hourly, minute :37 (commits data/terminal.json)
+.github/workflows/update-terminal-snapshot.yml  hourly, minute :37 (commits data/terminal.json, delegation.json, rewards.json)
 vendor/solana-web3.js-1.98.4.iife.min.js
 SCORING-DEPLOYMENT.md         design doc for the canonical scoring system (formula v2)
 CNAME / .nojekyll / _headers  Pages config
@@ -98,6 +102,23 @@ CNAME / .nojekyll / _headers  Pages config
   Data source order: `data/terminal.json` snapshot (hourly, same origin) → live api.x1.xyz.
 - **Scores** are canonical (computed server-side by the Action) with an in-browser fallback if
   `data/scores.json` is missing or >3h stale — see `SCORING-DEPLOYMENT.md`.
+- **Rewards ledger** (`data/rewards.json`, `RewardsLedger` module just above
+  `fetchTotalValidatorRewards`, ~line 15706): every per-validator reward lookup on the site goes
+  through `fetchTotalValidatorRewards(vote, commission, n)`. It now takes rows from the ledger
+  (vote reward + self-stake reward per completed epoch, lamports, `v`/`s` arrays aligned to
+  `doc.epochs`) and only calls the RPC (`fetchTotalValidatorRewardsLive`) for epochs the ledger
+  lacks — normally none; the newest epoch for up to an hour after a boundary (2 calls, using the
+  ledger's self-stake list so no discovery calls); everything if the file is missing/stale >48 h.
+  Visitors who hand-classified a validator's self-stake (localStorage) bypass the ledger.
+  RPC facts measured 2026-09-13: `getInflationReward` takes ≤ ~300 addresses per call (413 above
+  that), ~250 ms per call, history available back to genesis; `getProgramAccounts` on the Stake
+  program with `dataSlice {44,120}` + `dataSize 200` returns all 7.8k stake accounts in ~450 ms /
+  3 MB; vote-account withdrawer is at byte offset 36 in every VoteState version. Self-stake =
+  stake account withdrawer == vote account withdrawer (1,546 accounts across 578 validators).
+  The builder is incremental (loads the previous file, re-fetches only missing cells + null cells
+  in the 3 newest epochs) so a routine run is ~15 RPC calls; a full backfill of 36 epochs is ~400
+  calls / ~1 min. An epoch whose vote rewards are all null (RPC hasn't computed it yet) is left
+  out of the file rather than published as zeros.
 
 ## 5. To-do list
 
@@ -150,7 +171,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] **F3** Telegram alerts (5-min heartbeat workflow + `/watch <vote>` bot), then Discord webhook
 - [ ] **F6** score coach ("+3.0 if you upgrade"); publish `interp()` anchors in scores.json
 - [ ] **F5** public profile pages + OG share cards generated by the Action
-- [ ] **F8** rewards ledger + CSV; **F9** change feeds; **F11** APR per validator
+- [ ] **F8b** rewards CSV export from the ledger; **F9** change feeds; **F11** APR per validator
+      (F8 ledger itself is DONE 2026-09-13 — `data/rewards.json`; F2 history charts can read it)
 
 ### Phase 3 — ongoing (platform)
 - [ ] **C1** split `index.html` (css + core + per-tab files, plain `<script src>`)
@@ -164,6 +186,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] Ask people who reported the terminal error which device/network they were on.
 
 ### Done
+- [x] 2026-09-13 — **F8 rewards ledger**: `scripts/build-rewards-ledger.js` → `data/rewards.json`
+      hourly; site reads it first (`RewardsLedger`), RPC only for uncovered epochs.
 - [x] 2026-09-10 — Local clone set up at `~/Desktop/X1VHQ`, folder linked to Claude.
 - [x] 2026-09-10 — Diagnosed + hardened Validator Terminal loading (see Session Log).
 - [x] 2026-09-10 — Hourly terminal snapshot Action + snapshot-first loader (see Session Log).
@@ -401,3 +425,32 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   accounts (and all self-stake accounts) in a few batched calls and publish
   `data/rewards.json`; the site then reads one file instead of 30–60 RPC calls per card. This is
   F8 (rewards ledger) — bump its priority; it also unlocks F2 history charts.
+
+### 2026-09-13 — Session 4, continued: rewards ledger (F8), ~2 hours
+- Shaka: "lets do the long term fix." Built the server-side rewards ledger.
+- **Probed the RPC from the built-in browser first** (cloud sandbox and the Mac VM cannot reach
+  it): batch limits, epoch history depth, account layouts — all recorded in §4.
+- `scripts/build-rewards-ledger.js` (Node 20, zero deps, `buildLedger(prev, opts)` exported for
+  tests): getEpochInfo → getVoteAccounts (725) → vote withdrawers via `getMultipleAccounts`
+  dataSlice → all stake accounts via one `getProgramAccounts` dataSlice → self-stake lists →
+  per-epoch batched `getInflationReward` (250 addrs/call, 3 in flight) for votes and self
+  accounts. Incremental against the previous `data/rewards.json`. Output: `{ v, generatedAt,
+  currentEpoch, epochs[], counts, validators: { vote: { w, self[], v[], s[] } } }`.
+- `scripts/test-rewards-ledger.js`: mock-RPC tests (full build, new un-indexed epoch dropped,
+  null-cell recheck does not drop an indexed epoch, changed self list rebuilds that column,
+  no-change run is ~free). The third case came from a real bug the live run exposed.
+- **Ran the exact script live in the browser** (base64-loaded): 6-epoch window built in 8 s /
+  71 calls / 223 KB; values match the site's old live `fetchTotalValidatorRewards` output
+  epoch-for-epoch for a sampled validator. Incremental re-run: 14 calls.
+- Workflow `update-terminal-snapshot.yml`: new step "Build rewards ledger" (`continue-on-error`),
+  commit step adds `data/rewards.json` when present.
+- `index.html`: `RewardsLedger` module (load with 5-min cache-bust, 10-min refresh, >48 h stale
+  → ignored, `rows(vote, epochs, commission)`); `fetchTotalValidatorRewards` split into the
+  ledger-first wrapper + `fetchTotalValidatorRewardsLive(vote, commission, epochs, knownSelf)`;
+  `init()` warms the ledger. Node mock test of the slice: ledger + 1 live epoch → 2 RPC calls
+  and no discovery; cache hit → 0; never-earning validator → only the 2 newest epochs
+  re-checked; unknown validator → full live path; user classification → live path.
+- Expected effect: Stake Details / earnings trend / Data Center "Rewards Last Epoch" / calculator
+  APY go from 6–60 RPC calls per validator to zero (one 700 KB file, gzipped by Pages, shared by
+  every card). The friend's x1VAL_BOT approach, without the database.
+- Not yet verified live at the time of writing (needs the push + one Action run) — see Start here.
