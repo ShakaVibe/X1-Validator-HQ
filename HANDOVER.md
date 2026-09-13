@@ -13,9 +13,10 @@
 >    site, open a validator → Stake Details: the split renders in ~1 s and the APY line fills in
 >    within a second or two (console shows `[ledger] …: 30 epochs from ledger, 0 live`). If the
 >    file is missing, run Actions → "Update Validator Terminal snapshot" → Run workflow once.
-> 3. **GitHub's cron is NOT hourly** — the three bots fire every 2–5 h (Actions history, 2026-09-13).
->    Site now tolerates 12 h-old scores/terminal snapshots, but decide on a fix: self-rescheduling
->    heartbeat workflow (option a) or external pinger (option b) — see session 4 log.
+> 3. **GitHub's cron is NOT hourly** — the three bots fired every 2–5 h (Actions history,
+>    2026-09-13). Fix: `.github/workflows/heartbeat.yml`, a self-rescheduling chain that
+>    dispatches the bots every hour. Check Actions → "Heartbeat" shows one run per hour and
+>    `data/*.json` `generatedAt` values < 1.5 h old. If the chain died, "Run workflow" restarts it.
 > 4. Next build, in Shaka's priority order: **Fleet health board (F4)** → **History charts (F2)**
 >    → **Alerts (F3, design first)**. Roadmap artifact: "X1 Validator HQ Roadmap".
 > 5. Card redesign is shelved; Shaka liked the "as Apple would" mockup on the site palette
@@ -78,6 +79,7 @@ generate-geo.js               geo updater run by the Action
 .github/workflows/update-scores.yml     hourly, minute :07  (commits data/*.json)
 .github/workflows/update-geo-data.yml   every 2h, minute :21 (commits validator-locations.json)
 .github/workflows/update-terminal-snapshot.yml  hourly, minute :37 (commits data/terminal.json, delegation.json, rewards.json)
+.github/workflows/heartbeat.yml         self-rescheduling chain that dispatches the three bots hourly (GitHub cron is unreliable)
 vendor/solana-web3.js-1.98.4.iife.min.js
 SCORING-DEPLOYMENT.md         design doc for the canonical scoring system (formula v2)
 CNAME / .nojekyll / _headers  Pages config
@@ -493,8 +495,11 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   **24 h** (`window.canonicalScoresDoc` keeps the file even when too stale for scoring);
   terminal `SNAPSHOT_MAX_AGE_MS` 3 h → **12 h** with an amber "Snapshot · Nh old" label in the
   header corner once older than 2 h (`snapshotAgeLabel()`). Rewards ledger already tolerated 48 h.
-- **Open decision (asked, not yet answered):** make the bots really hourly via
-  (a) a self-rescheduling heartbeat workflow (`sleep ~55 min` then `gh workflow run` the three
-  bots + itself; cron kept as backup restart; public repo → minutes are free), or
-  (b) an external pinger (launchd on the Mac Studio or cron-job.org) calling the workflow_dispatch
-  API with a fine-grained PAT (actions:write on this repo only).
+- **Decision: (a)** — Shaka: "I don't want anything to have to run on the mac."
+  `.github/workflows/heartbeat.yml`: guard (exits if another heartbeat < 55 min old is alive;
+  waits 45 s first because the previous run dispatches us as its last step) → `gh workflow run`
+  scores + terminal (+ geo on even hours) → sleep until :02 past the next hour → dispatch itself.
+  Backup cron `11 */2 * * *` restarts the chain if it ever dies; concurrency group `heartbeat`.
+  `permissions: actions: write` is what lets GITHUB_TOKEN dispatch (workflow_dispatch is the
+  documented exception to "GITHUB_TOKEN events don't trigger workflows"). Public repo → free
+  minutes. To stop it: cancel the run AND disable the workflow, or the cron restarts it.
