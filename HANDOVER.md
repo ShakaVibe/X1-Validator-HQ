@@ -13,12 +13,15 @@
 >    site, open a validator → Stake Details: the split renders in ~1 s and the APY line fills in
 >    within a second or two (console shows `[ledger] …: 30 epochs from ledger, 0 live`). If the
 >    file is missing, run Actions → "Update Validator Terminal snapshot" → Run workflow once.
-> 3. Next build, in Shaka's priority order: **Fleet health board (F4)** → **History charts (F2)**
+> 3. **GitHub's cron is NOT hourly** — the three bots fire every 2–5 h (Actions history, 2026-09-13).
+>    Site now tolerates 12 h-old scores/terminal snapshots, but decide on a fix: self-rescheduling
+>    heartbeat workflow (option a) or external pinger (option b) — see session 4 log.
+> 4. Next build, in Shaka's priority order: **Fleet health board (F4)** → **History charts (F2)**
 >    → **Alerts (F3, design first)**. Roadmap artifact: "X1 Validator HQ Roadmap".
-> 4. Card redesign is shelved; Shaka liked the "as Apple would" mockup on the site palette
+> 5. Card redesign is shelved; Shaka liked the "as Apple would" mockup on the site palette
 >    (light-weight tiles + settings-style chevron list + segmented control) — revisit only with
 >    his go-ahead. Rule: per-validator data goes in the stat grid with a Details link.
-> 5. Housekeeping: `_to_delete/` (patch scripts) and `Claude outputs/` (mockup PNGs) are
+> 6. Housekeeping: `_to_delete/` (patch scripts) and `Claude outputs/` (mockup PNGs) are
 >    gitignored folders in the repo dir — safe to delete.
 
 ---
@@ -464,3 +467,34 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Noticed while verifying: **`data/scores.json` was 3.8 h old** (generated 11:41 UTC, terminal
   snapshot 15:25) — the site fell back to client-side scoring. Check Actions → "Update scores"
   for a failed/skipped run and the "[bot] … is failing" issue.
+
+### 2026-09-13 — Session 4, later: RPC load measurement + the cron discovery (~1 hour)
+- Earnings-trend chart on the card (F2): mocked up (sparkline in the Last Epoch Earned tile +
+  "Trend" modal, and a strip variant) — **Shaka rejected both: "takes up too much real estate".**
+  Don't re-propose card-level charts. `docs/`-less; mockup source in the session only.
+- Added `window.rpcStats` (per-method RPC call counter) inside `installRpcThrottle` — in the
+  console: `rpcStats.byMethod`, `rpcStats.total`, `rpcStats.reset()`. Keep it; it is how the
+  numbers below were measured (real Chrome, 5-validator portfolio, `#/datacenter`).
+- **Measured:** empty page = 8 RPC calls; 5-validator Data Center load = **66**, of which
+  **41 `getBlockProduction`** — every card ran `fetchHistoricalSkipRates(node, 7)` = 7 full-epoch
+  range scans + 1 current-epoch call. Rewards = 0 calls (ledger working). Idle = 0 calls/30 s.
+- Fix: `publishedSkipHistory(nodePubkey)` maps `scores.json` (`skipRate7d`, `skipEpochs`,
+  `leaderSlots7d`, keyed by node via `doc._byNode`) into the `fetchHistoricalSkipRates` shape;
+  that function now tries it first (awaiting `canonicalScoresPromise`), RPC only if unavailable.
+  Live-verified: **66 → 26 calls**, `getBlockProduction` 41 → 6; skip tile now shows the same
+  7-epoch figure the leaderboard uses (e.g. "0.39% · 4-epoch average" instead of a 3-epoch live
+  number).
+- **Discovery: GitHub's scheduler runs the "hourly" workflows every 2–5 h.** Scores ran 00:51,
+  05:58, 11:40; terminal snapshot 00:13, 05:18, 10:34 (all successful — cron just doesn't fire).
+  With the site's old 3 h staleness cutoffs that meant: most of the day, every visitor did the
+  client-side scoring crawl AND the Validator Terminal fell back to the 13 MB live download.
+  Almost certainly the real cause of the "site is slow" reports.
+- Mitigation shipped: `CANONICAL_MAX_AGE_MS` 3 h → **12 h**; skip history accepts scores up to
+  **24 h** (`window.canonicalScoresDoc` keeps the file even when too stale for scoring);
+  terminal `SNAPSHOT_MAX_AGE_MS` 3 h → **12 h** with an amber "Snapshot · Nh old" label in the
+  header corner once older than 2 h (`snapshotAgeLabel()`). Rewards ledger already tolerated 48 h.
+- **Open decision (asked, not yet answered):** make the bots really hourly via
+  (a) a self-rescheduling heartbeat workflow (`sleep ~55 min` then `gh workflow run` the three
+  bots + itself; cron kept as backup restart; public repo → minutes are free), or
+  (b) an external pinger (launchd on the Mac Studio or cron-job.org) calling the workflow_dispatch
+  API with a fine-grained PAT (actions:write on this repo only).
