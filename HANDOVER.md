@@ -453,4 +453,14 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Expected effect: Stake Details / earnings trend / Data Center "Rewards Last Epoch" / calculator
   APY go from 6–60 RPC calls per validator to zero (one 700 KB file, gzipped by Pages, shared by
   every card). The friend's x1VAL_BOT approach, without the database.
-- Not yet verified live at the time of writing (needs the push + one Action run) — see Start here.
+- **Live-verified 15:30 UTC** after Shaka pushed + ran the Action once: `data/rewards.json` = 36
+  epochs (339–374), 725 validators, 386 RPC calls for the full backfill, 304 KB gzipped on the
+  wire. On the site: 30 epochs for a ledger-covered validator → 0 RPC calls, 0 ms; Stake Details
+  opens with the APY already filled in 0.8 s (the 4 remaining RPC calls are the stake-account
+  split, not rewards). A validator whose newest epochs are null in the ledger (delinquent /
+  never earns) re-checks the 2 newest epochs live: 4–5 calls, <1 s. Real Chrome: no console
+  errors on a fresh load. (The built-in Claude browser pane shows "Maximum call stack size
+  exceeded" + `hideIconPreview is not defined` on load — pane-only, not reproducible in Chrome.)
+- Noticed while verifying: **`data/scores.json` was 3.8 h old** (generated 11:41 UTC, terminal
+  snapshot 15:25) — the site fell back to client-side scoring. Check Actions → "Update scores"
+  for a failed/skipped run and the "[bot] … is failing" issue.
