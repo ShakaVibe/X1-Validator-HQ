@@ -15226,6 +15226,27 @@
       return null;
     }
 
+    // Vote account's authorized withdrawer — the key to self-stake detection.
+    // The hourly rewards ledger (data/rewards.json) carries it for every
+    // validator (`w`), so this normally costs 0 RPC calls; getAccountInfo is
+    // the fallback for a validator the ledger doesn't know yet.
+    async function getVoteWithdrawer(voteAccount) {
+      try {
+        if (typeof RewardsLedger !== 'undefined') {
+          const doc = await RewardsLedger.load();
+          const e = doc && doc.validators && doc.validators[voteAccount];
+          if (e && e.w) return e.w;
+        }
+      } catch (e) { /* fall through */ }
+      try {
+        const info = await rpcCall('getAccountInfo', [voteAccount, { encoding: 'jsonParsed' }]);
+        return info?.value?.data?.parsed?.info?.authorizedWithdrawer || null;
+      } catch (e) {
+        console.warn('Could not fetch vote account withdrawer:', e);
+        return null;
+      }
+    }
+
     // Resolve a single stake account into exactly one of four buckets:
     //   'foundation' | 'ripper' | 'self' | 'community'
     // Foundation and Ripper are hard-coded by withdrawer (locked — never
@@ -23362,82 +23383,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
           return;
         }
         
-        // Always get fresh epoch info to ensure we use the last COMPLETED epoch
-        const epochInfo = await rpcCall('getEpochInfo');
-        currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
-        
-        // Fetch inflation rewards for stake accounts (last completed epoch)
-        const stakeAccountPubkeys = data.result.map(acc => acc.pubkey);
-        let rewards = [];
-        
-        try {
-          const rewardsResponse = await fetch(RPC_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              jsonrpc: '2.0',
-              id: 1,
-              method: 'getInflationReward',
-              params: [stakeAccountPubkeys, { epoch: currentEpochNumber - 1 }]
-            })
-          });
-          
-          const rewardsData = await rewardsResponse.json();
-          rewards = rewardsData.result || [];
-        } catch (e) {
-          console.warn('Could not fetch epoch-1 rewards:', e);
-        }
-        
-        // If no rewards from epoch-1, try epoch-2
-        const hasRewards = rewards.some(r => r && r.amount > 0);
-        if (!hasRewards && currentEpochNumber > 2) {
-          try {
-            const rewards2Response = await fetch(RPC_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 1,
-                method: 'getInflationReward',
-                params: [stakeAccountPubkeys, { epoch: currentEpochNumber - 2 }]
-              })
-            });
-            
-            const rewards2Data = await rewards2Response.json();
-            if (rewards2Data.result) {
-              rewards = rewards2Data.result;
-              console.log('Using epoch-2 rewards for stake detection');
-            }
-          } catch (e) {
-            console.warn('Could not fetch epoch-2 rewards:', e);
-          }
-        }
-        
-        // Build account list with rates and withdrawer info
+        // Build account list with withdrawer info
         const accountsWithRates = [];
         for (let i = 0; i < data.result.length; i++) {
           const acc = data.result[i];
           const stakeInfo = acc.account.data.parsed?.info;
           const stakeLamports = acc.account.lamports;
           const stakeXNT = stakeLamports / 1e9;
-          const reward = rewards[i];
           const meta = stakeInfo?.meta;
           const staker = meta?.authorized?.staker || acc.pubkey;
           const withdrawer = meta?.authorized?.withdrawer || null;
-          
-          let rewardRate = 0;
-          if (reward && reward.amount > 0 && stakeXNT > 0) {
-            rewardRate = (reward.amount / 1e9) / stakeXNT;
-          }
-          
-          accountsWithRates.push({
-            pubkey: acc.pubkey,
-            stakeXNT,
-            rewardRate,
-            staker,
-            withdrawer,
-            hasReward: reward && reward.amount > 0
-          });
+          accountsWithRates.push({ pubkey: acc.pubkey, stakeXNT, staker, withdrawer });
         }
         
         // Classify accounts - prioritize user selections, then withdrawer matching
@@ -23466,27 +23422,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         } else {
           // Auto-detect using withdrawer matching
           // Get vote account's authorized withdrawer
-          let voteAccountWithdrawer = null;
-          
-          try {
-            const voteAcctResponse = await fetch(RPC_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 1,
-                method: 'getAccountInfo',
-                params: [voteAccount, { encoding: 'jsonParsed' }]
-              })
-            });
-            
-            const voteAcctData = await voteAcctResponse.json();
-            if (voteAcctData.result?.value?.data?.parsed?.info) {
-              voteAccountWithdrawer = voteAcctData.result.value.data.parsed.info.authorizedWithdrawer;
-            }
-          } catch (e) {
-            console.warn('Could not fetch vote account withdrawer:', e);
-          }
+          const voteAccountWithdrawer = await getVoteWithdrawer(voteAccount);
           
           if (voteAccountWithdrawer) {
             for (const acc of accountsWithRates) {
@@ -29685,102 +29621,22 @@ Please give me the diagnostic commands to run on my server so you can help me id
           section.innerHTML = `
             <div class="stake-section-loading">
               <div class="loading-spinner-small"></div>
-              <span>Found ${data.result.length} accounts, analyzing rewards...</span>
+              <span>Found ${data.result.length} accounts, classifying…</span>
             </div>
           `;
           
-          // Always get fresh epoch info to ensure we use the last COMPLETED epoch
-          const epochInfo = await rpcCall('getEpochInfo');
-          currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
-          
-          // Fetch rewards from last COMPLETED epoch (currentEpoch - 1)
-          let rewards = [];
-          try {
-            const stakeAccountPubkeys = data.result.map(acc => acc.pubkey);
-            const rewardsResponse = await fetchWithTimeout(RPC_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                jsonrpc: '2.0',
-                id: 1,
-                method: 'getInflationReward',
-                params: [stakeAccountPubkeys, { epoch: currentEpochNumber - 1 }]
-              })
-            }, 10000);
-            
-            const rewardsData = await rewardsResponse.json();
-            rewards = rewardsData.result || [];
-          } catch (rewardErr) {
-            console.warn('Could not fetch rewards, using fallback:', rewardErr);
-            // Continue without rewards - will use heuristic fallback
-          }
-          
-          // If no rewards from epoch-1, try epoch-2
-          const hasRewards = rewards.some(r => r && r.amount > 0);
-          console.log('Epoch-1 rewards check:', { 
-            epoch: currentEpochNumber - 1, 
-            hasRewards, 
-            rewardsCount: rewards.filter(r => r && r.amount > 0).length 
-          });
-          
-          if (!hasRewards && currentEpochNumber > 2) {
-            try {
-              const stakeAccountPubkeys = data.result.map(acc => acc.pubkey);
-              const rewards2Response = await fetchWithTimeout(RPC_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  jsonrpc: '2.0',
-                  id: 1,
-                  method: 'getInflationReward',
-                  params: [stakeAccountPubkeys, { epoch: currentEpochNumber - 2 }]
-                })
-              }, 10000);
-              
-              const rewards2Data = await rewards2Response.json();
-              if (rewards2Data.result) {
-                rewards = rewards2Data.result;
-                console.log('Using epoch-2 rewards for stake detection, epoch:', currentEpochNumber - 2);
-              }
-            } catch (e) {
-              console.warn('Could not fetch epoch-2 rewards:', e);
-            }
-          }
-          
-          // Calculate rates and gather authority info
+          // Gather authority info
           const accountsWithRates = [];
           for (let i = 0; i < data.result.length; i++) {
             const acc = data.result[i];
             const stakeInfo = acc.account.data.parsed?.info;
             const stakeLamports = acc.account.lamports;
             const stakeXNT = stakeLamports / 1e9;
-            const reward = rewards[i];
             const meta = stakeInfo?.meta;
             const staker = meta?.authorized?.staker || acc.pubkey;
             const withdrawer = meta?.authorized?.withdrawer || null;
-            
-            let rewardRate = 0;
-            if (reward && reward.amount > 0 && stakeXNT > 0) {
-              rewardRate = (reward.amount / 1e9) / stakeXNT;
-            }
-            
-            accountsWithRates.push({
-              pubkey: acc.pubkey,
-              stakeXNT,
-              rewardRate,
-              staker,
-              withdrawer,
-              hasReward: reward && reward.amount > 0
-            });
+            accountsWithRates.push({ pubkey: acc.pubkey, stakeXNT, staker, withdrawer });
           }
-          
-          // Debug: Log all accounts and their rates
-          console.log('Stake accounts analysis:', accountsWithRates.map(a => ({
-            pubkey: a.pubkey.slice(0, 8) + '...',
-            stakeXNT: a.stakeXNT.toFixed(2),
-            rewardRate: (a.rewardRate * 100).toFixed(6) + '%',
-            hasReward: a.hasReward
-          })));
           
           // Classify accounts - prioritize user selections, then withdrawer matching
           let selfStake = 0;
@@ -29809,27 +29665,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           } else {
             // Auto-detect using withdrawer matching
             // Get vote account's authorized withdrawer
-            let voteAccountWithdrawer = null;
-            
-            try {
-              const voteAcctResponse = await fetchWithTimeout(RPC_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  jsonrpc: '2.0',
-                  id: 1,
-                  method: 'getAccountInfo',
-                  params: [voteAccount, { encoding: 'jsonParsed' }]
-                })
-              }, 5000);
-              
-              const voteAcctData = await voteAcctResponse.json();
-              if (voteAcctData.result?.value?.data?.parsed?.info) {
-                voteAccountWithdrawer = voteAcctData.result.value.data.parsed.info.authorizedWithdrawer;
-              }
-            } catch (e) {
-              console.warn('Could not fetch vote account withdrawer:', e);
-            }
+            const voteAccountWithdrawer = await getVoteWithdrawer(voteAccount);
             
             if (voteAccountWithdrawer) {
               // Match stake account withdrawers against vote account withdrawer
@@ -30577,10 +30413,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
           let totalAccounts = 0;
           const validatorBreakdowns = [];
           
-          // Always get fresh epoch info to ensure we use the last COMPLETED epoch
-          const epochInfo = await rpcCall('getEpochInfo');
-          currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
-          
           for (const voteAccount of portfolioValidators) {
             // Check cache first
             let breakdownData = stakeBreakdownCache[voteAccount]?.data;
@@ -30611,52 +30443,6 @@ Please give me the diagnostic commands to run on my server so you can help me id
                   commission = validatorInfoCache[voteAccount].commission || 0;
                 }
                 
-                // Fetch rewards from epoch-1
-                const stakeAccountPubkeys = data.result.map(acc => acc.pubkey);
-                let rewards = [];
-                
-                try {
-                  const rewardsResponse = await fetch(RPC_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      jsonrpc: '2.0',
-                      id: 1,
-                      method: 'getInflationReward',
-                      params: [stakeAccountPubkeys, { epoch: currentEpochNumber - 1 }]
-                    })
-                  });
-                  
-                  const rewardsData = await rewardsResponse.json();
-                  rewards = rewardsData.result || [];
-                } catch (e) {
-                  console.warn('Could not fetch epoch-1 rewards:', e);
-                }
-                
-                // If no rewards from epoch-1, try epoch-2
-                const hasRewards = rewards.some(r => r && r.amount > 0);
-                if (!hasRewards && currentEpochNumber > 2) {
-                  try {
-                    const rewards2Response = await fetch(RPC_URL, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        jsonrpc: '2.0',
-                        id: 1,
-                        method: 'getInflationReward',
-                        params: [stakeAccountPubkeys, { epoch: currentEpochNumber - 2 }]
-                      })
-                    });
-                    
-                    const rewards2Data = await rewards2Response.json();
-                    if (rewards2Data.result) {
-                      rewards = rewards2Data.result;
-                    }
-                  } catch (e) {
-                    // Continue without epoch-2 rewards
-                  }
-                }
-                
                 // Build account list with withdrawer info
                 const accountsWithRates = [];
                 for (let i = 0; i < data.result.length; i++) {
@@ -30684,27 +30470,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
                   });
                 } else {
                   // Auto-detect using withdrawer matching
-                  let voteAccountWithdrawer = null;
-                  
-                  try {
-                    const voteAcctResponse = await fetch(RPC_URL, {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                        jsonrpc: '2.0',
-                        id: 1,
-                        method: 'getAccountInfo',
-                        params: [voteAccount, { encoding: 'jsonParsed' }]
-                      })
-                    });
-                    
-                    const voteAcctData = await voteAcctResponse.json();
-                    if (voteAcctData.result?.value?.data?.parsed?.info) {
-                      voteAccountWithdrawer = voteAcctData.result.value.data.parsed.info.authorizedWithdrawer;
-                    }
-                  } catch (e) {
-                    // Continue without vote account info
-                  }
+                  const voteAccountWithdrawer = await getVoteWithdrawer(voteAccount);
                   
                   if (voteAccountWithdrawer) {
                     accountsWithRates.forEach(acc => {
