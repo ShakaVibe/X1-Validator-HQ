@@ -15150,9 +15150,15 @@
     // falls back to computing scores in the browser like before.
     // =========================================================================
     const CANONICAL_SCORES_URL = 'data/scores.json';
-    const CANONICAL_MAX_AGE_MS = 3 * 3600000; // treat >3h-old scores as stale
+    // GitHub's cron scheduler has been firing the "hourly" bots only every
+    // 2–5 h (measured 2026-09-13), so a 3 h cutoff made the site fall back to
+    // the heavy client-side crawl most of the day. 7-epoch scores barely move
+    // hour to hour; a 12 h-old file beats 50 extra RPC calls per visitor.
+    const CANONICAL_MAX_AGE_MS = 12 * 3600000; // treat >12h-old scores as stale
+    const CANONICAL_SKIP_MAX_AGE_MS = 24 * 3600000; // skip history stays usable a day
 
     window.canonicalScores = null;
+    window.canonicalScoresDoc = null;   // last fetched file, even if stale (+ _ageMs)
 
     async function loadCanonicalScores() {
       try {
@@ -15161,6 +15167,7 @@
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const doc = await res.json();
         const age = Date.now() - new Date(doc.generatedAt).getTime();
+        if (doc && doc.validators) { doc._ageMs = age; window.canonicalScoresDoc = doc; }
         if (!doc.validators || age > CANONICAL_MAX_AGE_MS) {
           console.warn(`Canonical scores stale (${(age / 3600000).toFixed(1)}h old) — falling back to client-side scoring`);
           return null;
@@ -16774,6 +16781,36 @@
       }
     }
 
+    // Published 7-epoch skip history (data/scores.json, computed hourly by the
+    // scores Action) mapped into the shape fetchHistoricalSkipRates() returns.
+    // Same mapping the leaderboard pipeline uses. Returns null when the
+    // canonical file is missing/stale or doesn't know this node.
+    function publishedSkipHistory(nodePubkey) {
+      let doc = window.canonicalScores;
+      if (!doc) {
+        const d = window.canonicalScoresDoc;
+        if (d && d._ageMs <= CANONICAL_SKIP_MAX_AGE_MS) doc = d;   // stale for scoring, fine for skip history
+      }
+      if (!doc || !doc.validators) return null;
+      if (!doc._byNode) {
+        doc._byNode = new Map();
+        for (const k in doc.validators) { const c = doc.validators[k]; if (c && c.nodePubkey) doc._byNode.set(c.nodePubkey, c); }
+      }
+      const c = doc._byNode.get(nodePubkey);
+      if (!c || typeof c.skipEpochs !== 'number') return null;
+      return {
+        epochs: [],
+        avgSkipRate: c.skipRate7d,
+        simpleAvgSkipRate: c.skipRate7d,
+        totalLeaderSlots: c.leaderSlots7d,
+        epochCount: c.skipEpochs,
+        requestedEpochs: 7,
+        lastEpochSkipRate: null,
+        currentEpoch: doc.epoch,
+        source: 'published'
+      };
+    }
+
     // Fetch historical skip rates for past epochs
     async function fetchHistoricalSkipRates(nodePubkey, numEpochs = 5) {
       // Check cache
@@ -16782,6 +16819,18 @@
       if (cached && cached.timestamp > Date.now() - 300000) { // 5 min cache
         return cached.data;
       }
+
+      // Published scores first: the Action already crawled 7 epochs of block
+      // production for every validator, so a card costs 0 getBlockProduction
+      // range calls instead of 7 (each one a full-epoch scan on the RPC).
+      try {
+        await window.canonicalScoresPromise;
+        const pub = publishedSkipHistory(nodePubkey);
+        if (pub) {
+          skipRateHistoryCache[cacheKey] = { timestamp: Date.now(), data: pub };
+          return pub;
+        }
+      } catch (e) { /* fall through to live RPC */ }
 
       try {
         // Get epoch info
@@ -35694,8 +35743,18 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // the header forces a live fetch for anyone who wants up-to-the-minute
       // numbers.
       const SNAPSHOT_URL        = 'data/terminal.json';
-      const SNAPSHOT_MAX_AGE_MS = 3 * 3600000;   // >3h old = stale → go live
+      // GitHub's cron has been running the snapshot bot every 2–5 h, not
+      // hourly (measured 2026-09-13). A 3 h cutoff sent most visitors to the
+      // 13 MB live download; a half-day-old stake table with a visible age
+      // is the better default. The Live button is always there.
+      const SNAPSHOT_MAX_AGE_MS = 12 * 3600000;  // >12h old = stale → go live
       let _source = null;                         // 'snapshot' | 'live'
+
+      function snapshotAgeLabel() {
+        const ageH = _fetchedAt ? (Date.now() - _fetchedAt.getTime()) / 3600000 : 0;
+        if (ageH >= 2) return '<span style="color:#ffab00">Snapshot &middot; ' + Math.floor(ageH) + 'h old</span> &middot; Live for current';
+        return 'Hourly snapshot &middot; auto-refresh 1h';
+      }
 
       function inflateSnapshot(doc) {
         if (!doc || doc.version !== 1 || !Array.isArray(doc.validators) || !doc.stakes) {
@@ -35940,7 +35999,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             '</div>' +
             '<div class="vt-refresh-corner">' +
               '<div class="info">' +
-                '<div class="lbl">' + (_source === 'live' ? 'Live from api.x1.xyz' : 'Hourly snapshot &middot; auto-refresh 1h') + '</div>' +
+                '<div class="lbl">' + (_source === 'live' ? 'Live from api.x1.xyz' : snapshotAgeLabel()) + '</div>' +
                 '<div class="upd">Updated ' + isoTime + '</div>' +
               '</div>' +
               '<button id="vtCornerRefresh" onclick="vtRefreshLive()" title="Fetch live data straight from api.x1.xyz (~13 MB download)">' +
