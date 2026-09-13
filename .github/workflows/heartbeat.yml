@@ -1,0 +1,133 @@
+name: Heartbeat (keeps the hourly bots hourly)
+
+# WHY THIS EXISTS
+# GitHub's cron scheduler does not fire our "hourly" workflows hourly. Measured
+# 2026-09-13: scores ran at 00:51, 05:58, 11:40; the terminal snapshot at 00:13,
+# 05:18, 10:34 — every run succeeded, the schedule just wasn't honoured (GitHub
+# documents that scheduled runs "can be delayed during periods of high load";
+# in practice the delay is hours). workflow_dispatch, by contrast, starts within
+# seconds. So this workflow keeps itself alive as a chain:
+#
+#   start → guard (exit if another heartbeat is already alive)
+#         → dispatch the three bots (geo only every other hour)
+#         → sleep until ~2 minutes past the next full hour
+#         → dispatch the next heartbeat → exit
+#
+# The cron below is only a SAFETY NET: whenever GitHub does get around to
+# firing it, the guard exits immediately if the chain is alive, and restarts
+# the chain if it died (failed dispatch, GitHub incident, someone cancelled a
+# run). The bots keep their own cron too — a duplicate run is harmless (each
+# has a concurrency group and takes ~1 minute).
+#
+# Cost: one runner sleeping ~58 min per hour. The repo is public, so Actions
+# minutes are free. A job may run up to 6 h; ours is capped at 75 min.
+#
+# To stop the chain: cancel the running heartbeat in the Actions tab AND
+# disable this workflow (… menu → Disable workflow), otherwise the cron will
+# restart it. Manual "Run workflow" starts it again.
+
+on:
+  schedule:
+    - cron: '11 */2 * * *'   # backup restart only; the chain does the real work
+  workflow_dispatch: {}
+
+permissions:
+  actions: write     # gh workflow run
+  contents: read
+  issues: write      # failure alert
+
+concurrency:
+  group: heartbeat
+  cancel-in-progress: false
+
+jobs:
+  beat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Guard — exit if another heartbeat is already alive
+        run: |
+          # The previous heartbeat dispatches us as its very last step and may
+          # still be "in_progress" for a few seconds while it winds down, so
+          # wait a moment and ignore runs older than 55 minutes.
+          sleep 45
+          NOW=$(date -u +%s)
+          ALIVE=0
+          for STATUS in in_progress queued waiting; do
+            while IFS=$'\t' read -r ID CREATED; do
+              [ -z "$ID" ] && continue
+              [ "$ID" = "${{ github.run_id }}" ] && continue
+              AGE=$(( NOW - $(date -u -d "$CREATED" +%s) ))
+              if [ "$AGE" -lt 3300 ]; then
+                echo "heartbeat run $ID ($STATUS, ${AGE}s old) is alive"
+                ALIVE=1
+              fi
+            done < <(gh run list --workflow heartbeat.yml --status "$STATUS" --limit 10 \
+                       --json databaseId,createdAt --jq '.[] | [.databaseId, .createdAt] | @tsv')
+          done
+          if [ "$ALIVE" = "1" ]; then
+            echo "Another heartbeat is alive — nothing to do."
+            echo "SKIP=1" >> "$GITHUB_ENV"
+          fi
+
+      - name: Dispatch the bots
+        if: env.SKIP != '1'
+        run: |
+          dispatch() {
+            for i in 1 2 3; do
+              gh workflow run "$1" && return 0
+              echo "dispatch $1 failed (attempt $i); retrying in 20s"; sleep 20
+            done
+            echo "::warning::could not dispatch $1"
+          }
+          dispatch update-scores.yml
+          dispatch update-terminal-snapshot.yml
+          # geo data changes slowly — every other hour is plenty
+          if [ $(( $(date -u +%-H) % 2 )) -eq 0 ]; then dispatch update-geo-data.yml; fi
+
+      - name: Sleep until ~2 minutes past the next full hour
+        if: env.SKIP != '1'
+        run: |
+          NOW=$(date -u +%s)
+          NEXT=$(( NOW - NOW % 3600 + 3600 + 120 ))
+          WAIT=$(( NEXT - NOW ))
+          # never shorter than 30 min (protects against a dispatch storm if the
+          # clock maths ever goes wrong) and never longer than 65 min
+          [ "$WAIT" -lt 1800 ] && WAIT=$(( WAIT + 3600 ))
+          [ "$WAIT" -gt 3900 ] && WAIT=3900
+          echo "sleeping ${WAIT}s until $(date -u -d @$NEXT +'%H:%M:%S') UTC"
+          sleep "$WAIT"
+
+      - name: Dispatch the next heartbeat
+        if: env.SKIP != '1'
+        run: |
+          for i in 1 2 3 4 5; do
+            gh workflow run heartbeat.yml && { echo "next heartbeat dispatched"; exit 0; }
+            echo "self-dispatch failed (attempt $i); retrying in 30s"; sleep 30
+          done
+          echo "::error::could not dispatch the next heartbeat — the backup cron will restart the chain"
+          exit 1
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          TITLE="[bot] ${{ github.workflow }} is failing"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Run failed at $(date -u +'%Y-%m-%d %H:%M UTC'): $RUN_URL"
+          EXISTING=$(gh issue list --repo "${{ github.repository }}" --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number' || true)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "${{ github.repository }}" --body "$BODY" || true
+          else
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" --body "$BODY" --label bot-failure || \
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" --body "$BODY" || true
+          fi
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+              -d chat_id="$TELEGRAM_CHAT_ID" -d text="⚠️ $TITLE — $RUN_URL" > /dev/null || true
+          fi
