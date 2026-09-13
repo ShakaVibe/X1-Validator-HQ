@@ -383,3 +383,21 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   delegation tile + live XNT price in calculators; audit bugs B4/B5/B7 + MINE tags + summary grid
   fixes; power saver + globe render-on-demand + B3. Card redesign explored and shelved (Apple-style
   on site palette was the one Shaka liked).
+
+### 2026-09-13 — Session 4 (quick fix, ~20 min)
+- A community member (X1SCR operator, runs @x1VAL_BOT off his own DB) reported the site being
+  slow, especially **Stake Details** ("Found 9 accounts, analyzing rewards…" for minutes).
+  Cause (pre-existing, not from our changes): `toggleStakeDetails` called
+  `fetchTotalValidatorRewards(vote, commission, 365)` — one `getInflationReward` per epoch for
+  the vote account **plus** one per epoch for self-stake = up to **730 RPC calls** through the
+  3-slot queue before anything rendered. Every other caller uses ≤ 30 epochs.
+- Fix: the stake split (self / delegated / accounts) renders as soon as the two calls it needs
+  return; the APY block shows "calculating…" and fills in after a 30-epoch fetch (7-day and
+  30-day figures; 90-day/1-year options are gone — they needed 80 % of 365 epochs anyway). Cache
+  is written twice (split first, then with APY).
+- **Roadmap note from the conversation:** his approach is right for the rest of the slow
+  spots — precompute per-validator reward history server-side once per epoch. `getInflationReward`
+  takes a *list* of addresses, so the hourly Action can fetch a whole epoch for all 725 vote
+  accounts (and all self-stake accounts) in a few batched calls and publish
+  `data/rewards.json`; the site then reads one file instead of 30–60 RPC calls per card. This is
+  F8 (rewards ledger) — bump its priority; it also unlocks F2 history charts.
