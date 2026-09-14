@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-14T20:03:10.352Z",
+  "lastUpdated": "2026-09-14T22:03:47.910Z",
   "totalNodes": 595,
   "totalLocations": 591,
   "locations": {
@@ -4091,13 +4091,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "64.20.40.146": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "148.251.92.39": {
       "country": "Germany",
       "countryCode": "DE",
@@ -4139,6 +4132,13 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "102.210.25.201": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
     }
   },
   "countries": {
@@ -4156,7 +4156,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 204
+      "count": 203
     },
     "DE": {
       "name": "Germany",
@@ -4180,7 +4180,7 @@
     },
     "KE": {
       "name": "Kenya",
-      "count": 6
+      "count": 7
     },
     "SG": {
       "name": "Singapore",
