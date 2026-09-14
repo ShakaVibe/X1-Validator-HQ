@@ -543,3 +543,11 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - No code change. `HANDOVER.md` still carries the uncommitted evening-of-09-13 edits plus this
   entry — commit both together. `.git/objects/maintenance.lock` exists (harmless leftover from
   Claude's `git fetch`; `rm` it if git ever complains).
+- **Afternoon, Validator Terminal:** pinned columns (#, Vote Account) went see-through on even
+  and hovered rows when the table was scrolled sideways (≤1500 px) — the zebra/hover rules
+  (`tbody tr:nth-child(even) td { background: rgba(…) }`) out-specified the sticky cells'
+  opaque `background: var(--bg-card)` and replaced it. Fix: stripe + hover are now
+  `background-image: linear-gradient(...)` overlays and the sticky cells set `background-color`,
+  so the two layers stack. Verified live at 1100 px by injecting the CSS: even-row pinned cell
+  `rgb(17,29,50)` + overlay, nothing shows through. Lesson (add to the sticky one from 09-11):
+  a sticky cell needs an opaque `background-color` that no later `background:` shorthand resets.

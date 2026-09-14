@@ -11151,8 +11151,8 @@
          from the wrap, not the page, so it floated 48px down into the rows.
          Pin it to the wrap's top edge instead (it stays in normal flow). */
       .vt-overlay table.vt-data thead th { top: 0; }
-      table.vt-data th:nth-child(1), table.vt-data td:nth-child(1) { position: sticky; left: 0; z-index: 2; background: var(--bg-card); }
-      table.vt-data th:nth-child(2), table.vt-data td:nth-child(2) { position: sticky; left: var(--vt-col1-w, 36px); z-index: 2; background: var(--bg-card); box-shadow: 4px 0 8px -4px rgba(0,0,0,0.5); }
+      table.vt-data th:nth-child(1), table.vt-data td:nth-child(1) { position: sticky; left: 0; z-index: 2; background-color: var(--bg-card); }
+      table.vt-data th:nth-child(2), table.vt-data td:nth-child(2) { position: sticky; left: var(--vt-col1-w, 36px); z-index: 2; background-color: var(--bg-card); box-shadow: 4px 0 8px -4px rgba(0,0,0,0.5); }
       .vt-tip { min-width: min(460px, calc(100vw - 2rem)); max-width: calc(100vw - 2rem); }
     }
 
@@ -11671,8 +11671,12 @@
       vertical-align: middle;
       white-space: nowrap;
     }
-    table.vt-data tbody tr:nth-child(even) td { background: rgba(255, 255, 255, 0.015); }
-    table.vt-data tbody tr:hover td { background: rgba(0, 212, 255, 0.06); }
+    /* Stripe + hover are painted as an overlay (background-image) rather than
+       as the cell's background, so the two pinned columns (≤1500px, sticky
+       with an opaque background-color) stay opaque on even/hovered rows —
+       otherwise the scrolling columns showed through them. */
+    table.vt-data tbody tr:nth-child(even) td { background-image: linear-gradient(rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.015)); }
+    table.vt-data tbody tr:hover td { background-image: linear-gradient(rgba(0, 212, 255, 0.06), rgba(0, 212, 255, 0.06)); }
     table.vt-data tbody tr.dlq td { color: #d88795; }
     table.vt-data tbody tr.ina td { color: var(--text-dim); }
     table.vt-data td.n,
