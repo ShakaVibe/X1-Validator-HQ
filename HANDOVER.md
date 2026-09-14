@@ -6,24 +6,26 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-09-13):**
-> 1. `cd ~/Desktop/X1VHQ && git pull` — three bots commit hourly.
-> 2. Verify the **rewards ledger** is alive: `https://x1valhq.xyz/data/rewards.json` exists
->    (~700 KB, `epochs` covers the last 36 completed epochs, `generatedAt` < 2 h old). On the
->    site, open a validator → Stake Details: the split renders in ~1 s and the APY line fills in
->    within a second or two (console shows `[ledger] …: 30 epochs from ledger, 0 live`). If the
->    file is missing, run Actions → "Update Validator Terminal snapshot" → Run workflow once.
-> 3. **GitHub's cron is NOT hourly** — the three bots fired every 2–5 h (Actions history,
->    2026-09-13). Fix: `.github/workflows/heartbeat.yml`, a self-rescheduling chain that
->    dispatches the bots every hour. Check Actions → "Heartbeat" shows one run per hour and
->    `data/*.json` `generatedAt` values < 1.5 h old. If the chain died, "Run workflow" restarts it.
-> 4. Next build, in Shaka's priority order: **Fleet health board (F4)** → **History charts (F2)**
->    → **Alerts (F3, design first)**. Roadmap artifact: "X1 Validator HQ Roadmap".
-> 5. Card redesign is shelved; Shaka liked the "as Apple would" mockup on the site palette
->    (light-weight tiles + settings-style chevron list + segmented control) — revisit only with
->    his go-ahead. Rule: per-validator data goes in the stat grid with a Details link.
-> 6. Housekeeping: `_to_delete/` (patch scripts) and `Claude outputs/` (mockup PNGs) are
->    gitignored folders in the repo dir — safe to delete.
+> **Start here next session (as of 2026-09-13 evening):**
+> 1. `cd ~/Desktop/X1VHQ && git pull` — bots commit hourly (via the heartbeat).
+> 2. Check Actions → "Heartbeat (keeps the hourly bots hourly)": one run per hour, each ~58 min,
+>    and `data/scores.json` / `terminal.json` / `rewards.json` `generatedAt` < 1.5 h old. If the
+>    chain died, "Run workflow" restarts it (the backup cron will too, eventually).
+> 3. Focus is **under the hood**, in this order (Shaka's choice): ① stake-split RPC diet — DONE;
+>    ② **split `index.html`** into css + core + per-tab JS files with plain `<script src>` tags,
+>    no build step — verify by re-concatenating to a byte-identical original, Playwright smoke of
+>    every tab, then live; ③ replace the 254 inline `onclick` with a delegated `data-action`
+>    dispatcher, tab by tab, then drop `unsafe-inline` from the CSP; ④ single RPC transport.
+> 4. Useful console diagnostics on the live site: `rpcStats.byMethod` (RPC calls by method since
+>    load / `rpcStats.reset()`), `RewardsLedger.doc`, `PowerSaver.forceIdle(true/false)`.
+> 5. Shelved — don't re-propose: card redesign; earnings chart/sparkline on the card ("takes up
+>    too much real estate"). Rule: per-validator data goes in the stat grid with a Details link.
+> 6. Housekeeping: `_to_delete/` (patch scripts) and `Claude outputs/` are gitignored — safe to
+>    delete any time.
+> 7. **RULE — never write to the site's localStorage in Shaka's real Chrome** (`x1Portfolio`,
+>    `x1SelfStakeSelections`, …). Live checks in Chrome are read-only; anything that needs a
+>    test portfolio runs in the built-in Claude browser pane or a Playwright/staged copy. See the
+>    2026-09-14 session log for why.
 
 ---
 
@@ -520,3 +522,24 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
     4 → 1 per validator; Stake Selection modal 4 → 1.
 - Tooling note: `device_commit_files` re-used a stale staged copy when the same staged filename
   was reused — stage under a NEW filename each time (or write via device_bash heredoc/base64).
+
+### 2026-09-14 — Session 5: "5 random validators in My Data Center" (~30 min)
+- Shaka opened My Data Center and found White Eagle, Angry Bird, levykrak test5, Bin Suardi and
+  Teddybear instead of Shaka_Vibes_1–5.
+- **Not a site bug.** The only writer of `localStorage.x1Portfolio` is `savePortfolio()` (Add /
+  Remove / Clear buttons); nothing auto-populates, imports or sorts the list, and `getValidatorInfo`
+  looks validators up by the exact vote key. The stored list was *sorted by pubkey* — no sequence
+  of button clicks produces that.
+- Forensics from Chrome's own `x1ValidatorPerformanceHistory` (written for portfolio validators
+  on each Data Center load): Shaka_Vibes_1–5 have snapshots from 09-08 up to **2026-09-13 15:03
+  UTC**; the five strangers start at **15:43 UTC** the same day — exactly the window in which
+  session 4 was "live-verifying" the rewards ledger in real Chrome via the extension. Conclusion:
+  the previous Claude session wrote a 5-validator test list into Shaka's browser storage and
+  never restored his. `x1SelfStakeSelections` for Shaka_Vibes_1–5 was untouched.
+- Restored (with Shaka's go-ahead) through the site's own handlers: `addToPortfolio()` ×5, then
+  `removeFromPortfolio()` ×5 on the strangers. Verified after a reload: `x1Portfolio` = the five
+  Shaka_Vibes vote keys, five cards render (#13–#17 of 725), count 5.
+- Rule added to the "Start here" list (item 7): live checks in Shaka's Chrome are read-only.
+- No code change. `HANDOVER.md` still carries the uncommitted evening-of-09-13 edits plus this
+  entry — commit both together. `.git/objects/maintenance.lock` exists (harmless leftover from
+  Claude's `git fetch`; `rm` it if git ever complains).
