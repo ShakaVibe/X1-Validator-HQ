@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-14T18:03:16.878Z",
-  "totalNodes": 591,
-  "totalLocations": 587,
+  "lastUpdated": "2026-09-14T19:29:08.836Z",
+  "totalNodes": 595,
+  "totalLocations": 591,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4111,6 +4111,34 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "102.210.25.187": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
+    },
+    "102.210.25.188": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
+    },
+    "102.210.25.190": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
+    },
+    "102.210.25.189": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
     }
   },
   "countries": {
@@ -4150,13 +4178,13 @@
       "name": "Canada",
       "count": 19
     },
+    "KE": {
+      "name": "Kenya",
+      "count": 6
+    },
     "SG": {
       "name": "Singapore",
       "count": 1
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 2
     }
   }
 }
