@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-15T10:03:18.086Z",
-  "totalNodes": 596,
-  "totalLocations": 592,
+  "lastUpdated": "2026-09-15T11:53:36.153Z",
+  "totalNodes": 597,
+  "totalLocations": 593,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4146,6 +4146,13 @@
       "city": "Draper",
       "lat": 40.5247,
       "lon": -111.8638
+    },
+    "65.109.92.95": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -4159,7 +4166,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 76
+      "count": 77
     },
     "CA": {
       "name": "Canada",
