@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-15T17:08:11.126Z",
-  "totalNodes": 597,
-  "totalLocations": 593,
+  "lastUpdated": "2026-09-15T18:03:11.554Z",
+  "totalNodes": 598,
+  "totalLocations": 594,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4153,6 +4153,13 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "38.97.61.115": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5247,
+      "lon": -111.8638
     }
   },
   "countries": {
@@ -4160,17 +4167,21 @@
       "name": "Poland",
       "count": 74
     },
+    "US": {
+      "name": "United States",
+      "count": 204
+    },
     "FI": {
       "name": "Finland",
       "count": 77
     },
+    "CA": {
+      "name": "Canada",
+      "count": 19
+    },
     "FR": {
       "name": "France",
       "count": 56
-    },
-    "US": {
-      "name": "United States",
-      "count": 203
     },
     "DE": {
       "name": "Germany",
@@ -4180,17 +4191,13 @@
       "name": "The Netherlands",
       "count": 23
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
     },
-    "CA": {
-      "name": "Canada",
-      "count": 19
+    "SE": {
+      "name": "Sweden",
+      "count": 5
     },
     "KE": {
       "name": "Kenya",
