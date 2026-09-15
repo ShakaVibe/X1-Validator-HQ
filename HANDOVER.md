@@ -6,26 +6,36 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-09-13 evening):**
-> 1. `cd ~/Desktop/X1VHQ && git pull` — bots commit hourly (via the heartbeat).
-> 2. Check Actions → "Heartbeat (keeps the hourly bots hourly)": one run per hour, each ~58 min,
->    and `data/scores.json` / `terminal.json` / `rewards.json` `generatedAt` < 1.5 h old. If the
->    chain died, "Run workflow" restarts it (the backup cron will too, eventually).
-> 3. Focus is **under the hood**, in this order (Shaka's choice): ① stake-split RPC diet — DONE;
->    ② **split `index.html`** into css + core + per-tab JS files with plain `<script src>` tags,
->    no build step — verify by re-concatenating to a byte-identical original, Playwright smoke of
->    every tab, then live; ③ replace the 254 inline `onclick` with a delegated `data-action`
->    dispatcher, tab by tab, then drop `unsafe-inline` from the CSP; ④ single RPC transport.
+> **Start here next session (as of 2026-09-15):**
+> 1. `cd ~/Desktop/X1VHQ && git pull` — bots commit hourly (via the heartbeat; verified 2026-09-15:
+>    one scores + one snapshot commit every hour at :03/:04).
+> 2. **First: live-verify the card redesign** pushed 2026-09-15 (see session log) in Lookup and My
+>    Data Center — leader band ticks and turns green when leading, delegation tile hydrates,
+>    Add/Remove/Share/Manage work, phone width. Then continue the visual pass if Shaka wants
+>    (Compare cards, Delegation tab, modals still use the old look).
+> 3. Under-the-hood queue (unchanged, not started): ② split `index.html` into css + core + per-tab
+>    JS files with plain `<script src>` tags, no build step — verify by re-concatenating to a
+>    byte-identical original, Playwright smoke of every tab, then live; ③ replace the 263 inline
+>    `onclick` with a delegated `data-action` dispatcher, then drop `unsafe-inline` from the CSP;
+>    ④ single RPC transport. Layout proposed 2026-09-15: core (logging gate, security, RPC throttle,
+>    rewards ledger, scoring), network/globe, leaderboards, compare, power-saver+router, calculators,
+>    lookup/data-center, manage (stake ops, tx send), network-live (TPS, leader, skip monitor),
+>    modals+init, terminal, delegation, price-pill, forensics.
 > 4. Useful console diagnostics on the live site: `rpcStats.byMethod` (RPC calls by method since
 >    load / `rpcStats.reset()`), `RewardsLedger.doc`, `PowerSaver.forceIdle(true/false)`.
-> 5. Shelved — don't re-propose: card redesign; earnings chart/sparkline on the card ("takes up
->    too much real estate"). Rule: per-validator data goes in the stat grid with a Details link.
+> 5. Shelved — don't re-propose: earnings chart/sparkline on the card ("takes up too much real
+>    estate"). Rule: per-validator data goes in the stat grid with a Details link. (The card
+>    redesign itself is DONE — see 2026-09-15.)
 > 6. Housekeeping: `_to_delete/` (patch scripts) and `Claude outputs/` are gitignored — safe to
 >    delete any time.
 > 7. **RULE — never write to the site's localStorage in Shaka's real Chrome** (`x1Portfolio`,
 >    `x1SelfStakeSelections`, …). Live checks in Chrome are read-only; anything that needs a
 >    test portfolio runs in the built-in Claude browser pane or a Playwright/staged copy. See the
 >    2026-09-14 session log for why.
+> 8. Tooling: Shaka's app could not open hosted artifacts this session ("Open" did nothing) — deliver
+>    mockups as files (PNG + standalone HTML via SendUserFile) instead. Playwright smoke of the card
+>    works offline: serve the repo on localhost, block external requests, hide `#disclaimerModal`,
+>    show `#resultsSection`, call `renderValidatorCard(fakeValidator)` into `#validatorResults`.
 
 ---
 
@@ -37,7 +47,7 @@
 | **Repo** | https://github.com/ShakaVibe/X1-Validator-HQ (branch `main`) |
 | **Local copy** | `~/Desktop/X1VHQ` on Shaka's Mac |
 | **What it is** | Single-page dashboard + validator management tool for the X1 blockchain: Network, Validator Terminal, Validator Lookup, My Data Center (portfolio), Leaderboards, Compare, Calculators |
-| **Stack** | One big `index.html` (~37k lines, HTML+CSS+JS, no build step), vendored `@solana/web3.js`, two GitHub Actions that commit data files hourly |
+| **Stack** | One big `index.html` (~39k lines, HTML+CSS+JS, no build step), vendored `@solana/web3.js`, two GitHub Actions that commit data files hourly |
 | **Owner** | Shaka (ShakaVibe) — (private) |
 
 ## 2. Daily workflow
@@ -183,7 +193,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 
 ### Phase 3 — ongoing (platform)
 - [ ] **C1** split `index.html` (css + core + per-tab files, plain `<script src>`)
-- [ ] **C2** replace 254 inline `onclick` with delegated listeners → drop `unsafe-inline`
+- [ ] **C2** replace 263 inline `onclick` with delegated listeners → drop `unsafe-inline`
 - [ ] **C3/C4** single RPC transport; normalise records at ingestion
 - [ ] **P6/D5** PWA shell, light theme; **C8** public changelog
 
@@ -193,6 +203,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] Ask people who reported the terminal error which device/network they were on.
 
 ### Done
+- [x] 2026-09-15 — **Validator card redesign** (Lookup + My Data Center): see Session Log.
 - [x] 2026-09-13 — **F8 rewards ledger**: `scripts/build-rewards-ledger.js` → `data/rewards.json`
       hourly; site reads it first (`RewardsLedger`), RPC only for uncovered epochs.
 - [x] 2026-09-10 — Local clone set up at `~/Desktop/X1VHQ`, folder linked to Claude.
@@ -551,3 +562,49 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   so the two layers stack. Verified live at 1100 px by injecting the CSS: even-row pinned cell
   `rgb(17,29,50)` + overlay, nothing shows through. Lesson (add to the sticky one from 09-11):
   a sticky cell needs an opaque `background-color` that no later `background:` shorthand resets.
+
+### 2026-09-15 — Session 6: validator card redesign (~3 hours)
+- Started on ② (split `index.html`); Shaka redirected to **card mockups** ("modern, sexy, easy to
+  read, helpful, clean"; refs: Apple/Linear minimal + Phantom glass; palette open). Drew six
+  artboards with real Shaka_Vibes_1 data (Current, A Ledger, B Glass, C Obsidian, D Spec, E Aurora)
+  as a Claude Design canvas — Shaka's app could not open the hosted artifact, so everything was
+  delivered as PNG + a standalone HTML gallery file. Working files: cloud session only
+  (`x1-card-looks/*.dc.html`); the final look is what's in `index.html` now.
+- Decisions, in order: **B (Glass) layout** → recoloured with site tokens only (B2) → Manage button
+  must read "Manage Validator" and be the one lit control (cyan→blue gradient, inner highlight,
+  halo, sliders icon in a disc); Share is an icon-only round button; "Top 10%" toned down to a
+  thin gold outline chip → **E's Earnings & stake / Health grouping** added (F) → status row
+  redone: of four options Shaka chose **#3 "leader band"** (Active folds into the meta line next
+  to the version; the next leader slot gets its own amber band with Slot explorer as its button)
+  → "Delegation approved" dropped from the header (the tile already says it); tile sub reads
+  "XNT · Approved".
+- **Implemented in `index.html`** (`renderValidatorCard`, one renderer for Lookup + Data Center):
+  - `CARD_ICONS` (inline SVG: star, share, check, plus, sliders, clock, search, arrow, chevron)
+    replaces every emoji on the card; `getTierBadge` uses the star.
+  - Header: `.validator-identity` column (name + tier chip + rank chip; meta line = address · copy
+    · version · `.vh-status` dot "Active"/"Delinquent"); `.validator-actions` = `.share-icon-btn`
+    + Add/Remove + `.manage-validator-btn` (label "Manage Validator", `.mv-icon`). The old
+    `.status-badge` pill and `.manage-validator-btn-wrapper` are gone from the card.
+  - Add button: "Add to Data Center" → disabled "In Data Center" (`.is-added`; `addToPortfolio`
+    flips it in place the same way). Data Center cards keep "Remove".
+  - `.vh-leader-band` replaces `.vh-chip-strip`: clock icon, `.vh-next-leader` text (still
+    `data-node`, still ticked by `LeaderCountdown`), `.vh-band-note` ("12 leader slots this epoch
+    · epoch 375", from `leaderScheduleCache[node].length` + `currentEpochNumber`), Slot explorer
+    button. `LeaderCountdown.tick` now uses `setChip(chip, text, state, note)` which mirrors
+    `is-leader` / `is-none` onto the band (green / muted). Wording: "Next leader slot in ~1h 19m",
+    "Leader now", "No upcoming leader slots", "No more leader slots this epoch".
+  - Stats: `.stats-grid` now holds two `.stat-group`s with `.stat-group-label` + `.stat-group-grid`
+    (4 cols): **Earnings & stake** = Rewards balance, Earned last epoch, Active stake, Foundation
+    delegation (the `.deleg-section` tile moved up; `renderCard` in the delegation module is
+    untouched); **Health** = Epoch credits, Skip rate, Commission, Performance, 7d. Labels are
+    sentence case, single line. Semantic value colours (green/red skip, perf) kept.
+  - Footer: Share removed (it's in the header); "Stake details" / "Earnings trend" with SVG
+    chevrons; `.expanded` rotation unchanged. `shareValidator` shows a check icon on the icon
+    button (`.is-copied`).
+  - CSS: one block "VALIDATOR CARD v2" at the end of the `<style>` (~line 12040–12200) overriding
+    the older card rules via `.validator-card …` selectors; own media queries at 1100/768/480 px
+    (2-col tile grids, header stacks, band note hidden on phones).
+- Verified: `node --check` on all 5 inline scripts; Playwright smoke (offline, fake validator) at
+  1440 / 1000 / 390 px — no page errors, `LeaderCountdown` ticks the new chip. Not yet live-verified
+  (needs the push) — do that first next session.
+- Not changed: Compare tool cards, Delegation tab, modals, Data Center summary tiles.

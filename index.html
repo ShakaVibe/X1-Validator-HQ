@@ -12039,6 +12039,166 @@
     .vp-methodology b { color: var(--text-secondary); }
     .vp-foot { color: var(--text-dim); font-size: 0.72rem; margin-top: 1.5rem; font-family: 'JetBrains Mono', monospace; }
     .vp-hidden { display: none; }
+    /* ═══════════════════════════════════════════════════════════════════
+       VALIDATOR CARD v2 (2026-09-15) — panel, leader band, grouped stats.
+       Overrides the older card rules above; keep it after them.
+       ═══════════════════════════════════════════════════════════════════ */
+    .validator-card {
+      background: linear-gradient(180deg, rgba(20, 34, 58, 0.92), rgba(15, 26, 46, 0.92));
+      border: 1px solid rgba(77, 166, 255, 0.22);
+      border-radius: 22px;
+      padding: 1.6rem 1.75rem 1.5rem;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+    .validator-card:hover {
+      border-color: rgba(77, 166, 255, 0.38);
+      background: linear-gradient(180deg, rgba(22, 37, 63, 0.94), rgba(16, 28, 49, 0.94));
+    }
+
+    /* Header */
+    .validator-card .validator-header { align-items: center; margin-bottom: 1.1rem; gap: 1rem; }
+    .validator-card .validator-info { gap: 1rem; min-width: 0; }
+    .validator-card .validator-logo,
+    .validator-card .validator-logo-placeholder { width: 56px; height: 56px; border-radius: 18px; }
+    .validator-card .validator-logo { border: 1px solid var(--border); }
+    .validator-card .validator-logo-placeholder { font-size: 1.35rem; box-shadow: 0 8px 24px rgba(0, 212, 255, 0.3); }
+    .validator-identity { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; }
+    .validator-card .validator-name {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem;
+      font-size: 1.35rem; letter-spacing: -0.01em; line-height: 1.2;
+    }
+    .validator-card .tier-badge {
+      margin-left: 0; gap: 0.3rem; height: 24px; padding: 0 10px;
+      border-radius: 999px; font-size: 0.7rem; font-weight: 500;
+    }
+    .validator-card .tier-badge.elite     { background: rgba(240, 185, 11, 0.07); border-color: rgba(240, 185, 11, 0.28); color: var(--accent-gold); }
+    .validator-card .tier-badge.excellent { background: rgba(192, 192, 192, 0.07); border-color: rgba(192, 192, 192, 0.3); }
+    .validator-card .tier-badge.great     { background: rgba(205, 127, 50, 0.07);  border-color: rgba(205, 127, 50, 0.3); }
+    .validator-card .validator-rank {
+      display: inline-flex; align-items: center; height: 24px; padding: 0 10px; margin-left: 0;
+      border-radius: 999px; font-size: 0.7rem; font-weight: 500;
+      color: var(--text-secondary); background: rgba(255, 255, 255, 0.06);
+    }
+    .validator-card .validator-meta { flex-wrap: wrap; gap: 0.6rem; margin-top: 0; }
+    .validator-card .validator-address { margin-top: 0; }
+    .validator-card .copy-address-btn { margin-left: 0; padding: 0.15rem; background: transparent; border-color: transparent; color: var(--text-dim); }
+    .validator-card .copy-address-btn:hover { color: var(--accent-cyan); background: rgba(0, 212, 255, 0.1); border-color: transparent; }
+    .validator-card .version-badge { padding: 0; background: transparent; border: none; color: var(--text-dim); font-size: 0.75rem; }
+    .validator-card .version-badge.outdated { color: #ffc107; }
+    .vh-status { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.78rem; font-weight: 500; color: var(--success); white-space: nowrap; }
+    .vh-status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.18); }
+    .vh-status.is-delinquent { color: var(--danger); }
+    .vh-status.is-delinquent .vh-status-dot { box-shadow: 0 0 0 3px rgba(255, 82, 82, 0.18); }
+
+    .validator-card .validator-actions { gap: 0.6rem; flex-shrink: 0; flex-wrap: wrap; }
+    .share-icon-btn {
+      display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+      border-radius: 999px; color: var(--text-secondary); background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;
+    }
+    .share-icon-btn:hover { color: var(--text-primary); border-color: var(--accent-blue); }
+    .share-icon-btn.is-copied { color: var(--success); border-color: var(--success); }
+    .validator-card .add-btn,
+    .validator-card .remove-btn {
+      display: inline-flex; align-items: center; gap: 0.45rem; height: 40px; padding: 0 1rem;
+      border-radius: 999px; font-size: 0.82rem; white-space: nowrap;
+    }
+    .validator-card .add-btn { color: var(--text-primary); background: rgba(255, 255, 255, 0.06); border: 1px solid var(--border); }
+    .validator-card .add-btn:hover { border-color: var(--accent-blue); background: rgba(77, 166, 255, 0.12); }
+    .validator-card .add-btn.is-added,
+    .validator-card .add-btn.is-added:hover { color: var(--success); background: rgba(0, 230, 118, 0.08); border-color: rgba(0, 230, 118, 0.3); cursor: default; opacity: 1; }
+    .validator-card .remove-btn { border: 1px solid rgba(255, 82, 82, 0.3); }
+    .validator-card .manage-validator-btn {
+      height: 42px; padding: 0 1.25rem 0 0.95rem; gap: 0.55rem;
+      border-radius: 999px; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.01em; color: #061225;
+      background: linear-gradient(135deg, #5db1ff 0%, #00d4ff 60%, #35e2ff 100%);
+      border: 1px solid rgba(0, 212, 255, 0.55);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), inset 0 -1px 0 rgba(0, 40, 80, 0.25),
+                  0 0 0 4px rgba(0, 212, 255, 0.10), 0 10px 28px rgba(0, 212, 255, 0.30);
+    }
+    .validator-card .manage-validator-btn:hover {
+      color: #061225; border-color: rgba(0, 212, 255, 0.8);
+      background: linear-gradient(135deg, #6dbbff 0%, #12dbff 60%, #4be7ff 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), inset 0 -1px 0 rgba(0, 40, 80, 0.25),
+                  0 0 0 5px rgba(0, 212, 255, 0.14), 0 12px 32px rgba(0, 212, 255, 0.42);
+    }
+    .validator-card .manage-validator-btn .mv-icon {
+      display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px;
+      border-radius: 50%; background: rgba(6, 18, 37, 0.16);
+    }
+
+    /* Leader band — amber while waiting, green while leading, muted with no slots */
+    .vh-leader-band {
+      display: flex; align-items: center; gap: 0.85rem; min-height: 44px; margin-bottom: 1.1rem;
+      padding: 0.3rem 0.4rem 0.3rem 1rem; border-radius: 12px;
+      background: linear-gradient(90deg, rgba(255, 171, 0, 0.10), rgba(255, 171, 0, 0.02));
+      border: 1px solid rgba(255, 171, 0, 0.22);
+    }
+    .vh-band-icon {
+      display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; flex-shrink: 0;
+      border-radius: 50%; background: rgba(255, 171, 0, 0.15); color: var(--warning);
+    }
+    .vh-leader-band .vh-next-leader { display: inline; min-width: 0; padding: 0; border: none; background: transparent; border-radius: 0; font-size: 0.85rem; font-weight: 500; line-height: 1.3; color: var(--text-primary); white-space: nowrap; text-align: left; }
+    .vh-leader-band .vh-next-leader.is-leader { color: var(--success); background: transparent; }
+    .vh-band-note { font-size: 0.75rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+    .vh-slot-explorer {
+      margin-left: auto; flex-shrink: 0; display: inline-flex; align-items: center; gap: 0.45rem; height: 32px; padding: 0 0.9rem;
+      border-radius: 999px; font-size: 0.78rem; font-weight: 500; font-family: inherit;
+      color: var(--accent-cyan); background: rgba(0, 212, 255, 0.08); border: 1px solid rgba(0, 212, 255, 0.3);
+      cursor: pointer; transition: background 0.15s, border-color 0.15s;
+    }
+    .vh-slot-explorer:hover { background: rgba(0, 212, 255, 0.18); border-color: var(--accent-cyan); }
+    .vh-leader-band.is-leader { background: linear-gradient(90deg, rgba(0, 230, 118, 0.14), rgba(0, 230, 118, 0.03)); border-color: rgba(0, 230, 118, 0.35); }
+    .vh-leader-band.is-leader .vh-band-icon { background: var(--success); color: #0a1322; }
+    .vh-leader-band.is-none { background: rgba(138, 143, 152, 0.05); border-color: rgba(138, 143, 152, 0.2); }
+    .vh-leader-band.is-none .vh-band-icon { background: rgba(138, 143, 152, 0.15); color: var(--text-secondary); }
+    .vh-leader-band.is-none .vh-next-leader { color: var(--text-secondary); }
+
+    /* Grouped stats: Earnings & stake (cyan) / Health (blue) */
+    .validator-card .stats-grid { display: flex; flex-direction: column; gap: 1.1rem; }
+    .stat-group { display: flex; flex-direction: column; gap: 0.6rem; }
+    .stat-group-label { display: flex; align-items: center; gap: 0.6rem; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+    .stat-group-label::after { content: ''; flex: 1 1 0; height: 1px; background: currentColor; opacity: 0.18; }
+    .stat-group-earn .stat-group-label { color: var(--accent-cyan); }
+    .stat-group-health .stat-group-label { color: var(--accent-blue); }
+    .stat-group-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; align-items: stretch; }
+    .validator-card .stat-item { padding: 1.05rem 1.1rem 0.95rem; border-radius: 16px; gap: 0.55rem; }
+    .stat-group-earn .stat-item   { background: linear-gradient(180deg, rgba(0, 212, 255, 0.09), rgba(0, 212, 255, 0.03)); border: 1px solid rgba(0, 212, 255, 0.18); }
+    .stat-group-health .stat-item { background: linear-gradient(180deg, rgba(77, 166, 255, 0.09), rgba(77, 166, 255, 0.03)); border: 1px solid rgba(77, 166, 255, 0.20); }
+    .validator-card .clickable-stat:hover,
+    .validator-card .perf-score-wrapper:hover { background: rgba(255, 255, 255, 0.06); }
+    .validator-card .stat-label { font-size: 0.75rem; text-transform: none; letter-spacing: 0; color: var(--text-secondary); min-height: 0; margin-bottom: 0; line-height: 1.2; }
+    .validator-card .stat-value { font-size: 1.5rem; font-weight: 500; line-height: 1; }
+    .validator-card .stat-value.accent { color: var(--text-primary); }
+    .validator-card .stat-subtext { font-size: 0.72rem; margin-top: 0; }
+    .validator-card .stat-sub-row { margin-top: 0; }
+    .validator-card .stat-change { font-size: 0.7rem; margin-top: 0; padding: 0.1rem 0.4rem; border-radius: 999px; background: rgba(255, 255, 255, 0.06); font-family: 'JetBrains Mono', monospace; }
+    .validator-card .rb-open-link { font-size: 0.72rem; }
+    .validator-card .perf-bar-container { margin-top: 0.1rem; }
+
+    /* Footer expanders */
+    .validator-card .validator-action-buttons { margin-top: 1.1rem; gap: 0.75rem; }
+    .validator-card .validator-expand-btn { height: 44px; padding: 0 1rem; border-radius: 14px; background: rgba(13, 21, 40, 0.8); font-size: 0.82rem; font-weight: 500; }
+    .validator-card .validator-expand-btn .arrow { display: inline-flex; }
+
+    @media (max-width: 1100px) {
+      .stat-group-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 768px) {
+      .validator-card { padding: 1.1rem 1rem 1rem; border-radius: 18px; }
+      .validator-card .validator-header { flex-direction: column; align-items: stretch; }
+      .validator-card .validator-meta { flex-direction: row; align-items: center; }
+      .vh-leader-band { flex-wrap: wrap; padding: 0.5rem 0.6rem 0.5rem 0.9rem; }
+      .vh-band-note { display: none; }
+      .validator-card .stat-value { font-size: 1.25rem; }
+    }
+    @media (max-width: 480px) {
+      .stat-group-grid { gap: 0.5rem; }
+      .validator-card .stat-item { padding: 0.8rem; }
+      .vh-slot-explorer { margin-left: 0; }
+      .validator-card .validator-actions { gap: 0.5rem; }
+    }
+
   </style>
 </head>
 <body>
@@ -18000,17 +18160,30 @@
       return 'score-bad';
     }
 
+    // Inline line icons for the validator card (16/24 grid, stroke-based, recolor via currentColor).
+    const CARD_ICONS = {
+      star:     '<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.6 7.1.7-5.3 4.8 1.6 7L12 17.5 5.7 21l1.6-7L2 9.3l7.1-.7z"></path></svg>',
+      share:    '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"></path><path d="m16 6-4-4-4 4"></path><path d="M12 2v13"></path></svg>',
+      check:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4 10-10"></path></svg>',
+      plus:     '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>',
+      sliders:  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h10M18 18h2"></path><circle cx="16" cy="6" r="2"></circle><circle cx="8" cy="12" r="2"></circle><circle cx="16" cy="18" r="2"></circle></svg>',
+      clock:    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>',
+      search:   '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>',
+      arrow:    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>',
+      chevron:  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>',
+    };
+
     function getTierBadge(rank, totalValidators) {
       if (!rank || !totalValidators) return '';
       
       const percentile = (rank / totalValidators) * 100;
       
       if (percentile <= 10) {
-        return '<span class="tier-badge elite" title="This validator ranks in the top 10% by total stake">🏆 Top 10%</span>';
+        return '<span class="tier-badge elite" title="This validator ranks in the top 10% by total stake">' + CARD_ICONS.star + 'Top 10%</span>';
       } else if (percentile <= 20) {
-        return '<span class="tier-badge excellent" title="This validator ranks in the top 20% by total stake">🌟 Top 20%</span>';
+        return '<span class="tier-badge excellent" title="This validator ranks in the top 20% by total stake">' + CARD_ICONS.star + 'Top 20%</span>';
       } else if (percentile <= 30) {
-        return '<span class="tier-badge great" title="This validator ranks in the top 30% by total stake">⭐ Top 30%</span>';
+        return '<span class="tier-badge great" title="This validator ranks in the top 30% by total stake">' + CARD_ICONS.star + 'Top 30%</span>';
       }
       
       return '';
@@ -18066,9 +18239,9 @@
       if (showRemoveBtn) {
         actionBtn = `<button class="remove-btn" onclick="removeFromPortfolio('${validator.voteAccount}')">Remove</button>`;
       } else if (showAddBtn && !isInPortfolio) {
-        actionBtn = `<button class="add-btn" data-add-vote="${validator.voteAccount}" onclick="addToPortfolio('${validator.voteAccount}')">+ Add</button>`;
+        actionBtn = `<button class="add-btn" data-add-vote="${validator.voteAccount}" onclick="addToPortfolio('${validator.voteAccount}')">${CARD_ICONS.plus}Add to Data Center</button>`;
       } else if (showAddBtn && isInPortfolio) {
-        actionBtn = `<button class="add-btn" style="opacity: 0.5;" disabled>Added</button>`;
+        actionBtn = `<button class="add-btn is-added" disabled>${CARD_ICONS.check}In Data Center</button>`;
       }
 
       // Generate logo or placeholder
@@ -18188,28 +18361,27 @@
         }
       }
 
-      // ── Header utility strip: live "time to next leader slot" + Slot Explorer ──
-      // The next-leader chip is updated in place once per second by
-      // LeaderCountdown (reads the shared leaderScheduleCache). The Slot
-      // Explorer chip opens the same modal the Skip Rate box used to.
+      // ── Leader band: live "time to next leader slot" + Slot Explorer ──
+      // The .vh-next-leader text (and the band's is-leader / is-none state)
+      // is updated in place once per second by LeaderCountdown, which reads
+      // the shared leaderScheduleCache. The Slot Explorer button opens the
+      // same modal the Skip Rate box used to.
       const _vhVa   = validator.voteAccount;
       const _vhNode = validator.nodePubkey || '';
-      const nextLeaderChip = _vhNode
-        ? `<span class="vh-chip vh-next-leader" data-node="${_vhNode}">⏱ …</span>`
-        : '';
-      const slotExplorerChip = _vhNode
-        ? `<span class="vh-chip vh-slot-explorer" onclick="event.stopPropagation(); openSlotModal('${_vhNode}', '${escAttrJs(validator.name)}', '${_vhVa}')" title="View slot-by-slot leader assignment and block production">🔍 Slot Explorer</span>`
-        : '';
-      const chipStripHtml = (nextLeaderChip || slotExplorerChip)
-        ? `<div class="vh-chip-strip">${nextLeaderChip}${slotExplorerChip}</div>`
-        : '';
+      const leaderBandHtml = _vhNode ? `
+          <div class="vh-leader-band">
+            <span class="vh-band-icon">${CARD_ICONS.clock}</span>
+            <span class="vh-next-leader" data-node="${escHtml(_vhNode)}">…</span>
+            <span class="vh-band-note"></span>
+            <button class="vh-slot-explorer" onclick="event.stopPropagation(); openSlotModal('${escAttrJs(_vhNode)}', '${escAttrJs(validator.name)}', '${escAttrJs(_vhVa)}')" title="View slot-by-slot leader assignment and block production">${CARD_ICONS.search}Slot explorer${CARD_ICONS.arrow}</button>
+          </div>` : '';
 
       return `
         <div class="validator-card">
           <div class="validator-header">
             <div class="validator-info">
               ${logoHtml}
-              <div>
+              <div class="validator-identity">
                 <div class="validator-name">
                   ${escHtml(validator.name)}${validator.isZombie ? '' : getTierBadge(validator.rank, validator.totalValidators)}
                   <span class="validator-rank" title="${validator.isZombie ? 'This validator is not in the active set — its activated stake has dropped to zero. It is hidden from the main list by default.' : 'Stake rank: Position among all validators sorted by total stake'}">${validator.isZombie ? 'Unranked' : `#${validator.rank} of ${validator.totalValidators}`}</span>
@@ -18223,22 +18395,19 @@
                     </svg>
                   </button>
                   ${versionHtml}
+                  <span class="vh-status ${validator.isDelinquent ? 'is-delinquent' : 'is-active'}"><span class="vh-status-dot"></span>${validator.isDelinquent ? 'Delinquent' : 'Active'}</span>
                 </div>
-                ${chipStripHtml}
               </div>
-            </div>
-            <div class="manage-validator-btn-wrapper">
-              <button class="manage-validator-btn" onclick="openManageValidator('${escAttrJs(validator.voteAccount)}', '${escAttrJs(validator.name)}', ${Number(validator.rewardsBalance) || 0}, ${Number(validator.commission) || 0}, '${escAttrJs(validator.nodePubkey || '')}', '${escAttrJs(validator.iconUrl || '')}')">
-                ⚙️ Manage Validator
-              </button>
             </div>
             <div class="validator-actions">
-              <div class="status-badge ${validator.isDelinquent ? 'status-delinquent' : 'status-active'}">
-                ${validator.isDelinquent ? 'Delinquent' : 'Active'}
-              </div>
+              <button class="share-icon-btn" onclick="shareValidator('${escAttrJs(validator.voteAccount)}', '${escAttrJs(validator.name)}', this)" title="Copy a link to this validator" aria-label="Share">${CARD_ICONS.share}</button>
               ${actionBtn}
+              <button class="manage-validator-btn" onclick="openManageValidator('${escAttrJs(validator.voteAccount)}', '${escAttrJs(validator.name)}', ${Number(validator.rewardsBalance) || 0}, ${Number(validator.commission) || 0}, '${escAttrJs(validator.nodePubkey || '')}', '${escAttrJs(validator.iconUrl || '')}')">
+                <span class="mv-icon">${CARD_ICONS.sliders}</span>Manage Validator
+              </button>
             </div>
           </div>
+          ${leaderBandHtml}
           ${validator.isZombie ? `
           <div style="margin:0.25rem 1rem 1.25rem;padding:0.65rem 0.85rem;background:rgba(255,82,82,0.08);border:1px solid rgba(255,82,82,0.3);border-left:3px solid var(--danger);border-radius:6px;display:flex;gap:0.6rem;align-items:flex-start;font-size:0.82rem;line-height:1.4;color:var(--text-secondary);position:relative;z-index:2;">
             <span style="color:var(--danger);font-size:1rem;line-height:1;flex-shrink:0;margin-top:0.05rem;">⚠</span>
@@ -18249,14 +18418,17 @@
           </div>` : ''}
           
           <div class="stats-grid">
+          <div class="stat-group stat-group-earn">
+            <div class="stat-group-label">Earnings &amp; stake</div>
+            <div class="stat-group-grid">
             <div class="stat-item" title="The validator's accumulated rewards that can be withdrawn.">
-              <div class="stat-label">Rewards<br>Balance</div>
+              <div class="stat-label">Rewards balance</div>
               <div class="stat-value accent">${formatNumber(validator.rewardsBalance)}</div>
               <div class="stat-subtext">XNT</div>
             </div>
             
             <div class="stat-item" title="What the validator earned in the last completed epoch — its voting commission plus the rewards on its own self-stake. Click Breakdown to see this split by source." id="lastEpoch-${validator.voteAccount.slice(0,8)}">
-              <div class="stat-label">Last Epoch<br>Earned</div>
+              <div class="stat-label">Earned last epoch</div>
               <div class="last-epoch-value-row">
                 <span class="stat-value" style="color: var(--success);">Loading...</span>
                 <span class="stat-change" id="lastEpochChange-${validator.voteAccount.slice(0,8)}"></span>
@@ -18268,7 +18440,7 @@
             </div>
             
             <div class="stat-item clickable-stat" onclick="openStakeSelection('${validator.voteAccount}', '${escAttrJs(validator.name)}')" title="Click to manage your stake classification (self-stake vs delegated)">
-              <div class="stat-label">Active<br>Stake</div>
+              <div class="stat-label">Active stake</div>
               <div class="stat-value">${formatXntCompact(validator.activatedStake)}</div>
               <div class="stat-sub-row">
                 <span class="stat-subtext">XNT</span>
@@ -18276,8 +18448,19 @@
               </div>
             </div>
             
+            <div class="stat-item deleg-section" data-vote="${escHtml(validator.voteAccount)}" title="X1 Foundation Delegation Program — official status and delegated stake. Click Details for the criteria checklist.">
+              <div class="stat-label">Foundation delegation</div>
+              <div class="stat-value" style="color: var(--text-dim);">…</div>
+              <div class="stat-subtext">Program</div>
+            </div>
+            
+            </div>
+          </div>
+          <div class="stat-group stat-group-health">
+            <div class="stat-group-label">Health</div>
+            <div class="stat-group-grid">
             <div class="stat-item epoch-credits-card" style="position:relative;" title="Epoch credits represent the validator's voting activity. More credits generally means better uptime and participation in consensus.">
-              <div class="stat-label">Epoch<br>Credits</div>
+              <div class="stat-label">Epoch credits</div>
               <div class="stat-value">${formatCompact(validator.epochCredits)}</div>
               <div class="stat-sub-row">
                 <span class="stat-subtext">Cumulative</span>
@@ -18285,26 +18468,20 @@
               </div>
             </div>
             
-            <div class="stat-item" title="Commission is the percentage of staking rewards the validator keeps. The remaining percentage goes to delegators.">
-              <div class="stat-label">Commission<br>Rate</div>
-              <div class="stat-value">${validator.commission}%</div>
-              <div class="stat-subtext">Fee rate</div>
-            </div>
-            
             <div class="stat-item" title="Skip rate = % of leader slots where no block was produced. When showing a multi-epoch average, we use the slot-weighted method: (total skipped slots across epochs) / (total leader slots across epochs) — the same method the Solana CLI uses. This avoids small-sample epochs dominating the average.">
-              <div class="stat-label">Skip<br>Rate</div>
+              <div class="stat-label">Skip rate</div>
               <div class="stat-value ${skipColor}">${skipRateDisplay}</div>
               <div class="stat-subtext">${skipLabel}</div>
             </div>
 
-            <div class="stat-item deleg-section" data-vote="${escHtml(validator.voteAccount)}" title="X1 Foundation Delegation Program — official status and delegated stake. Click Details for the criteria checklist.">
-              <div class="stat-label">Delegation</div>
-              <div class="stat-value" style="color: var(--text-dim);">…</div>
-              <div class="stat-subtext">Program</div>
+            <div class="stat-item" title="Commission is the percentage of staking rewards the validator keeps. The remaining percentage goes to delegators.">
+              <div class="stat-label">Commission</div>
+              <div class="stat-value">${validator.commission}%</div>
+              <div class="stat-subtext">Fee rate</div>
             </div>
             
             <div class="stat-item perf-score-wrapper" onclick="openPerfExplainerModal(event, '${validator.voteAccount}')">
-              <div class="stat-label">Performance (7D) <span class="perf-info-icon">?</span></div>
+              <div class="stat-label">Performance, 7d <span class="perf-info-icon">?</span></div>
               <div class="stat-value ${perfColor}">${formatNumber(perfScore, 2)}</div>
               <div class="perf-bar-container">
                 <div class="perf-bar">
@@ -18312,19 +18489,18 @@
                 </div>
               </div>
             </div>
+            </div>
+          </div>
           </div>
 
           <div class="validator-action-buttons">
-            <button class="validator-expand-btn share-btn" onclick="shareValidator('${escAttrJs(validator.voteAccount)}', '${escAttrJs(validator.name)}', this)" title="Copy a link to this validator">
-              <span>🔗 Share</span>
-            </button>
             <button class="validator-expand-btn stake-details-btn" onclick="toggleStakeDetails('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.activatedStake}, ${validator.commission}, this)">
-              <span>Stake Details</span>
-              <span class="arrow">▼</span>
+              <span>Stake details</span>
+              <span class="arrow">${CARD_ICONS.chevron}</span>
             </button>
             <button class="validator-expand-btn" onclick="toggleChart('${chartId}', this)">
-              <span>View Earnings Trend</span>
-              <span class="arrow">▼</span>
+              <span>Earnings trend</span>
+              <span class="arrow">${CARD_ICONS.chevron}</span>
             </button>
           </div>
 
@@ -18645,8 +18821,8 @@
         // place. Re-running performSearch() would collapse a card the user is
         // viewing back to the results list, so we update the button directly.
         document.querySelectorAll('button.add-btn[data-add-vote="' + voteAccount + '"]').forEach(btn => {
-          btn.textContent = 'Added';
-          btn.style.opacity = '0.5';
+          btn.innerHTML = CARD_ICONS.check + 'In Data Center';
+          btn.classList.add('is-added');
           btn.disabled = true;
           btn.onclick = null;
         });
@@ -21182,8 +21358,9 @@
         if (typeof showToast === 'function') showToast('Link copied: ' + url);
         if (buttonEl) {
           const orig = buttonEl.innerHTML;
-          buttonEl.innerHTML = '<span>✓ Copied</span>';
-          setTimeout(() => { buttonEl.innerHTML = orig; }, 1500);
+          buttonEl.innerHTML = buttonEl.classList.contains('share-icon-btn') ? CARD_ICONS.check : '<span>✓ Copied</span>';
+          buttonEl.classList.add('is-copied');
+          setTimeout(() => { buttonEl.innerHTML = orig; buttonEl.classList.remove('is-copied'); }, 1500);
         }
       } catch (e) {
         if (e && e.name === 'AbortError') return;   // user dismissed the share sheet
@@ -24138,7 +24315,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         
         <div class="stake-cache-note">
           ${detectionNote}<br>
-          Data cached for 5 minutes • Click "Stake Details" again to refresh
+          Data cached for 5 minutes • Click "Stake details" again to refresh
         </div>
       `;
       
@@ -31208,11 +31385,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
     // LeaderCountdown — live "time to next leader slot" chips.
     //
     // Each validator card renders a <span class="vh-next-leader"
-    // data-node="<nodePubkey>"> chip. This module updates every such
-    // chip once per second:
-    //   • upcoming  → "⏱ Next slot ~3m 12s"
-    //   • leader    → "● Leader now"          (same chip, green)
-    //   • none      → "⏱ No upcoming slots"   (muted)
+    // data-node="<nodePubkey>"> inside a .vh-leader-band. This module
+    // updates every such chip once per second (and mirrors the state onto
+    // the band so its colour follows):
+    //   • upcoming  → "Next leader slot in ~3m"
+    //   • leader    → "Leader now"                  (band turns green)
+    //   • none      → "No upcoming leader slots"    (muted)
     //
     // It reads the shared leaderScheduleCache (nodePubkey -> [relative
     // slot indices within the current epoch]) and interpolates the
@@ -31274,25 +31452,36 @@ Please give me the diagnostic commands to run on my server so you can help me id
         if (epochSlotIndex === null || Date.now() - syncedAt > SYNC_MS) sync();
 
         const idx = estIndex();
+        // Write the chip text, mirror the state onto the enclosing band
+        // (.vh-leader-band → amber / green / muted) and fill the note.
+        const setChip = (chip, text, state, note) => {
+          if (chip.textContent !== text) chip.textContent = text;
+          chip.classList.toggle('is-leader', state === 'leader');
+          chip.classList.toggle('is-none', state === 'none');
+          const band = chip.parentElement;
+          if (band && band.classList.contains('vh-leader-band')) {
+            band.classList.toggle('is-leader', state === 'leader');
+            band.classList.toggle('is-none', state === 'none');
+            const noteEl = band.querySelector('.vh-band-note');
+            if (noteEl && noteEl.textContent !== note) noteEl.textContent = note;
+          }
+        };
         chips.forEach(chip => {
           const node = chip.dataset.node;
           if (idx === null || !leaderScheduleCache || !node) {
-            chip.textContent = '⏱ …';
-            chip.classList.remove('is-leader', 'is-none');
+            setChip(chip, '…', '', '');
             return;
           }
           const slots = leaderScheduleCache[node];
+          const epochNote = (slots && slots.length ? slots.length + ' leader slot' + (slots.length === 1 ? '' : 's') + ' this epoch' : 'no leader slots this epoch') +
+                            (currentEpochNumber ? ' · epoch ' + currentEpochNumber : '');
           if (!slots || slots.length === 0) {
-            chip.textContent = '⏱ No upcoming slots';
-            chip.classList.add('is-none');
-            chip.classList.remove('is-leader');
+            setChip(chip, 'No upcoming leader slots', 'none', epochNote);
             return;
           }
           // Leader for the current slot?
           if (slots.indexOf(idx) !== -1) {
-            chip.textContent = '● Leader now';
-            chip.classList.add('is-leader');
-            chip.classList.remove('is-none');
+            setChip(chip, 'Leader now', 'leader', epochNote);
             return;
           }
           // Smallest upcoming slot index (schedule isn't guaranteed sorted).
@@ -31302,12 +31491,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
             if (s > idx && s < next) next = s;
           }
           if (next === Infinity) {
-            chip.textContent = '⏱ No upcoming slots';
-            chip.classList.add('is-none');
-            chip.classList.remove('is-leader');
+            setChip(chip, 'No more leader slots this epoch', 'none', epochNote);
           } else {
-            chip.textContent = '⏱ Next slot ' + fmt((next - idx) * SLOT_MS);
-            chip.classList.remove('is-leader', 'is-none');
+            setChip(chip, 'Next leader slot in ' + fmt((next - idx) * SLOT_MS), '', epochNote);
           }
         });
       }
