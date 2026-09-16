@@ -13,7 +13,7 @@
  * VOTE account (the site keys everything by vote), plus the criteria and
  * cluster averages needed to show headroom ("880 XNT short", "credits at
  * 89% of network, threshold 92%"). ~200 KB raw. Consumed by the
- * DELEGATION PROGRAM module in index.html.
+ * DELEGATION PROGRAM module in js/delegation.js.
  *
  * Runs hourly from .github/workflows/update-terminal-snapshot.yml.
  * Node 20+, zero dependencies.
