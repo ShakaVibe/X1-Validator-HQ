@@ -85,6 +85,7 @@
       const PK = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
       let applying = false;
       let started = false;
+      let lastApplied = null;   // route string last applied (or pushed by set())
 
       function current() { return decodeURIComponent((location.hash || '').replace(/^#/, '')); }
 
@@ -93,6 +94,7 @@
         // link — otherwise a render during page load would clobber it.
         if (applying || !started) return;
         const next = '#' + route;
+        lastApplied = route;
         if (location.hash === next) return;
         try { history.pushState(null, '', next); } catch (e) { location.hash = route; }
       }
@@ -140,12 +142,23 @@
         return true;
       }
 
+      // A hash navigation (typed URL, clicked #-link, back/forward) fires BOTH
+      // popstate and hashchange, so route once per distinct route — otherwise
+      // apply() ran twice and e.g. #/compare/<vote> added the validator twice
+      // (addToComparison's duplicate check sits before its awaits).
+      function onNavigate() {
+        const r = current();
+        if (r === lastApplied) return;
+        lastApplied = r;
+        apply(r);
+      }
+
       function start() {
         if (started) return; started = true;
-        window.addEventListener('hashchange', () => apply(current()));
-        window.addEventListener('popstate', () => apply(current()));
+        window.addEventListener('hashchange', onNavigate);
+        window.addEventListener('popstate', onNavigate);
         const r = current();
-        if (r) apply(r);
+        if (r) { lastApplied = r; apply(r); }
       }
 
       function link(route) { return location.origin + location.pathname + '#' + route; }
