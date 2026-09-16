@@ -10,13 +10,11 @@
 > 1. `cd ~/Desktop/X1VHQ && git pull` — bots commit hourly (via the heartbeat; verified 2026-09-16:
 >    scores at :04, snapshots at :43, geo every 2 h at :03 — 79 bot commits in 24 h, no gaps).
 >    If Shaka's `git add` complains about `index.lock`, `rm -f .git/index.lock .git/objects/maintenance.lock`.
-> 2. Card redesign **live-verified 2026-09-16** (see session log). Still unverified: the leader band
->    turning green while the validator is leading (`is-leader`) — check it when a slot comes up.
->    Then continue the visual pass if Shaka wants (Compare cards, Delegation tab, modals, Data
->    Center summary tiles still use the old look).
->    Live-verify after push: the **duplicate-card fix** (2026-09-16) — look up Shaka_Vibes_1, open
->    My Data Center: "Earned last epoch" must fill on the Data Center card and its Stake details /
->    Earnings trend must open on *that* card; console must be clean (no `hideIconPreview`).
+> 2. Card redesign, duplicate-card fix and the split are all **live-verified 2026-09-16** (Shaka
+>    saw the leader band go green). Live-verify after push: the **Router double-apply fix** —
+>    `#/compare/<vote>` must add the validator once. Then continue the visual pass if Shaka
+>    wants (Compare cards, Delegation tab, modals, Data Center summary tiles still use the old
+>    look) or start ③.
 > 3. Under-the-hood queue: ② **split `index.html` — DONE 2026-09-16** (see §3 for the file map;
 >    `node scripts/assemble-monolith.js --check <file>` proves the split is a pure move). Next:
 >    ③ replace the 263 inline `onclick` with a delegated `data-action` dispatcher, then drop
@@ -740,6 +738,22 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   scheme without a build step — but keep it in mind when a report says "broke right after deploy".
 - Comments in `scripts/build-*.js` still say "in index.html" for RewardsLedger / inflateSnapshot /
   DELEGATION PROGRAM — now `js/core.js`, `js/terminal.js`, `js/delegation.js` (fixed in this commit).
-- Next session: live-verify the split (network tab shows `css/site.css` + 18 js files, no 404s,
-  every tab renders, card + terminal + delegation + calculators work), then start ③ — the
-  `data-action` dispatcher can now be added file by file.
+- **Split live-verified** (push `d28aa32`): `css/site.css` + 18 `js/*.js` all 200, 320 KB gzipped
+  on the wire, 2,038 CSS rules; walked `#/live #/terminal (723 rows, 7,453 stake accounts)
+  #/lookup/… (card, 26.88, delegation tile, band) #/datacenter #/leaderboard (50 rows)
+  #/delegation (702 rows) #/compare #/calculators (live price 0.2708) #/globe (canvas)` in a fresh
+  pane tab: zero page errors, zero console errors. (The long-lived pane tab from earlier in the
+  session shows stale "Maximum call stack" / "Script error." entries — pane artefacts; a fresh
+  tab is clean, same as Chrome.)
+- **Bug found while walking the tabs — Router double-apply.** A hash navigation (typed URL,
+  clicked `#` link, back/forward) fires BOTH `popstate` and `hashchange`; `Router.start()`
+  listened to both, so `apply()` ran twice per navigation. Visible effect: `#/compare/<vote>`
+  deep links added each validator **twice** ("(4)" for two votes, duplicate cards); every deep
+  link also double-switched tabs. Pre-existing since U1 (2026-09-10), not from the split. Fix in
+  `js/app.js`: `onNavigate()` applies a route only if it differs from `lastApplied` (which
+  `set()` also records). Playwright before/after: `addToComparison` calls 2 → 1, `switchTab`
+  2 → 1, back/forward still route. First real edit of a split file; `assemble-monolith.js
+  --check` against `0101736` will now (correctly) report a mismatch in the Router.
+- Next session: live-verify the Router fix (`#/compare/<vote>` → one card, count "(1)"), then
+  start ③ — the `data-action` dispatcher can now be added file by file (start with
+  `js/cards.js`, the card is the most-touched surface).
