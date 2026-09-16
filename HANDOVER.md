@@ -823,8 +823,10 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `creditsFirstEpoch` when present (the merged 8-entry slice's `[0]` is not the first epoch).
   Offline Playwright with 100 mocked validators: map built (8 entries each), old-format or
   < 90 %-coverage file → null → RPC fallback, Newest groups/ranks correct, Most Efficient renders.
-- Takes effect after the next scores run (hourly at :04 via the heartbeat, or Actions → "Update
-  scores" → Run workflow). Until then the client falls back to the RPC path unchanged.
-  Live-verify: open Leaderboards on a fresh load, `rpcStats.byMethod` must show no
-  `getAccountInfo` burst (was 724) and the loading status should say "Using published credits
-  history…"; Newest and Most Efficient boards must look the same as before.
+- **Live-verified** after Shaka ran the scores workflow by hand (run #719, file generated
+  18:54 UTC, 724/724 validators carry `credits`, Shaka_Vibes_1 first seen epoch 316 with 64 on
+  record; scores.json now 1.15 MB raw): fresh Leaderboards load → `rpcStats.byMethod` has **no
+  `getAccountInfo` at all** (was 724), status "Done!", Performance / Most Efficient / Newest
+  render with the same leaders as before (Newest: Digital Stack Systems · Epoch 370 first).
+- Session 7 grand total (2026-09-16): 6 pushes — duplicate-card ids + icon preview; the split
+  (C1); Router double-apply; F15 + P2; P9. All live-verified. Uncommitted: this HANDOVER edit.
