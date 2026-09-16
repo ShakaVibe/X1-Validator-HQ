@@ -11,10 +11,9 @@
 >    scores at :04, snapshots at :43, geo every 2 h at :03 — 79 bot commits in 24 h, no gaps).
 >    If Shaka's `git add` complains about `index.lock`, `rm -f .git/index.lock .git/objects/maintenance.lock`.
 > 2. Card redesign, duplicate-card fix and the split are all **live-verified 2026-09-16** (Shaka
->    saw the leader band go green). Live-verify after push: the **Router double-apply fix** —
->    `#/compare/<vote>` must add the validator once. Then continue the visual pass if Shaka
->    wants (Compare cards, Delegation tab, modals, Data Center summary tiles still use the old
->    look) or start ③.
+>    saw the leader band go green), as is the Router double-apply fix (`fbe8852`). Nothing is
+>    pending verification. Next: continue the visual pass if Shaka wants (Compare cards,
+>    Delegation tab, modals, Data Center summary tiles still use the old look) or start ③.
 > 3. Under-the-hood queue: ② **split `index.html` — DONE 2026-09-16** (see §3 for the file map;
 >    `node scripts/assemble-monolith.js --check <file>` proves the split is a pure move). Next:
 >    ③ replace the 263 inline `onclick` with a delegated `data-action` dispatcher, then drop
@@ -754,6 +753,12 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `set()` also records). Playwright before/after: `addToComparison` calls 2 → 1, `switchTab`
   2 → 1, back/forward still route. First real edit of a split file; `assemble-monolith.js
   --check` against `0101736` will now (correctly) report a mismatch in the Router.
-- Next session: live-verify the Router fix (`#/compare/<vote>` → one card, count "(1)"), then
-  start ③ — the `data-action` dispatcher can now be added file by file (start with
+- Router fix live-verified (`fbe8852`): `#/compare/a,b` → exactly two validators, "(2)", back/
+  forward route, no console errors. Note the **cache skew** from the deploy caveat happened for
+  real: right after the push the pane ran the cached old `js/app.js` (transfer 0 bytes) while a
+  `cache:'no-store'` fetch already returned the new one — `fetch(url, {cache:'reload'})` then a
+  reload picks it up. Expect this on any live check inside ~10 min of a push.
+- Session 7 totals (2026-09-16): 3 pushes — duplicate-card ids + `hideIconPreview`; the split
+  (C1); Router double-apply. All live-verified.
+- Next session: start ③ — the `data-action` dispatcher can now be added file by file (start with
   `js/cards.js`, the card is the most-touched surface).
