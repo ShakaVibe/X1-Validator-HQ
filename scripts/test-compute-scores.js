@@ -187,6 +187,11 @@ server.listen(18990, async () => {
     check(hist.commission['Vote444'].length === 2, 'commission change history recorded');
     check(hist.latency['Vote111'][today].c === 10, 'latency samples accumulate (5/run × 2 runs)');
     check(doc.validators['Vote111'].uptimeObs === 2, 'uptime obs surfaced in scores.json');
+    // P9: published credits slice for the Leaderboards tab
+    const c1 = doc.validators['Vote111'];
+    check(Array.isArray(c1.credits) && c1.credits.length === 8, 'credits: last 8 epochs published');
+    check(c1.credits[7][0] === CURRENT_EPOCH && c1.credits[0][0] === CURRENT_EPOCH - 7, 'credits: newest last, [epoch, credits, prev]');
+    check(c1.creditsFirstEpoch === CURRENT_EPOCH - 10 && c1.creditsEpochs === 11, 'creditsFirstEpoch / creditsEpochs cover the full account history');
   } finally {
     server.close();
   }

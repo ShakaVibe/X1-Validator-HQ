@@ -229,6 +229,10 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] **F8b** rewards CSV export from the ledger; **F9** change feeds; **F11** APR per validator
       (F8 ledger itself is DONE 2026-09-13 — `data/rewards.json`; F2 history charts can read it)
 
+- [x] **P9** done 2026-09-16 — scores.json now carries `credits` (last 8 epochs), `creditsFirstEpoch`,
+      `creditsEpochs` per validator; Leaderboards read them (`publishedCreditsMap`) and only fall back
+      to the 724 batched `getAccountInfo` when the file predates this or covers < 90 %.
+
 ### Phase 3 — ongoing (platform)
 - [x] **C1** split `index.html` — done 2026-09-16 (css + 18 js files, plain `<script src>`)
 - [ ] **C2** replace 263 inline `onclick` with delegated listeners → drop `unsafe-inline`
@@ -791,7 +795,36 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `getProgramAccounts` / `getSupply`; expired caches fall through to the RPC. Trade-off: a
   validator who changes name/icon is seen on reload up to 1 h later in the same tab (new tab =
   fresh). Not yet live-verified.
-- Live-verify next: Leaderboards with Shaka's 5 validators (all top-50 on performance → the
-  divider should NOT show there; Lowest Commission likely shows #… rows); reload the site twice
-  and watch the stats bar fill before the RPC answers; `rpcStats.byMethod` on the second load
-  must lack `getProgramAccounts`(Config) and `getSupply`.
+- **Live-verified** (`502721e`, pane with Shaka_Vibes_1–5 in the pane's own storage, cleared
+  after): performance / stake / commission / reliable / delegations show 50 rows and no divider
+  (all five are top-50 there); **Most Efficient** shows the divider + 5 pinned rows
+  "#360 Shaka_Vibes_5 … #365 Shaka_Vibes_1". Second load: `x1IdentitiesCache`, `x1SupplyCache`,
+  `x1StatsBarCache` present; `rpcStats.byMethod` has **no `getProgramAccounts` and no
+  `getSupply`**; scores.json (78 KB gz) lands at ~140 ms and the bar is fully painted before the
+  RPC set returns.
+- **Found while measuring — the Leaderboards tab costs 724 `getAccountInfo` calls** (8 batched
+  POSTs of 100, ~3 MB): `loadLeaderboard` → `fetchAllExtendedEpochCreditsBatch()` pulls every
+  vote account's full `epochCredits` history (jsonParsed) because Most Efficient averages 7
+  completed epochs and Newest needs each validator's first epoch, while `getVoteAccounts` only
+  carries the last 5 epochs. Fix belongs server-side: have `compute-scores.js` publish
+  `firstEpoch` + the last 8 epochs' credits per validator in scores.json (it already has the
+  vote accounts) and make the client use them, RPC only as fallback. Added to §5 as **P9**.
+
+### 2026-09-16 — Session 7, late: P9 leaderboards credits diet (~30 min)
+- `scripts/compute-scores.js` already fetched every vote account's full `epochCredits` via
+  `getMultipleAccounts` (for scoring); it now also publishes per validator `credits` (last 8
+  entries `[epoch, credits, previousCredits]`, newest last), `creditsFirstEpoch` (oldest epoch on
+  record — the account keeps ≤ 64, same semantics the client had) and `creditsEpochs`. ~+65 KB
+  raw on scores.json. `test-compute-scores.js` checks all three (3 new assertions).
+- `js/leaderboards.js`: `loadLeaderboard` awaits the canonical scores first, then
+  `publishedCreditsMap()` builds the vote → credits map from scores.json when it covers ≥ 90 % of
+  `allValidators` (stamping `creditsFirstEpoch` / `creditsEpochs` on each), else the old
+  `fetchAllExtendedEpochCreditsBatch()` RPC path runs. Newest Validators takes `firstEpoch` from
+  `creditsFirstEpoch` when present (the merged 8-entry slice's `[0]` is not the first epoch).
+  Offline Playwright with 100 mocked validators: map built (8 entries each), old-format or
+  < 90 %-coverage file → null → RPC fallback, Newest groups/ranks correct, Most Efficient renders.
+- Takes effect after the next scores run (hourly at :04 via the heartbeat, or Actions → "Update
+  scores" → Run workflow). Until then the client falls back to the RPC path unchanged.
+  Live-verify: open Leaderboards on a fresh load, `rpcStats.byMethod` must show no
+  `getAccountInfo` burst (was 724) and the loading status should say "Using published credits
+  history…"; Newest and Most Efficient boards must look the same as before.
