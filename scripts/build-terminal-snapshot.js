@@ -13,7 +13,7 @@
  * writes data/terminal.json (~0.6 MB raw, gzipped by GitHub Pages on the way
  * out). The site loads that first and only falls back to the live API if the
  * snapshot is missing or stale. See HANDOVER.md §4 and the VALIDATOR TERMINAL
- * module in index.html (fetchSnapshot / inflateSnapshot).
+ * module in js/terminal.js (fetchSnapshot / inflateSnapshot).
  *
  * Node 20+, zero dependencies.   Usage: node scripts/build-terminal-snapshot.js
  * Env: X1_API_URL (default https://api.x1.xyz), OUT (default data/terminal.json)
@@ -31,7 +31,7 @@ const RETRIES    = 4;
 const TIMEOUT_MS = 120000;
 
 // Fields the terminal reads from a validator (compute() + render() + tooltip).
-// Keep in sync with VALIDATOR_FIELDS / inflateSnapshot() in index.html.
+// Keep in sync with VALIDATOR_FIELDS / inflateSnapshot() in js/terminal.js.
 const VALIDATOR_FIELDS = [
   'votePubkey', 'nodePubkey', 'name', 'version', 'commission',
   'activatedStake', 'delinquent', 'active', 'country', 'x1Labs',

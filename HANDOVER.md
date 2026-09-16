@@ -17,14 +17,14 @@
 >    Live-verify after push: the **duplicate-card fix** (2026-09-16) — look up Shaka_Vibes_1, open
 >    My Data Center: "Earned last epoch" must fill on the Data Center card and its Stake details /
 >    Earnings trend must open on *that* card; console must be clean (no `hideIconPreview`).
-> 3. Under-the-hood queue (unchanged, not started): ② split `index.html` into css + core + per-tab
->    JS files with plain `<script src>` tags, no build step — verify by re-concatenating to a
->    byte-identical original, Playwright smoke of every tab, then live; ③ replace the 263 inline
->    `onclick` with a delegated `data-action` dispatcher, then drop `unsafe-inline` from the CSP;
->    ④ single RPC transport. Layout proposed 2026-09-15: core (logging gate, security, RPC throttle,
->    rewards ledger, scoring), network/globe, leaderboards, compare, power-saver+router, calculators,
->    lookup/data-center, manage (stake ops, tx send), network-live (TPS, leader, skip monitor),
->    modals+init, terminal, delegation, price-pill, forensics.
+> 3. Under-the-hood queue: ② **split `index.html` — DONE 2026-09-16** (see §3 for the file map;
+>    `node scripts/assemble-monolith.js --check <file>` proves the split is a pure move). Next:
+>    ③ replace the 263 inline `onclick` with a delegated `data-action` dispatcher, then drop
+>    `unsafe-inline` from the CSP; ④ single RPC transport. Rule for the split files: load-time
+>    code in one file must not call into a later file (they are plain classic scripts run in
+>    order; function hoisting no longer crosses file boundaries). Known leftover: the dead
+>    `const originalSelectValidatorForSearch` in `js/compare.js` is now always `null` (it was
+>    never read) — delete it during ③.
 > 4. Useful console diagnostics on the live site: `rpcStats.byMethod` (RPC calls by method since
 >    load / `rpcStats.reset()`), `RewardsLedger.doc`, `PowerSaver.forceIdle(true/false)`.
 > 5. Shelved — don't re-propose: earnings chart/sparkline on the card ("takes up too much real
@@ -51,7 +51,7 @@
 | **Repo** | https://github.com/ShakaVibe/X1-Validator-HQ (branch `main`) |
 | **Local copy** | `~/Desktop/X1VHQ` on Shaka's Mac |
 | **What it is** | Single-page dashboard + validator management tool for the X1 blockchain: Network, Validator Terminal, Validator Lookup, My Data Center (portfolio), Leaderboards, Compare, Calculators |
-| **Stack** | One big `index.html` (~39k lines, HTML+CSS+JS, no build step), vendored `@solana/web3.js`, two GitHub Actions that commit data files hourly |
+| **Stack** | Static: `index.html` (3.3k lines of HTML) + `css/site.css` + 18 plain `js/*.js` files loaded with `<script src>` in a fixed order (split from one 39k-line file on 2026-09-16, no build step), vendored `@solana/web3.js`, GitHub Actions that commit data files hourly |
 | **Owner** | Shaka (ShakaVibe) — (private) |
 
 ## 2. Daily workflow
@@ -78,7 +78,42 @@ them before handing over the push commands.
 ## 3. Repo map
 
 ```
-index.html                    the whole site (all tabs, all JS)
+index.html                    the page: head (CSP, meta), all tab markup + modals, script tags
+css/site.css                  all CSS (the old <style> block; "VALIDATOR CARD v2" rules at the end)
+js/core.js                    logging gate, XSS helpers (escHtml/escAttrJs/safeUrl), pubkey + u64
+                              helpers, canonical scores loader, delegator identities, RPC throttle +
+                              circuit breaker + rpcStats, state vars, self-stake selections,
+                              RewardsLedger, fetchTotalValidatorRewards(+Live), format helpers,
+                              version tracker, rpcCall, network stats, getValidatorInfo, skip rates
+js/scoring.js                 performance/uptime tracking (localStorage), scoring v2 + legacy,
+                              network averages, bulk fetches, score tooltip + colour helpers
+js/cards.js                   CARD_ICONS, tier badge, renderValidatorCard (Lookup + Data Center),
+                              search, portfolio add/remove/load, last-epoch fill
+js/globe.js                   validator globe (globe.gl), geo data + cache
+js/leaderboards.js            leaderboards incl. delegations leaderboard
+js/compare.js                 compare tool
+js/app.js                     PowerSaver, Router, shareValidator, switchTab
+js/calculators.js             staking / compound / unstaking / breakeven calculators
+js/manage.js                  goToHome, browse-validators modal, Manage Validator modal, perf
+                              explainer, stake breakdown + selection modals, toast, stake accounts
+                              list + cooldown popover, merge/split/undelegate/redelegate/withdraw/
+                              close/send/create-stake modals
+js/wallet-tx.js               priority fee, signSendTx + rebroadcast + confirm, create stake,
+                              stake/withdraw authority, wallet connect, withdraw XNT, commission,
+                              identity (+ icon preview), vote authority
+js/card-details.js            chartInstances, inline Stake details + Earnings trend per card,
+                              combined Data Center chart/stake details, Chart.js init
+js/network-live.js            TPS, leader schedule, LeaderCountdown, epoch timeline, TPS strip,
+                              current leader, disclaimer modal, network toggle, epoch bar, init()
+js/skip-monitor.js            SkipMonitor IIFE + its inline-onclick bridges
+js/modals.js                  reward breakdown modal, TPS modal, skipmon scorecard, slot explorer,
+                              Escape handler, and the final `init();` call
+js/terminal.js                Validator Terminal module (IIFE: vtOpen/vtClose/vtRetry/vtRefreshLive)
+js/delegation.js              Delegation Program module (IIFE: delegOpen/delegRefresh/delegEvaluate)
+js/price-pill.js              XNT price pill (XDEX)
+js/forensics.js               Validator Forensics (hidden tool)
+scripts/assemble-monolith.js  rebuilds the single-file index.html from the pieces; `--check FILE`
+                              exits 0 iff byte-identical (proved against 0101736 on 2026-09-16)
 data/scores.json              canonical validator scores — written hourly by Action
 data/history.json             7-day rolling history behind the scores
 validator-locations.json      geo data — written every 2h by Action
@@ -109,8 +144,8 @@ CNAME / .nojekyll / _headers  Pages config
   fields: status, failingCriteria, selfStake, delegation.totalStake, voteMetrics[3 epochs],
   blockProductionMetrics, removalScore, stakeMultiplierBps, metadata.name), `/v1/stake_pool`).
   Read server-side only (Action) — CORS from the browser is unverified. Also `api.xdex.xyz` (XNT price), `ipwho.is`,
-  `api.github.com`. CSP `connect-src` in `index.html` (~line 87) must list any new host.
-- **RPC throttle + circuit breaker** (`installRpcThrottle`, ~line 14949): wraps `window.fetch`
+  `api.github.com`. CSP `connect-src` in `index.html` (~line 83) must list any new host.
+- **RPC throttle + circuit breaker** (`installRpcThrottle` in `js/core.js`): wraps `window.fetch`
   for the RPC URL only — max 3 in flight, retry on 429, breaker trips after 6 network failures
   for 30s. The public RPC returns 429 *without CORS headers*, which the browser reports as a
   bare "Failed to fetch".
@@ -119,12 +154,12 @@ CNAME / .nojekyll / _headers  Pages config
   No `Content-Encoding`, no `Cache-Control`. `offset` is capped at 5000 (400 above that).
   The API allowed 8 parallel `/v1/cluster` calls with no 429.
 - **Validator Terminal module** starts at the `// VALIDATOR TERMINAL — client-side module`
-  banner (~line 34670). It is an IIFE exposing `window.vtOpen / vtClose / vtRetry / vtRefreshLive`.
+  banner (`js/terminal.js`). It is an IIFE exposing `window.vtOpen / vtClose / vtRetry / vtRefreshLive`.
   Data source order: `data/terminal.json` snapshot (hourly, same origin) → live api.x1.xyz.
 - **Scores** are canonical (computed server-side by the Action) with an in-browser fallback if
   `data/scores.json` is missing or >3h stale — see `SCORING-DEPLOYMENT.md`.
 - **Rewards ledger** (`data/rewards.json`, `RewardsLedger` module just above
-  `fetchTotalValidatorRewards`, ~line 15706): every per-validator reward lookup on the site goes
+  `fetchTotalValidatorRewards`, `js/core.js`): every per-validator reward lookup on the site goes
   through `fetchTotalValidatorRewards(vote, commission, n)`. It now takes rows from the ledger
   (vote reward + self-stake reward per completed epoch, lamports, `v`/`s` arrays aligned to
   `doc.epochs`) and only calls the RPC (`fetchTotalValidatorRewardsLive`) for epochs the ledger
@@ -196,7 +231,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
       (F8 ledger itself is DONE 2026-09-13 — `data/rewards.json`; F2 history charts can read it)
 
 ### Phase 3 — ongoing (platform)
-- [ ] **C1** split `index.html` (css + core + per-tab files, plain `<script src>`)
+- [x] **C1** split `index.html` — done 2026-09-16 (css + 18 js files, plain `<script src>`)
 - [ ] **C2** replace 263 inline `onclick` with delegated listeners → drop `unsafe-inline`
 - [ ] **C3/C4** single RPC transport; normalise records at ingestion
 - [ ] **P6/D5** PWA shell, light theme; **C8** public changelog
@@ -207,6 +242,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] Ask people who reported the terminal error which device/network they were on.
 
 ### Done
+- [x] 2026-09-16 — **C1 split `index.html`** into `css/site.css` + `js/*.js` (pure move, byte-identical
+      reassembly proven). See Session Log.
 - [x] 2026-09-16 — Card redesign live-verified; duplicate-card id collision fixed (Lookup + Data
       Center holding the same validator); `hideIconPreview` load error fixed. See Session Log.
 - [x] 2026-09-15 — **Validator card redesign** (Lookup + My Data Center): see Session Log.
@@ -663,3 +700,46 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   supported in the pane — use DOM checks instead of screenshots for verification.
 - Still to do next: push (Shaka), live-verify the fix, then the visual pass or the
   `index.html` split (③ in the Start-here list).
+
+### 2026-09-16 — Session 7, continued: split `index.html` (C1), ~1.5 hours
+- Shaka confirmed the leader band goes green live. Push `0101736` (duplicate-card fix) live-verified:
+  Data Center card fills (26.88), its Earnings trend / Stake details open on the DC card only,
+  `chart-lk-…` / `chart-dc-…` ids, console clean on a fresh tab (the pane's "Maximum call stack"
+  error is gone too).
+- **The split is a pure line move.** `index.html` (38,893 lines) → `index.html` (3,275 lines) +
+  `css/site.css` (the `<style>` block) + 18 `js/*.js` (the four inline `<script>` blocks; the main
+  20k-line one cut into 14 files at its own section banners). Indentation kept as-is (4 spaces) so
+  the move is exactly reversible; whitespace-only lines and template literals made a dedent
+  non-reversible, so it was not attempted. Layout in §3.
+- **Why it is safe:** classic scripts share one global scope, so `function`/`let`/`const` across
+  files behave as before *except* that hoisting no longer crosses a file boundary — load-time code
+  in file A cannot see declarations in file B. Checked with an acorn pass (scratch tool, not in the
+  repo): for every top-level statement that *executes* at load (IIFEs, `const x = f()`, listeners,
+  timers) collect the identifiers evaluated immediately and the transitive closure through called
+  functions, flag anything declared in a later file. Result: the only immediate cross-file
+  reference is `const originalSelectValidatorForSearch = typeof selectValidatorForSearch === …`
+  in `js/compare.js` (defined later in `js/manage.js`) — it becomes `null` instead of the function
+  and is **never read** (dead code; delete during ③). All IIFEs (logging gate, RPC throttle,
+  RewardsLedger, PowerSaver, Router, LeaderCountdown, SkipMonitor) only define and return; all
+  DOMContentLoaded/keydown/hashchange listeners fire after every file has run; `init()` is the
+  last statement of the last main file. Async continuations that start at load
+  (`loadCanonicalScores`, `loadPortfolioSafe`) touch only their own file.
+- **Verification:** `node scripts/assemble-monolith.js --check` (new, committed) rebuilds the
+  monolith from the pieces and is byte-identical to `git show 0101736:index.html`, both in the
+  cloud and on the Mac; `node --check` on all 18 files; offline Playwright parity run — same page
+  served as monolith and as split, visiting `#/live #/terminal #/lookup/… #/datacenter
+  #/leaderboard/performance #/delegation #/compare #/calculators/staking #/globe`, comparing page
+  errors, console errors, active tab, visible sections, 24 globals, stylesheet rule count (2,034)
+  — identical except the dead const above. Split run requests 27 files instead of 8.
+- Not changed: script order/position (still synchronous, same place in the body, still before the
+  `defer`red Chart.js/web3.js), CSP (`script-src 'self'` was already there), workflows (none touch
+  index.html). `_headers` is Netlify-style and ignored by Pages — unchanged.
+- **Deploy caveat (new):** Pages serves everything with `max-age=600`, so for up to 10 min after a
+  push a visitor can hold a cached `index.html` with fresh `js/*.js` (or vice versa). Cross-file
+  changes may briefly mismatch for such a visitor; a reload fixes it. Not worth a cache-busting
+  scheme without a build step — but keep it in mind when a report says "broke right after deploy".
+- Comments in `scripts/build-*.js` still say "in index.html" for RewardsLedger / inflateSnapshot /
+  DELEGATION PROGRAM — now `js/core.js`, `js/terminal.js`, `js/delegation.js` (fixed in this commit).
+- Next session: live-verify the split (network tab shows `css/site.css` + 18 js files, no 404s,
+  every tab renders, card + terminal + delegation + calculators work), then start ③ — the
+  `data-action` dispatcher can now be added file by file.

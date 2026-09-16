@@ -13,7 +13,7 @@
  * call before the request body limit), so this script fetches a whole epoch
  * for every vote account on the network in 3 calls, and every self-stake
  * account in ~7, and publishes the result as data/rewards.json. The site reads
- * that one file (RewardsLedger in index.html) and only goes to the RPC for
+ * that one file (RewardsLedger in js/core.js) and only goes to the RPC for
  * epochs the ledger does not have yet (normally none, at most the newest one
  * right after an epoch boundary).
  *
@@ -24,7 +24,7 @@
  *
  * Self-stake = stake accounts delegated to the vote account whose withdrawer
  * equals the vote account's authorized withdrawer — the same rule
- * fetchTotalValidatorRewards() / classifyStakeSource() use in index.html.
+ * fetchTotalValidatorRewards() / classifyStakeSource() use in js/core.js.
  * (Manual per-user classifications live in the browser's localStorage; the
  * site falls back to live RPC for those validators.)
  *
