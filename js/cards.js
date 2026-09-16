@@ -227,7 +227,7 @@
                   <span class="validator-rank" title="${validator.isZombie ? 'This validator is not in the active set — its activated stake has dropped to zero. It is hidden from the main list by default.' : 'Stake rank: Position among all validators sorted by total stake'}">${validator.isZombie ? 'Unranked' : `#${validator.rank} of ${validator.totalValidators}`}</span>
                 </div>
                 <div class="validator-meta">
-                  <span class="validator-address">${validator.voteAccount}</span>
+                  <span class="validator-address" title="${escHtml(validator.voteAccount)}">${escHtml(String(validator.voteAccount).slice(0, 8))}…${escHtml(String(validator.voteAccount).slice(-6))}</span>
                   <button class="copy-address-btn" onclick="event.stopPropagation(); copyToClipboard('${validator.voteAccount}', this)" title="Copy address">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>

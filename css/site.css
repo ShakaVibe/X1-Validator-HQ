@@ -11929,7 +11929,9 @@
 
     /* Header */
     .validator-card .validator-header { align-items: center; margin-bottom: 1.1rem; gap: 1rem; }
-    .validator-card .validator-info { gap: 1rem; min-width: 0; }
+    /* Identity shrinks (chips wrap under the name) before the actions drop below it; the
+       300 px floor keeps a long name + meta readable on narrow cards. */
+    .validator-card .validator-info { gap: 1rem; min-width: 300px; flex: 1 1 0; }
     .validator-card .validator-logo,
     .validator-card .validator-logo-placeholder { width: 56px; height: 56px; border-radius: 18px; }
     .validator-card .validator-logo { border: 1px solid var(--border); }
@@ -11952,7 +11954,9 @@
       color: var(--text-secondary); background: rgba(255, 255, 255, 0.06);
     }
     .validator-card .validator-meta { flex-wrap: wrap; gap: 0.6rem; margin-top: 0; }
-    .validator-card .validator-address { margin-top: 0; }
+    /* Abbreviated vote account (8…6, full address in the title + copy button) so the meta
+       line stays short and the action buttons fit beside the identity at narrower widths. */
+    .validator-card .validator-address { margin-top: 0; white-space: nowrap; word-break: normal; cursor: help; }
     .validator-card .copy-address-btn { margin-left: 0; padding: 0.15rem; background: transparent; border-color: transparent; color: var(--text-dim); }
     .validator-card .copy-address-btn:hover { color: var(--accent-cyan); background: rgba(0, 212, 255, 0.1); border-color: transparent; }
     .validator-card .version-badge { padding: 0; background: transparent; border: none; color: var(--text-dim); font-size: 0.75rem; }
