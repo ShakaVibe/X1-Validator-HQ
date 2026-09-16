@@ -6748,6 +6748,16 @@
       padding: 0.1rem 0.4rem; border-radius: 4px;
       background: rgba(0, 212, 255, 0.15); color: var(--accent-cyan);
     }
+    /* F15 "Where am I": pinned rows for Data Center validators below the top 50 */
+    .lb-mine-divider {
+      margin: 1.25rem 0 0.75rem; padding-top: 0.75rem;
+      border-top: 1px dashed rgba(0, 212, 255, 0.35);
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent-cyan);
+    }
+    .lb-mine-note {
+      margin-top: 0.5rem; font-size: 0.78rem; color: var(--text-dim);
+    }
     /* Data Center summary values: shrink a little on narrower windows so
        "6,017,816.03" is not clipped in a six-column row. */
     .portfolio-stat-value { font-size: clamp(1rem, 1.5vw, 1.4rem); }

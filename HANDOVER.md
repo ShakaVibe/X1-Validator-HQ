@@ -217,7 +217,9 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
       - [ ] Bootstrap Bonus checker (docs.x1.xyz/validating/validator-rewards/bootstrap-bonus)
       - [ ] Data Center summary line ("3 approved · 1 failing") + fleet board column (F4)
       - [ ] Alert on eligibility loss once F3 exists
-- [x] **P2** partial 2026-09-10 — leader schedule lazy (R6), TPS light poll (P8), fonts non-blocking (P4). Still open: sessionStorage cache for identities/supply, fast-path stats bar.
+- [x] **P2** done — 2026-09-10: leader schedule lazy (R6), TPS light poll (P8), fonts non-blocking (P4);
+      2026-09-16: sessionStorage cache for identities (1 h) + supply (1 h), stats-bar fast path from
+      scores.json + last live stake/supply (`SessionCache`, `paintStatsBarFastPath` in `js/core.js`).
 
 ### Phase 2 — weeks 5–8 (memory + push)
 - [ ] **F2** per-validator history charts (`history.json` + api.x1.xyz `*Last10Epochs`)
@@ -239,6 +241,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] Ask people who reported the terminal error which device/network they were on.
 
 ### Done
+- [x] 2026-09-16 — **F15 "Where am I"** pinned rows on every leaderboard; **P2** session cache +
+      stats-bar fast path. See Session Log.
 - [x] 2026-09-16 — **C1 split `index.html`** into `css/site.css` + `js/*.js` (pure move, byte-identical
       reassembly proven). See Session Log.
 - [x] 2026-09-16 — Card redesign live-verified; duplicate-card id collision fixed (Lookup + Data
@@ -425,7 +429,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
     were blank after a re-render); **B7** calculators rebuild their Data Center dropdowns when
     the portfolio changes (signature check), listeners bound once.
   - **F15 (part):** Data Center validators get a cyan border + "MINE" tag on every leaderboard.
-    "Where am I" rank for validators outside the top 50 still open.
+    "Where am I" rank for validators outside the top 50 — done 2026-09-16.
   - Data Center summary: Delegation tile moved before Active (Shaka's request); values use
     `clamp()` font-size so "6,017,816.03" is not clipped; "Total Rewards" relabelled
     "Rewards Balance" (it is the vote-account balance sum — U9 fully closed).
@@ -762,3 +766,32 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   (C1); Router double-apply. All live-verified.
 - Next session: start ③ — the `data-action` dispatcher can now be added file by file (start with
   `js/cards.js`, the card is the most-touched surface).
+
+### 2026-09-16 — Session 7, evening: F15 + P2 leftovers (~1 hour)
+- **F15 "Where am I"** (`js/leaderboards.js`): the per-row renderer in `renderLeaderboard` and
+  `renderDelegationsLeaderboard` is now a reusable `renderItem(v, index)`; after the top-50 rows,
+  `whereAmIHtml(sorted, 50, renderItem)` appends a dashed divider "Your validators outside the
+  top 50" with every Data Center validator ranked ≥ #51 rendered as a normal row with its real
+  rank (e.g. "#622", MINE tag, cyan border), plus a dim "Not ranked in this category: …" line
+  for portfolio validators the category's filter excluded (delinquent, < 10k XNT stake, no score,
+  no delegation from these pools). Nothing renders when the portfolio is empty or all are in
+  the top 50. Newest board unchanged (it groups by epoch, no ranks). CSS: `.lb-mine-divider`,
+  `.lb-mine-note` next to `.lb-mine-tag`. Offline Playwright with 724 mocked validators and a
+  3-validator portfolio (#13, #137, #700-delinquent): 52 rows on performance/stake, 52 + note on
+  commission/reliable/efficient, 50 with an empty portfolio, no errors. Not yet live-verified.
+- **P2 leftovers** (`js/core.js`): `SessionCache` (sessionStorage, `{ts, data}`, try/catch
+  everywhere). `fetchValidatorIdentities()` returns the cached map for 1 h (skips the ~1 MB
+  `getProgramAccounts` on the Config program on every reload); `fetchSupplyCached()` keeps
+  `getSupply`'s total for 1 h; `loadNetworkStats` stores the live total stake + supply
+  (`x1StatsBarCache`, 24 h). `paintStatsBarFastPath(doc)` runs when `canonicalScoresPromise`
+  resolves: fills validators / active / delinquent / epoch / slot from scores.json (only if the
+  file is < 3 h old) and stake / supply from the cache — writing only into cells still showing
+  `--`, so live RPC values always win. Offline Playwright: first load paints 5 of 7 cells from
+  scores.json with the RPC blocked; a reload with the caches paints all 7 and attempts no
+  `getProgramAccounts` / `getSupply`; expired caches fall through to the RPC. Trade-off: a
+  validator who changes name/icon is seen on reload up to 1 h later in the same tab (new tab =
+  fresh). Not yet live-verified.
+- Live-verify next: Leaderboards with Shaka's 5 validators (all top-50 on performance → the
+  divider should NOT show there; Lowest Commission likely shows #… rows); reload the site twice
+  and watch the stats bar fill before the RPC answers; `rpcStats.byMethod` on the second load
+  must lack `getProgramAccounts`(Config) and `getSupply`.
