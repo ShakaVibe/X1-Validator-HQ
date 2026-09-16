@@ -191,6 +191,64 @@
     // Kick the fetch off immediately at page load; scoring paths await this.
     window.canonicalScoresPromise = loadCanonicalScores();
 
+    // ---------------------------------------------------------------
+    // Session cache (P2): sessionStorage-backed, per-tab, survives reloads.
+    // Used for the two slow, rarely-changing startup fetches — the validator
+    // identity accounts (a ~1 MB getProgramAccounts) and the token supply —
+    // and for the last live stats-bar numbers so a reload paints them at once.
+    // Everything degrades to a normal fetch when storage is unavailable.
+    // ---------------------------------------------------------------
+    const SessionCache = {
+      get(key, maxAgeMs) {
+        try {
+          const raw = sessionStorage.getItem(key);
+          if (!raw) return null;
+          const { ts, data } = JSON.parse(raw);
+          if (!ts || Date.now() - ts > maxAgeMs) return null;
+          return data;
+        } catch (e) { return null; }
+      },
+      set(key, data) {
+        try { sessionStorage.setItem(key, JSON.stringify({ ts: Date.now(), data })); } catch (e) { /* quota / private mode */ }
+      }
+    };
+    const IDENTITIES_CACHE_KEY = 'x1IdentitiesCache';   // 1 h — names/icons change rarely
+    const SUPPLY_CACHE_KEY     = 'x1SupplyCache';       // 1 h — moves by inflation only
+    const STATS_BAR_CACHE_KEY  = 'x1StatsBarCache';     // 24 h — last live stake/supply, fast path only
+    const IDENTITIES_CACHE_MS  = 3600000;
+    const SUPPLY_CACHE_MS      = 3600000;
+    const STATS_BAR_CACHE_MS   = 24 * 3600000;
+
+    // Stats-bar fast path (P2): the header numbers used to wait for the whole
+    // loadNetworkStats() Promise.all (getVoteAccounts + identities + …, 1–3 s
+    // on the public RPC). scores.json is already in flight and carries the
+    // validator count, epoch, slot and per-validator delinquency; stake and
+    // supply come from the previous load's cache. Only placeholders ('--')
+    // are written, so live RPC data is never overwritten by this.
+    function paintStatsBarFastPath(doc) {
+      const put = (id, text) => {
+        const el = document.getElementById(id);
+        if (el && el.textContent.trim() === '--' && text !== null && text !== undefined) el.textContent = text;
+      };
+      try {
+        if (doc && doc.validators && typeof doc._ageMs === 'number' && doc._ageMs < 3 * 3600000) {
+          const vals = Object.values(doc.validators);
+          const delinquent = vals.filter(v => v.delinquent).length;
+          put('totalValidators', doc.validatorCount || vals.length);
+          put('activeValidators', vals.length - delinquent);
+          put('delinquentValidators', delinquent);
+          if (doc.epoch) put('currentEpoch', doc.epoch);
+          if (doc.slot) put('currentSlot', formatCompact(doc.slot));
+        }
+        const bar = SessionCache.get(STATS_BAR_CACHE_KEY, STATS_BAR_CACHE_MS);
+        if (bar) {
+          if (bar.totalStakeLamports) put('totalStake', formatCompact(lamportsToXNT(bar.totalStakeLamports)));
+          if (bar.supplyTotalLamports) put('totalSupply', formatCompact(lamportsToXNT(bar.supplyTotalLamports)));
+        }
+      } catch (e) { /* cosmetic only */ }
+    }
+    window.canonicalScoresPromise.then(() => paintStatsBarFastPath(window.canonicalScoresDoc));
+
     // Look up a validator's canonical breakdown (or null if unavailable)
     function getCanonicalBreakdown(validator) {
       if (!window.canonicalScores) return null;
@@ -1367,6 +1425,8 @@
 
     // Fetch validator identity name from config account
     async function fetchValidatorIdentities() {
+      const cached = SessionCache.get(IDENTITIES_CACHE_KEY, IDENTITIES_CACHE_MS);
+      if (cached) return cached;
       try {
         // Fetch validator info accounts from config program
         const configProgramId = 'Config1111111111111111111111111111111111111';
@@ -1436,11 +1496,22 @@
           }
         }
         
+        if (Object.keys(identities).length) SessionCache.set(IDENTITIES_CACHE_KEY, identities);
         return identities;
       } catch (err) {
         console.error('Failed to fetch validator identities:', err);
         return {};
       }
+    }
+
+    // getSupply is slow on the public RPC and only moves by inflation; keep
+    // the total for an hour per tab. Only the field the site reads is stored.
+    async function fetchSupplyCached() {
+      const cached = SessionCache.get(SUPPLY_CACHE_KEY, SUPPLY_CACHE_MS);
+      if (cached && cached.value && cached.value.total) return cached;
+      const supply = await rpcCall('getSupply');
+      if (supply && supply.value && supply.value.total) SessionCache.set(SUPPLY_CACHE_KEY, { value: { total: supply.value.total } });
+      return supply;
     }
 
     // Fetch network stats and all validators
@@ -1452,7 +1523,7 @@
           rpcCall('getSlot'),
           fetchValidatorIdentities(),
           rpcCall('getClusterNodes').catch(() => []),
-          rpcCall('getSupply').catch(() => null)
+          fetchSupplyCached().catch(() => null)
         ]);
 
         // Build version map from cluster nodes
@@ -1497,6 +1568,9 @@
         if (supply && supply.value) {
           document.getElementById('totalSupply').textContent = formatCompact(lamportsToXNT(supply.value.total));
         }
+        // Remember the live stake/supply so the next reload can paint them
+        // before the RPC answers (paintStatsBarFastPath).
+        SessionCache.set(STATS_BAR_CACHE_KEY, { totalStakeLamports: totalStake, supplyTotalLamports: supply && supply.value ? supply.value.total : null });
 
         // Hand the freshly-fetched epoch info to the live updater (single
         // source of truth for the bar — handles rendering and drift correction).

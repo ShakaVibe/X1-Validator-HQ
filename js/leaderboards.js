@@ -465,7 +465,7 @@
         return;
       }
       
-      list.innerHTML = top20.map((v, index) => {
+      const renderItem = (v, index) => {
         const rank = index + 1;
         const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'normal';
         const itemClass = rank <= 3 ? rankClass : '';
@@ -596,7 +596,31 @@
             </div>
           </div>
         `;
-      }).join('');
+      };
+
+      list.innerHTML = top20.map(renderItem).join('') + whereAmIHtml(sorted, 50, renderItem);
+    }
+
+    // F15 — "Where am I": Data Center validators ranked below the visible
+    // top-N are pinned under a divider with their real rank, so an operator
+    // at #137 doesn't have to guess. Ones the category's filter excluded
+    // (delinquent, too little stake, no score yet…) are listed as not ranked.
+    function whereAmIHtml(sorted, limit, renderItem) {
+      if (!Array.isArray(myPortfolio) || myPortfolio.length === 0) return '';
+      const below = [];
+      sorted.forEach((v, i) => { if (i >= limit && myPortfolio.includes(v.votePubkey)) below.push(renderItem(v, i)); });
+      const ranked = new Set(sorted.map(v => v.votePubkey));
+      const missing = myPortfolio.filter(pk => !ranked.has(pk));
+      if (below.length === 0 && missing.length === 0) return '';
+      let html = `<div class="lb-mine-divider">Your validators outside the top ${limit}</div>` + below.join('');
+      if (missing.length) {
+        const names = missing.map(pk => {
+          const v = (leaderboardData || []).find(x => x.votePubkey === pk) || (allValidators || []).find(x => x.votePubkey === pk);
+          return escHtml(v && v.name ? v.name : pk.slice(0, 8) + '…');
+        });
+        html += `<div class="lb-mine-note">Not ranked in this category: ${names.join(', ')}</div>`;
+      }
+      return html;
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -717,7 +741,7 @@
       // Top 50, same convention as the other leaderboards
       const top = filtered.slice(0, 50);
 
-      list.innerHTML = top.map((r, i) => {
+      const renderItem = (r, i) => {
         const rank = i + 1;
         const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'normal';
         const itemClass = rank <= 3 ? rankClass : '';
@@ -770,6 +794,8 @@
             </div>
           </div>
         `;
-      }).join('');
+      };
+
+      list.innerHTML = top.map(renderItem).join('') + whereAmIHtml(filtered, 50, renderItem);
     }
 
