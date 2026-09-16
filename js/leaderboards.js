@@ -164,10 +164,24 @@
       if (!allValidators[0] || allValidators[0].skipRate === undefined) {
         await fetchAllSkipRates();
       }
-      setStep(2, `Fetching credits history for ${allValidators.length} validators...`);
+      // Make sure the published (canonical) scores had a chance to load —
+      // retry once here in case the initial page-load fetch failed.
+      await window.canonicalScoresPromise;
+      if (!window.canonicalScores) await loadCanonicalScores();
 
-      // Step 2 - batch fetch full epoch credits for every validator
-      const extendedCreditsMap = await fetchAllExtendedEpochCreditsBatch();
+      // Step 2 - epoch credits history for every validator. The hourly
+      // scores.json carries the last 8 epochs + first epoch on record per
+      // validator (P9, 2026-09-16); only fall back to the 724 batched
+      // getAccountInfo calls when the file predates that or lacks most of them.
+      const published = publishedCreditsMap();
+      let extendedCreditsMap;
+      if (published) {
+        setStep(2, 'Using published credits history...');
+        extendedCreditsMap = published;
+      } else {
+        setStep(2, `Fetching credits history for ${allValidators.length} validators...`);
+        extendedCreditsMap = await fetchAllExtendedEpochCreditsBatch();
+      }
 
       // Merge extended credits back into allValidators so scoring uses full history
       allValidators.forEach(v => {
@@ -175,11 +189,6 @@
           v.epochCredits = extendedCreditsMap[v.votePubkey];
         }
       });
-
-      // Make sure the published (canonical) scores had a chance to load —
-      // retry once here in case the initial page-load fetch failed.
-      await window.canonicalScoresPromise;
-      if (!window.canonicalScores) await loadCanonicalScores();
 
       if (window.canonicalScores) {
         // Published scores carry 7-epoch skip data computed server-side, so
@@ -266,6 +275,28 @@
       renderLeaderboard(currentLeaderboard);
     }
     
+    // P9: epoch-credits history from scores.json. Returns { vote: [[epoch,
+    // credits, prev], …] } when the published file is fresh enough to be used
+    // for scoring (CANONICAL_MAX_AGE_MS) and covers ≥ 90 % of the validators
+    // we know about; null otherwise (older file, or a stale one). Also stamps
+    // `creditsFirstEpoch` / `creditsEpochs` onto allValidators for Newest.
+    function publishedCreditsMap() {
+      const doc = window.canonicalScores;
+      if (!doc || !doc.validators) return null;
+      const map = {};
+      let covered = 0;
+      for (const v of allValidators) {
+        const c = doc.validators[v.votePubkey];
+        if (!c || !Array.isArray(c.credits) || c.credits.length === 0) continue;
+        map[v.votePubkey] = c.credits;
+        v.creditsFirstEpoch = c.creditsFirstEpoch ?? null;
+        v.creditsEpochs = c.creditsEpochs ?? c.credits.length;
+        covered++;
+      }
+      if (!allValidators.length || covered < allValidators.length * 0.9) return null;
+      return map;
+    }
+
     function renderLeaderboard(category) {
       // Delegations is its own data path — it doesn't derive from
       // leaderboardData (which is keyed on performance/skip/credit
@@ -381,9 +412,11 @@
               !v.delinquent
             )
             .map(v => {
-              // Get the first (oldest) epoch in their history
-              v.firstEpoch = v.epochCredits[0][0];
-              v.epochsActive = v.epochCredits.length;
+              // Get the first (oldest) epoch in their history — from the
+              // published record when we have it (the merged epochCredits
+              // may then be only the last 8 epochs), else from the account.
+              v.firstEpoch = (v.creditsFirstEpoch !== null && v.creditsFirstEpoch !== undefined) ? v.creditsFirstEpoch : v.epochCredits[0][0];
+              v.epochsActive = v.creditsEpochs || v.epochCredits.length;
               v.epochsAgo = currentEpoch - v.firstEpoch;
               return v;
             })

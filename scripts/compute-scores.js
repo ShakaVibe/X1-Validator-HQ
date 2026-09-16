@@ -566,7 +566,17 @@ async function main() {
       skipRate7d: rawRate !== null ? Math.round(rawRate * 100) / 100 : null,
       skipRateAdj: Math.round(blended * 100) / 100,
       leaderSlots7d: skipRec.leader,
-      skipEpochs: skipRec.epochs
+      skipEpochs: skipRec.epochs,
+      // P9 — what the Leaderboards tab used to fetch itself with 724 batched
+      // getAccountInfo calls per visit: the last 8 epochs of credits
+      // ([epoch, credits, previousCredits], newest last — Most Efficient
+      // averages 7 completed epochs) and the oldest epoch in the vote
+      // account's history (Newest Validators). The vote account keeps at most
+      // 64 epochs, so creditsFirstEpoch is "first epoch on record", exactly
+      // what the client computed from the same account before.
+      credits: hist.slice(-8),
+      creditsFirstEpoch: hist.length ? hist[0][0] : null,
+      creditsEpochs: hist.length
     };
   }
 
