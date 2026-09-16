@@ -6,14 +6,23 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-09-16):**
+> **Start here next session (as of 2026-09-17):**
 > 1. `cd ~/Desktop/X1VHQ && git pull` — bots commit hourly (via the heartbeat; verified 2026-09-16:
 >    scores at :04, snapshots at :43, geo every 2 h at :03 — 79 bot commits in 24 h, no gaps).
 >    If Shaka's `git add` complains about `index.lock`, `rm -f .git/index.lock .git/objects/maintenance.lock`.
+>    Better: grant Claude delete permission on the X1VHQ folder at session start (it asks) — then
+>    Claude's own `git pull --rebase` works and leaves no locks (verified 2026-09-17). Claude still
+>    can't commit (no git identity in the VM): a local unpushed commit gets replayed as *staged
+>    changes* on top of origin/main, so Shaka's normal `git add -A && git commit` picks it up.
 > 2. Card redesign, duplicate-card fix and the split are all **live-verified 2026-09-16** (Shaka
->    saw the leader band go green), as is the Router double-apply fix (`fbe8852`). Nothing is
->    pending verification. Next: continue the visual pass if Shaka wants (Compare cards,
->    Delegation tab, modals, Data Center summary tiles still use the old look) or start ③.
+>    saw the leader band go green), as are the Router double-apply fix, F15 "Where am I", the P2
+>    session cache + stats-bar fast path, and P9 (Leaderboards 724 → 0 `getAccountInfo`).
+>    **Pending live check (2026-09-17):** card header squeeze fix — abbreviated address `5ar5xXje…TvQNac`
+>    (full address on hover + copy), Share/Remove/Manage stay beside the identity down to ~800 px.
+>    Then **③** (below), starting with `js/cards.js`; or the
+>    visual pass if Shaka wants (Compare cards, Delegation tab, modals, Data Center summary tiles
+>    still use the old look). Remaining backlog picks offered 2026-09-16 and not taken yet: F8b
+>    rewards CSV export, F11 APR per validator.
 > 3. Under-the-hood queue: ② **split `index.html` — DONE 2026-09-16** (see §3 for the file map;
 >    `node scripts/assemble-monolith.js --check <file>` proves the split is a pure move). Next:
 >    ③ replace the 263 inline `onclick` with a delegated `data-action` dispatcher, then drop
@@ -37,6 +46,15 @@
 >    mockups as files (PNG + standalone HTML via SendUserFile) instead. Playwright smoke of the card
 >    works offline: serve the repo on localhost, block external requests, hide `#disclaimerModal`,
 >    show `#resultsSection`, call `renderValidatorCard(fakeValidator)` into `#validatorResults`.
+> 9. Live-checking right after a push: Pages caches every file for 10 min, so the pane may still run
+>    the old `js/*.js`. Do `await fetch('/js/<file>.js', {cache:'reload'})` for each changed file
+>    (and `/index.html`), then `location.reload()` — NOT `location.href = …#/route` (a hash-only
+>    change never reloads). Pane clicks by ref sometimes miss; `el.click()` via JS works. Console
+>    entries accumulate per tab — open a fresh tab for a clean error check.
+> 10. Verification workflow that worked all day: edit in the linked folder → `node --check` →
+>    offline Playwright in the cloud (stage the changed files, `split/` copy served on localhost,
+>    external requests aborted, RPC-dependent globals mocked in `page.evaluate`) → Shaka pushes →
+>    live check in a fresh pane tab with the cache trick above → HANDOVER entry.
 
 ---
 
@@ -830,3 +848,28 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   render with the same leaders as before (Newest: Digital Stack Systems · Epoch 370 first).
 - Session 7 grand total (2026-09-16): 6 pushes — duplicate-card ids + icon preview; the split
   (C1); Router double-apply; F15 + P2; P9. All live-verified. Uncommitted: this HANDOVER edit.
+
+### 2026-09-17 — Session 8: card header squeeze (~30 min)
+- Start: local had one unpushed commit (`4832b4c`, HANDOVER only) and was 81 bot commits behind.
+  Claude's `git pull --rebase` first failed mid-rebase (can't delete `.git/rebase-merge`); after
+  Shaka granted delete permission on the folder the rebase ran, but the VM has no git identity so
+  the commit could not be re-created — its HANDOVER change is now a **staged modification** on top
+  of `f8975f1`. Heartbeat healthy (scores :03, snapshots :43).
+- Shaka: at narrower window widths the Share / Remove / Manage buttons dropped under the identity;
+  asked to abbreviate the address so the meta line (copy · version · Active) moves left and the
+  buttons fit. Cause: `.validator-header` is `flex-wrap: wrap` and `.validator-info` had
+  `flex-basis: auto`, so the wrap decision used the identity's *max-content* width — i.e. the
+  full 44-char address line (~470 px) — even though the address could have wrapped.
+- Fix (`js/cards.js` + `css/site.css`, VALIDATOR CARD v2 block):
+  - `.validator-address` renders `voteAccount.slice(0,8) + '…' + slice(-6)` (Compare-tool style),
+    `title` = full address, `white-space: nowrap`, `cursor: help`; the copy button still copies
+    the full key.
+  - `.validator-card .validator-info { flex: 1 1 0; min-width: 300px }` — the identity column
+    shrinks first (tier/rank chips wrap under the name), and the actions only drop to a second
+    row once the identity would go under 300 px.
+- Offline Playwright (fake validator, Lookup + Data Center variants, 1440/1100/1000/900/820/768/390):
+  before, the actions dropped under at card width ≤ ~940 px; after, they stay beside the identity
+  down to ~800 px (Remove) / ~850 px ("Add to Data Center" + a long name), no horizontal overflow,
+  no page errors, ≤ 768 px column layout unchanged. Contact sheet delivered in chat.
+- Not live-verified yet (needs the push). Cloud clone of the repo + `smoke.js`/`shot.js` harness
+  live in the session scratchpad only.
