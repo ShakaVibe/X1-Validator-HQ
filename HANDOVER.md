@@ -6,13 +6,17 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-09-15):**
-> 1. `cd ~/Desktop/X1VHQ && git pull` — bots commit hourly (via the heartbeat; verified 2026-09-15:
->    one scores + one snapshot commit every hour at :03/:04).
-> 2. **First: live-verify the card redesign** pushed 2026-09-15 (see session log) in Lookup and My
->    Data Center — leader band ticks and turns green when leading, delegation tile hydrates,
->    Add/Remove/Share/Manage work, phone width. Then continue the visual pass if Shaka wants
->    (Compare cards, Delegation tab, modals still use the old look).
+> **Start here next session (as of 2026-09-16):**
+> 1. `cd ~/Desktop/X1VHQ && git pull` — bots commit hourly (via the heartbeat; verified 2026-09-16:
+>    scores at :04, snapshots at :43, geo every 2 h at :03 — 79 bot commits in 24 h, no gaps).
+>    If Shaka's `git add` complains about `index.lock`, `rm -f .git/index.lock .git/objects/maintenance.lock`.
+> 2. Card redesign **live-verified 2026-09-16** (see session log). Still unverified: the leader band
+>    turning green while the validator is leading (`is-leader`) — check it when a slot comes up.
+>    Then continue the visual pass if Shaka wants (Compare cards, Delegation tab, modals, Data
+>    Center summary tiles still use the old look).
+>    Live-verify after push: the **duplicate-card fix** (2026-09-16) — look up Shaka_Vibes_1, open
+>    My Data Center: "Earned last epoch" must fill on the Data Center card and its Stake details /
+>    Earnings trend must open on *that* card; console must be clean (no `hideIconPreview`).
 > 3. Under-the-hood queue (unchanged, not started): ② split `index.html` into css + core + per-tab
 >    JS files with plain `<script src>` tags, no build step — verify by re-concatenating to a
 >    byte-identical original, Playwright smoke of every tab, then live; ③ replace the 263 inline
@@ -203,6 +207,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] Ask people who reported the terminal error which device/network they were on.
 
 ### Done
+- [x] 2026-09-16 — Card redesign live-verified; duplicate-card id collision fixed (Lookup + Data
+      Center holding the same validator); `hideIconPreview` load error fixed. See Session Log.
 - [x] 2026-09-15 — **Validator card redesign** (Lookup + My Data Center): see Session Log.
 - [x] 2026-09-13 — **F8 rewards ledger**: `scripts/build-rewards-ledger.js` → `data/rewards.json`
       hourly; site reads it first (`RewardsLedger`), RPC only for uncovered epochs.
@@ -607,4 +613,53 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Verified: `node --check` on all 5 inline scripts; Playwright smoke (offline, fake validator) at
   1440 / 1000 / 390 px — no page errors, `LeaderCountdown` ticks the new chip. Not yet live-verified
   (needs the push) — do that first next session.
+- Pushed by Shaka during the session (`e7c9f08`/`87ebfa3` card, `51d32c4` first button). Follow-ups
+  after seeing it live: stat tiles stayed 4-up down to a ~700px card (container query on
+  `.stat-group`, was a 1100px media query); **Manage Validator button** rebuilt after a reference
+  Shaka liked (dark fill, thin luminous border, bold uppercase glowing label, icon in a ringed disc,
+  a sheen that sweeps across every ~4.8s via `::after` + `@keyframes mvShine`, paused under
+  `body.power-idle` and for `prefers-reduced-motion`). Colour went cyan → blue → "too black" → "too
+  blue" → settled on **navy with a light blue shade** (`#234d8c→#183868`, label `#bfe0ff`, border
+  `--accent-blue`); hover steps up one notch (white label). Accent is `--mv-c` on the button rule.
+  Final button state pushed by Shaka at end of session ("Manage Validator button: navy-blue fill").
 - Not changed: Compare tool cards, Delegation tab, modals, Data Center summary tiles.
+- Still to do first next session: live-verify (band ticks/turns green, delegation tile, sheen,
+  Add/Remove flip, phone width) — Shaka's screenshots confirmed the card and band render live.
+
+### 2026-09-16 — Session 7: live-verify + duplicate-card fix (~1 hour)
+- `git pull` fast-forwarded 79 bot commits (heartbeat healthy: scores :04, snapshots :43, geo every
+  2 h). Monday's HANDOVER edits were still uncommitted locally — committed with this session.
+- **Card redesign live-verified** in the built-in browser pane (read-only in Chrome rule respected;
+  the pane's own localStorage was used for the Add/Remove test and cleared afterwards):
+  1440 px — header/meta line/status dot, icon-only Share, "Manage Validator" with the `mvShine`
+  sheen running, leader band ("Next leader slot in ~28m · 276 leader slots this epoch · epoch 379"),
+  two stat groups × 4 tiles, delegation tile hydrated with exactly one Details link, no emoji left
+  on the card. 375 px — 2-col tiles, band note hidden, no horizontal overflow (card 343/375 px).
+  Add → "In Data Center" (disabled) flips in place; Data Center card shows Remove; summary tiles
+  fill. RPC on a fresh Lookup load: 17 calls, rewards 0 (ledger 36 epochs, generated :43).
+  Not seen: the band's green `is-leader` state (no slot fell inside the session).
+- **Bug found while verifying — duplicate card ids.** Lookup and My Data Center render the same
+  validator with the same element ids (`lastEpoch-<8>`, `chart-<8>…`, `stake-<vote>-section`), and
+  `#validatorResults` comes first in the DOM, so after looking up one of your own validators the
+  Data Center card's "Earned last epoch" stays "Loading..." forever and its Stake details /
+  Earnings trend buttons expand the *hidden* Lookup card's sections (chart instances and
+  `chartDataStore` were shared too). Pre-existing, not from the redesign; Shaka would hit it any
+  time he looks up a Shaka_Vibes validator and then opens Data Center.
+  Fix in `index.html`: `chartId` = `chart-lk-<8>` / `chart-dc-<8>` (Lookup / Data Center, from the
+  `showRemoveBtn` arg of `renderValidatorCard`) so every chart id, `chartInstances` and
+  `chartDataStore` key is per card; `fillCardLastEpoch` fills every `[id="lastEpoch-<8>"]`
+  (new `fillOneCardLastEpoch`); `toggleStakeDetails` resolves its stake/chart sections from
+  `button.closest('.validator-card')` and the async APY completion checks `section.isConnected`
+  instead of re-looking-up by id; `cancelStakeLoad`/`retryStakeLoad` take `this` and use
+  `stakeSectionFor(vote, el)`. Offline Playwright smoke (both cards rendered for Shaka_Vibes_1):
+  ids distinct, last-epoch fills both, DC chart/stake toggles open only DC sections, Lookup card
+  independent, no page errors. Note `destroyCardCharts()` still drops all `chart-*` instances when
+  either tab re-renders (toggle re-inits them, so harmless).
+- **`hideIconPreview is not defined` on load** (pane showed it; Chrome likely too, it was just
+  filtered): `<img id="iconPreviewImg" src="">` fires `onerror` at parse time, ~15k lines before
+  the script that defines the handler. Removed the empty `src` — `previewIcon()` sets it anyway.
+- Pane quirk for future sessions: synthetic `left_click` by ref did not fire the card's Add button
+  (element was on top, no overlay); `el.click()` via `javascript_tool` works. Region `zoom` is not
+  supported in the pane — use DOM checks instead of screenshots for verification.
+- Still to do next: push (Shaka), live-verify the fix, then the visual pass or the
+  `index.html` split (③ in the Start-here list).

@@ -14074,7 +14074,7 @@
         <div class="send-section" id="iconPreviewSection" style="display: none;">
           <div class="send-label">Icon Preview:</div>
           <div class="icon-preview-container">
-            <img id="iconPreviewImg" src="" alt="Icon Preview" onerror="hideIconPreview()">
+            <img id="iconPreviewImg" alt="Icon Preview" onerror="hideIconPreview()">
           </div>
         </div>
         
@@ -18297,8 +18297,10 @@
         }
       }
 
-      // Unique ID for chart
-      const chartId = 'chart-' + validator.voteAccount.slice(0, 8);
+      // Unique ID for chart. Lookup and My Data Center can both hold a card for
+      // the same validator, so the id also carries the card's context — otherwise
+      // getElementById() (and chartInstances / chartDataStore) hit the other card.
+      const chartId = 'chart-' + (showRemoveBtn ? 'dc-' : 'lk-') + validator.voteAccount.slice(0, 8);
 
       // Get chart data - prefer XNT rewards from API, fallback to epoch credits
       let rewardsData = [];
@@ -19125,9 +19127,16 @@
     // Extracted so both the portfolio streaming pass and the lookup hydration
     // can reuse identical fill logic.
     function fillCardLastEpoch(v, rewards) {
-      const cardEl = document.getElementById(`lastEpoch-${v.voteAccount.slice(0,8)}`);
+      // The same validator can be on screen twice (Lookup + My Data Center) with
+      // the same ids — fill every copy, not just the first one in the DOM.
+      const key = v.voteAccount.slice(0, 8);
+      document.querySelectorAll(`[id="lastEpoch-${key}"]`).forEach(cardEl => {
+        fillOneCardLastEpoch(cardEl, cardEl.querySelector(`[id="lastEpochChange-${key}"]`), rewards);
+      });
+    }
+
+    function fillOneCardLastEpoch(cardEl, changeEl, rewards) {
       if (!cardEl) return;
-      const changeEl = document.getElementById(`lastEpochChange-${v.voteAccount.slice(0,8)}`);
       const sv = cardEl.querySelector('.stat-value');
 
       if (rewards && rewards.length > 0) {
@@ -29730,7 +29739,11 @@ Please give me the diagnostic commands to run on my server so you can help me id
 
     // Toggle stake details visibility and fetch data
     async function toggleStakeDetails(voteAccount, validatorName, totalStake, commission, button) {
-      const section = document.getElementById('stake-' + voteAccount + '-section');
+      // Resolve inside the clicked card: Lookup and My Data Center may both hold
+      // a card for this validator, and their ids collide.
+      const card = button && button.closest ? button.closest('.validator-card') : null;
+      const section = (card && card.querySelector('.validator-stake-section'))
+        || document.getElementById('stake-' + voteAccount + '-section');
       const isExpanded = section.classList.contains('expanded');
       
       if (isExpanded) {
@@ -29738,8 +29751,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         button.classList.remove('expanded');
       } else {
         // Close the chart section if it's open (mutually exclusive)
-        const chartId = 'chart-' + voteAccount.slice(0, 8);
-        const chartSection = document.getElementById(chartId + '-section');
+        const chartSection = card ? card.querySelector('.validator-chart-section') : null;
         if (chartSection && chartSection.classList.contains('expanded')) {
           chartSection.classList.remove('expanded');
           // Find and update the chart button
@@ -29778,7 +29790,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               <div class="stake-section-loading">
                 <div class="loading-spinner-small"></div>
                 <span>Still loading... RPC may be slow</span>
-                <button onclick="cancelStakeLoad('${voteAccount}')" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; color: var(--text-secondary); cursor: pointer; font-size: 0.75rem;">Cancel</button>
+                <button onclick="cancelStakeLoad('${voteAccount}', this)" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; color: var(--text-secondary); cursor: pointer; font-size: 0.75rem;">Cancel</button>
               </div>
             `;
           }
@@ -29985,7 +29997,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             stakeBreakdownCache[voteAccount] = { timestamp: Date.now(), data: breakdownData };
             // Re-render only if this section is still showing (user may have
             // collapsed it or the cards were re-rendered meanwhile).
-            const live = document.getElementById('stake-' + voteAccount + '-section');
+            const live = section.isConnected ? section : null;
             if (live && live.classList.contains('expanded') && live.dataset.loaded === 'true') {
               renderInlineStakeBreakdown(live, breakdownData, validatorName, totalStake, commission, voteAccount);
             }
@@ -29997,7 +30009,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           section.innerHTML = `
             <div class="stake-section-loading">
               <span style="color: var(--danger);">${errorMsg}</span>
-              <button onclick="retryStakeLoad('${voteAccount}')" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--accent-cyan); border: none; border-radius: 4px; color: var(--bg-primary); cursor: pointer; font-size: 0.75rem; font-weight: 500;">Retry</button>
+              <button onclick="retryStakeLoad('${voteAccount}', this)" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--accent-cyan); border: none; border-radius: 4px; color: var(--bg-primary); cursor: pointer; font-size: 0.75rem; font-weight: 500;">Retry</button>
             </div>
           `;
         }
@@ -30192,21 +30204,27 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
     }
     
-    function cancelStakeLoad(voteAccount) {
-      const section = document.getElementById('stake-' + voteAccount + '-section');
+    function stakeSectionFor(voteAccount, el) {
+      // Prefer the section around the clicked element (ids collide across tabs).
+      const own = el && el.closest ? el.closest('.validator-stake-section') : null;
+      return own || document.getElementById('stake-' + voteAccount + '-section');
+    }
+
+    function cancelStakeLoad(voteAccount, el) {
+      const section = stakeSectionFor(voteAccount, el);
       if (section) {
         section.innerHTML = `
           <div class="stake-section-loading">
             <span>Loading cancelled</span>
-            <button onclick="retryStakeLoad('${voteAccount}')" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--accent-cyan); border: none; border-radius: 4px; color: var(--bg-primary); cursor: pointer; font-size: 0.75rem; font-weight: 500;">Retry</button>
+            <button onclick="retryStakeLoad('${voteAccount}', this)" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--accent-cyan); border: none; border-radius: 4px; color: var(--bg-primary); cursor: pointer; font-size: 0.75rem; font-weight: 500;">Retry</button>
           </div>
         `;
         section.dataset.loaded = 'cancelled';
       }
     }
     
-    function retryStakeLoad(voteAccount) {
-      const section = document.getElementById('stake-' + voteAccount + '-section');
+    function retryStakeLoad(voteAccount, el) {
+      const section = stakeSectionFor(voteAccount, el);
       if (section) {
         section.dataset.loaded = '';
         // Find the button and trigger click
