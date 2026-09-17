@@ -144,7 +144,7 @@
           return;
         }
         const r = evaluate(vote);
-        const details = '<span class="rb-open-link" onclick="event.stopPropagation();openDelegationModal(\'' + esc(vote) + '\')">Details</span>';
+        const details = '<span class="rb-open-link" data-action="delegation-details" data-vote="' + esc(vote) + '">Details</span>';
         let value, color, sub;
         if (r.status === 'none')          { value = '—';            color = 'var(--text-dim)'; sub = 'Not enrolled'; }
         else if (r.status === 'rejected') { value = 'Rejected';     color = 'var(--danger)';   sub = Math.max((r.entry.fc || []).length, 1) + ' unmet'; }
@@ -155,7 +155,7 @@
         valueEl.style.fontSize = (value.length > 9 && !/^[\d,]+$/.test(value)) ? '1.05rem' : '';
         // Idempotent: renderCard can run twice (observer + post-load hydrate),
         // so replace the whole sub-row if one already exists.
-        const rowHtml = '<div class="stat-sub-row"><span class="stat-subtext">' + esc(sub) + '</span>' + (r.status === 'none' ? '<a class="rb-open-link" href="' + PORTAL + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Enrol ↗</a>' : details) + '</div>';
+        const rowHtml = '<div class="stat-sub-row"><span class="stat-subtext">' + esc(sub) + '</span>' + (r.status === 'none' ? '<a class="rb-open-link" href="' + PORTAL + '" target="_blank" rel="noopener noreferrer" data-action="stop">Enrol ↗</a>' : details) + '</div>';
         const existingRow = el.querySelector('.stat-sub-row');
         if (existingRow) existingRow.outerHTML = rowHtml; else subEl.outerHTML = rowHtml;
       }
@@ -388,6 +388,9 @@
       window.delegRefresh = () => load(true).then(() => { hydrateAll(); renderTab(); });
       window.delegEvaluate = evaluate;   // for other modules (fleet board later)
       window.openDelegationModal = openDelegationModalImpl;
+      Actions.register({
+        'delegation-details': (el, e, d) => { e.stopPropagation(); openDelegationModalImpl(d.vote); },
+      });
       window.closeDelegationModal = closeDelegationModalImpl;
 
       // Pre-warm so card sections render on first lookup without a wait.
