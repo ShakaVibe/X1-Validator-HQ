@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-17T02:03:11.467Z",
-  "totalNodes": 592,
-  "totalLocations": 588,
+  "lastUpdated": "2026-09-17T04:03:13.136Z",
+  "totalNodes": 591,
+  "totalLocations": 587,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1318,13 +1318,6 @@
       "city": "Ogden",
       "lat": 41.2627,
       "lon": -111.9837
-    },
-    "69.164.250.194": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Dallas",
-      "lat": 32.7767,
-      "lon": -96.797
     },
     "194.50.156.179": {
       "country": "Poland",
@@ -4135,7 +4128,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 201
+      "count": 200
     },
     "DE": {
       "name": "Germany",
