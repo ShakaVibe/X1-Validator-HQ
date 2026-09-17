@@ -19,7 +19,7 @@
 >    session cache + stats-bar fast path, and P9 (Leaderboards 724 → 0 `getAccountInfo`).
 >    Card header squeeze fix live-verified 2026-09-17. **③ (C2) is IN PROGRESS** — see the
 >    2026-09-17 session log for the dispatcher design and the per-file checklist; pending live
->    check of the first batch (core dispatcher + `js/cards.js` + `js/delegation.js`) after the push.
+>    check of batch 2 (`js/manage.js`, push pending) — batch 1 (dispatcher + card) is live-verified.
 >    Then continue ③ (below), starting with `js/cards.js`; or the
 >    visual pass if Shaka wants (Compare cards, Delegation tab, modals, Data Center summary tiles
 >    still use the old look). Remaining backlog picks offered 2026-09-16 and not taken yet: F8b
@@ -256,8 +256,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [x] **C1** split `index.html` — done 2026-09-16 (css + 18 js files, plain `<script src>`)
 - [ ] **C2** replace 322 inline `on*` handlers with delegated `data-action` listeners → drop
       `'unsafe-inline'` from `script-src`. Started 2026-09-17: `Actions` dispatcher in `js/core.js`;
-      done `js/cards.js` (17), `js/delegation.js` (2). Remaining: index.html 217 · manage.js 21 ·
-      modals.js 15 · skip-monitor.js 8 · leaderboards.js 7 · card-details.js 6 · forensics.js 5 ·
+      done `js/cards.js` (17), `js/delegation.js` (2), `js/manage.js` (21), `getCopyButtonHtml` in
+      core.js. Remaining: index.html 217 · modals.js 15 · skip-monitor.js 8 · leaderboards.js 7 · card-details.js 6 · forensics.js 5 ·
       calculators.js 5 · terminal.js 4 · compare.js 4 · wallet-tx.js 3 · network-live.js 3 ·
       app.js 3 · core.js 2; then the inline frame-buster `<script>` in the head (→ `js/frame-guard.js`
       or a CSP `sha256-` hash), then edit the CSP. The `[onclick="switchTab('…')"]`-style selectors
@@ -924,3 +924,35 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   handlers left in the rendered card, 0 page errors, 0 `[Actions]` warnings.
 - Not live-verified yet. Next file: `js/manage.js` (21 — Manage Validator modal, where wallet
   signing lives), then `js/modals.js` (15), `js/card-details.js` (6).
+- **Batch 1 live-verified** (`219035d`, pane, fresh load): the Lookup card has 0 inline handlers,
+  13 `data-action` elements all registered (`Actions.has`), Earnings trend / Breakdown / Delegation
+  Details open through the dispatcher, copy fires (clipboard denied only because the pane wasn't
+  focused), no `[Actions]` warnings.
+- **Batch 2 — `js/manage.js` (21) + `getCopyButtonHtml` (core.js, used in 25 places):**
+  - Browse-validators list: `list-select` / `list-portfolio-add` / `list-compare-add` (attribute
+    omitted when already added, as the empty onclick was); logos use `img-fallback-text`
+    (new shared action: hide img, parent textContent = `data-fallback`).
+  - Perf explainer: logo `img-fallback`, `ask-claude` (vote/name/score/details as data attrs).
+  - Stake classification modal: `stake-selection-close` / `-save`, `stake-cat-cycle` (stops
+    propagation). Wallet-required popup: `wallet-popup-connect` / `-close`.
+  - Stake account rows: `select-account` + `data-account="stake-N"`; the
+    `[onclick="selectAccount('stake-N')"]` selector in `selectAccount` became
+    `[data-action="select-account"][data-account="stake-N"]`.
+  - **Manage Validator action grid + action explainer** used *code strings*
+    (`createBtn(…, 'initiateRedelegate()')`, `lockedClick: "showActionExplainer('x','y')"`,
+    `info.action.onclick`). Now `[fnName, ...args]` arrays (`call:` in the descriptor and explainer
+    tables) rendered by `manageCallAttrs()` as `data-action="manage-call" data-fn data-args(JSON)`
+    and resolved at click time through the **`MANAGE_CALLS` whitelist** (lazy arrows, so the
+    wallet-tx.js functions resolve fine) — never `window[name]`. `data-then-close` closes the
+    explainer after the call. Merge list: `merge-toggle` (row, eligible only) / `merge-toggle-box`
+    (checkbox, stops). Redelegate search: `redelegate-select`.
+  - `copy-address` registration moved from cards.js to core.js (shared).
+  - Test `manage-test.js` (scratchpad): real renderers with mocked state — browse list (both
+    modes, hostile name, broken icon → letter), wallet popup, classification modal, `renderActions`
+    (16 buttons: wallet 2, validator 4, stake 8 locked → explainer), explainer modal (call-to-action
+    runs + closes, Got it closes), stake rows (child click bubbles, copy button stops), redelegate
+    results, merge list (eligible rows toggle, checkbox stops, ineligible inert). 15 spied calls,
+    all once with original args; 0 inline handlers in every rendered container; 0 page errors;
+    0 `[Actions]`/`[manage-call]` warnings. Not live-verified yet (needs the push).
+- Progress: 42 of 322 handlers converted (core 1 · cards 17 · delegation 2 · manage 21 + the
+  shared copy button). Next: `js/modals.js` (15), `js/card-details.js` (6), `js/leaderboards.js` (7).
