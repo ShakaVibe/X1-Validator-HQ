@@ -80,6 +80,86 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────
+    // ACTIONS — delegated event dispatcher (C2)
+    //
+    // Replaces inline on* attributes so the CSP can eventually drop
+    // 'unsafe-inline' from script-src. Markup carries DATA, not code:
+    //
+    //   <button data-action="card-share" data-vote="…" data-name="…">
+    //   <img data-onerror="img-fallback">          <select data-change="…">
+    //   <input data-input="…">
+    //
+    // Each file registers its own handlers at the end of the file:
+    //
+    //   Actions.register({ 'card-share': (el, e, d) => shareValidator(d.vote, d.name, el) });
+    //
+    // Handler signature: (el, event, dataset). `el` is the element carrying
+    // the attribute (what `this` used to be); values are strings — coerce
+    // numbers with Number(). Attribute values must be written with
+    // escHtml() (double-quoted attribute context), never escAttrJs().
+    //
+    // Semantics mirror the old inline handlers: the event walks up from the
+    // target through every ancestor carrying the attribute (bubbling), a
+    // handler may call e.stopPropagation() to stop that walk, and when it
+    // does the dispatcher also stops the document-level "click outside"
+    // listeners registered later (exactly what the inline version achieved,
+    // since the event never reached document). core.js loads first, so
+    // these listeners are always the first ones on document.
+    // ─────────────────────────────────────────────────────────────────────
+    const Actions = (function () {
+      const handlers = Object.create(null);
+      const ATTRS = [
+        ['click',  'data-action',  false],
+        ['change', 'data-change',  false],
+        ['input',  'data-input',   false],
+        ['error',  'data-onerror', true],   // error does not bubble: capture
+        ['load',   'data-onload',  true],
+      ];
+      function register(map) {
+        for (const name in map) {
+          if (handlers[name]) console.warn('[Actions] duplicate handler', name);
+          handlers[name] = map[name];
+        }
+      }
+      function dispatch(evt, attr) {
+        let el = evt.target instanceof Element ? evt.target.closest('[' + attr + ']') : null;
+        while (el) {
+          const name = el.getAttribute(attr);
+          const fn = handlers[name];
+          if (typeof fn === 'function') {
+            try {
+              fn.call(el, el, evt, el.dataset);
+            } catch (err) {
+              console.error('[Actions] ' + attr + '="' + name + '" threw', err);
+            }
+            if (evt.cancelBubble) { evt.stopImmediatePropagation(); return; }
+          } else {
+            console.warn('[Actions] no handler registered for ' + attr + '="' + name + '"');
+          }
+          el = el.parentElement ? el.parentElement.closest('[' + attr + ']') : null;
+        }
+      }
+      ATTRS.forEach(([type, attr, capture]) => {
+        document.addEventListener(type, evt => dispatch(evt, attr), capture);
+      });
+      // Shared helpers used by more than one file.
+      register({
+        // data-action="stop" — the element only needs event.stopPropagation()
+        // (e.g. a link inside a clickable tile).
+        'stop': (el, e) => e.stopPropagation(),
+        // <img … data-onerror="img-fallback"> — hide the broken image, show the
+        // placeholder that immediately follows it.
+        'img-fallback': (el) => {
+          el.style.display = 'none';
+          const next = el.nextElementSibling;
+          if (next) next.style.display = 'flex';
+        },
+      });
+      return { register, has: (name) => typeof handlers[name] === 'function' };
+    })();
+    window.Actions = Actions;
+
+    // ─────────────────────────────────────────────────────────────────────
     // ADDRESS VALIDATION
     // Length-only checks (e.g. "32–44 chars") accept non-base58 garbage and
     // typos that happen to be the right length. For irreversible actions like

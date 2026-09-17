@@ -75,9 +75,9 @@
 
       let actionBtn = '';
       if (showRemoveBtn) {
-        actionBtn = `<button class="remove-btn" onclick="removeFromPortfolio('${validator.voteAccount}')">Remove</button>`;
+        actionBtn = `<button class="remove-btn" data-action="portfolio-remove" data-vote="${escHtml(validator.voteAccount)}">Remove</button>`;
       } else if (showAddBtn && !isInPortfolio) {
-        actionBtn = `<button class="add-btn" data-add-vote="${validator.voteAccount}" onclick="addToPortfolio('${validator.voteAccount}')">${CARD_ICONS.plus}Add to Data Center</button>`;
+        actionBtn = `<button class="add-btn" data-add-vote="${escHtml(validator.voteAccount)}" data-action="portfolio-add" data-vote="${escHtml(validator.voteAccount)}">${CARD_ICONS.plus}Add to Data Center</button>`;
       } else if (showAddBtn && isInPortfolio) {
         actionBtn = `<button class="add-btn is-added" disabled>${CARD_ICONS.check}In Data Center</button>`;
       }
@@ -85,7 +85,7 @@
       // Generate logo or placeholder
       const firstLetter = escHtml(validator.name.charAt(0).toUpperCase());
       const logoHtml = validator.iconUrl 
-        ? `<img class="validator-logo" src="${safeUrl(validator.iconUrl)}" alt="${escHtml(validator.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        ? `<img class="validator-logo" src="${safeUrl(validator.iconUrl)}" alt="${escHtml(validator.name)}" data-onerror="img-fallback">
            <div class="validator-logo-placeholder" style="display:none;">${firstLetter}</div>`
         : `<div class="validator-logo-placeholder">${firstLetter}</div>`;
 
@@ -192,7 +192,7 @@
 
             credPctHtml = `
               <span class="cred-pct-badge" 
-                onclick="event.stopPropagation(); toggleCredTooltip('${tooltipId}')"
+                data-action="cred-tooltip" data-id="${escHtml(tooltipId)}"
                 style="position:relative;font-size:0.65rem;font-weight:600;color:var(--accent-cyan);line-height:1;cursor:pointer;white-space:nowrap;">
                 ${paceScore.toFixed(1)}%
                 ${tooltipHtml}
@@ -213,7 +213,7 @@
             <span class="vh-band-icon">${CARD_ICONS.clock}</span>
             <span class="vh-next-leader" data-node="${escHtml(_vhNode)}">…</span>
             <span class="vh-band-note"></span>
-            <button class="vh-slot-explorer" onclick="event.stopPropagation(); openSlotModal('${escAttrJs(_vhNode)}', '${escAttrJs(validator.name)}', '${escAttrJs(_vhVa)}')" title="View slot-by-slot leader assignment and block production">${CARD_ICONS.search}Slot explorer${CARD_ICONS.arrow}</button>
+            <button class="vh-slot-explorer" data-action="slot-explorer" data-node="${escHtml(_vhNode)}" data-name="${escHtml(validator.name)}" data-vote="${escHtml(_vhVa)}" title="View slot-by-slot leader assignment and block production">${CARD_ICONS.search}Slot explorer${CARD_ICONS.arrow}</button>
           </div>` : '';
 
       return `
@@ -228,7 +228,7 @@
                 </div>
                 <div class="validator-meta">
                   <span class="validator-address" title="${escHtml(validator.voteAccount)}">${escHtml(String(validator.voteAccount).slice(0, 8))}…${escHtml(String(validator.voteAccount).slice(-6))}</span>
-                  <button class="copy-address-btn" onclick="event.stopPropagation(); copyToClipboard('${validator.voteAccount}', this)" title="Copy address">
+                  <button class="copy-address-btn" data-action="copy-address" data-vote="${escHtml(validator.voteAccount)}" title="Copy address">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -240,9 +240,9 @@
               </div>
             </div>
             <div class="validator-actions">
-              <button class="share-icon-btn" onclick="shareValidator('${escAttrJs(validator.voteAccount)}', '${escAttrJs(validator.name)}', this)" title="Copy a link to this validator" aria-label="Share">${CARD_ICONS.share}</button>
+              <button class="share-icon-btn" data-action="card-share" data-vote="${escHtml(validator.voteAccount)}" data-name="${escHtml(validator.name)}" title="Copy a link to this validator" aria-label="Share">${CARD_ICONS.share}</button>
               ${actionBtn}
-              <button class="manage-validator-btn" onclick="openManageValidator('${escAttrJs(validator.voteAccount)}', '${escAttrJs(validator.name)}', ${Number(validator.rewardsBalance) || 0}, ${Number(validator.commission) || 0}, '${escAttrJs(validator.nodePubkey || '')}', '${escAttrJs(validator.iconUrl || '')}')">
+              <button class="manage-validator-btn" data-action="card-manage" data-vote="${escHtml(validator.voteAccount)}" data-name="${escHtml(validator.name)}" data-rewards="${Number(validator.rewardsBalance) || 0}" data-commission="${Number(validator.commission) || 0}" data-node="${escHtml(validator.nodePubkey || '')}" data-icon="${escHtml(validator.iconUrl || '')}">
                 <span class="mv-icon">${CARD_ICONS.sliders}</span>Manage Validator
               </button>
             </div>
@@ -275,11 +275,11 @@
               </div>
               <div class="stat-sub-row">
                 <span class="stat-subtext">XNT</span>
-                <span class="rb-open-link" onclick="event.stopPropagation();openRewardBreakdown('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.commission})">Breakdown</span>
+                <span class="rb-open-link" data-action="reward-breakdown" data-vote="${escHtml(validator.voteAccount)}" data-name="${escHtml(validator.name)}" data-commission="${Number(validator.commission) || 0}">Breakdown</span>
               </div>
             </div>
             
-            <div class="stat-item clickable-stat" onclick="openStakeSelection('${validator.voteAccount}', '${escAttrJs(validator.name)}')" title="Click to manage your stake classification (self-stake vs delegated)">
+            <div class="stat-item clickable-stat" data-action="stake-selection" data-vote="${escHtml(validator.voteAccount)}" data-name="${escHtml(validator.name)}" title="Click to manage your stake classification (self-stake vs delegated)">
               <div class="stat-label">Active stake</div>
               <div class="stat-value">${formatXntCompact(validator.activatedStake)}</div>
               <div class="stat-sub-row">
@@ -320,7 +320,7 @@
               <div class="stat-subtext">Fee rate</div>
             </div>
             
-            <div class="stat-item perf-score-wrapper" onclick="openPerfExplainerModal(event, '${validator.voteAccount}')">
+            <div class="stat-item perf-score-wrapper" data-action="perf-explainer" data-vote="${escHtml(validator.voteAccount)}">
               <div class="stat-label">Performance, 7d <span class="perf-info-icon">?</span></div>
               <div class="stat-value ${perfColor}">${formatNumber(perfScore, 2)}</div>
               <div class="perf-bar-container">
@@ -334,11 +334,11 @@
           </div>
 
           <div class="validator-action-buttons">
-            <button class="validator-expand-btn stake-details-btn" onclick="toggleStakeDetails('${validator.voteAccount}', '${escAttrJs(validator.name)}', ${validator.activatedStake}, ${validator.commission}, this)">
+            <button class="validator-expand-btn stake-details-btn" data-action="stake-details" data-vote="${escHtml(validator.voteAccount)}" data-name="${escHtml(validator.name)}" data-stake="${Number(validator.activatedStake) || 0}" data-commission="${Number(validator.commission) || 0}">
               <span>Stake details</span>
               <span class="arrow">${CARD_ICONS.chevron}</span>
             </button>
-            <button class="validator-expand-btn" onclick="toggleChart('${chartId}', this)">
+            <button class="validator-expand-btn" data-action="chart-toggle" data-chart="${escHtml(chartId)}">
               <span>Earnings trend</span>
               <span class="arrow">${CARD_ICONS.chevron}</span>
             </button>
@@ -353,8 +353,8 @@
 
           <div class="validator-chart-section" id="${chartId}-section">
             <div class="chart-toggle-container">
-              <button class="chart-toggle-btn active" onclick="switchChartType('${chartId}', 'xnt', this)" data-type="xnt">XNT Rewards</button>
-              <button class="chart-toggle-btn" onclick="switchChartType('${chartId}', 'credits', this)" data-type="credits">Epoch Credits</button>
+              <button class="chart-toggle-btn active" data-action="chart-type" data-chart="${escHtml(chartId)}" data-type="xnt">XNT Rewards</button>
+              <button class="chart-toggle-btn" data-action="chart-type" data-chart="${escHtml(chartId)}" data-type="credits">Epoch Credits</button>
             </div>
             <div class="chart-header">
               <div>
@@ -586,13 +586,13 @@
       const id = 'lkslot-' + v.votePubkey.slice(0, 8);
       const letter = (v.name || '?').charAt(0).toUpperCase();
       const logo = v.iconUrl
-        ? `<img class="validator-logo" src="${safeUrl(v.iconUrl)}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="validator-logo-placeholder" style="display:none;">${letter}</div>`
+        ? `<img class="validator-logo" src="${safeUrl(v.iconUrl)}" alt="" data-onerror="img-fallback"><div class="validator-logo-placeholder" style="display:none;">${letter}</div>`
         : `<div class="validator-logo-placeholder">${letter}</div>`;
       const stake = formatXntCompact(lamportsToXNT(v.activatedStake));
       const status = v.delinquent
         ? ' · <span style="color:var(--danger);">Delinquent</span>'
         : '';
-      return `<div id="${id}" class="lookup-slot lookup-slot-selectable" onclick="selectLookupValidator('${v.votePubkey}')" title="Click to view this validator">
+      return `<div id="${id}" class="lookup-slot lookup-slot-selectable" data-action="lookup-select" data-vote="${escHtml(v.votePubkey)}" title="Click to view this validator">
         <div class="lookup-slot-main">${logo}
           <div style="min-width:0;">
             <div class="lookup-slot-name">${escHtml(v.name)}<span class="lookup-slot-rank">#${v.rank} of ${v.totalValidators}</span></div>
@@ -611,7 +611,7 @@
       slot.dataset.loading = '1';
       slot.classList.remove('lookup-slot-selectable');
       slot.style.cursor = 'default';
-      slot.onclick = null;
+      slot.removeAttribute('data-action');
       const action = slot.querySelector('.lookup-slot-action');
       if (action) action.innerHTML = '<span class="lookup-spin"></span>';
       try {
@@ -626,7 +626,7 @@
         slot.dataset.loading = '';
         slot.classList.add('lookup-slot-selectable');
         slot.style.cursor = 'pointer';
-        slot.onclick = () => selectLookupValidator(votePubkey);
+        slot.setAttribute('data-action', 'lookup-select');
         if (action) action.innerHTML = '<span style="color:var(--danger);">Retry ›</span>';
       }
     }
@@ -664,7 +664,7 @@
           btn.innerHTML = CARD_ICONS.check + 'In Data Center';
           btn.classList.add('is-added');
           btn.disabled = true;
-          btn.onclick = null;
+          btn.removeAttribute('data-action');
         });
       }
     }
@@ -989,3 +989,20 @@
       }
     }
 
+    // ─── data-action handlers for the markup this file renders (see Actions in core.js) ───
+    Actions.register({
+      'portfolio-add':    (el, e, d) => addToPortfolio(d.vote),
+      'portfolio-remove': (el, e, d) => removeFromPortfolio(d.vote),
+      'cred-tooltip':     (el, e, d) => { e.stopPropagation(); toggleCredTooltip(d.id); },
+      'slot-explorer':    (el, e, d) => { e.stopPropagation(); openSlotModal(d.node, d.name, d.vote); },
+      'copy-address':     (el, e, d) => { e.stopPropagation(); copyToClipboard(d.vote, el); },
+      'card-share':       (el, e, d) => shareValidator(d.vote, d.name, el),
+      'card-manage':      (el, e, d) => openManageValidator(d.vote, d.name, Number(d.rewards) || 0, Number(d.commission) || 0, d.node || '', d.icon || ''),
+      'reward-breakdown': (el, e, d) => { e.stopPropagation(); openRewardBreakdown(d.vote, d.name, Number(d.commission) || 0); },
+      'stake-selection':  (el, e, d) => openStakeSelection(d.vote, d.name),
+      'perf-explainer':   (el, e, d) => openPerfExplainerModal(e, d.vote),
+      'stake-details':    (el, e, d) => toggleStakeDetails(d.vote, d.name, Number(d.stake) || 0, Number(d.commission) || 0, el),
+      'chart-toggle':     (el, e, d) => toggleChart(d.chart, el),
+      'chart-type':       (el, e, d) => switchChartType(d.chart, d.type, el),
+      'lookup-select':    (el, e, d) => selectLookupValidator(d.vote),
+    });

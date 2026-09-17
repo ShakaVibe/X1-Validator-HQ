@@ -17,9 +17,10 @@
 > 2. Card redesign, duplicate-card fix and the split are all **live-verified 2026-09-16** (Shaka
 >    saw the leader band go green), as are the Router double-apply fix, F15 "Where am I", the P2
 >    session cache + stats-bar fast path, and P9 (Leaderboards 724 → 0 `getAccountInfo`).
->    **Pending live check (2026-09-17):** card header squeeze fix — abbreviated address `5ar5xXje…TvQNac`
->    (full address on hover + copy), Share/Remove/Manage stay beside the identity down to ~800 px.
->    Then **③** (below), starting with `js/cards.js`; or the
+>    Card header squeeze fix live-verified 2026-09-17. **③ (C2) is IN PROGRESS** — see the
+>    2026-09-17 session log for the dispatcher design and the per-file checklist; pending live
+>    check of the first batch (core dispatcher + `js/cards.js` + `js/delegation.js`) after the push.
+>    Then continue ③ (below), starting with `js/cards.js`; or the
 >    visual pass if Shaka wants (Compare cards, Delegation tab, modals, Data Center summary tiles
 >    still use the old look). Remaining backlog picks offered 2026-09-16 and not taken yet: F8b
 >    rewards CSV export, F11 APR per validator.
@@ -253,7 +254,14 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 
 ### Phase 3 — ongoing (platform)
 - [x] **C1** split `index.html` — done 2026-09-16 (css + 18 js files, plain `<script src>`)
-- [ ] **C2** replace 263 inline `onclick` with delegated listeners → drop `unsafe-inline`
+- [ ] **C2** replace 322 inline `on*` handlers with delegated `data-action` listeners → drop
+      `'unsafe-inline'` from `script-src`. Started 2026-09-17: `Actions` dispatcher in `js/core.js`;
+      done `js/cards.js` (17), `js/delegation.js` (2). Remaining: index.html 217 · manage.js 21 ·
+      modals.js 15 · skip-monitor.js 8 · leaderboards.js 7 · card-details.js 6 · forensics.js 5 ·
+      calculators.js 5 · terminal.js 4 · compare.js 4 · wallet-tx.js 3 · network-live.js 3 ·
+      app.js 3 · core.js 2; then the inline frame-buster `<script>` in the head (→ `js/frame-guard.js`
+      or a CSP `sha256-` hash), then edit the CSP. The `[onclick="switchTab('…')"]`-style selectors
+      in app.js / leaderboards.js / calculators.js must change when index.html is converted.
 - [ ] **C3/C4** single RPC transport; normalise records at ingestion
 - [ ] **P6/D5** PWA shell, light theme; **C8** public changelog
 
@@ -871,5 +879,48 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   before, the actions dropped under at card width ≤ ~940 px; after, they stay beside the identity
   down to ~800 px (Remove) / ~850 px ("Add to Data Center" + a long name), no horizontal overflow,
   no page errors, ≤ 768 px column layout unchanged. Contact sheet delivered in chat.
-- Not live-verified yet (needs the push). Cloud clone of the repo + `smoke.js`/`shot.js` harness
-  live in the session scratchpad only.
+- **Live-verified** (`b1f1406`, pane with emulated viewports): address `5ar5xXje…TvQNac`, computed
+  `flex: 1 1 0px` on `.validator-info`; at 1000 px the actions sit beside the identity (before:
+  dropped); at 850 px the Lookup card (wider "Add to Data Center") drops them — as designed by the
+  300 px floor; a Data Center card (Remove) holds there. No overflow. Band showed "Leader now".
+  The pane logs one "Maximum call stack size exceeded" per load even in a fresh tab while the pane
+  is *hidden* (innerWidth 0) — not caused by this change (CSS + string slice); Chrome was clean on
+  2026-09-16. Worth a look some day: probably a resize/globe loop at 0 px width.
+- Push mishap: my earlier `git rebase --quit` left the repo on a **detached HEAD**; Shaka's commit
+  landed there. Fixed with `git branch -f main <sha> && git checkout main`, then push. Lesson: after
+  any git surgery, check `git status -sb` says `## main…`, not just `--short`.
+- Cloud clone of the repo + `smoke.js`/`shot.js` harness live in the session scratchpad only.
+
+### 2026-09-17 — Session 8, continued: C2 started — `data-action` dispatcher (~1 hour)
+- Shaka chose ③ after a short cons list (silent breakage risk, no visible change, all-or-nothing
+  CSP benefit, big diffs, third-party libs under strict CSP, new-button discipline).
+- **Inventory** (b1f1406): 322 inline handlers — 263 `onclick`, 23 `oninput`, 18 `<img onerror>`,
+  13 `onchange`, 1 each onmouseenter/onmouseleave/onmousedown/onload/onfocus/onblur; 217 in
+  `index.html`, 105 in the js renderers. One inline `<script>` (frame-buster, head line 19).
+  `style-src 'unsafe-inline'` (361 `style=` attrs) is out of scope — the goal is `script-src`.
+- **Dispatcher** `Actions` in `js/core.js` (right after `safeUrl`, so it exists before any file
+  registers): document-level listeners for click→`data-action`, change→`data-change`,
+  input→`data-input`, and capture-phase error/load→`data-onerror`/`data-onload` (those don't
+  bubble). `Actions.register({ name: (el, event, dataset) => … })` per file, at the end of the
+  file. Walks up through every ancestor carrying the attribute (= bubbling); a handler that calls
+  `e.stopPropagation()` ends the walk AND the dispatcher calls `stopImmediatePropagation()` so the
+  "click outside" closers registered later on document (cred tooltip in core.js, compare search,
+  cooldown popover in manage.js) stay silent — exactly what the inline version achieved. Unknown
+  name → console.warn `[Actions] no handler registered`; thrown handler → console.error. Shared
+  actions: `img-fallback` (hide broken img, show next sibling) and `stop` (bare stopPropagation).
+  **Rules:** attribute values via `escHtml()` (never `escAttrJs` — it no longer has a use);
+  numbers are strings in `dataset` → `Number(d.x) || 0`; `el` is what `this` used to be.
+- **Converted:** `js/cards.js` — all 17 (Add/Remove, share, copy, Manage Validator, cred badge,
+  slot explorer, Breakdown, stake-selection tile, perf tile, Stake details, Earnings trend,
+  chart type ×2, lookup result row, 2 img fallbacks); `selectLookupValidator` and
+  `addToPortfolio` now toggle the `data-action` attribute instead of `el.onclick`.
+  `js/delegation.js` — the tile's Details link (`delegation-details`) and the Enrol link (`stop`).
+- **Test** (`actions-test.js`, scratchpad; offline Playwright, both card variants + a lookup row,
+  hostile name `Evil "<b>&'name`, broken icon URL, a document click listener registered after the
+  dispatcher): every control fires its function exactly once with the original argument types
+  (numbers as numbers, `el` passed where `this` was, `event` for the perf explainer), the name
+  round-trips unescaped, child clicks bubble to the tile, copy/Breakdown/slot-explorer/Details
+  suppress the outside listener while Share reaches it, both broken images fall back, 0 inline
+  handlers left in the rendered card, 0 page errors, 0 `[Actions]` warnings.
+- Not live-verified yet. Next file: `js/manage.js` (21 — Manage Validator modal, where wallet
+  signing lives), then `js/modals.js` (15), `js/card-details.js` (6).
