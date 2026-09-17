@@ -154,6 +154,14 @@
           const next = el.nextElementSibling;
           if (next) next.style.display = 'flex';
         },
+        // <img … data-onerror="img-fallback-text" data-fallback="S"> — replace the
+        // image's container content with the fallback letter.
+        'img-fallback-text': (el, e, d) => {
+          el.style.display = 'none';
+          if (el.parentElement) el.parentElement.textContent = d.fallback || '';
+        },
+        // getCopyButtonHtml() and the card's copy button (copyToClipboard lives here).
+        'copy-address': (el, e, d) => { e.stopPropagation(); copyToClipboard(d.vote, el); },
       });
       return { register, has: (name) => typeof handlers[name] === 'function' };
     })();
@@ -1236,7 +1244,7 @@
 
     // Generate a copy button HTML
     function getCopyButtonHtml(address) {
-      return `<button class="copy-address-btn" onclick="event.stopPropagation(); copyToClipboard('${address}', this)" title="Copy address">
+      return `<button class="copy-address-btn" data-action="copy-address" data-vote="${escHtml(address)}" title="Copy address">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>

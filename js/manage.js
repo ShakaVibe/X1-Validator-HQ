@@ -64,7 +64,7 @@
         if (validatorListMode === 'compare') {
           actionButton = `
             <button class="validator-list-item-add ${isInCompare ? 'added' : ''}" 
-                    onclick="${isInCompare ? '' : `addToComparisonFromList('${v.votePubkey}')`}"
+                    ${isInCompare ? '' : `data-action="list-compare-add" data-vote="${escHtml(v.votePubkey)}"`}
                     ${isInCompare ? 'disabled' : ''}>
               ${isInCompare ? 'Added' : '+ Compare'}
             </button>
@@ -72,7 +72,7 @@
         } else {
           actionButton = `
             <button class="validator-list-item-add ${isInPortfolio ? 'added' : ''}" 
-                    onclick="${isInPortfolio ? '' : `addToPortfolioFromList('${v.votePubkey}')`}"
+                    ${isInPortfolio ? '' : `data-action="list-portfolio-add" data-vote="${escHtml(v.votePubkey)}"`}
                     ${isInPortfolio ? 'disabled' : ''}>
               ${isInPortfolio ? 'Added' : '+ Add'}
             </button>
@@ -83,7 +83,7 @@
         const initial = v.name ? v.name.charAt(0).toUpperCase() : 'V';
         let logoHtml;
         if (v.iconUrl) {
-          logoHtml = `<img src="${safeUrl(v.iconUrl)}" alt="${escHtml(initial)}" onerror="this.style.display='none';this.parentElement.textContent='${escAttrJs(initial)}';">`;
+          logoHtml = `<img src="${safeUrl(v.iconUrl)}" alt="${escHtml(initial)}" data-onerror="img-fallback-text" data-fallback="${escHtml(initial)}">`;
         } else {
           logoHtml = escHtml(initial);
         }
@@ -91,7 +91,7 @@
         return `
           <div class="validator-list-item">
             <div class="validator-list-item-logo">${logoHtml}</div>
-            <div class="validator-list-item-info" onclick="selectValidatorForSearch('${v.votePubkey}')">
+            <div class="validator-list-item-info" data-action="list-select" data-vote="${escHtml(v.votePubkey)}">
               <div class="validator-list-item-name">#${v.rank} - ${escHtml(v.name)}${tierBadge}</div>
               <div class="validator-list-item-address">${v.votePubkey}</div>
             </div>
@@ -191,7 +191,7 @@
       const logoEl = document.getElementById('manageValidatorLogo');
       const firstLetter = name.charAt(0).toUpperCase();
       if (iconUrl) {
-        logoEl.innerHTML = `<img src="${safeUrl(iconUrl)}" alt="${escHtml(name)}" style="width:100%;height:100%;border-radius:10px;" onerror="this.parentElement.textContent='${escAttrJs(firstLetter)}'">`;
+        logoEl.innerHTML = `<img src="${safeUrl(iconUrl)}" alt="${escHtml(name)}" style="width:100%;height:100%;border-radius:10px;" data-onerror="img-fallback-text" data-fallback="${escHtml(firstLetter)}">`;
       } else {
         logoEl.textContent = firstLetter;
       }
@@ -350,7 +350,7 @@
       // Generate logo HTML
       const firstLetter = validatorName.charAt(0).toUpperCase();
       const logoHtml = validatorIcon 
-        ? `<img class="perf-breakdown-logo" src="${safeUrl(validatorIcon)}" alt="${escHtml(validatorName)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        ? `<img class="perf-breakdown-logo" src="${safeUrl(validatorIcon)}" alt="${escHtml(validatorName)}" data-onerror="img-fallback">
            <div class="perf-breakdown-logo-placeholder" style="display:none;">${escHtml(firstLetter)}</div>`
         : `<div class="perf-breakdown-logo-placeholder">${escHtml(firstLetter)}</div>`;
       
@@ -388,7 +388,7 @@
           ${(breakdown.flags && breakdown.flags.includes('commission_rug')) ? `<div class="perf-breakdown-detail" style="color: var(--danger, #ff5c5c); margin-top: 0.5rem;">⚠ Commission raised sharply in the last 7 days — score penalty applied</div>` : ''}
           ${breakdown.canonical ? `<div class="perf-breakdown-detail" style="opacity: 0.65; margin-top: 0.5rem;">📡 Official published score · updated hourly · identical for all viewers</div>` : ''}
           <div class="ask-claude-divider"><span>Need Help?</span></div>
-          <button class="ask-claude-btn" onclick="askClaudeForHelp('${voteAccount}', '${escAttrJs(validatorName)}', ${totalScore.toFixed(2)}, '${escAttrJs(breakdown.skipRate.details)}')">
+          <button class="ask-claude-btn" data-action="ask-claude" data-vote="${escHtml(voteAccount)}" data-name="${escHtml(validatorName)}" data-score="${totalScore.toFixed(2)}" data-details="${escHtml(breakdown.skipRate.details)}">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
             Ask Claude to Help Optimize My Validator
           </button>
@@ -868,8 +868,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
         </div>
 
         <div class="stake-selection-actions">
-          <button class="stake-selection-btn secondary" onclick="closeStakeSelection()">Cancel</button>
-          <button class="stake-selection-btn primary" onclick="saveStakeSelections('${voteAccount}')">Save Classification</button>
+          <button class="stake-selection-btn secondary" data-action="stake-selection-close">Cancel</button>
+          <button class="stake-selection-btn primary" data-action="stake-selection-save" data-vote="${escHtml(voteAccount)}">Save Classification</button>
         </div>
       `;
     }
@@ -886,7 +886,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const icon = meta.locked ? '🔒' : '⇄';
       const attrs = meta.locked
         ? 'title="Detected from a known pool address — locked"'
-        : `onclick="event.stopPropagation(); cycleStakeCat('${pubkey}')" title="Click to switch between Self-Stake and Community"`;
+        : `data-action="stake-cat-cycle" data-pubkey="${escHtml(pubkey)}" title="Click to switch between Self-Stake and Community"`;
       return `<span class="stake-cat ${cat}" ${attrs}>${meta.label} <span class="stake-cat-ico">${icon}</span></span>`;
     }
 
@@ -1002,8 +1002,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
           <div class="wallet-required-title">Wallet Required</div>
           <div class="wallet-required-message">Please connect your wallet to ${action}.</div>
           <div class="wallet-required-buttons">
-            <button class="wallet-required-btn connect" onclick="this.closest('.wallet-required-popup').remove(); connectWallet();">Connect Wallet</button>
-            <button class="wallet-required-btn cancel" onclick="this.closest('.wallet-required-popup').remove();">Cancel</button>
+            <button class="wallet-required-btn connect" data-action="wallet-popup-connect">Connect Wallet</button>
+            <button class="wallet-required-btn cancel" data-action="wallet-popup-close">Cancel</button>
           </div>
         </div>
       `;
@@ -1111,7 +1111,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
       const firstLetter = (displayName || 'V').charAt(0).toUpperCase();
       if (validatorInfoCache[voteAccount] && validatorInfoCache[voteAccount].iconUrl) {
-        iconHtml = `<img class="stake-breakdown-header-logo" src="${safeUrl(validatorInfoCache[voteAccount].iconUrl)}" alt="${escHtml(displayName)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        iconHtml = `<img class="stake-breakdown-header-logo" src="${safeUrl(validatorInfoCache[voteAccount].iconUrl)}" alt="${escHtml(displayName)}" data-onerror="img-fallback">
                     <div class="stake-breakdown-header-placeholder" style="display:none;">${firstLetter}</div>`;
       } else {
         iconHtml = `<div class="stake-breakdown-header-placeholder">${firstLetter}</div>`;
@@ -1560,7 +1560,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         })[stakeCat] || '';
 
         return `
-          <div class="account-row ${selectedAccountType === 'stake-${originalIndex}' ? 'selected' : ''}" onclick="selectAccount('stake-${originalIndex}')">
+          <div class="account-row ${selectedAccountType === 'stake-${originalIndex}' ? 'selected' : ''}" data-action="select-account" data-account="stake-${originalIndex}">
             <div class="account-row-left">
               <span class="account-type-badge ${badgeClass}" data-stake-idx="${originalIndex}">${badgeText}</span>
               <span class="account-address">${shortenAddress(stake.pubkey)}</span>
@@ -2072,7 +2072,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         const index = parseInt(accountType.split('-')[1]);
         const stake = stakeAccounts[index];
         
-        const stakeRow = document.querySelector(`[onclick="selectAccount('stake-${index}')"]`);
+        const stakeRow = document.querySelector(`[data-action="select-account"][data-account="stake-${index}"]`);
         if (stakeRow) stakeRow.classList.add('selected');
         
         const stakeBtn = document.getElementById(`stakeSelectBtn-${index}`);
@@ -2383,15 +2383,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
       if (!walletGrid || !validatorGrid || !stakeGrid) return;
       
       // Helper to create button HTML. opts: { enabled, lockedClick, iconStyle }
-      const createBtn = (icon, title, desc, onclick, opts = {}) => {
+      // `call` / opts.lockedClick are [fnName, ...args] — resolved at click time
+      // through the MANAGE_CALLS whitelist (data-action="manage-call").
+      const createBtn = (icon, title, desc, call, opts = {}) => {
         const isEnabled = opts.enabled !== false;
         const disabledClass = isEnabled ? '' : 'disabled';
-        const clickHandler = isEnabled ? onclick : (opts.lockedClick || '');
+        const clickHandler = manageCallAttrs(isEnabled ? call : opts.lockedClick);
         const lockIcon = isEnabled ? '' : '<span class="action-lock">🔒</span>';
         const iconStyle = opts.iconStyle || '';
         
         return `
-          <button class="manage-action-btn ${disabledClass}" onclick="${clickHandler}">
+          <button class="manage-action-btn ${disabledClass}" ${clickHandler}>
             <span class="action-icon" ${iconStyle}>${icon}</span>
             <span class="action-text">
               <span class="action-title">${title}${lockIcon}</span>
@@ -2403,8 +2405,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       // ===== Wallet Actions (never depend on selection) =====
       walletGrid.innerHTML = 
-        createBtn('+', 'Create & Delegate Stake', 'Create new stake account', 'initiateCreateStake()', { iconStyle: 'style="color: #ffc107; font-weight: bold; font-size: 1.8rem;"' }) +
-        createBtn('📤', 'Send XNT to ID Wallet', 'Transfer to validator identity wallet', 'initiateSendToIdentity()');
+        createBtn('+', 'Create & Delegate Stake', 'Create new stake account', ['initiateCreateStake'], { iconStyle: 'style="color: #ffc107; font-weight: bold; font-size: 1.8rem;"' }) +
+        createBtn('📤', 'Send XNT to ID Wallet', 'Transfer to validator identity wallet', ['initiateSendToIdentity']);
       
       // ===== Validator Actions (vote account level, independent of selection) =====
       const voteCtx = document.getElementById('validatorActionsContext');
@@ -2422,13 +2424,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // performs its full authority check at runtime.
       const voteAuthKnown = !!(walletPublicKey && manageVoteWithdrawAuthority);
       const hasVoteWithdrawAuth = !voteAuthKnown || manageVoteWithdrawAuthority === walletPublicKey;
-      const voteAuthOpts = hasVoteWithdrawAuth ? {} : { enabled: false, lockedClick: "showActionExplainer('voteWithdraw', 'noVoteWithdrawAuth')" };
+      const voteAuthOpts = hasVoteWithdrawAuth ? {} : { enabled: false, lockedClick: ['showActionExplainer', 'voteWithdraw', 'noVoteWithdrawAuth'] };
       
       validatorGrid.innerHTML = 
-        createBtn('💸', 'Withdraw XNT', 'Withdraw rewards to your wallet', 'initiateWithdraw()', voteAuthOpts) +
-        createBtn('📝', 'Change Commission', 'Update validator commission rate', 'initiateChangeCommission()', voteAuthOpts) +
-        createBtn('🏷️', 'Update Identity', 'Change on-chain validator info', 'initiateUpdateIdentity()') +
-        createBtn('🔐', 'Change Authority', 'Transfer withdraw authority', 'initiateChangeAuthority()', voteAuthOpts);
+        createBtn('💸', 'Withdraw XNT', 'Withdraw rewards to your wallet', ['initiateWithdraw'], voteAuthOpts) +
+        createBtn('📝', 'Change Commission', 'Update validator commission rate', ['initiateChangeCommission'], voteAuthOpts) +
+        createBtn('🏷️', 'Update Identity', 'Change on-chain validator info', ['initiateUpdateIdentity']) +
+        createBtn('🔐', 'Change Authority', 'Transfer withdraw authority', ['initiateChangeAuthority'], voteAuthOpts);
       
       // ===== Stake Actions (depend on selected stake account + its state + authority) =====
       const stakeCtx = document.getElementById('stakeActionsContext');
@@ -2439,14 +2441,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
       
       const stakeActionDefs = [
-        { id: 'delegate', icon: '🔄', title: 'Delegate Stake', desc: 'Delegate to a validator', onclick: 'initiateRedelegate()' },
-        { id: 'undelegate', icon: '🔓', title: 'Undelegate Stake', desc: 'Begin deactivation process', onclick: 'initiateUndelegate()' },
-        { id: 'split', icon: '✂️', title: 'Split Stake', desc: 'Divide into two accounts', onclick: 'initiateSplitStake()' },
-        { id: 'merge', icon: '🔗', title: 'Merge Stakes', desc: 'Combine multiple stake accounts', onclick: 'initiateMergeStakes()' },
-        { id: 'withdraw', icon: '💸', title: 'Withdraw from Stake', desc: 'Withdraw XNT to wallet', onclick: 'initiateWithdrawStake()' },
-        { id: 'close', icon: '🗑️', title: 'Close Stake Account', desc: 'Withdraw all & close account', onclick: 'initiateCloseStakeAccount()' },
-        { id: 'setStakeAuth', icon: '🔐', title: 'Set Stake Authority', desc: 'Change who can delegate', onclick: 'initiateSetStakeAuthority()' },
-        { id: 'setWithdrawAuth', icon: '🔑', title: 'Set Withdraw Authority', desc: 'Change who can withdraw', onclick: 'initiateSetWithdrawAuthority()' }
+        { id: 'delegate', icon: '🔄', title: 'Delegate Stake', desc: 'Delegate to a validator', call: ['initiateRedelegate'] },
+        { id: 'undelegate', icon: '🔓', title: 'Undelegate Stake', desc: 'Begin deactivation process', call: ['initiateUndelegate'] },
+        { id: 'split', icon: '✂️', title: 'Split Stake', desc: 'Divide into two accounts', call: ['initiateSplitStake'] },
+        { id: 'merge', icon: '🔗', title: 'Merge Stakes', desc: 'Combine multiple stake accounts', call: ['initiateMergeStakes'] },
+        { id: 'withdraw', icon: '💸', title: 'Withdraw from Stake', desc: 'Withdraw XNT to wallet', call: ['initiateWithdrawStake'] },
+        { id: 'close', icon: '🗑️', title: 'Close Stake Account', desc: 'Withdraw all & close account', call: ['initiateCloseStakeAccount'] },
+        { id: 'setStakeAuth', icon: '🔐', title: 'Set Stake Authority', desc: 'Change who can delegate', call: ['initiateSetStakeAuthority'] },
+        { id: 'setWithdrawAuth', icon: '🔑', title: 'Set Withdraw Authority', desc: 'Change who can withdraw', call: ['initiateSetWithdrawAuthority'] }
       ];
       
       if (!stake) {
@@ -2456,7 +2458,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           stakeCtx.classList.add('unlock-hint');
         }
         stakeGrid.innerHTML = stakeActionDefs.map(d => 
-          createBtn(d.icon, d.title, d.desc, '', { enabled: false, lockedClick: `showActionExplainer('${d.id}', 'new')` })
+          createBtn(d.icon, d.title, d.desc, null, { enabled: false, lockedClick: ['showActionExplainer', d.id, 'new'] })
         ).join('');
       } else {
         const stakeState = stake.state || 'active';
@@ -2489,12 +2491,12 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const authOk = usesWithdrawAuth[d.id] ? hasWithdrawAuth : hasStakeAuth;
           const stateOk = stateAvailability[d.id];
           if (authOk && stateOk) {
-            return createBtn(d.icon, d.title, d.desc, d.onclick);
+            return createBtn(d.icon, d.title, d.desc, d.call);
           }
           const reason = !authOk
             ? (usesWithdrawAuth[d.id] ? 'noWithdrawAuth' : 'noStakeAuth')
             : stakeState;
-          return createBtn(d.icon, d.title, d.desc, '', { enabled: false, lockedClick: `showActionExplainer('${d.id}', '${reason}')` });
+          return createBtn(d.icon, d.title, d.desc, null, { enabled: false, lockedClick: ['showActionExplainer', d.id, reason] });
         }).join('');
       }
     }
@@ -2507,7 +2509,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'Cannot Delegate Active Stake',
             message: 'Your stake is currently active with a validator. To switch validators, you need to:',
             steps: ['1. Undelegate your stake (begins deactivation)', '2. Wait ~2 epochs for deactivation to complete', '3. Delegate to your new validator'],
-            action: { text: 'Undelegate Now', onclick: 'initiateUndelegate()' }
+            action: { text: 'Undelegate Now', call: ['initiateUndelegate'] }
           },
           activating: {
             title: 'Stake Still Activating',
@@ -2525,7 +2527,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'No Stake Account Selected',
             message: 'This action requires an inactive stake account to delegate.',
             steps: ['1. Create a new stake account', '2. Or select an existing inactive stake from the list'],
-            action: { text: 'Create & Delegate Stake', onclick: 'initiateCreateStake()' }
+            action: { text: 'Create & Delegate Stake', call: ['initiateCreateStake'] }
           }
         },
         undelegate: {
@@ -2539,13 +2541,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'Stake is Inactive',
             message: 'This stake is already inactive (not delegated). You can delegate it to a validator or withdraw the funds.',
             steps: [],
-            action: { text: 'Delegate Stake', onclick: 'initiateRedelegate()' }
+            action: { text: 'Delegate Stake', call: ['initiateRedelegate'] }
           },
           new: {
             title: 'No Stake Account Selected',
             message: 'This action requires an active stake account to undelegate.',
             steps: ['1. Create a new stake account', '2. Or select an existing active stake from the list'],
-            action: { text: 'Create & Delegate Stake', onclick: 'initiateCreateStake()' }
+            action: { text: 'Create & Delegate Stake', call: ['initiateCreateStake'] }
           }
         },
         merge: {
@@ -2565,7 +2567,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'No Stake Account Selected',
             message: 'This action requires stake accounts to merge together.',
             steps: ['1. Create a new stake account', '2. Or select an existing stake from the list'],
-            action: { text: 'Create & Delegate Stake', onclick: 'initiateCreateStake()' }
+            action: { text: 'Create & Delegate Stake', call: ['initiateCreateStake'] }
           }
         },
         split: {
@@ -2585,13 +2587,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'Cannot Split Inactive Stake',
             message: 'Inactive stakes cannot be split. You can delegate it first or withdraw the funds.',
             steps: [],
-            action: { text: 'Delegate Stake', onclick: 'initiateRedelegate()' }
+            action: { text: 'Delegate Stake', call: ['initiateRedelegate'] }
           },
           new: {
             title: 'No Stake Account Selected',
             message: 'This action requires an active stake account to split.',
             steps: ['1. Create a new stake account', '2. Or select an existing active stake from the list'],
-            action: { text: 'Create & Delegate Stake', onclick: 'initiateCreateStake()' }
+            action: { text: 'Create & Delegate Stake', call: ['initiateCreateStake'] }
           }
         },
         withdraw: {
@@ -2599,13 +2601,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'Cannot Withdraw Active Stake',
             message: 'You can only withdraw from inactive stakes. To access these funds:',
             steps: ['1. Undelegate your stake', '2. Wait ~2 epochs for deactivation', '3. Withdraw your XNT'],
-            action: { text: 'Undelegate Now', onclick: 'initiateUndelegate()' }
+            action: { text: 'Undelegate Now', call: ['initiateUndelegate'] }
           },
           activating: {
             title: 'Cannot Withdraw Activating Stake',
             message: 'Your stake is still activating. You\'ll need to undelegate first.',
             steps: ['1. Undelegate to cancel activation', '2. Wait for deactivation to complete', '3. Withdraw your XNT'],
-            action: { text: 'Undelegate Now', onclick: 'initiateUndelegate()' }
+            action: { text: 'Undelegate Now', call: ['initiateUndelegate'] }
           },
           deactivating: {
             title: 'Stake is Deactivating',
@@ -2617,7 +2619,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'No Stake Account Selected',
             message: 'This action requires an inactive stake account to withdraw from.',
             steps: ['1. Create a new stake account', '2. Or select an existing inactive stake from the list'],
-            action: { text: 'Create & Delegate Stake', onclick: 'initiateCreateStake()' }
+            action: { text: 'Create & Delegate Stake', call: ['initiateCreateStake'] }
           }
         },
         close: {
@@ -2625,13 +2627,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'Cannot Close Active Stake',
             message: 'You can only close inactive stake accounts. To close this account:',
             steps: ['1. Undelegate your stake', '2. Wait ~2 epochs for deactivation', '3. Close the account'],
-            action: { text: 'Undelegate Now', onclick: 'initiateUndelegate()' }
+            action: { text: 'Undelegate Now', call: ['initiateUndelegate'] }
           },
           activating: {
             title: 'Cannot Close Activating Stake',
             message: 'Your stake is still activating. You\'ll need to undelegate first.',
             steps: ['1. Undelegate to cancel activation', '2. Wait for deactivation to complete', '3. Close the account'],
-            action: { text: 'Undelegate Now', onclick: 'initiateUndelegate()' }
+            action: { text: 'Undelegate Now', call: ['initiateUndelegate'] }
           },
           deactivating: {
             title: 'Stake is Deactivating',
@@ -2643,7 +2645,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'No Stake Account Selected',
             message: 'This action requires a stake account. Create a new stake account first.',
             steps: [],
-            action: { text: 'Create & Delegate Stake', onclick: 'initiateCreateStake()' }
+            action: { text: 'Create & Delegate Stake', call: ['initiateCreateStake'] }
           }
         },
         setStakeAuth: {
@@ -2651,7 +2653,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'No Stake Account Selected',
             message: 'This action requires a stake account to change its stake authority.',
             steps: ['1. Create a new stake account', '2. Or select an existing stake from the list'],
-            action: { text: 'Create & Delegate Stake', onclick: 'initiateCreateStake()' }
+            action: { text: 'Create & Delegate Stake', call: ['initiateCreateStake'] }
           }
         },
         setWithdrawAuth: {
@@ -2659,7 +2661,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
             title: 'No Stake Account Selected',
             message: 'This action requires a stake account to change its withdraw authority.',
             steps: ['1. Create a new stake account', '2. Or select an existing stake from the list'],
-            action: { text: 'Create & Delegate Stake', onclick: 'initiateCreateStake()' }
+            action: { text: 'Create & Delegate Stake', call: ['initiateCreateStake'] }
           }
         }
       };
@@ -2693,7 +2695,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         info = explainers[action]?.[stakeState];
         // "No stake selected" case: point the user at the account list instead
         if (info && stakeState === 'new') {
-          info = { ...info, action: { text: 'Select a Stake Account', onclick: 'highlightAccountList()' } };
+          info = { ...info, action: { text: 'Select a Stake Account', call: ['highlightAccountList'] } };
         }
       }
       if (!info) {
@@ -2709,7 +2711,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       let actionBtn = '';
       if (info.action) {
-        actionBtn = `<button class="explainer-action-btn" onclick="${info.action.onclick}; closeActionExplainerModal()">${info.action.text}</button>`;
+        actionBtn = `<button class="explainer-action-btn" ${manageCallAttrs(info.action.call)} data-then-close="1">${info.action.text}</button>`;
       }
       
       const modal = document.getElementById('actionExplainerModal');
@@ -2719,7 +2721,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         ${stepsHtml}
         <div class="explainer-actions">
           ${actionBtn}
-          <button class="explainer-close-btn" onclick="closeActionExplainerModal()">Got it</button>
+          <button class="explainer-close-btn" data-action="explainer-close">Got it</button>
         </div>
       `;
       
@@ -2873,13 +2875,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       container.innerHTML = analyzedStakes.map(stake => `
         <div class="merge-stake-item ${stake.eligible ? '' : 'disabled'}" 
-             onclick="${stake.eligible ? `toggleMergeStakeSelection('${stake.pubkey}')` : ''}">
+             ${stake.eligible ? `data-action="merge-toggle" data-pubkey="${escHtml(stake.pubkey)}"` : ''}>
           <input type="checkbox" 
                  class="merge-stake-checkbox" 
                  id="merge-${stake.pubkey}" 
                  ${stake.eligible ? '' : 'disabled'}
                  ${mergeStakesSelected.includes(stake.pubkey) ? 'checked' : ''}
-                 onclick="event.stopPropagation(); toggleMergeStakeSelection('${stake.pubkey}')">
+                 data-action="merge-toggle-box" data-pubkey="${escHtml(stake.pubkey)}">
           <div class="merge-stake-info">
             <div class="merge-stake-address">${shortenAddress(stake.pubkey)}</div>
             <div class="merge-stake-details">
@@ -3719,7 +3721,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       }
       
       resultsContainer.innerHTML = matches.map(v => `
-        <div class="redelegate-search-item" onclick="selectRedelegateValidator('${v.voteAccount}', '${escAttrJs((v.name || shortenAddress(v.voteAccount)))}')">
+        <div class="redelegate-search-item" data-action="redelegate-select" data-vote="${escHtml(v.voteAccount)}" data-name="${escHtml(v.name || shortenAddress(v.voteAccount))}">
           <div>
             <div class="redelegate-search-item-name">${escHtml(v.name || shortenAddress(v.voteAccount))}${v.isDelinquent ? ' ⚠️' : ''}</div>
             <div class="redelegate-search-item-address">${shortenAddress(v.voteAccount)}</div>
@@ -4629,3 +4631,55 @@ Please give me the diagnostic commands to run on my server so you can help me id
       document.getElementById('createStakeSummaryTotal').textContent = formatNumber(total, 6) + ' XNT';
     }
 
+    // ─── data-action handlers for the markup this file renders (see Actions in core.js) ───
+    // Manage Validator action buttons and the explainer's call-to-action name their target
+    // function; the name is resolved through this whitelist (never window[name]). Arrow
+    // wrappers resolve lazily so functions defined in later files (wallet-tx.js) are fine.
+    const MANAGE_CALLS = {
+      initiateCreateStake:          (...a) => initiateCreateStake(...a),
+      initiateSendToIdentity:       (...a) => initiateSendToIdentity(...a),
+      initiateWithdraw:             (...a) => initiateWithdraw(...a),
+      initiateChangeCommission:     (...a) => initiateChangeCommission(...a),
+      initiateUpdateIdentity:       (...a) => initiateUpdateIdentity(...a),
+      initiateChangeAuthority:      (...a) => initiateChangeAuthority(...a),
+      initiateRedelegate:           (...a) => initiateRedelegate(...a),
+      initiateUndelegate:           (...a) => initiateUndelegate(...a),
+      initiateSplitStake:           (...a) => initiateSplitStake(...a),
+      initiateMergeStakes:          (...a) => initiateMergeStakes(...a),
+      initiateWithdrawStake:        (...a) => initiateWithdrawStake(...a),
+      initiateCloseStakeAccount:    (...a) => initiateCloseStakeAccount(...a),
+      initiateSetStakeAuthority:    (...a) => initiateSetStakeAuthority(...a),
+      initiateSetWithdrawAuthority: (...a) => initiateSetWithdrawAuthority(...a),
+      showActionExplainer:          (...a) => showActionExplainer(...a),
+      highlightAccountList:         (...a) => highlightAccountList(...a),
+    };
+    // [fnName, ...args] → the attributes for a manage-call button ('' when there is no call).
+    function manageCallAttrs(call) {
+      if (!Array.isArray(call) || !call.length) return '';
+      const [fn, ...args] = call;
+      if (!MANAGE_CALLS[fn]) { console.warn('[manage-call] not whitelisted:', fn); return ''; }
+      return `data-action="manage-call" data-fn="${escHtml(fn)}" data-args="${escHtml(JSON.stringify(args))}"`;
+    }
+    Actions.register({
+      'manage-call': (el, e, d) => {
+        const fn = MANAGE_CALLS[d.fn];
+        if (!fn) { console.warn('[manage-call] not whitelisted:', d.fn); return; }
+        let args = []; try { args = JSON.parse(d.args || '[]'); } catch (err) {}
+        fn(...args);
+        if (d.thenClose) closeActionExplainerModal();
+      },
+      'explainer-close':      () => closeActionExplainerModal(),
+      'list-compare-add':     (el, e, d) => addToComparisonFromList(d.vote),
+      'list-portfolio-add':   (el, e, d) => addToPortfolioFromList(d.vote),
+      'list-select':          (el, e, d) => selectValidatorForSearch(d.vote),
+      'ask-claude':           (el, e, d) => askClaudeForHelp(d.vote, d.name, Number(d.score) || 0, d.details || ''),
+      'stake-selection-close':() => closeStakeSelection(),
+      'stake-selection-save': (el, e, d) => saveStakeSelections(d.vote),
+      'stake-cat-cycle':      (el, e, d) => { e.stopPropagation(); cycleStakeCat(d.pubkey); },
+      'wallet-popup-connect': (el) => { const p = el.closest('.wallet-required-popup'); if (p) p.remove(); connectWallet(); },
+      'wallet-popup-close':   (el) => { const p = el.closest('.wallet-required-popup'); if (p) p.remove(); },
+      'select-account':       (el, e, d) => selectAccount(d.account),
+      'merge-toggle':         (el, e, d) => toggleMergeStakeSelection(d.pubkey),
+      'merge-toggle-box':     (el, e, d) => { e.stopPropagation(); toggleMergeStakeSelection(d.pubkey); },
+      'redelegate-select':    (el, e, d) => selectRedelegateValidator(d.vote, d.name),
+    });

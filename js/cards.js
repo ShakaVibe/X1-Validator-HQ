@@ -995,7 +995,6 @@
       'portfolio-remove': (el, e, d) => removeFromPortfolio(d.vote),
       'cred-tooltip':     (el, e, d) => { e.stopPropagation(); toggleCredTooltip(d.id); },
       'slot-explorer':    (el, e, d) => { e.stopPropagation(); openSlotModal(d.node, d.name, d.vote); },
-      'copy-address':     (el, e, d) => { e.stopPropagation(); copyToClipboard(d.vote, el); },
       'card-share':       (el, e, d) => shareValidator(d.vote, d.name, el),
       'card-manage':      (el, e, d) => openManageValidator(d.vote, d.name, Number(d.rewards) || 0, Number(d.commission) || 0, d.node || '', d.icon || ''),
       'reward-breakdown': (el, e, d) => { e.stopPropagation(); openRewardBreakdown(d.vote, d.name, Number(d.commission) || 0); },
