@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-19T10:03:15.712Z",
+  "lastUpdated": "2026-09-19T12:03:11.523Z",
   "totalNodes": 593,
   "totalLocations": 589,
   "locations": {
@@ -3881,13 +3881,6 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "38.58.180.92": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5247,
-      "lon": -111.8638
-    },
     "51.91.253.20": {
       "country": "France",
       "countryCode": "FR",
@@ -4125,48 +4118,55 @@
       "city": "Bad Soden am Taunus",
       "lat": 50.1592,
       "lon": 8.48174
+    },
+    "38.46.219.203": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5247,
+      "lon": -111.8638
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 73
+    "DE": {
+      "name": "Germany",
+      "count": 128
     },
     "US": {
       "name": "United States",
       "count": 201
     },
-    "FI": {
-      "name": "Finland",
-      "count": 78
+    "FR": {
+      "name": "France",
+      "count": 54
     },
     "CA": {
       "name": "Canada",
       "count": 19
     },
-    "FR": {
-      "name": "France",
-      "count": 54
+    "PL": {
+      "name": "Poland",
+      "count": 73
     },
-    "DE": {
-      "name": "Germany",
-      "count": 128
+    "FI": {
+      "name": "Finland",
+      "count": 78
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 22
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
     "SE": {
       "name": "Sweden",
       "count": 5
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 22
+    "GB": {
+      "name": "United Kingdom",
+      "count": 5
     },
     "SG": {
       "name": "Singapore",
