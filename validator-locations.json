@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-22T18:03:14.177Z",
-  "totalNodes": 589,
-  "totalLocations": 585,
+  "lastUpdated": "2026-09-22T20:03:19.685Z",
+  "totalNodes": 591,
+  "totalLocations": 587,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4097,6 +4097,20 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "151.80.18.55": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6974,
+      "lon": 3.178
+    },
+    "169.58.110.30": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
     }
   },
   "countries": {
@@ -4110,7 +4124,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 53
+      "count": 55
     },
     "CA": {
       "name": "Canada",
