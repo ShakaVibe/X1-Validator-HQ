@@ -16,11 +16,10 @@
 >    changes* on top of origin/main, so Shaka's normal `git add -A && git commit` picks it up.
 > 2. **③ (C2) is IN PROGRESS — 85 of 322 inline handlers converted.** Dispatcher = `Actions` in
 >    `js/core.js`; done: cards, delegation tile, manage, modals, card-details, leaderboards (+ the 7
->    category buttons in index.html), skip-monitor, shared copy button. Batch 3 (modals) live-verified
->    2026-09-23. **First thing:** confirm batch 4 (2026-09-23: card-details / leaderboards /
->    skip-monitor) is live — `#/leaderboard/efficient` highlights that button, a row click opens
->    Lookup, Stake details → Stake Accounts toggle + APY period select work, a Network-tab slot grid
->    cell opens the scorecard; console must have no `[Actions]` lines. Then continue file by file:
+>    category buttons in index.html), skip-monitor, shared copy button — batches 1–4 all live-verified
+>    (batch 4 on 2026-09-23). **First thing:** confirm the terminal-header push of 2026-09-23 is live
+>    (`#/terminal` at < 980 px: the Snapshot/Updated/Live corner sits under the subtitle, not on the
+>    title). Then continue file by file:
 >    compare.js (4) · terminal.js (4) · forensics.js (5) · calculators.js (5) · wallet-tx.js (3) ·
 >    network-live.js (3) · app.js (2) · core.js (1) → `index.html` (210, incl. the `[onclick="…"]`
 >    selectors still in app.js (calc-nav, tab) and calculators.js) → frame-buster `<script>` → drop
@@ -1025,4 +1024,17 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   green. README: pass the repo as an absolute path — `.` made the static server 404 everything.
 - Noticed: `renderTimeline()` in skip-monitor.js targets `#skipmonTimelineTrack`, which no longer
   exists in index.html — dead path (kept, converted anyway). Candidate for removal.
-- Not live-verified yet: batch 4 (push pending at end of session).
+- **Batch 4 live-verified** (`f686736`, fresh pane tab): `#/leaderboard/efficient` highlights that
+  button, category click → `#/leaderboard/stake`, 50 rows, broken logos fall back, row click → Lookup
+  (#1 of 723); Stake details → accounts toggle opens/closes, APY 7 → 30-day select updates (6.86 % →
+  6.88 %); Network tab: 500 grid cells, cell click opens `skipmonScorecardModal`, scrubber clicks; no
+  console errors, no `[Actions]` lines. (The 10 inline `onerror`s left in that area are the
+  current-leader strip in `js/network-live.js`, not converted yet.)
+- **Terminal header overlap** (Shaka's screenshot, ~776 px window): under 980 px `.vt-head` goes to
+  one column and puts the title and `.vt-refresh-corner` in column 1, but both still had
+  `grid-row: 1`, so "Hourly snapshot · Updated … · LIVE" was drawn on top of "VALIDATOR TERMINAL"
+  (phones too). Fix in `css/site.css`: inside that media query `.meta` → row 2, corner → row 3.
+  Pane check at 760 and 375 px: corner now below the subtitle, no overlap, no horizontal overflow;
+  > 980 px untouched. Push pending.
+- Data note: the terminal showed 146 delinquent of 723 right after the epoch 387 boundary (usually
+  ~40). Probably a network event, not a site bug — worth a glance next session.
