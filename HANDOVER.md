@@ -6,7 +6,7 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-09-17):**
+> **Start here next session (as of 2026-09-23):**
 > 1. `cd ~/Desktop/X1VHQ && git pull` — bots commit hourly (via the heartbeat; verified 2026-09-16:
 >    scores at :04, snapshots at :43, geo every 2 h at :03 — 79 bot commits in 24 h, no gaps).
 >    If Shaka's `git add` complains about `index.lock`, `rm -f .git/index.lock .git/objects/maintenance.lock`.
@@ -14,13 +14,16 @@
 >    Claude's own `git pull --rebase` works and leaves no locks (verified 2026-09-17). Claude still
 >    can't commit (no git identity in the VM): a local unpushed commit gets replayed as *staged
 >    changes* on top of origin/main, so Shaka's normal `git add -A && git commit` picks it up.
-> 2. **③ (C2) is IN PROGRESS — 57 of 322 inline handlers converted.** Dispatcher = `Actions` in
->    `js/core.js`; done: cards, delegation tile, manage, modals, shared copy button. **First thing:**
->    confirm the last push of 2026-09-17 (batch 3, `js/modals.js`) is live — open `#/live`, click a
->    TPS bar in the TPS modal (tooltip pins, × unpins) and a card's Slot explorer; console must have
->    no `[Actions]` lines. Then continue file by file: `js/card-details.js` (6) → `js/leaderboards.js`
->    (7) → `js/skip-monitor.js` (8) → the rest → `index.html` (217, incl. the `[onclick="…"]`
->    selectors in app.js/leaderboards.js/calculators.js) → frame-buster `<script>` → drop
+> 2. **③ (C2) is IN PROGRESS — 85 of 322 inline handlers converted.** Dispatcher = `Actions` in
+>    `js/core.js`; done: cards, delegation tile, manage, modals, card-details, leaderboards (+ the 7
+>    category buttons in index.html), skip-monitor, shared copy button. Batch 3 (modals) live-verified
+>    2026-09-23. **First thing:** confirm batch 4 (2026-09-23: card-details / leaderboards /
+>    skip-monitor) is live — `#/leaderboard/efficient` highlights that button, a row click opens
+>    Lookup, Stake details → Stake Accounts toggle + APY period select work, a Network-tab slot grid
+>    cell opens the scorecard; console must have no `[Actions]` lines. Then continue file by file:
+>    compare.js (4) · terminal.js (4) · forensics.js (5) · calculators.js (5) · wallet-tx.js (3) ·
+>    network-live.js (3) · app.js (2) · core.js (1) → `index.html` (210, incl. the `[onclick="…"]`
+>    selectors still in app.js (calc-nav, tab) and calculators.js) → frame-buster `<script>` → drop
 >    `'unsafe-inline'` from `script-src`. Tests: `scripts/c2-tests/` (README there); run them in
 >    the cloud clone after every file. Rules and design in the 2026-09-17 session log.
 >    Wallet-connected flows are untested by Claude (no wallet) — ask Shaka to try one Manage action,
@@ -262,9 +265,10 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] **C2** replace 322 inline `on*` handlers with delegated `data-action` listeners → drop
       `'unsafe-inline'` from `script-src`. Started 2026-09-17: `Actions` dispatcher in `js/core.js`;
       done `js/cards.js` (17), `js/delegation.js` (2), `js/manage.js` (21), `js/modals.js` (15),
-      `getCopyButtonHtml` in core.js. Remaining: index.html 217 · skip-monitor.js 8 · leaderboards.js 7 · card-details.js 6 · forensics.js 5 ·
-      calculators.js 5 · terminal.js 4 · compare.js 4 · wallet-tx.js 3 · network-live.js 3 ·
-      app.js 3 · core.js 2; then the inline frame-buster `<script>` in the head (→ `js/frame-guard.js`
+      `getCopyButtonHtml` in core.js; 2026-09-23: `js/card-details.js` (6), `js/leaderboards.js` (7)
+      + index.html leaderboard buttons (7), `js/skip-monitor.js` (8). Remaining (237): index.html 210 ·
+      forensics.js 5 · calculators.js 5 · terminal.js 4 · compare.js 4 · wallet-tx.js 3 ·
+      network-live.js 3 · app.js 2 · core.js 1; then the inline frame-buster `<script>` in the head (→ `js/frame-guard.js`
       or a CSP `sha256-` hash), then edit the CSP. The `[onclick="switchTab('…')"]`-style selectors
       in app.js / leaderboards.js / calculators.js must change when index.html is converted.
 - [ ] **C3/C4** single RPC transport; normalise records at ingestion
@@ -988,3 +992,37 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   they survive the session — run from the cloud clone with Playwright. Session 8 totals
   (2026-09-17): 4 pushes — card header squeeze; C2 batch 1 (dispatcher + card + delegation tile);
   batch 2 (manage + shared copy); batch 3 (modals + hover pair, **push + live check pending**).
+
+### 2026-09-23 — Session 9: C2 batch 3 shipped + batch 4 (~1 hour)
+- Start: 458 bot commits behind (heartbeat healthy). **Batch 3 had never been pushed** on 09-17 —
+  modals.js/core.js/cards.js + `scripts/c2-tests/` were still uncommitted. Delete permission granted
+  at start; stale `index.lock` / `maintenance.lock` removed; `git pull --rebase --autostash` clean.
+  Re-ran the three suites in a cloud clone → green; Shaka pushed `dd3ad2e`.
+- **Batch 3 live-verified** (fresh pane tab, cache-reloaded files): TPS modal 60 hit zones, hover →
+  tooltip, click → pinned, × → unpinned; card Slot explorer opens (Shaka_Vibes_1, 324/324); console:
+  no errors, no `[Actions]` lines.
+- **Batch 4 — 28 handlers:**
+  - `js/card-details.js` (6): `stake-cancel`, `stake-retry` ×2, `stake-accounts-toggle`,
+    `stake-apy-period` (`data-change`), `stake-manage-classification` (stops propagation). Also fixed
+    the same Lookup/Data Center id collision as 09-16 for these two: `toggleAccountsList` and
+    `updateAPYDisplay` now resolve `accounts-list-<8>` / `apy-value-<8>` inside the clicked card's
+    `.validator-stake-section` (before, the DC card's toggle/select changed the hidden Lookup card).
+  - `js/leaderboards.js` (7): rows `lb-lookup`, logos `img-fallback`; the 7 category buttons in
+    index.html → `data-action="lb-category" data-category="…"`; the `[onclick="switchLeaderboard…"]`
+    selectors in `switchLeaderboard` and the Router (`js/app.js`) now use `[data-category=CSS.escape(…)]`.
+  - `js/skip-monitor.js` (8): `skipmon-jump` (grid cell, feed item, top-skippers row, timeline cell),
+    `skipmon-scrub` (reads the existing `data-idx`), `skipmon-toggle-top`, `skipmon-portfolio-modal`,
+    `skipmon-lookup-pick`. These used `esc()` (HTML-escape) inside a JS string, so a validator name
+    containing `'` broke out of the onclick — gone with the conversion.
+  - Dispatcher (core.js): new `mousedown` → `data-mousedown` (the lookup pick must fire before the
+    input's blur hides the list); new shared `img-remove` (skip-monitor avatars).
+- Test `scripts/c2-tests/batch4-test.js` (serves skip-monitor.js with a test seam exposing its
+  private state): 2 cards for one validator (toggle/select affect only their own card), 5 s slow-load
+  Cancel → Retry, manage stops propagation, leaderboards stake/newest/delegations rows (0 inline,
+  broken logos fall back), Router `#/leaderboard/efficient` + click highlight, skip-monitor grid/feed/
+  top/timeline/scrubber/expand/scorecard head/lookup mousedown — every spy called once with the
+  original args (hostile name round-trips), 0 page errors, 0 `[Actions]` warnings. Old suites re-run
+  green. README: pass the repo as an absolute path — `.` made the static server 404 everything.
+- Noticed: `renderTimeline()` in skip-monitor.js targets `#skipmonTimelineTrack`, which no longer
+  exists in index.html — dead path (kept, converted anyway). Candidate for removal.
+- Not live-verified yet: batch 4 (push pending at end of session).

@@ -122,7 +122,7 @@
             lookupValidator(rest[0]);
           } else if (tab === 'leaderboard' && rest[0]) {
             switchTab('leaderboard');
-            const btn = document.querySelector(`.leaderboard-cat-btn[onclick="switchLeaderboard('${rest[0]}')"]`);
+            const btn = document.querySelector(`.leaderboard-cat-btn[data-category="${CSS.escape(rest[0])}"]`);
             if (btn) switchLeaderboard(rest[0]);
           } else if (tab === 'compare' && rest[0]) {
             switchTab('compare');

@@ -118,6 +118,8 @@
         // ignoring transitions that stay inside the element (4th field).
         ['mouseover', 'data-enter', false, true],
         ['mouseout',  'data-leave', false, true],
+        // mousedown fires before a blur, so pick-lists that hide on blur use it.
+        ['mousedown', 'data-mousedown', false],
       ];
       function register(map) {
         for (const name in map) {
@@ -167,6 +169,9 @@
           el.style.display = 'none';
           if (el.parentElement) el.parentElement.textContent = d.fallback || '';
         },
+        // <img … data-onerror="img-remove"> — drop a broken image, revealing whatever
+        // sits underneath (e.g. the initial behind a skip-monitor avatar).
+        'img-remove': (el) => el.remove(),
         // getCopyButtonHtml() and the card's copy button (copyToClipboard lives here).
         'copy-address': (el, e, d) => { e.stopPropagation(); copyToClipboard(d.vote, el); },
       });

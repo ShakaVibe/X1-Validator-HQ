@@ -66,7 +66,7 @@
               <div class="stake-section-loading">
                 <div class="loading-spinner-small"></div>
                 <span>Still loading... RPC may be slow</span>
-                <button onclick="cancelStakeLoad('${voteAccount}', this)" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; color: var(--text-secondary); cursor: pointer; font-size: 0.75rem;">Cancel</button>
+                <button data-action="stake-cancel" data-vote="${escHtml(voteAccount)}" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; color: var(--text-secondary); cursor: pointer; font-size: 0.75rem;">Cancel</button>
               </div>
             `;
           }
@@ -285,7 +285,7 @@
           section.innerHTML = `
             <div class="stake-section-loading">
               <span style="color: var(--danger);">${errorMsg}</span>
-              <button onclick="retryStakeLoad('${voteAccount}', this)" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--accent-cyan); border: none; border-radius: 4px; color: var(--bg-primary); cursor: pointer; font-size: 0.75rem; font-weight: 500;">Retry</button>
+              <button data-action="stake-retry" data-vote="${escHtml(voteAccount)}" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--accent-cyan); border: none; border-radius: 4px; color: var(--bg-primary); cursor: pointer; font-size: 0.75rem; font-weight: 500;">Retry</button>
             </div>
           `;
         }
@@ -395,7 +395,7 @@
                 <span class="stake-inline-stat-label"><span style="color: var(--accent-gold);">●</span> Delegated</span>
                 <span class="stake-inline-stat-value">${formatNumber(delegatedStake, 0)} XNT <span style="color: var(--text-dim); font-size: 0.75rem;">(${formatNumber(delegatedPercent, 1)}%)</span></span>
               </div>
-              <div class="stake-inline-stat stake-accounts-toggle" onclick="toggleAccountsList('${accountsListId}', this)">
+              <div class="stake-inline-stat stake-accounts-toggle" data-action="stake-accounts-toggle" data-list="${escHtml(accountsListId)}">
                 <span class="stake-inline-stat-label">Stake Accounts <span class="accounts-arrow">▼</span></span>
                 <span class="stake-inline-stat-value">${accountCount} total</span>
               </div>
@@ -420,7 +420,7 @@
             <div class="stake-inline-apy-display">
               <div class="stake-inline-apy-header">
                 <div class="stake-inline-apy-label">Validator APY</div>
-                <select class="stake-apy-period-select" onchange="updateAPYDisplay(this, '${voteAccount}')">
+                <select class="stake-apy-period-select" data-change="stake-apy-period" data-vote="${escHtml(voteAccount)}">
                   ${historicalAPY.days7 ? `<option value="7" selected>7-day avg</option>` : ''}
                   ${historicalAPY.days30 ? `<option value="30">30-day avg</option>` : ''}
                   ${historicalAPY.days90 ? `<option value="90">90-day avg</option>` : ''}
@@ -454,7 +454,7 @@
           
           <div class="stake-inline-footer">
             <div class="stake-inline-note">${detectionNote} • Cached 5 min</div>
-            <button class="stake-manage-btn" onclick="event.stopPropagation(); openStakeSelection('${voteAccount}', '${escAttrJs(validatorName)}')">
+            <button class="stake-manage-btn" data-action="stake-manage-classification" data-vote="${escHtml(voteAccount)}" data-name="${escHtml(validatorName)}">
               ⚙️ Manage Classification
             </button>
           </div>
@@ -471,8 +471,11 @@
       const periodKey = 'days' + period;
       const data = historicalAPY[periodKey];
       
-      const apyValueEl = document.getElementById('apy-value-' + voteAccount.slice(0, 8));
-      const earningsEl = document.getElementById('apy-earnings-' + voteAccount.slice(0, 8));
+      // Resolve inside the select's own stake section: Lookup and Data Center can
+      // render the same validator, so these ids are not unique on the page.
+      const scope = stakeSectionFor(voteAccount, selectEl) || document;
+      const apyValueEl = scope.querySelector('[id="apy-value-' + voteAccount.slice(0, 8) + '"]');
+      const earningsEl = scope.querySelector('[id="apy-earnings-' + voteAccount.slice(0, 8) + '"]');
       
       if (data && apyValueEl && earningsEl) {
         apyValueEl.textContent = formatNumber(data.validatorAPY, 2) + '%';
@@ -492,7 +495,7 @@
         section.innerHTML = `
           <div class="stake-section-loading">
             <span>Loading cancelled</span>
-            <button onclick="retryStakeLoad('${voteAccount}', this)" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--accent-cyan); border: none; border-radius: 4px; color: var(--bg-primary); cursor: pointer; font-size: 0.75rem; font-weight: 500;">Retry</button>
+            <button data-action="stake-retry" data-vote="${escHtml(voteAccount)}" style="margin-top: 0.5rem; padding: 0.25rem 0.75rem; background: var(--accent-cyan); border: none; border-radius: 4px; color: var(--bg-primary); cursor: pointer; font-size: 0.75rem; font-weight: 500;">Retry</button>
           </div>
         `;
         section.dataset.loaded = 'cancelled';
@@ -517,7 +520,10 @@
     }
 
     function toggleAccountsList(listId, toggleEl) {
-      const list = document.getElementById(listId);
+      // Same id-collision caveat as updateAPYDisplay: look inside the toggle's card first.
+      const own = toggleEl && toggleEl.closest ? toggleEl.closest('.validator-stake-section') : null;
+      const list = (own && own.querySelector('[id="' + listId + '"]')) || document.getElementById(listId);
+      if (!list) return;
       const isExpanded = list.classList.contains('expanded');
       
       if (isExpanded) {
@@ -1684,3 +1690,10 @@
       });
     }
 
+    Actions.register({
+      'stake-cancel':          (el, e, d) => cancelStakeLoad(d.vote, el),
+      'stake-retry':           (el, e, d) => retryStakeLoad(d.vote, el),
+      'stake-accounts-toggle': (el, e, d) => toggleAccountsList(d.list, el),
+      'stake-apy-period':      (el, e, d) => updateAPYDisplay(el, d.vote),
+      'stake-manage-classification': (el, e, d) => { e.stopPropagation(); openStakeSelection(d.vote, d.name); },
+    });

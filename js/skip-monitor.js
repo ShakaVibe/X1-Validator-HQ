@@ -91,7 +91,7 @@
             inner: initial
                  + `<img src="${safeUrl(info.iconUrl)}" alt="${initial}" `
                  +      `style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" `
-                 +      `onerror="this.remove()">`
+                 +      `data-onerror="img-remove">`
           };
         }
         return {
@@ -715,7 +715,7 @@
           const cls = 'skipmon-cell ' + (s.produced ? 'produced' : 'skipped') + (isNew ? ' new' : '');
           cells[i] = `<div class="${cls}" `
                    + `title="${esc(label)}" `
-                   + `onclick="skipmonJumpToValidator('${esc(s.leader)}')"></div>`;
+                   + `data-action="skipmon-jump" data-node="${esc(s.leader)}"></div>`;
         }
 
         // Pad the trailing row so it never looks like a half-finished line.
@@ -787,7 +787,7 @@
             + `style="background:${color}" `
             + `data-idx="${start}" `
             + `title="${esc(title)}" `
-            + `onclick="skipmonScrubberJump(${start})"></button>`
+            + `data-action="skipmon-scrub"></button>`
           );
         }
         el.innerHTML = pieces.join('');
@@ -821,7 +821,7 @@
         const mm = String(d.getUTCMinutes()).padStart(2, '0');
         const ss = String(d.getUTCSeconds()).padStart(2, '0');
         const tStr = `${hh}:${mm}:${ss} UTC`;
-        return `<div class="skipmon-feed-item" data-slot="${e.slot}" onclick="skipmonJumpToValidator('${esc(e.leader)}')">`
+        return `<div class="skipmon-feed-item" data-slot="${e.slot}" data-action="skipmon-jump" data-node="${esc(e.leader)}">`
              +   `<div class="skipmon-feed-logo" style="${a.style}">${a.inner}</div>`
              +   `<div class="skipmon-feed-body">`
              +     `<div class="skipmon-feed-top">`
@@ -948,7 +948,7 @@
           const rankCls = rank === 1 ? 'gold' : '';
           const a = avatarFor(info, r.leader);
 
-          html += `<tr onclick="skipmonJumpToValidator('${esc(r.leader)}')">`
+          html += `<tr data-action="skipmon-jump" data-node="${esc(r.leader)}">`
                 + `<td><span class="skipmon-top-rank ${rankCls}">${rank}</span></td>`
                 + `<td><div class="skipmon-top-name">`
                 +   `<div class="skipmon-top-logo" style="${a.style}">${a.inner}</div>`
@@ -966,7 +966,7 @@
         if (tallies.length > 3) {
           const remaining = Math.min(maxVisible, tallies.length) - 3;
           html += `<div class="skipmon-top-expand">`
-                +   `<button class="skipmon-top-expand-btn" onclick="skipmonToggleTop()">`
+                +   `<button class="skipmon-top-expand-btn" data-action="skipmon-toggle-top">`
                 +     (expanded ? '▲ Show top 3' : `▼ Show ${remaining} more`)
                 +   `</button>`
                 + `</div>`;
@@ -1054,7 +1054,7 @@
           }
 
           parts[offset + PAST] = `<div class="${cls}" title="${esc(label)}"`
-            + (leader ? ` onclick="skipmonJumpToValidator('${esc(leader)}')"` : '')
+            + (leader ? ` data-action="skipmon-jump" data-node="${esc(leader)}"` : '')
             + `></div>`;
         }
 
@@ -1346,7 +1346,7 @@
 
         return `<div class="${cardCls}">`
           +   `<div class="skipmon-pv-head" `
-          +        `onclick="skipmonOpenPortfolioModal('${esc(nodePubkey)}','${esc(v.name)}','${esc(v.votePubkey)}')" `
+          +        `data-action="skipmon-portfolio-modal" data-node="${esc(nodePubkey)}" data-name="${esc(v.name)}" data-vote="${esc(v.votePubkey)}" `
           +        `title="Click for full slot explorer">`
           +     `<div class="skipmon-pv-logo" style="${a.style}">${a.inner}</div>`
           +     `<div class="skipmon-pv-meta">`
@@ -1697,7 +1697,7 @@
           const av = avatarFor(v);
           const short = (v.votePubkey || '').slice(0, 10) + '…' + (v.votePubkey || '').slice(-6);
           return `<div class="skipmon-lookup-result" `
-               +      `onmousedown="skipmonLookupPick('${esc(v.votePubkey)}')">`
+               +      `data-mousedown="skipmon-lookup-pick" data-vote="${esc(v.votePubkey)}">`
                +   `<div class="skipmon-lookup-result-logo" style="${av.style}">${av.inner}</div>`
                +   `<div class="skipmon-lookup-result-info">`
                +     `<div class="skipmon-lookup-result-name">${esc(v.name || short)}</div>`
@@ -1707,7 +1707,7 @@
         }).join('');
       }
 
-      // Dropdown dismiss. Delayed so the onmousedown on a result item
+      // Dropdown dismiss. Delayed so the data-mousedown pick on a result item
       // can run before the blur wipes the list.
       function handleLookupBlur() {
         setTimeout(() => {
@@ -1763,7 +1763,7 @@
       return { start, stop, setScope, renderAll, toggleTopExpanded, handleLookupInput, handleLookupBlur, pickLookup, getSlotStatus, scrubberJumpTo, getScorecardHtml };
     })();
 
-    // Inline-onclick bridges
+    // Bridges used by the data-action handlers below (and index.html)
     function setSkipMonitorScope(s) {
       if (typeof SkipMonitor !== 'undefined') SkipMonitor.setScope(s);
     }
@@ -1783,6 +1783,15 @@
         SkipMonitor.scrubberJumpTo(index);
       }
     }
+
+    Actions.register({
+      'skipmon-jump':            (el, e, d) => skipmonJumpToValidator(d.node),
+      'skipmon-scrub':           (el, e, d) => skipmonScrubberJump(Number(d.idx) || 0),
+      'skipmon-toggle-top':      () => skipmonToggleTop(),
+      // skipmonOpenPortfolioModal / skipmonLookupPick live in js/modals.js (resolved at click time).
+      'skipmon-portfolio-modal': (el, e, d) => skipmonOpenPortfolioModal(d.node, d.name, d.vote),
+      'skipmon-lookup-pick':     (el, e, d) => skipmonLookupPick(d.vote),
+    });
 
     // ── Epoch Timeline modal ────────────────────────────────────
     // Opens the historical skip-rate chart. Data is prefetched 20s

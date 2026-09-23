@@ -94,7 +94,8 @@
       
       // Update active button
       document.querySelectorAll('.leaderboard-cat-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`.leaderboard-cat-btn[onclick="switchLeaderboard('${category}')"]`).classList.add('active');
+      const catBtn = document.querySelector(`.leaderboard-cat-btn[data-category="${CSS.escape(category)}"]`);
+      if (catBtn) catBtn.classList.add('active');
       
       // Show/hide the delegations selector controls
       const delegControls = document.getElementById('delegationsControls');
@@ -455,14 +456,14 @@
                 // Logo
                 let logoHtml;
                 if (v.iconUrl) {
-                  logoHtml = `<img class="leaderboard-logo" src="${safeUrl(v.iconUrl)}" alt="${escHtml(v.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                  logoHtml = `<img class="leaderboard-logo" src="${safeUrl(v.iconUrl)}" alt="${escHtml(v.name)}" data-onerror="img-fallback">
                               <div class="leaderboard-logo-placeholder" style="display:none;">${escHtml(v.name.charAt(0).toUpperCase())}</div>`;
                 } else {
                   logoHtml = `<div class="leaderboard-logo-placeholder">${escHtml(v.name.charAt(0).toUpperCase())}</div>`;
                 }
                 
                 return `
-                  <div class="leaderboard-item newest-item${myPortfolio.includes(v.votePubkey) ? ' mine' : ''}" onclick="lookupValidator('${v.votePubkey}')">
+                  <div class="leaderboard-item newest-item${myPortfolio.includes(v.votePubkey) ? ' mine' : ''}" data-action="lb-lookup" data-vote="${escHtml(v.votePubkey)}">
                     <div class="newest-badge">🆕</div>
                     <div class="leaderboard-validator">
                       ${logoHtml}
@@ -507,7 +508,7 @@
         // Logo
         let logoHtml;
         if (v.iconUrl) {
-          logoHtml = `<img class="leaderboard-logo" src="${safeUrl(v.iconUrl)}" alt="${escHtml(v.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          logoHtml = `<img class="leaderboard-logo" src="${safeUrl(v.iconUrl)}" alt="${escHtml(v.name)}" data-onerror="img-fallback">
                       <div class="leaderboard-logo-placeholder" style="display:none;">${escHtml(v.name.charAt(0).toUpperCase())}</div>`;
         } else {
           logoHtml = `<div class="leaderboard-logo-placeholder">${escHtml(v.name.charAt(0).toUpperCase())}</div>`;
@@ -618,7 +619,7 @@
         }
         
         return `
-          <div class="leaderboard-item ${itemClass}${myPortfolio.includes(v.votePubkey) ? ' mine' : ''}" onclick="lookupValidator('${v.votePubkey}')">
+          <div class="leaderboard-item ${itemClass}${myPortfolio.includes(v.votePubkey) ? ' mine' : ''}" data-action="lb-lookup" data-vote="${escHtml(v.votePubkey)}">
             <div class="leaderboard-rank ${rankClass}">${rankDisplay}</div>
             <div class="leaderboard-validator">
               ${logoHtml}
@@ -783,7 +784,7 @@
         // Logo (matches existing leaderboard logo treatment)
         let logoHtml;
         if (r.iconUrl) {
-          logoHtml = `<img class="leaderboard-logo" src="${safeUrl(r.iconUrl)}" alt="${escHtml(r.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          logoHtml = `<img class="leaderboard-logo" src="${safeUrl(r.iconUrl)}" alt="${escHtml(r.name)}" data-onerror="img-fallback">
                       <div class="leaderboard-logo-placeholder" style="display:none;">${escHtml(r.name.charAt(0).toUpperCase())}</div>`;
         } else {
           logoHtml = `<div class="leaderboard-logo-placeholder">${escHtml(r.name.charAt(0).toUpperCase())}</div>`;
@@ -816,7 +817,7 @@
         }
 
         return `
-          <div class="leaderboard-item ${itemClass}${myPortfolio.includes(r.votePubkey) ? ' mine' : ''}" onclick="lookupValidator('${r.votePubkey}')">
+          <div class="leaderboard-item ${itemClass}${myPortfolio.includes(r.votePubkey) ? ' mine' : ''}" data-action="lb-lookup" data-vote="${escHtml(r.votePubkey)}">
             <div class="leaderboard-rank ${rankClass}">${rankDisplay}</div>
             <div class="leaderboard-validator">
               ${logoHtml}
@@ -832,3 +833,7 @@
       list.innerHTML = top.map(renderItem).join('') + whereAmIHtml(filtered, 50, renderItem);
     }
 
+    Actions.register({
+      'lb-category': (el, e, d) => switchLeaderboard(d.category),
+      'lb-lookup':   (el, e, d) => lookupValidator(d.vote),
+    });
