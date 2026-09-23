@@ -15,15 +15,12 @@
 >    can't commit (no git identity in the VM): a local unpushed commit gets replayed as *staged
 >    changes* on top of origin/main, so Shaka's normal `git add -A && git commit` picks it up.
 > 2. **③ (C2) is IN PROGRESS — every js/*.js file is done; 198 inline handlers left, all static
->    markup in `index.html`.** Dispatcher = `Actions` in `js/core.js`. Batches 1–4 live-verified;
->    **first thing:** confirm batch 5 (2026-09-23, push pending: compare / terminal / forensics /
->    calculators / wallet-tx / network-live + the 8 main tabs and 4 calculator nav buttons) is live —
->    click every main tab, `#/calculators/compound` highlights that button, Compare search → add →
->    ×, terminal Live button + Retry, next-leaders strip click, Forensics suspects/sort/copy; console
->    must have no `[Actions]` lines. Then `index.html` tab by tab (198: modals, forms with
+>    markup in `index.html`.** Dispatcher = `Actions` in `js/core.js`. Batches 1–5 all live-verified
+>    (batch 5 `a2eb148` on 2026-09-23). Next: `index.html` tab by tab (198: modals, forms with
 >    `oninput`/`onchange`, the compare slots' `focusCompareSearch`, `portfolioDelegation`, …) →
 >    frame-buster `<script>` → drop `'unsafe-inline'` from `script-src`.
->    the cloud clone after every file. Rules and design in the 2026-09-17 session log.
+>    Tests: `scripts/c2-tests/` (README there) — run them in the cloud clone after every file.
+>    Rules and design in the 2026-09-17 session log.
 >    Wallet-connected flows are untested by Claude (no wallet) — ask Shaka to try one Manage action,
 >    a stake-row click and a Merge checkbox with his wallet connected.
 >    Everything from 2026-09-16 (card redesign, split, Router, F15, P2, P9) and the 2026-09-17 card
@@ -1063,4 +1060,13 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   Forensics suspects/sort header/copy, terminal Live button + footer dot on the snapshot render, and
   a second page with `data/terminal.json` 404 → error screen → Retry. All spies once with original
   args, 0 inline in every rendered container, 0 page errors, 0 `[Actions]` warnings; suites 1–4 re-run
-  green. Not live-verified yet (push pending).
+  green.
+- **Batch 5 live-verified** (`a2eb148`, fresh pane tab): `#/calculators/compound` deep link → that
+  button + Calculators tab active; all 8 main tabs switch to their panel by real click; calc nav →
+  `#/calculators/breakeven`; Compare search "Shaka" → add Shaka_Vibes_1 → × removes it; next-leaders
+  strip (10 clickable) → Lookup; terminal Live button reaches `vtRefreshLive` (spied — no 13 MB
+  download); the footer dot opens Forensics; staking calculator breakdown link passes
+  (vote, "Shaka_Vibes_1", 1318080.05…, 10) and the Month toggle works. No `[Actions]` lines; the
+  only console error was the known "Maximum call stack" that appears while the pane is hidden
+  (innerWidth 0) — see 2026-09-17. Forensics suspects/sort/copy were covered offline only (they need
+  a full probe run).
