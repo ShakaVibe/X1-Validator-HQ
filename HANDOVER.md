@@ -15,8 +15,7 @@
 >    can't commit (no git identity in the VM): a local unpushed commit gets replayed as *staged
 >    changes* on top of origin/main, so Shaka's normal `git add -A && git commit` picks it up.
 > 2. **③ (C2): all 322 inline handlers are converted** (index.html done 2026-09-23, batch 6 —
->    `js/index-actions.js`). **First thing:** confirm batch 6 is live (see its session-log entry for
->    the click-through list). **Left for C2:** (a) Shaka tries the wallet flows — one Manage action,
+>    `js/index-actions.js`, live-verified). **Left for C2:** (a) Shaka tries the wallet flows — one Manage action,
 >    a stake-row click, a Merge checkbox, and one real transaction's confirm → "Close" button;
 >    (b) move the head frame-buster `<script>` to a file (or CSP hash); (c) drop `'unsafe-inline'`
 >    from `script-src` in the CSP meta tag and live-check every tab for CSP errors in the console.
@@ -1117,4 +1116,20 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   click keeps / backdrop closes. 0 page errors, 0 `[Actions]` warnings. Suites 1–5 re-run green.
 - Not changed yet: the CSP and the head frame-buster `<script>` (step (b)/(c) in Start-here).
   `scripts/assemble-monolith.js` predates this (and batch 1–5) edits — only a historical tool now.
-- Not live-verified yet (push pending).
+- **Batch 6 live-verified** (`76190c7`, fresh pane tab): 0 inline handlers on the page, fonts link
+  `media="all"`, all 17 property-semantics elements carry a function `.onclick` and no data-action;
+  Network scope buttons, epoch-timeline modal (backdrop close), TPS modal (×), globe pause/resume,
+  skip-monitor lookup (focus + typing → 5 results); Lookup search box + Search button → Shaka_Vibes_1
+  card; Data Center "+ Add Validator" → browse modal, filter (10), ×; Compare empty slot focuses the
+  search box, Browse opens the list, backdrop closes; Leaderboards delegations source → x1Labs;
+  staking calculator Custom → typing formats "50,000" + results, XNT/USD toggle, breakeven
+  Year/Month, unstaking preset; Manage Validator opens from the card, authority legend toggles, ×
+  closes; Send XNT modal (opened directly, no wallet) Cancel / inner click stays / backdrop closes;
+  Delegation modal backdrop; Forensics close. No `[Actions]` warnings.
+- **Pre-existing bug surfaced (not from C2):** `toggleGlobeRotation()` throws "Maximum call stack
+  size exceeded" — calling it directly in the console does the same, and it is the "Maximum call
+  stack" the pane has logged on load since 09-13. Stack: `globeScheduleLoop` →
+  `validatorMap.resumeAnimation()` → globe.gl `updatePov` → controls `change` → our
+  `controls.addEventListener('change', globeScheduleLoop)` → … (recursion). The toggle still works
+  (button + autoRotate are set before the loop). Seen in the pane (hidden, even at an emulated
+  1300 px); not checked in visible Chrome. Fix idea: re-entrancy guard in `globeScheduleLoop`.
