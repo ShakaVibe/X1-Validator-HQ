@@ -16,24 +16,7 @@
        neutralize it. The proper fix is to serve real security headers from a
        host that supports them (Cloudflare/Netlify _headers, or Cloudflare in
        front of Pages). Track that as Issue #5. -->
-  <script>
-    (function () {
-      try {
-        if (window.top !== window.self) {
-          // We are framed. Try to escape to the top.
-          try {
-            window.top.location = window.self.location;
-          } catch (e) {
-            // Cross-origin parent blocked the redirect — blank the page so
-            // there is no clickable UI to hijack.
-            document.documentElement.innerHTML = '';
-          }
-        }
-      } catch (e) {
-        // Never let this stopgap break normal (unframed) page loads.
-      }
-    })();
-  </script>
+  <script src="js/frame-guard.js"></script>
   <!-- ─────────────────────────────────────────────────────────────────────
        CONTENT-SECURITY-POLICY (Issue #2 — defense-in-depth backstop)
 

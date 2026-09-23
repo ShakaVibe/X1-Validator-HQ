@@ -17,8 +17,10 @@
 > 2. **③ (C2): all 322 inline handlers are converted** (index.html done 2026-09-23, batch 6 —
 >    `js/index-actions.js`, live-verified). **Left for C2:** (a) Shaka tries the wallet flows — one Manage action,
 >    a stake-row click, a Merge checkbox, and one real transaction's confirm → "Close" button;
->    (b) move the head frame-buster `<script>` to a file (or CSP hash); (c) drop `'unsafe-inline'`
->    from `script-src` in the CSP meta tag and live-check every tab for CSP errors in the console.
+>    (b) ~~move the head frame-buster `<script>` to a file~~ done 2026-09-23 (`js/frame-guard.js`,
+>    push + live check pending); (c) drop `'unsafe-inline'` from `script-src` in the CSP meta tag
+>    (and update the CSP comment that still says "~300 inline event handlers") and live-check every
+>    tab for CSP errors in the console.
 >    Tests: `scripts/c2-tests/` (README there) — run them in the cloud clone after every file.
 >    Rules and design in the 2026-09-17 session log.
 >    Wallet-connected flows are untested by Claude (no wallet) — ask Shaka to try one Manage action,
@@ -1133,3 +1135,22 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `controls.addEventListener('change', globeScheduleLoop)` → … (recursion). The toggle still works
   (button + autoRotate are set before the loop). Seen in the pane (hidden, even at an emulated
   1300 px); not checked in visible Chrome. Fix idea: re-entrancy guard in `globeScheduleLoop`.
+
+### 2026-09-23 — Session 9, continued: batch 7 — frame-guard file + globe recursion guard
+- **Frame-buster → `js/frame-guard.js`**: the head's inline `<script>` moved verbatim to a file,
+  loaded synchronously at the same spot (`<script src="js/frame-guard.js">`, still above the CSP
+  meta). index.html now has **no inline `<script>` and no inline handlers** — only step (c), the
+  CSP edit, is left for C2. Offline check: unframed page loads normally; framed by another origin
+  the old inline guard and the new file behave identically.
+  **Finding (pre-existing, not changed):** in current Chrome the guard does nothing useful when a
+  cross-origin page frames the site — `window.top.location = …` is blocked without a user gesture
+  ("Unsafe attempt to initiate navigation") but does *not* throw, so the "blank the page" fallback
+  never runs and the site stays usable inside the frame. Possible hardening: if still framed after
+  the attempt, blank the page regardless. Real fix is still a `frame-ancestors`/`X-Frame-Options`
+  header (Issue #5 — needs Cloudflare or another host in front of Pages).
+- **Globe recursion** (`js/globe.js`): `globeScheduleLoop()` now has a re-entrancy guard
+  (`globeState.scheduling`) — the nested call that `resumeAnimation()` triggers through the controls'
+  'change' event returns immediately. Offline (globe.gl/topojson/world-atlas from npm, swiftshader
+  WebGL): old and new globe.js behave the same on a visible page (pause → autoRotate off + settle
+  timer, resume → on, no errors); the recursion itself only reproduced in the hidden pane, so check
+  it there after the push (`toggleGlobeRotation()` must not throw).

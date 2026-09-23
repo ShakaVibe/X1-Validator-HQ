@@ -179,8 +179,16 @@
     // there is nothing to draw, so pause the loop ~1.5 s after the last
     // movement (long enough for OrbitControls damping to settle) and resume
     // it on the next pointer/wheel event or when rotation restarts.
+    // Re-entrancy guard: resumeAnimation() makes globe.gl update the camera,
+    // which fires the controls' 'change' event — and that event is wired to
+    // this very function. Without the guard that recursed until "Maximum call
+    // stack size exceeded" (seen on every pause/resume, 2026-09-23).
     function globeScheduleLoop() {
-      if (!validatorMap) return;
+      if (!validatorMap || globeState.scheduling) return;
+      globeState.scheduling = true;
+      try { globeScheduleLoopInner(); } finally { globeState.scheduling = false; }
+    }
+    function globeScheduleLoopInner() {
       clearTimeout(globeState.loopTimer);
       const controls = validatorMap.controls();
       const idle = (typeof PowerSaver !== 'undefined') && !PowerSaver.isActive();
