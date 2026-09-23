@@ -18,7 +18,7 @@
 >    `js/index-actions.js`, live-verified). **Left for C2:** (a) Shaka tries the wallet flows — one Manage action,
 >    a stake-row click, a Merge checkbox, and one real transaction's confirm → "Close" button;
 >    (b) ~~move the head frame-buster `<script>` to a file~~ done 2026-09-23 (`js/frame-guard.js`,
->    push + live check pending); (c) drop `'unsafe-inline'` from `script-src` in the CSP meta tag
+>    live-verified); (c) drop `'unsafe-inline'` from `script-src` in the CSP meta tag
 >    (and update the CSP comment that still says "~300 inline event handlers") and live-check every
 >    tab for CSP errors in the console.
 >    Tests: `scripts/c2-tests/` (README there) — run them in the cloud clone after every file.
@@ -1154,3 +1154,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   WebGL): old and new globe.js behave the same on a visible page (pause → autoRotate off + settle
   timer, resume → on, no errors); the recursion itself only reproduced in the hidden pane, so check
   it there after the push (`toggleGlobeRotation()` must not throw).
+- **Batch 7 live-verified** (`ebffd30`, fresh pane tab, hidden, 0 px wide — the exact conditions
+  that used to recurse): `js/frame-guard.js` loaded, page builds normally unframed;
+  `toggleGlobeRotation()` ×4 and the button ×2 — no throw; **console completely clean on load**, so
+  the pane's "Maximum call stack" error seen on every load since 2026-09-13 is gone too (same bug).
