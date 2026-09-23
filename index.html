@@ -114,7 +114,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%2300d4ff' width='32' height='32' rx='6'/><text x='50%' y='55%' font-family='Arial' font-size='18' font-weight='bold' fill='%23001029' text-anchor='middle' dominant-baseline='middle'>X1</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" data-async-css>
   <noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha512-CQBWl4fJHWbryGE+Pc7UAxWMUMNMWzWxF4SQo9CgkJIN1kx6djDQZjh3Y8SZ1d+6I+1zze6Z7kHXO7q3UyZAWw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <!-- Validator globe: globe.gl (three.js) is lazy-loaded from unpkg by
@@ -208,10 +208,10 @@
 
       <div class="disclaimer-modal-footer">
         <div class="disclaimer-checkbox-container">
-          <input type="checkbox" id="disclaimerCheckbox" onchange="updateDisclaimerButton()">
+          <input type="checkbox" id="disclaimerCheckbox" data-change="call-change" data-change-fn="updateDisclaimerButton">
           <label for="disclaimerCheckbox">I have read, understood, and agree to these terms. I acknowledge that I use this software entirely at my own risk.</label>
         </div>
-        <button class="disclaimer-accept-btn" id="disclaimerAcceptBtn" disabled onclick="acceptDisclaimer()">
+        <button class="disclaimer-accept-btn" id="disclaimerAcceptBtn" disabled data-action="call" data-fn="acceptDisclaimer">
           Accept & Continue
         </button>
         <div class="disclaimer-version">Terms Version 1.0 • Last Updated: June 10, 2026</div>
@@ -226,7 +226,7 @@
   </div>
 
   <header>
-    <a href="#" class="logo" onclick="goToHome(); return false;">
+    <a href="#" class="logo" data-action="go-home">
       <span class="logo-x1"><span class="logo-x">X</span><span class="logo-1">1</span></span>
       <span class="logo-subtitle"><span class="logo-subtitle-validator">Validator</span> <span class="logo-subtitle-hq">Headquarters</span></span>
     </a>
@@ -354,7 +354,7 @@
             </div>
             <div id="validatorMap"></div>
             <div class="globe-stats" id="globeStats"></div>
-            <button class="globe-btn" id="globeRotateBtn" type="button" title="Pause rotation" aria-label="Pause rotation" onclick="toggleGlobeRotation()">
+            <button class="globe-btn" id="globeRotateBtn" type="button" title="Pause rotation" aria-label="Pause rotation" data-action="call" data-fn="toggleGlobeRotation">
               <svg class="globe-btn-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1"/><rect x="9.5" y="2" width="3.5" height="12" rx="1"/></svg>
               <svg class="globe-btn-play" viewBox="0 0 16 16" aria-hidden="true" hidden><path d="M4 2.5v11a1 1 0 0 0 1.5.87l9-5.5a1 1 0 0 0 0-1.74l-9-5.5A1 1 0 0 0 4 2.5z"/></svg>
             </button>
@@ -392,16 +392,16 @@
               id="searchInput" 
               placeholder="Search by name, vote account, or identity address..."
               autocomplete="off"
-              oninput="handleSearchInput()"
+              data-input="call-input" data-input-fn="handleSearchInput"
             >
           </div>
-          <button class="search-btn" id="searchBtn" onclick="performSearch()">
+          <button class="search-btn" id="searchBtn" data-action="call" data-fn="performSearch">
             Search
           </button>
         </div>
         
         <p class="search-help">
-          <a onclick="openValidatorList()">Browse all validators</a> to find and add to your Data Center
+          <a data-action="call" data-fn="openValidatorList">Browse all validators</a> to find and add to your Data Center
         </p>
       </section>
 
@@ -431,9 +431,9 @@
       </section>
 
       <div class="portfolio-actions">
-        <button class="primary" onclick="openValidatorList()">+ Add Validator</button>
-        <button onclick="refreshPortfolio()">↻ Refresh</button>
-        <button onclick="clearPortfolio()">Clear All</button>
+        <button class="primary" data-action="call" data-fn="openValidatorList">+ Add Validator</button>
+        <button data-action="call" data-fn="refreshPortfolio">↻ Refresh</button>
+        <button data-action="call" data-fn="clearPortfolio">Clear All</button>
       </div>
 
       <div class="loading" id="portfolioLoading" style="display: none;">
@@ -444,7 +444,7 @@
         <div class="empty-state-icon">📊</div>
         <h3>No validators yet</h3>
         <p>Add validators to your Data Center to track their performance</p>
-        <button class="empty-state-btn" onclick="openValidatorList()">Browse Validators</button>
+        <button class="empty-state-btn" data-action="call" data-fn="openValidatorList">Browse Validators</button>
       </div>
 
       <section class="results-section" id="portfolioResults" style="display: none;">
@@ -471,7 +471,7 @@
               <div class="portfolio-stat-value" id="avgPortfolioPerf">0.0</div>
               <div class="portfolio-stat-label">Avg Performance (7D)</div>
             </div>
-            <div class="portfolio-stat portfolio-stat-clickable" id="portfolioDelegation" title="X1 Foundation stake delegated to your validators. Click to see them on the Delegation tab." onclick="switchTab('delegation'); if (typeof delegFilterMine === 'function') delegFilterMine();">
+            <div class="portfolio-stat portfolio-stat-clickable" id="portfolioDelegation" title="X1 Foundation stake delegated to your validators. Click to see them on the Delegation tab." data-action="deleg-tile">
               <div class="portfolio-stat-value" id="portfolioDelegationValue" style="color: var(--text-dim);">…</div>
               <div class="portfolio-stat-label" id="portfolioDelegationLabel">Foundation Delegation</div>
             </div>
@@ -484,11 +484,11 @@
           <!-- Combined Portfolio Chart - inside same box -->
           <div class="combined-chart-section" id="combinedChartSection">
             <div class="portfolio-action-buttons">
-              <button class="validator-expand-btn stake-details-btn" onclick="toggleCombinedStakeDetails(this)">
+              <button class="validator-expand-btn stake-details-btn" data-action="call" data-fn="toggleCombinedStakeDetails" data-args='[{"$":"el"}]'>
                 <span>Combined Stake Details</span>
                 <span class="arrow">▼</span>
               </button>
-              <button class="validator-expand-btn" onclick="toggleCombinedChart(this)">
+              <button class="validator-expand-btn" data-action="call" data-fn="toggleCombinedChart" data-args='[{"$":"el"}]'>
                 <span>View Combined Earnings Trend</span>
                 <span class="arrow">▼</span>
               </button>
@@ -503,8 +503,8 @@
             
             <div class="validator-chart-section" id="combinedChartContainer">
               <div class="chart-toggle-container">
-                <button class="chart-toggle-btn active" onclick="switchCombinedChartType('xnt', this)" data-type="xnt">XNT Rewards</button>
-                <button class="chart-toggle-btn" onclick="switchCombinedChartType('credits', this)" data-type="credits">Epoch Credits</button>
+                <button class="chart-toggle-btn active" data-action="call" data-fn="switchCombinedChartType" data-args='["xnt",{"$":"el"}]' data-type="xnt">XNT Rewards</button>
+                <button class="chart-toggle-btn" data-action="call" data-fn="switchCombinedChartType" data-args='["credits",{"$":"el"}]' data-type="credits">Epoch Credits</button>
               </div>
               <div class="chart-header">
                 <div>
@@ -548,9 +548,9 @@
       <!-- Delegations source selector (only visible when Delegations is active) -->
       <div class="delegations-segment-wrap" id="delegationsControls" style="display: none;">
         <div class="delegations-segment" role="tablist" aria-label="Delegation source">
-          <button class="delegations-segment-btn active" data-source="both" onclick="setDelegationsSource('both')">Both</button>
-          <button class="delegations-segment-btn" data-source="x1Labs" onclick="setDelegationsSource('x1Labs')">X1 Labs</button>
-          <button class="delegations-segment-btn" data-source="ripper" onclick="setDelegationsSource('ripper')">Ripper Pool</button>
+          <button class="delegations-segment-btn active" data-source="both" data-action="call" data-fn="setDelegationsSource" data-args='["both"]'>Both</button>
+          <button class="delegations-segment-btn" data-source="x1Labs" data-action="call" data-fn="setDelegationsSource" data-args='["x1Labs"]'>X1 Labs</button>
+          <button class="delegations-segment-btn" data-source="ripper" data-action="call" data-fn="setDelegationsSource" data-args='["ripper"]'>Ripper Pool</button>
         </div>
       </div>
 
@@ -600,33 +600,33 @@
         <!-- Add Validator Section -->
         <div class="compare-add-section">
           <div class="compare-search-box">
-            <input type="text" id="compareSearchInput" placeholder="Search for a validator by name or address..." oninput="handleCompareSearch()">
+            <input type="text" id="compareSearchInput" placeholder="Search for a validator by name or address..." data-input="call-input" data-input-fn="handleCompareSearch">
             <div class="compare-search-results" id="compareSearchResults"></div>
           </div>
-          <button class="compare-browse-btn" onclick="openCompareValidatorList()">📋 Browse All Validators</button>
+          <button class="compare-browse-btn" data-action="call" data-fn="openCompareValidatorList">📋 Browse All Validators</button>
         </div>
 
         <!-- Selected Validators for Comparison -->
         <div class="compare-slots" id="compareSlots">
-          <div class="compare-slot empty" id="compareSlot0" onclick="focusCompareSearch()">
+          <div class="compare-slot empty" id="compareSlot0">
             <div class="compare-slot-empty">
               <span class="compare-slot-plus">+</span>
               <span>Add Validator</span>
             </div>
           </div>
-          <div class="compare-slot empty" id="compareSlot1" onclick="focusCompareSearch()">
+          <div class="compare-slot empty" id="compareSlot1">
             <div class="compare-slot-empty">
               <span class="compare-slot-plus">+</span>
               <span>Add Validator</span>
             </div>
           </div>
-          <div class="compare-slot empty" id="compareSlot2" onclick="focusCompareSearch()">
+          <div class="compare-slot empty" id="compareSlot2">
             <div class="compare-slot-empty">
               <span class="compare-slot-plus">+</span>
               <span>Add Validator</span>
             </div>
           </div>
-          <div class="compare-slot empty" id="compareSlot3" onclick="focusCompareSearch()">
+          <div class="compare-slot empty" id="compareSlot3">
             <div class="compare-slot-empty">
               <span class="compare-slot-plus">+</span>
               <span>Add Validator</span>
@@ -636,7 +636,7 @@
 
         <!-- Comparison Table -->
         <div class="compare-table-container" id="compareTableContainer" style="display: none;">
-          <button class="compare-clear-btn" onclick="clearComparison()">🗑️ Clear All</button>
+          <button class="compare-clear-btn" data-action="call" data-fn="clearComparison">🗑️ Clear All</button>
           <div class="compare-table" id="compareTable">
             <!-- Populated by JS -->
           </div>
@@ -695,7 +695,7 @@
           <div class="calc-inputs">
             <div class="calc-input-group">
               <label>Select Your Validator</label>
-              <select id="stakingValidator" onchange="onStakingValidatorChange()">
+              <select id="stakingValidator" data-change="call-change" data-change-fn="onStakingValidatorChange">
                 <option value="">-- Select from your Data Center --</option>
                 <option value="custom">📝 Custom / New Validator</option>
               </select>
@@ -703,22 +703,22 @@
             </div>
             <div class="calc-input-group" id="stakingApyGroup" style="display: none;">
               <label>Estimated APY (%)</label>
-              <input type="number" id="stakingApy" placeholder="e.g. 8" value="8" min="0" max="100" step="0.1" oninput="renderStakingResults()">
+              <input type="number" id="stakingApy" placeholder="e.g. 8" value="8" min="0" max="100" step="0.1" data-input="call-input" data-input-fn="renderStakingResults">
               <div class="calc-input-hint">Estimated annual percentage yield for your validator</div>
             </div>
             <div class="calc-input-group" id="stakingCustomSelfGroup" style="display: none;">
               <label>Self-Stake (XNT)</label>
-              <input type="text" id="stakingCustomSelf" placeholder="Your own stake" oninput="formatStakingInput(this); renderStakingResults()">
+              <input type="text" id="stakingCustomSelf" placeholder="Your own stake" data-input="staking-input">
               <div class="calc-input-hint">XNT you stake yourself (earns 100% rewards)</div>
             </div>
             <div class="calc-input-group" id="stakingCustomDelegatedGroup" style="display: none;">
               <label>Delegated Stake (XNT)</label>
-              <input type="text" id="stakingCustomDelegated" placeholder="Stake from delegators" oninput="formatStakingInput(this); renderStakingResults()">
+              <input type="text" id="stakingCustomDelegated" placeholder="Stake from delegators" data-input="staking-input">
               <div class="calc-input-hint">XNT delegated to you by others (you earn commission)</div>
             </div>
             <div class="calc-input-group" id="stakingCustomCommGroup" style="display: none;">
               <label>Commission Rate (%)</label>
-              <input type="number" id="stakingCustomComm" placeholder="e.g. 10" value="10" min="0" max="100" step="1" oninput="renderStakingResults()">
+              <input type="number" id="stakingCustomComm" placeholder="e.g. 10" value="10" min="0" max="100" step="1" data-input="call-input" data-input-fn="renderStakingResults">
               <div class="calc-input-hint">Your validator's commission rate</div>
             </div>
             
@@ -727,19 +727,19 @@
               <div class="calc-sim-header">📈 Simulate Growth</div>
               <div class="calc-input-group">
                 <label>Add Self-Stake (XNT)</label>
-                <input type="text" id="stakingAddSelf" placeholder="0" oninput="formatStakingInput(this); renderStakingResults()">
+                <input type="text" id="stakingAddSelf" placeholder="0" data-input="staking-input">
                 <div class="calc-input-hint">Additional XNT you'll add as self-stake (earns 100% rewards)</div>
               </div>
               <div class="calc-input-group">
                 <label>Add Delegation (XNT)</label>
-                <input type="text" id="stakingAddDelegation" placeholder="0" oninput="formatStakingInput(this); renderStakingResults()">
+                <input type="text" id="stakingAddDelegation" placeholder="0" data-input="staking-input">
                 <div class="calc-input-hint">Additional delegation you expect to receive (earns commission)</div>
               </div>
             </div>
             
             <div class="calc-input-group">
               <label>XNT Price (USD)</label>
-              <input type="number" id="stakingPrice" placeholder="1.00" value="1.00" min="0" step="0.0001" oninput="this.dataset.userSet='1'; renderStakingResults()" title="Defaults to the live XNT price from the header; type to override">
+              <input type="number" id="stakingPrice" placeholder="1.00" value="1.00" min="0" step="0.0001" data-input="staking-price-input" title="Defaults to the live XNT price from the header; type to override">
               <div class="calc-input-hint">Current price of XNT in USD</div>
             </div>
           </div>
@@ -748,8 +748,8 @@
               <span id="stakingResultsTitle">Rewards Calculator</span>
               <div class="calc-header-controls">
                 <div class="calc-currency-toggle" id="stakingCurrencyToggle" style="display: none;">
-                  <button class="calc-currency-btn active" onclick="toggleStakingCurrency('xnt', this)">XNT</button>
-                  <button class="calc-currency-btn" onclick="toggleStakingCurrency('usd', this)">USD</button>
+                  <button class="calc-currency-btn active" data-action="call" data-fn="toggleStakingCurrency" data-args='["xnt",{"$":"el"}]'>XNT</button>
+                  <button class="calc-currency-btn" data-action="call" data-fn="toggleStakingCurrency" data-args='["usd",{"$":"el"}]'>USD</button>
                 </div>
               </div>
             </div>
@@ -773,7 +773,7 @@
           <div class="calc-inputs">
             <div class="calc-input-group">
               <label>Select Validator or Enter Custom</label>
-              <select id="compoundValidator" onchange="onCompoundValidatorChange()">
+              <select id="compoundValidator" data-change="call-change" data-change-fn="onCompoundValidatorChange">
                 <option value="">-- Select from your Data Center --</option>
                 <option value="custom">✏️ Custom Values</option>
               </select>
@@ -781,16 +781,16 @@
             </div>
             <div class="calc-input-group" id="compoundInitialGroup" style="display: none;">
               <label>Initial Stake (XNT)</label>
-              <input type="text" id="compoundInitial" placeholder="Enter amount" value="10,000" oninput="formatCompoundInput(this); calculateCompoundGrowth()">
+              <input type="text" id="compoundInitial" placeholder="Enter amount" value="10,000" data-input="compound-input">
             </div>
             <div class="calc-input-group" id="compoundAPYGroup" style="display: none;">
               <label>Annual APY (%)</label>
-              <input type="number" id="compoundAPY" placeholder="APY %" value="8" min="0" max="100" step="0.1" oninput="calculateCompoundGrowth()">
+              <input type="number" id="compoundAPY" placeholder="APY %" value="8" min="0" max="100" step="0.1" data-input="call-input" data-input-fn="calculateCompoundGrowth">
               <div class="calc-input-hint">Estimated network APY</div>
             </div>
             <div class="calc-input-group">
               <label>Compounding Frequency</label>
-              <select id="compoundFrequency" onchange="calculateCompoundGrowth()">
+              <select id="compoundFrequency" data-change="call-change" data-change-fn="calculateCompoundGrowth">
                 <option value="365">Daily</option>
                 <option value="52">Weekly</option>
                 <option value="26">Bi-weekly</option>
@@ -802,7 +802,7 @@
             </div>
             <div class="calc-input-group">
               <label>Time Period</label>
-              <select id="compoundYears" onchange="calculateCompoundGrowth()">
+              <select id="compoundYears" data-change="call-change" data-change-fn="calculateCompoundGrowth">
                 <option value="1">1 year</option>
                 <option value="2">2 years</option>
                 <option value="3" selected>3 years</option>
@@ -851,36 +851,36 @@
                   <span class="calc-status-value" id="unstakingTimeRemaining">--</span>
                 </div>
               </div>
-              <button class="calc-refresh-btn" onclick="refreshEpochInfo()">🔄 Refresh</button>
+              <button class="calc-refresh-btn" data-action="call" data-fn="refreshEpochInfo">🔄 Refresh</button>
             </div>
 
             <div class="calc-input-group">
               <label>Amount to Unstake (XNT)</label>
-              <input type="number" id="unstakingAmount" placeholder="100" value="100" min="0" step="0.0001" oninput="calculateUnstakingTimeline()">
+              <input type="number" id="unstakingAmount" placeholder="100" value="100" min="0" step="0.0001" data-input="call-input" data-input-fn="calculateUnstakingTimeline">
               <div class="calc-input-hint">How much XNT you plan to deactivate.</div>
             </div>
 
             <div class="calc-input-group">
               <label>When will you initiate unstaking?</label>
-              <select id="unstakingWhen" onchange="calculateUnstakingTimeline()">
+              <select id="unstakingWhen" data-change="call-change" data-change-fn="calculateUnstakingTimeline">
                 <option value="now">Right now</option>
                 <option value="next">Next epoch</option>
                 <option value="custom">Specific epoch...</option>
               </select>
-              <input type="number" id="unstakingCustomEpoch" placeholder="Enter epoch number" style="display: none; margin-top: 0.5rem;" oninput="calculateUnstakingTimeline()">
+              <input type="number" id="unstakingCustomEpoch" placeholder="Enter epoch number" style="display: none; margin-top: 0.5rem;" data-input="call-input" data-input-fn="calculateUnstakingTimeline">
             </div>
 
             <div class="calc-input-group">
               <label>Observed Cooldown Rate per Epoch</label>
               <div class="unstaking-rate-slider-wrap">
                 <div class="unstaking-rate-row">
-                  <input type="range" min="5" max="100" value="50" step="5" id="unstakingRate" class="unstaking-rate-slider" oninput="onUnstakingRateChange()">
+                  <input type="range" min="5" max="100" value="50" step="5" id="unstakingRate" class="unstaking-rate-slider" data-input="call-input" data-input-fn="onUnstakingRateChange">
                   <span class="unstaking-rate-value" id="unstakingRateValue">50%</span>
                 </div>
                 <div class="unstaking-rate-presets">
-                  <button type="button" class="unstaking-rate-preset" data-rate="100" onclick="setUnstakingRatePreset(100)">100% — No congestion</button>
-                  <button type="button" class="unstaking-rate-preset active" data-rate="50" onclick="setUnstakingRatePreset(50)">50% — Currently observed</button>
-                  <button type="button" class="unstaking-rate-preset" data-rate="25" onclick="setUnstakingRatePreset(25)">25% — Heavy congestion</button>
+                  <button type="button" class="unstaking-rate-preset" data-rate="100" data-action="call" data-fn="setUnstakingRatePreset" data-args='[100]'>100% — No congestion</button>
+                  <button type="button" class="unstaking-rate-preset active" data-rate="50" data-action="call" data-fn="setUnstakingRatePreset" data-args='[50]'>50% — Currently observed</button>
+                  <button type="button" class="unstaking-rate-preset" data-rate="25" data-action="call" data-fn="setUnstakingRatePreset" data-args='[25]'>25% — Heavy congestion</button>
                 </div>
               </div>
               <div class="calc-input-hint">% of your <em>still-cooling</em> stake that becomes withdrawable each epoch. Depends on how much total stake the network is deactivating at once.</div>
@@ -917,7 +917,7 @@
           <div class="calc-inputs">
             <div class="calc-input-group">
               <label>Select Your Validator</label>
-              <select id="breakevenValidator" onchange="onBreakevenValidatorChange()">
+              <select id="breakevenValidator" data-change="call-change" data-change-fn="onBreakevenValidatorChange">
                 <option value="">-- Select from your Data Center --</option>
               </select>
               <div class="calc-input-hint" id="breakevenValidatorHint">Select a validator to see profitability</div>
@@ -925,12 +925,12 @@
             <div class="calc-input-group">
               <label>Operating Costs</label>
               <div class="calc-input-row">
-                <input type="number" id="breakevenCost" placeholder="Amount" value="100" min="0" oninput="calculateBreakeven()">
-                <select id="breakevenCurrency" onchange="calculateBreakeven()">
+                <input type="number" id="breakevenCost" placeholder="Amount" value="100" min="0" data-input="call-input" data-input-fn="calculateBreakeven">
+                <select id="breakevenCurrency" data-change="call-change" data-change-fn="calculateBreakeven">
                   <option value="usd">USD</option>
                   <option value="xnt">XNT</option>
                 </select>
-                <select id="breakevenPeriod" onchange="calculateBreakeven()">
+                <select id="breakevenPeriod" data-change="call-change" data-change-fn="calculateBreakeven">
                   <option value="monthly">/ month</option>
                   <option value="yearly">/ year</option>
                 </select>
@@ -939,15 +939,15 @@
             </div>
             <div class="calc-input-group" id="breakevenPriceGroup">
               <label>Current XNT Price (USD)</label>
-              <input type="number" id="breakevenPrice" placeholder="Price" value="1.00" min="0" step="0.0001" oninput="this.dataset.userSet='1'; calculateBreakeven()" title="Defaults to the live XNT price from the header; type to override">
+              <input type="number" id="breakevenPrice" placeholder="Price" value="1.00" min="0" step="0.0001" data-input="breakeven-price-input" title="Defaults to the live XNT price from the header; type to override">
             </div>
           </div>
           <div class="calc-results" id="breakevenResults">
             <div class="calc-result-header">
               <span>Break-Even Analysis</span>
               <div class="calc-toggle" id="breakevenToggle">
-                <button class="calc-toggle-btn active" onclick="toggleBreakevenView('monthly', this)">Monthly</button>
-                <button class="calc-toggle-btn" onclick="toggleBreakevenView('yearly', this)">Yearly</button>
+                <button class="calc-toggle-btn active" data-action="call" data-fn="toggleBreakevenView" data-args='["monthly",{"$":"el"}]'>Monthly</button>
+                <button class="calc-toggle-btn" data-action="call" data-fn="toggleBreakevenView" data-args='["yearly",{"$":"el"}]'>Yearly</button>
               </div>
             </div>
             <div id="breakevenResultsContent">
@@ -991,7 +991,7 @@
           <div class="tps-strip-stats">
             <div class="tps-strip-stat"><span class="tps-strip-stat-label">avg</span><span id="tpsStripAvg">—</span></div>
             <div class="tps-strip-stat"><span class="tps-strip-stat-label">peak</span><span id="tpsStripPeak">—</span></div>
-            <button class="tps-strip-expand" onclick="openTpsModal()" title="Expand chart">
+            <button class="tps-strip-expand" data-action="call" data-fn="openTpsModal" title="Expand chart">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 3 21 3 21 9"></polyline>
                 <polyline points="9 21 3 21 3 15"></polyline>
@@ -1035,11 +1035,11 @@
         <div class="skipmon-controls">
           <div class="skipmon-scope">
             <button class="skipmon-scope-btn active" id="skipmonScopeNetwork"
-                    onclick="setSkipMonitorScope('network')">🌐 Network</button>
+                    data-action="call" data-fn="setSkipMonitorScope" data-args='["network"]'>🌐 Network</button>
             <button class="skipmon-scope-btn" id="skipmonScopePortfolio"
-                    onclick="setSkipMonitorScope('portfolio')">🖥️ My Validators</button>
+                    data-action="call" data-fn="setSkipMonitorScope" data-args='["portfolio"]'>🖥️ My Validators</button>
             <button class="skipmon-scope-btn" id="skipmonScopeLookup"
-                    onclick="setSkipMonitorScope('lookup')">🔍 Validator Lookup</button>
+                    data-action="call" data-fn="setSkipMonitorScope" data-args='["lookup"]'>🔍 Validator Lookup</button>
           </div>
         </div>
 
@@ -1049,9 +1049,9 @@
           <input type="text"
                  id="skipmonLookupInput"
                  placeholder="Search any validator by name or vote address…"
-                 oninput="skipmonLookupInputChanged()"
-                 onfocus="skipmonLookupInputChanged()"
-                 onblur="skipmonLookupInputBlurred()"
+                 data-input="call-input" data-input-fn="skipmonLookupInputChanged"
+                 data-focus-fn="skipmonLookupInputChanged"
+                 data-blur-fn="skipmonLookupInputBlurred"
                  autocomplete="off">
           <div class="skipmon-lookup-results" id="skipmonLookupResults"></div>
         </div>
@@ -1098,7 +1098,7 @@
           <div class="skipmon-stat skipmon-stat-epoch">
             <div class="skipmon-stat-epoch-head">
               <div class="skipmon-stat-label">Skip Rate · Epoch</div>
-              <button class="skipmon-stat-link" onclick="openEpochTimelineModal()" title="Open past epochs chart">
+              <button class="skipmon-stat-link" data-action="call" data-fn="openEpochTimelineModal" title="Open past epochs chart">
                 Past <span class="skipmon-stat-link-arrow">↗</span>
               </button>
             </div>
@@ -1222,7 +1222,7 @@
       <strong style="color: var(--text-secondary);">Disclaimer:</strong> This software is provided "AS IS" without warranty. 
       The authors are not liable for any losses or damages. You are solely responsible for verifying all transactions. 
       Not financial advice. Use at your own risk.
-      <a href="#" onclick="showDisclaimerModal(); return false;" style="color: var(--accent-blue); margin-left: 0.5rem;">View Full Terms</a>
+      <a href="#" data-action="show-disclaimer" style="color: var(--accent-blue); margin-left: 0.5rem;">View Full Terms</a>
     </p>
   </footer>
 
@@ -1239,7 +1239,7 @@
             <div class="brand-title-sub">Past</div>
           </div>
         </div>
-        <button class="modal-close" onclick="closeEpochTimelineModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeEpochTimelineModal">&times;</button>
       </div>
       <div class="modal-body">
         <div class="epoch-timeline epoch-timeline-modal">
@@ -1265,7 +1265,7 @@
             <div class="brand-title-sub">Past 12 Hours</div>
           </div>
         </div>
-        <button class="modal-close" onclick="closeTpsModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeTpsModal">&times;</button>
       </div>
       <div class="tps-modal-chart-wrap">
         <div class="tps-modal-chart" id="tpsModalChart"></div>
@@ -1314,7 +1314,7 @@
        X1 Foundation Delegation, and Community Delegation (Ripper + third
        parties). The four pieces sum exactly to the grand total. Opened from
        the "Breakdown" link on the Last Epoch Earned stat card. -->
-  <div class="modal-overlay" id="rewardBreakdownModal" onclick="if(event.target===this)closeRewardBreakdown()">
+  <div class="modal-overlay" id="rewardBreakdownModal" data-action="overlay-close" data-fn="closeRewardBreakdown">
     <div class="modal" style="max-width: 540px;">
       <div class="modal-header">
         <div class="modal-brand-head">
@@ -1324,7 +1324,7 @@
             <div class="brand-title-sub" id="rewardBreakdownSub">Last completed epoch</div>
           </div>
         </div>
-        <button class="modal-close" onclick="closeRewardBreakdown()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeRewardBreakdown">&times;</button>
       </div>
       <div class="modal-body" id="rewardBreakdownBody">
         <div class="rb-loading"><div class="loading-spinner-small"></div><span>Computing reward distribution…</span></div>
@@ -1334,7 +1334,7 @@
 
   <!-- Delegation Program modal — opened from the Delegation stat tile on a
        validator card; body rendered by the DELEGATION PROGRAM module. -->
-  <div class="modal-overlay" id="delegationModal" onclick="if(event.target===this)closeDelegationModal()">
+  <div class="modal-overlay" id="delegationModal" data-action="overlay-close" data-fn="closeDelegationModal">
     <div class="modal" style="max-width: 560px;">
       <div class="modal-header">
         <div class="modal-brand-head">
@@ -1344,7 +1344,7 @@
             <div class="brand-title-sub" id="delegationModalSub">X1 Foundation stake delegation · official status</div>
           </div>
         </div>
-        <button class="modal-close" aria-label="Close" onclick="closeDelegationModal()">&times;</button>
+        <button class="modal-close" aria-label="Close" data-action="call" data-fn="closeDelegationModal">&times;</button>
       </div>
       <div class="modal-body" id="delegationModalBody"></div>
     </div>
@@ -1357,7 +1357,7 @@
     <div class="modal skipmon-scorecard-modal">
       <div class="modal-header">
         <h3 id="skipmonScorecardTitle">Validator</h3>
-        <button class="modal-close" onclick="closeSkipmonScorecard()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeSkipmonScorecard">&times;</button>
       </div>
       <div class="modal-body skipmon-scorecard-body" id="skipmonScorecardBody">
         <div class="skipmon-empty">Loading…</div>
@@ -1370,14 +1370,14 @@
     <div class="modal">
       <div class="modal-header">
         <h3>Browse Validators</h3>
-        <button class="modal-close" onclick="closeValidatorList()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeValidatorList">&times;</button>
       </div>
       <div class="modal-search">
         <input 
           type="text" 
           id="validatorSearchInput" 
           placeholder="Search by name or address..."
-          oninput="filterValidatorList()"
+          data-input="call-input" data-input-fn="filterValidatorList"
         >
       </div>
       <div class="validator-list-count" id="validatorListCount">Showing 0 validators</div>
@@ -1385,7 +1385,7 @@
         <div class="loading-validators">Loading validators...</div>
       </div>
       <div class="validator-load-more" id="validatorLoadMore" style="display: none;">
-        <button class="load-more-btn" onclick="loadMoreValidators()">Load More</button>
+        <button class="load-more-btn" data-action="call" data-fn="loadMoreValidators">Load More</button>
       </div>
     </div>
   </div>
@@ -1396,7 +1396,7 @@
       <!-- Header with Validator Info and Wallet -->
       <div class="manage-modal-header">
         <div class="manage-header-left">
-          <button class="manage-back-btn" onclick="closeManageValidator()">← Back</button>
+          <button class="manage-back-btn" data-action="call" data-fn="closeManageValidator">← Back</button>
           <div class="manage-validator-identity">
             <div class="manage-validator-logo" id="manageValidatorLogo">V</div>
             <div>
@@ -1404,7 +1404,7 @@
               <div class="manage-validator-name" id="manageValidatorName">Loading...</div>
               <div class="manage-validator-address-row">
                 <span class="manage-validator-address" id="manageValidatorFullAddress">Loading...</span>
-                <button class="copy-address-btn" onclick="copyValidatorAddress()" title="Copy address">
+                <button class="copy-address-btn" data-action="call" data-fn="copyValidatorAddress" title="Copy address">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -1418,10 +1418,10 @@
           <div class="wallet-connection" id="walletConnection">
             <span class="wallet-status-indicator" id="walletStatusIndicator"></span>
             <span class="wallet-status-text" id="walletStatusText">No wallet connected</span>
-            <button class="connect-wallet-btn" id="connectWalletBtn" onclick="connectWallet()">
+            <button class="connect-wallet-btn" id="connectWalletBtn" data-action="call" data-fn="connectWallet">
               Connect Wallet
             </button>
-            <button class="disconnect-wallet-btn" id="disconnectWalletBtn" onclick="disconnectWallet()" style="display: none;">
+            <button class="disconnect-wallet-btn" id="disconnectWalletBtn" data-action="call" data-fn="disconnectWallet" style="display: none;">
               Disconnect
             </button>
           </div>
@@ -1434,10 +1434,10 @@
           <div class="section-header">
             <h3>Select Account</h3>
             <div class="section-header-actions">
-              <button class="authority-info-btn" onclick="toggleAuthorityLegend()" title="What do the authority badges mean?">
+              <button class="authority-info-btn" data-action="call" data-fn="toggleAuthorityLegend" title="What do the authority badges mean?">
                 ℹ️
               </button>
-              <button class="refresh-accounts-btn" onclick="refreshStakeAccounts()" title="Refresh stake accounts">
+              <button class="refresh-accounts-btn" data-action="call" data-fn="refreshStakeAccounts" title="Refresh stake accounts">
                 ↻ Refresh
               </button>
               <button class="add-stake-btn" disabled title="Coming soon">
@@ -1464,7 +1464,7 @@
           
           <div class="accounts-list" id="accountsList">
             <!-- Vote Account -->
-            <div class="account-row" id="voteAccountRow" onclick="selectAccount('vote')">
+            <div class="account-row" id="voteAccountRow" data-action="call" data-fn="selectAccount" data-args='["vote"]'>
               <div class="account-row-left">
                 <span class="account-type-badge vote">VOTE</span>
                 <span class="account-address" id="voteAccountAddress">Loading...</span>
@@ -1495,7 +1495,7 @@
             <h3 id="selectedAccountTitle">Vote Account Details</h3>
             <div class="authority-badges-container" id="authorityBadgesContainer">
               <!-- Single badge for vote account / no wallet -->
-              <div class="authority-badge clickable" id="authorityBadge" onclick="onAuthorityBadgeClick()">
+              <div class="authority-badge clickable" id="authorityBadge" data-action="call" data-fn="onAuthorityBadgeClick">
                 <span class="authority-badge-icon">🔗</span>
                 <span class="authority-badge-text">No wallet connected</span>
               </div>
@@ -1657,11 +1657,11 @@
   </div>
 
   <!-- Send XNT Modal -->
-  <div class="modal-overlay" id="sendXntModal" style="display: none;" onclick="if(event.target === this) closeSendXntModal()">
-    <div class="send-modal" onclick="event.stopPropagation()">
+  <div class="modal-overlay" id="sendXntModal" style="display: none;" data-action="overlay-close" data-fn="closeSendXntModal">
+    <div class="send-modal" data-action="stop">
       <div class="send-modal-header">
         <h2>📤 Send XNT to Validator ID</h2>
-        <button class="modal-close-btn" onclick="closeSendXntModal()">×</button>
+        <button class="modal-close-btn" data-action="call" data-fn="closeSendXntModal">×</button>
       </div>
       
       <div class="send-modal-body">
@@ -1703,10 +1703,10 @@
             <span class="send-input-unit">XNT</span>
           </div>
           <div class="send-preset-buttons">
-            <button class="preset-btn" onclick="setSendAmount(25)">25%</button>
-            <button class="preset-btn" onclick="setSendAmount(50)">50%</button>
-            <button class="preset-btn" onclick="setSendAmount(75)">75%</button>
-            <button class="preset-btn max" onclick="setSendAmount(100)">MAX</button>
+            <button class="preset-btn" data-action="call" data-fn="setSendAmount" data-args='[25]'>25%</button>
+            <button class="preset-btn" data-action="call" data-fn="setSendAmount" data-args='[50]'>50%</button>
+            <button class="preset-btn" data-action="call" data-fn="setSendAmount" data-args='[75]'>75%</button>
+            <button class="preset-btn max" data-action="call" data-fn="setSendAmount" data-args='[100]'>MAX</button>
           </div>
         </div>
         
@@ -1731,8 +1731,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="sendXntCancelBtn" onclick="closeSendXntModal()">Cancel</button>
-          <button class="send-confirm-btn" id="sendConfirmBtn" onclick="confirmSendXnt()">
+          <button class="send-cancel-btn" id="sendXntCancelBtn" data-action="call" data-fn="closeSendXntModal">Cancel</button>
+          <button class="send-confirm-btn" id="sendConfirmBtn">
             Send XNT
           </button>
         </div>
@@ -1741,11 +1741,11 @@
   </div>
 
   <!-- Withdraw XNT Modal -->
-  <div class="modal-overlay" id="withdrawXntModal" style="display: none;" onclick="if(event.target === this) closeWithdrawXntModal()">
-    <div class="send-modal" onclick="event.stopPropagation()">
+  <div class="modal-overlay" id="withdrawXntModal" style="display: none;" data-action="overlay-close" data-fn="closeWithdrawXntModal">
+    <div class="send-modal" data-action="stop">
       <div class="send-modal-header">
         <h2>💸 Withdraw XNT from Vote Account</h2>
-        <button class="modal-close-btn" onclick="closeWithdrawXntModal()">×</button>
+        <button class="modal-close-btn" data-action="call" data-fn="closeWithdrawXntModal">×</button>
       </div>
       
       <div class="send-modal-body">
@@ -1788,10 +1788,10 @@
             <span class="send-input-unit">XNT</span>
           </div>
           <div class="send-preset-buttons">
-            <button class="preset-btn" onclick="setWithdrawAmount(25)">25%</button>
-            <button class="preset-btn" onclick="setWithdrawAmount(50)">50%</button>
-            <button class="preset-btn" onclick="setWithdrawAmount(75)">75%</button>
-            <button class="preset-btn max" onclick="setWithdrawAmount(100)">MAX</button>
+            <button class="preset-btn" data-action="call" data-fn="setWithdrawAmount" data-args='[25]'>25%</button>
+            <button class="preset-btn" data-action="call" data-fn="setWithdrawAmount" data-args='[50]'>50%</button>
+            <button class="preset-btn" data-action="call" data-fn="setWithdrawAmount" data-args='[75]'>75%</button>
+            <button class="preset-btn max" data-action="call" data-fn="setWithdrawAmount" data-args='[100]'>MAX</button>
           </div>
         </div>
         
@@ -1825,8 +1825,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="withdrawXntCancelBtn" onclick="closeWithdrawXntModal()">Cancel</button>
-          <button class="send-confirm-btn" id="withdrawConfirmBtn" onclick="confirmWithdrawXnt()">
+          <button class="send-cancel-btn" id="withdrawXntCancelBtn" data-action="call" data-fn="closeWithdrawXntModal">Cancel</button>
+          <button class="send-confirm-btn" id="withdrawConfirmBtn">
             Withdraw XNT
           </button>
         </div>
@@ -1835,11 +1835,11 @@
   </div>
 
   <!-- Change Commission Modal -->
-  <div class="modal-overlay" id="commissionModal" style="display: none;" onclick="if(event.target === this) closeCommissionModal()">
-    <div class="send-modal" onclick="event.stopPropagation()">
+  <div class="modal-overlay" id="commissionModal" style="display: none;" data-action="overlay-close" data-fn="closeCommissionModal">
+    <div class="send-modal" data-action="stop">
       <div class="send-modal-header">
         <h2>📝 Change Commission Rate</h2>
-        <button class="modal-close-btn" onclick="closeCommissionModal()">×</button>
+        <button class="modal-close-btn" data-action="call" data-fn="closeCommissionModal">×</button>
       </div>
       
       <div class="send-modal-body">
@@ -1905,8 +1905,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="commissionCancelBtn" onclick="closeCommissionModal()">Cancel</button>
-          <button class="send-confirm-btn" id="commissionConfirmBtn" onclick="confirmChangeCommission()">
+          <button class="send-cancel-btn" id="commissionCancelBtn" data-action="call" data-fn="closeCommissionModal">Cancel</button>
+          <button class="send-confirm-btn" id="commissionConfirmBtn">
             Update Commission
           </button>
         </div>
@@ -1915,11 +1915,11 @@
   </div>
 
   <!-- Update Identity Modal -->
-  <div class="modal-overlay" id="identityModal" style="display: none;" onclick="if(event.target === this) closeIdentityModal()">
-    <div class="send-modal identity-modal" onclick="event.stopPropagation()">
+  <div class="modal-overlay" id="identityModal" style="display: none;" data-action="overlay-close" data-fn="closeIdentityModal">
+    <div class="send-modal identity-modal" data-action="stop">
       <div class="send-modal-header">
         <h2>🏷️ Update Validator Identity</h2>
-        <button class="modal-close-btn" onclick="closeIdentityModal()">×</button>
+        <button class="modal-close-btn" data-action="call" data-fn="closeIdentityModal">×</button>
       </div>
       
       <div class="send-modal-body">
@@ -1975,7 +1975,7 @@
         <div class="send-section" id="iconPreviewSection" style="display: none;">
           <div class="send-label">Icon Preview:</div>
           <div class="icon-preview-container">
-            <img id="iconPreviewImg" alt="Icon Preview" onerror="hideIconPreview()">
+            <img id="iconPreviewImg" alt="Icon Preview" data-onerror="call-error" data-error-fn="hideIconPreview">
           </div>
         </div>
         
@@ -1992,8 +1992,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="identityCancelBtn" onclick="closeIdentityModal()">Cancel</button>
-          <button class="send-confirm-btn" id="identityConfirmBtn" onclick="confirmUpdateIdentity()">
+          <button class="send-cancel-btn" id="identityCancelBtn" data-action="call" data-fn="closeIdentityModal">Cancel</button>
+          <button class="send-confirm-btn" id="identityConfirmBtn">
             Update Identity
           </button>
         </div>
@@ -2002,11 +2002,11 @@
   </div>
 
   <!-- Create & Delegate Stake Modal -->
-  <div class="modal-overlay" id="createStakeModal" style="display: none;" onclick="if(event.target === this) closeCreateStakeModal()">
-    <div class="send-modal" onclick="event.stopPropagation()">
+  <div class="modal-overlay" id="createStakeModal" style="display: none;" data-action="overlay-close" data-fn="closeCreateStakeModal">
+    <div class="send-modal" data-action="stop">
       <div class="send-modal-header">
         <h2><span style="color: #ffc107; font-weight: bold;">+</span> Create & Delegate Stake</h2>
-        <button class="modal-close-btn" onclick="closeCreateStakeModal()">×</button>
+        <button class="modal-close-btn" data-action="call" data-fn="closeCreateStakeModal">×</button>
       </div>
       
       <div class="send-modal-body">
@@ -2056,10 +2056,10 @@
             <span class="send-input-unit">XNT</span>
           </div>
           <div class="send-preset-buttons">
-            <button class="preset-btn" onclick="setCreateStakeAmount(25)">25%</button>
-            <button class="preset-btn" onclick="setCreateStakeAmount(50)">50%</button>
-            <button class="preset-btn" onclick="setCreateStakeAmount(75)">75%</button>
-            <button class="preset-btn max" onclick="setCreateStakeAmount(100)">MAX</button>
+            <button class="preset-btn" data-action="call" data-fn="setCreateStakeAmount" data-args='[25]'>25%</button>
+            <button class="preset-btn" data-action="call" data-fn="setCreateStakeAmount" data-args='[50]'>50%</button>
+            <button class="preset-btn" data-action="call" data-fn="setCreateStakeAmount" data-args='[75]'>75%</button>
+            <button class="preset-btn max" data-action="call" data-fn="setCreateStakeAmount" data-args='[100]'>MAX</button>
           </div>
         </div>
         
@@ -2096,8 +2096,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="createStakeCancelBtn" onclick="closeCreateStakeModal()">Cancel</button>
-          <button class="send-confirm-btn" id="createStakeConfirmBtn" onclick="confirmCreateStake()">
+          <button class="send-cancel-btn" id="createStakeCancelBtn" data-action="call" data-fn="closeCreateStakeModal">Cancel</button>
+          <button class="send-confirm-btn" id="createStakeConfirmBtn">
             Create & Delegate Stake
           </button>
         </div>
@@ -2106,11 +2106,11 @@
   </div>
 
   <!-- Change Vote Account Authority Modal -->
-  <div class="modal-overlay" id="changeVoteAuthorityModal" style="display: none;" onclick="if(event.target === this) closeChangeVoteAuthorityModal()">
+  <div class="modal-overlay" id="changeVoteAuthorityModal" style="display: none;" data-action="overlay-close" data-fn="closeChangeVoteAuthorityModal">
     <div class="modal send-modal">
       <div class="modal-header">
         <h2>🔐 Change Vote Account Authority</h2>
-        <button class="modal-close" onclick="closeChangeVoteAuthorityModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeChangeVoteAuthorityModal">&times;</button>
       </div>
       
       <div class="send-modal-content">
@@ -2139,14 +2139,14 @@
         <div class="send-section">
           <div class="send-label">Select Authority to Change:</div>
           <div class="authority-type-selector">
-            <button class="authority-type-btn active" id="voteAuthorityTypeBtn" onclick="selectVoteAuthorityType('vote')">
+            <button class="authority-type-btn active" id="voteAuthorityTypeBtn" data-action="call" data-fn="selectVoteAuthorityType" data-args='["vote"]'>
               <span class="authority-type-icon">🗳️</span>
               <span class="authority-type-text">
                 <span class="authority-type-title">Vote Authority</span>
                 <span class="authority-type-desc">Who can submit votes</span>
               </span>
             </button>
-            <button class="authority-type-btn" id="withdrawAuthorityTypeBtn" onclick="selectVoteAuthorityType('withdraw')">
+            <button class="authority-type-btn" id="withdrawAuthorityTypeBtn" data-action="call" data-fn="selectVoteAuthorityType" data-args='["withdraw"]'>
               <span class="authority-type-icon">💰</span>
               <span class="authority-type-text">
                 <span class="authority-type-title">Withdraw Authority</span>
@@ -2171,9 +2171,9 @@
         <div class="send-section">
           <div class="send-label" id="newVoteAuthorityLabel">New Vote Authority:</div>
           <div class="send-input-wrapper">
-            <input type="text" class="send-address-input" id="newVoteAuthorityInput" placeholder="Enter new authority public key..." oninput="validateVoteAuthorityInput()">
+            <input type="text" class="send-address-input" id="newVoteAuthorityInput" placeholder="Enter new authority public key..." data-input="call-input" data-input-fn="validateVoteAuthorityInput">
           </div>
-          <button class="use-wallet-btn" onclick="useWalletForVoteAuthority()">Use Connected Wallet</button>
+          <button class="use-wallet-btn" data-action="call" data-fn="useWalletForVoteAuthority">Use Connected Wallet</button>
           <div class="address-note" style="margin-top: 0.5rem;">⚠️ Warning: This action is irreversible. Make sure you have access to the new authority address.</div>
         </div>
         
@@ -2182,8 +2182,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="changeVoteAuthorityCancelBtn" onclick="closeChangeVoteAuthorityModal()">Cancel</button>
-          <button class="send-confirm-btn" id="changeVoteAuthorityBtn" onclick="confirmChangeVoteAuthority()" disabled>
+          <button class="send-cancel-btn" id="changeVoteAuthorityCancelBtn" data-action="call" data-fn="closeChangeVoteAuthorityModal">Cancel</button>
+          <button class="send-confirm-btn" id="changeVoteAuthorityBtn" disabled>
             Change Authority
           </button>
         </div>
@@ -2192,11 +2192,11 @@
   </div>
 
   <!-- Vote Authority Danger Confirmation Modal -->
-  <div class="modal-overlay" id="voteAuthorityDangerModal" style="display: none;" onclick="if(event.target === this) closeVoteAuthorityDangerModal()">
+  <div class="modal-overlay" id="voteAuthorityDangerModal" style="display: none;" data-action="overlay-close" data-fn="closeVoteAuthorityDangerModal">
     <div class="modal send-modal" style="max-width: 480px;">
       <div class="modal-header" style="background: linear-gradient(135deg, rgba(255, 82, 82, 0.2), rgba(255, 152, 0, 0.2)); border-bottom: 1px solid var(--danger);">
         <h2 style="color: var(--danger);">⚠️ DANGER: Vote Authority Change</h2>
-        <button class="modal-close" onclick="closeVoteAuthorityDangerModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeVoteAuthorityDangerModal">&times;</button>
       </div>
       
       <div class="send-modal-content">
@@ -2220,13 +2220,13 @@
         <div class="send-section" style="margin-top: 1.5rem;">
           <div class="send-label">Type <span style="color: var(--danger); font-weight: 700;">CHANGE VOTE AUTHORITY</span> to confirm:</div>
           <div class="send-input-wrapper">
-            <input type="text" class="send-address-input" id="voteAuthorityConfirmInput" placeholder="Type exactly as shown above..." oninput="validateVoteAuthorityConfirm()" autocomplete="off">
+            <input type="text" class="send-address-input" id="voteAuthorityConfirmInput" placeholder="Type exactly as shown above..." data-input="call-input" data-input-fn="validateVoteAuthorityConfirm" autocomplete="off">
           </div>
         </div>
         
         <div class="send-actions" style="margin-top: 1rem;">
-          <button class="send-cancel-btn" onclick="closeVoteAuthorityDangerModal()">Cancel</button>
-          <button class="send-confirm-btn danger-btn" id="voteAuthorityDangerBtn" onclick="proceedWithVoteAuthorityChange()" disabled style="background: linear-gradient(135deg, var(--danger), #ff5252);">
+          <button class="send-cancel-btn" data-action="call" data-fn="closeVoteAuthorityDangerModal">Cancel</button>
+          <button class="send-confirm-btn danger-btn" id="voteAuthorityDangerBtn" data-action="call" data-fn="proceedWithVoteAuthorityChange" disabled style="background: linear-gradient(135deg, var(--danger), #ff5252);">
             I Understand, Proceed
           </button>
         </div>
@@ -2235,11 +2235,11 @@
   </div>
 
   <!-- Set Withdraw Authority Modal (for Stake) -->
-  <div class="modal-overlay" id="setWithdrawAuthorityModal" style="display: none;" onclick="if(event.target === this) closeSetWithdrawAuthorityModal()">
+  <div class="modal-overlay" id="setWithdrawAuthorityModal" style="display: none;" data-action="overlay-close" data-fn="closeSetWithdrawAuthorityModal">
     <div class="modal send-modal">
       <div class="modal-header">
         <h2>🔑 Set Withdraw Authority</h2>
-        <button class="modal-close" onclick="closeSetWithdrawAuthorityModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeSetWithdrawAuthorityModal">&times;</button>
       </div>
       
       <div class="send-modal-content">
@@ -2288,8 +2288,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="setWithdrawAuthorityCancelBtn" onclick="closeSetWithdrawAuthorityModal()">Cancel</button>
-          <button class="send-confirm-btn" id="setWithdrawAuthorityBtn" onclick="confirmSetWithdrawAuthority()" disabled>
+          <button class="send-cancel-btn" id="setWithdrawAuthorityCancelBtn" data-action="call" data-fn="closeSetWithdrawAuthorityModal">Cancel</button>
+          <button class="send-confirm-btn" id="setWithdrawAuthorityBtn" disabled>
             Set New Authority
           </button>
         </div>
@@ -2298,11 +2298,11 @@
   </div>
 
   <!-- Set Stake Authority Modal -->
-  <div class="modal-overlay" id="setStakeAuthorityModal" style="display: none;" onclick="if(event.target === this) closeSetStakeAuthorityModal()">
+  <div class="modal-overlay" id="setStakeAuthorityModal" style="display: none;" data-action="overlay-close" data-fn="closeSetStakeAuthorityModal">
     <div class="modal send-modal">
       <div class="modal-header">
         <h2>🔐 Set Stake Authority</h2>
-        <button class="modal-close" onclick="closeSetStakeAuthorityModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeSetStakeAuthorityModal">&times;</button>
       </div>
       
       <div class="send-modal-content">
@@ -2351,8 +2351,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="setStakeAuthorityCancelBtn" onclick="closeSetStakeAuthorityModal()">Cancel</button>
-          <button class="send-confirm-btn" id="setStakeAuthorityBtn" onclick="confirmSetStakeAuthority()" disabled>
+          <button class="send-cancel-btn" id="setStakeAuthorityCancelBtn" data-action="call" data-fn="closeSetStakeAuthorityModal">Cancel</button>
+          <button class="send-confirm-btn" id="setStakeAuthorityBtn" disabled>
             Set New Authority
           </button>
         </div>
@@ -2361,11 +2361,11 @@
   </div>
 
   <!-- Undelegate Stake Modal -->
-  <div class="modal-overlay" id="undelegateStakeModal" style="display: none;" onclick="if(event.target === this) closeUndelegateStakeModal()">
+  <div class="modal-overlay" id="undelegateStakeModal" style="display: none;" data-action="overlay-close" data-fn="closeUndelegateStakeModal">
     <div class="modal send-modal">
       <div class="modal-header">
         <h2>🔓 Undelegate Stake</h2>
-        <button class="modal-close" onclick="closeUndelegateStakeModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeUndelegateStakeModal">&times;</button>
       </div>
       
       <div class="send-modal-content">
@@ -2449,8 +2449,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="undelegateCancelBtn" onclick="closeUndelegateStakeModal()">Cancel</button>
-          <button class="send-confirm-btn" id="undelegateConfirmBtn" onclick="confirmUndelegateStake()" disabled>
+          <button class="send-cancel-btn" id="undelegateCancelBtn" data-action="call" data-fn="closeUndelegateStakeModal">Cancel</button>
+          <button class="send-confirm-btn" id="undelegateConfirmBtn" disabled>
             Undelegate Stake
           </button>
         </div>
@@ -2459,11 +2459,11 @@
   </div>
 
   <!-- Redelegate Stake Modal -->
-  <div class="modal-overlay" id="redelegateStakeModal" style="display: none;" onclick="if(event.target === this) closeRedelegateStakeModal()">
+  <div class="modal-overlay" id="redelegateStakeModal" style="display: none;" data-action="overlay-close" data-fn="closeRedelegateStakeModal">
     <div class="modal send-modal" style="max-width: 500px;">
       <div class="modal-header">
         <h2>🔄 Redelegate Stake</h2>
-        <button class="modal-close" onclick="closeRedelegateStakeModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeRedelegateStakeModal">&times;</button>
       </div>
       
       <div class="send-modal-content">
@@ -2520,14 +2520,14 @@
         <div class="send-section">
           <div class="send-label">Select New Validator:</div>
           <div class="redelegate-search-container">
-            <input type="text" class="redelegate-search-input" id="redelegateValidatorSearch" placeholder="Search by name or vote account..." oninput="handleRedelegateSearch()">
+            <input type="text" class="redelegate-search-input" id="redelegateValidatorSearch" placeholder="Search by name or vote account..." data-input="call-input" data-input-fn="handleRedelegateSearch">
             <div class="redelegate-search-results" id="redelegateSearchResults" style="display: none;"></div>
           </div>
           <div class="send-destination" id="redelegateNewValidatorBox" style="display: none; background: rgba(0, 230, 118, 0.1); border-color: rgba(0, 230, 118, 0.3);">
             <div class="destination-name" id="redelegateNewValidator" style="color: var(--success);">New Validator</div>
             <div class="destination-address-row">
               <span class="destination-address" id="redelegateNewVoteAccount">Vote Account...</span>
-              <button class="clear-selection-btn" onclick="clearRedelegateSelection()">✕</button>
+              <button class="clear-selection-btn" data-action="call" data-fn="clearRedelegateSelection">✕</button>
             </div>
           </div>
         </div>
@@ -2557,8 +2557,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="redelegateCancelBtn" onclick="closeRedelegateStakeModal()">Cancel</button>
-          <button class="send-confirm-btn" id="redelegateConfirmBtn" onclick="confirmRedelegateStake()" disabled>
+          <button class="send-cancel-btn" id="redelegateCancelBtn" data-action="call" data-fn="closeRedelegateStakeModal">Cancel</button>
+          <button class="send-confirm-btn" id="redelegateConfirmBtn" disabled>
             Redelegate Stake
           </button>
         </div>
@@ -2567,11 +2567,11 @@
   </div>
 
   <!-- Withdraw XNT from Stake Modal -->
-  <div class="modal-overlay" id="withdrawStakeModal" style="display: none;" onclick="if(event.target === this) closeWithdrawStakeModal()">
+  <div class="modal-overlay" id="withdrawStakeModal" style="display: none;" data-action="overlay-close" data-fn="closeWithdrawStakeModal">
     <div class="modal send-modal">
       <div class="modal-header">
         <h2>💸 Withdraw XNT from Stake</h2>
-        <button class="modal-close" onclick="closeWithdrawStakeModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeWithdrawStakeModal">&times;</button>
       </div>
       
       <div class="send-modal-content">
@@ -2653,10 +2653,10 @@
             <span class="send-input-unit">XNT</span>
           </div>
           <div class="send-preset-buttons">
-            <button class="preset-btn" onclick="setWithdrawStakeAmount(25)">25%</button>
-            <button class="preset-btn" onclick="setWithdrawStakeAmount(50)">50%</button>
-            <button class="preset-btn" onclick="setWithdrawStakeAmount(75)">75%</button>
-            <button class="preset-btn max" onclick="setWithdrawStakeAmount(100)">MAX</button>
+            <button class="preset-btn" data-action="call" data-fn="setWithdrawStakeAmount" data-args='[25]'>25%</button>
+            <button class="preset-btn" data-action="call" data-fn="setWithdrawStakeAmount" data-args='[50]'>50%</button>
+            <button class="preset-btn" data-action="call" data-fn="setWithdrawStakeAmount" data-args='[75]'>75%</button>
+            <button class="preset-btn max" data-action="call" data-fn="setWithdrawStakeAmount" data-args='[100]'>MAX</button>
           </div>
         </div>
         
@@ -2673,7 +2673,7 @@
         <div class="send-section" id="withdrawStakeCloseSection" style="display: none;">
           <div class="close-account-option">
             <label class="close-account-checkbox">
-              <input type="checkbox" id="withdrawStakeCloseCheckbox" onchange="toggleCloseStakeAccount()">
+              <input type="checkbox" id="withdrawStakeCloseCheckbox" data-change="call-change" data-change-fn="toggleCloseStakeAccount">
               <span class="checkmark"></span>
               <span class="close-account-label">Close account & withdraw all (including rent)</span>
             </label>
@@ -2704,8 +2704,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="withdrawStakeCancelBtn" onclick="closeWithdrawStakeModal()">Cancel</button>
-          <button class="send-confirm-btn" id="withdrawStakeConfirmBtn" onclick="confirmWithdrawFromStake()" disabled>
+          <button class="send-cancel-btn" id="withdrawStakeCancelBtn" data-action="call" data-fn="closeWithdrawStakeModal">Cancel</button>
+          <button class="send-confirm-btn" id="withdrawStakeConfirmBtn" disabled>
             Withdraw XNT
           </button>
         </div>
@@ -2714,11 +2714,11 @@
   </div>
 
   <!-- Merge Stakes Modal -->
-  <div class="modal-overlay" id="mergeStakesModal" style="display: none;" onclick="if(event.target === this) closeMergeStakesModal()">
+  <div class="modal-overlay" id="mergeStakesModal" style="display: none;" data-action="overlay-close" data-fn="closeMergeStakesModal">
     <div class="modal send-modal" style="max-width: 600px;">
       <div class="modal-header">
         <h2>🔗 Merge Stakes</h2>
-        <button class="modal-close" onclick="closeMergeStakesModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeMergeStakesModal">&times;</button>
       </div>
       
       <div class="send-modal-content">
@@ -2772,8 +2772,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="mergeStakesCancelBtn" onclick="closeMergeStakesModal()">Cancel</button>
-          <button class="send-confirm-btn" id="mergeStakesConfirmBtn" onclick="confirmMergeStakes()" disabled>
+          <button class="send-cancel-btn" id="mergeStakesCancelBtn" data-action="call" data-fn="closeMergeStakesModal">Cancel</button>
+          <button class="send-confirm-btn" id="mergeStakesConfirmBtn" disabled>
             Merge Selected Stakes
           </button>
         </div>
@@ -2783,11 +2783,11 @@
 
 
   <!-- Split Stake Modal -->
-  <div class="modal-overlay" id="splitStakeModal" style="display: none;" onclick="if(event.target === this) closeSplitStakeModal()">
+  <div class="modal-overlay" id="splitStakeModal" style="display: none;" data-action="overlay-close" data-fn="closeSplitStakeModal">
     <div class="modal send-modal" style="max-width: 500px;">
       <div class="modal-header">
         <h2>✂️ Split Stake</h2>
-        <button class="modal-close" onclick="closeSplitStakeModal()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeSplitStakeModal">&times;</button>
       </div>
       
       <div class="send-modal-content">
@@ -2816,13 +2816,13 @@
         <div class="send-section">
           <div class="send-label">Amount to Split Off:</div>
           <div class="send-input-wrapper">
-            <input type="number" class="send-amount-input" id="splitStakeAmountInput" placeholder="0.0000" step="0.0001" min="0" oninput="updateSplitStakeSummary()">
+            <input type="number" class="send-amount-input" id="splitStakeAmountInput" placeholder="0.0000" step="0.0001" min="0" data-input="call-input" data-input-fn="updateSplitStakeSummary">
             <span class="send-input-unit">XNT</span>
           </div>
           <div class="send-preset-btns">
-            <button class="preset-btn" onclick="setSplitStakeAmount(25)">25%</button>
-            <button class="preset-btn" onclick="setSplitStakeAmount(50)">50%</button>
-            <button class="preset-btn" onclick="setSplitStakeAmount(75)">75%</button>
+            <button class="preset-btn" data-action="call" data-fn="setSplitStakeAmount" data-args='[25]'>25%</button>
+            <button class="preset-btn" data-action="call" data-fn="setSplitStakeAmount" data-args='[50]'>50%</button>
+            <button class="preset-btn" data-action="call" data-fn="setSplitStakeAmount" data-args='[75]'>75%</button>
           </div>
         </div>
         
@@ -2863,8 +2863,8 @@
         
         <!-- Action Buttons -->
         <div class="send-actions">
-          <button class="send-cancel-btn" id="splitStakeCancelBtn" onclick="closeSplitStakeModal()">Cancel</button>
-          <button class="send-confirm-btn" id="splitStakeConfirmBtn" onclick="confirmSplitStake()">
+          <button class="send-cancel-btn" id="splitStakeCancelBtn" data-action="call" data-fn="closeSplitStakeModal">Cancel</button>
+          <button class="send-confirm-btn" id="splitStakeConfirmBtn">
             Split Stake
           </button>
         </div>
@@ -2873,12 +2873,12 @@
   </div>
 
   <!-- Action Explainer Modal -->
-  <div class="modal-overlay" id="actionExplainerModal" style="display: none;" onclick="if(event.target === this) closeActionExplainerModal()">
+  <div class="modal-overlay" id="actionExplainerModal" style="display: none;" data-action="overlay-close" data-fn="closeActionExplainerModal">
     <div class="modal-container" style="max-width: 420px;">
       <div class="send-modal-content">
         <div class="send-header">
           <h2 id="actionExplainerTitle">Action Unavailable</h2>
-          <button class="modal-close-btn" onclick="closeActionExplainerModal()">×</button>
+          <button class="modal-close-btn" data-action="call" data-fn="closeActionExplainerModal">×</button>
         </div>
         <div class="send-body" id="actionExplainerContent">
           <!-- Content populated by JS -->
@@ -2888,11 +2888,11 @@
   </div>
 
   <!-- Performance Score Explainer Modal -->
-  <div class="perf-explainer-modal" id="perfExplainerModal" onclick="closePerfExplainerModal(event)">
-    <div class="perf-explainer-content" onclick="event.stopPropagation()">
+  <div class="perf-explainer-modal" id="perfExplainerModal" data-action="overlay-close" data-fn="closePerfExplainerModal">
+    <div class="perf-explainer-content" data-action="stop">
       <div class="perf-explainer-header">
         <h3>📊 Performance Score Explained</h3>
-        <button class="perf-explainer-close" onclick="closePerfExplainerModal()">&times;</button>
+        <button class="perf-explainer-close" data-action="call" data-fn="closePerfExplainerModal">&times;</button>
       </div>
       <div class="perf-explainer-body">
         <!-- Validator-specific breakdown (populated by JS) -->
@@ -3055,11 +3055,11 @@
   </div>
 
   <!-- Stake Breakdown Modal -->
-  <div class="modal-overlay" id="stakeBreakdownModal" style="display: none;" onclick="if(event.target === this) closeStakeBreakdown()">
+  <div class="modal-overlay" id="stakeBreakdownModal" style="display: none;" data-action="overlay-close" data-fn="closeStakeBreakdown">
     <div class="modal-content stake-breakdown-modal">
       <div class="modal-header">
         <h2>🔍 Stake Breakdown</h2>
-        <button class="modal-close" onclick="closeStakeBreakdown()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeStakeBreakdown">&times;</button>
       </div>
       <div class="modal-body" id="stakeBreakdownBody">
         <div class="stake-breakdown-loading">
@@ -3071,11 +3071,11 @@
   </div>
 
   <!-- Stake Selection Modal -->
-  <div class="modal-overlay" id="stakeSelectionModal" style="display: none;" onclick="if(event.target === this) closeStakeSelection()">
+  <div class="modal-overlay" id="stakeSelectionModal" style="display: none;" data-action="overlay-close" data-fn="closeStakeSelection">
     <div class="modal-content stake-selection-modal">
       <div class="modal-header">
         <h2>📊 Manage Stake Classification</h2>
-        <button class="modal-close" onclick="closeStakeSelection()">&times;</button>
+        <button class="modal-close" data-action="call" data-fn="closeStakeSelection">&times;</button>
       </div>
       <div class="modal-body" id="stakeSelectionBody">
         <div class="stake-selection-loading">
@@ -3094,6 +3094,7 @@
        (this used to be one inline <script>; see scripts/assemble-monolith.js).
        Load-time code in one file must not call into a later file. -->
   <script src="js/core.js"></script>
+  <script src="js/index-actions.js"></script>
   <script src="js/scoring.js"></script>
   <script src="js/cards.js"></script>
   <script src="js/globe.js"></script>
@@ -3109,7 +3110,7 @@
   <script src="js/modals.js"></script>
 
   <!-- Slot Explorer Modal -->
-  <div class="slot-modal-overlay" id="slotModal" onclick="if(event.target===this)closeSlotModal()">
+  <div class="slot-modal-overlay" id="slotModal" data-action="overlay-close" data-fn="closeSlotModal">
     <div class="slot-modal" id="slotModalBox">
       <div class="slot-modal-head">
         <div id="slotModalLogo"></div>
@@ -3117,12 +3118,12 @@
           <div class="slot-modal-name" id="slotModalName"></div>
           <div class="slot-modal-addr" id="slotModalAddr"></div>
         </div>
-        <button class="slot-modal-close" onclick="closeSlotModal()">✕</button>
+        <button class="slot-modal-close" data-action="call" data-fn="closeSlotModal">✕</button>
       </div>
       <div class="sm-epoch-selector">
-        <button class="sm-epoch-pill" id="smPillLast"    onclick="smSwitchEpoch('last')">Last Epoch</button>
-        <button class="sm-epoch-pill active" id="smPillCurrent" onclick="smSwitchEpoch('current')">Current Epoch</button>
-        <button class="sm-epoch-pill" id="smPillBoth"    onclick="smSwitchEpoch('both')">Both</button>
+        <button class="sm-epoch-pill" id="smPillLast"    data-action="call" data-fn="smSwitchEpoch" data-args='["last"]'>Last Epoch</button>
+        <button class="sm-epoch-pill active" id="smPillCurrent" data-action="call" data-fn="smSwitchEpoch" data-args='["current"]'>Current Epoch</button>
+        <button class="sm-epoch-pill" id="smPillBoth"    data-action="call" data-fn="smSwitchEpoch" data-args='["both"]'>Both</button>
       </div>
       <div id="slotModalBody">
         <div class="slot-modal-loading">
@@ -3163,7 +3164,7 @@
           <span>Same great interface you love</span>
         </div>
       </div>
-      <button class="solana-modal-close" onclick="closeSolanaModal()">Got It!</button>
+      <button class="solana-modal-close" data-action="call" data-fn="closeSolanaModal">Got It!</button>
     </div>
   </div>
   <script src="js/terminal.js"></script>
@@ -3185,7 +3186,7 @@
       <div class="vp-header">
         <span class="logo-x1" style="font-size:1.8rem;"><span style="color:#fff;">X</span><span style="color:var(--accent-blue);">1</span></span>
         <h2>Validator Forensics <span class="vp-mono">// hardware &amp; fleet analysis</span></h2>
-        <button class="vp-close" onclick="vpCloseProbe()" title="Close (Esc)">✕</button>
+        <button class="vp-close" data-action="call" data-fn="vpCloseProbe" title="Close (Esc)">✕</button>
       </div>
       <p class="vp-tagline">Benchmarks every validator on the work that actually costs money &mdash; <b>producing blocks under a deadline</b> &mdash; and cross-references operator fleets by co-location, shared performance trajectories, and sibling delinquency. Built to separate real infrastructure from cheap VPS farms collecting delegation.</p>
 
@@ -3199,11 +3200,11 @@
             <option value="40">last 40</option>
             <option value="60">last 60 (max on-chain)</option>
           </select>
-          <button class="vp-btn" id="vpRunBtn" onclick="vpRunProbe()">Run probe</button>
-          <button class="vp-btn vp-secondary vp-hidden" id="vpDeepBtn" onclick="vpDeepScan()">Re-scan vote latency</button>
-          <button class="vp-btn vp-secondary vp-hidden" id="vpBenchBtn" onclick="vpLeaderBench()">Re-run CPU benchmark</button>
-          <button class="vp-btn vp-secondary vp-hidden" id="vpCsvBtn" onclick="vpDownloadCsv()">Download CSV</button>
-          <button class="vp-btn vp-secondary vp-hidden" id="vpLagBtn" onclick="vpToggleLag()">Watch live (catch stalls over time)</button>
+          <button class="vp-btn" id="vpRunBtn" data-action="call" data-fn="vpRunProbe">Run probe</button>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpDeepBtn" data-action="call" data-fn="vpDeepScan">Re-scan vote latency</button>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpBenchBtn" data-action="call" data-fn="vpLeaderBench">Re-run CPU benchmark</button>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpCsvBtn" data-action="call" data-fn="vpDownloadCsv">Download CSV</button>
+          <button class="vp-btn vp-secondary vp-hidden" id="vpLagBtn" data-action="call" data-fn="vpToggleLag">Watch live (catch stalls over time)</button>
           <span id="vpStatus">Idle.</span>
         </div>
         <div id="vpLagNote" class="vp-hidden">
@@ -3241,16 +3242,16 @@
         <div class="vp-tbl-head">
           <h4>Validators <span id="vpTblCount"></span></h4>
           <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
-            <label class="vp-chk"><input type="checkbox" id="vpHideDelinq" checked onchange="vpToggleDelinq()"> Hide delinquent</label>
+            <label class="vp-chk"><input type="checkbox" id="vpHideDelinq" checked data-change="call-change" data-change-fn="vpToggleDelinq"> Hide delinquent</label>
             <label class="vp-chk">Min self stake
-              <select id="vpMinStake" class="vp-select" onchange="vpMinStakeChange()" style="padding:0.3rem 0.45rem;">
+              <select id="vpMinStake" class="vp-select" data-change="call-change" data-change-fn="vpMinStakeChange" style="padding:0.3rem 0.45rem;">
                 <option value="3000" selected>3,000+</option>
                 <option value="4000">4,000+</option>
                 <option value="5000">5,000+</option>
                 <option value="0">All</option>
               </select>
             </label>
-            <input type="text" class="vp-filter" id="vpFilterBox" placeholder="filter by name / pubkey / IP…" oninput="vpRenderTable()">
+            <input type="text" class="vp-filter" id="vpFilterBox" placeholder="filter by name / pubkey / IP…" data-input="call-input" data-input-fn="vpRenderTable">
           </div>
         </div>
         <div class="vp-tbl-scroll">

@@ -14,11 +14,12 @@
 >    Claude's own `git pull --rebase` works and leaves no locks (verified 2026-09-17). Claude still
 >    can't commit (no git identity in the VM): a local unpushed commit gets replayed as *staged
 >    changes* on top of origin/main, so Shaka's normal `git add -A && git commit` picks it up.
-> 2. **③ (C2) is IN PROGRESS — every js/*.js file is done; 198 inline handlers left, all static
->    markup in `index.html`.** Dispatcher = `Actions` in `js/core.js`. Batches 1–5 all live-verified
->    (batch 5 `a2eb148` on 2026-09-23). Next: `index.html` tab by tab (198: modals, forms with
->    `oninput`/`onchange`, the compare slots' `focusCompareSearch`, `portfolioDelegation`, …) →
->    frame-buster `<script>` → drop `'unsafe-inline'` from `script-src`.
+> 2. **③ (C2): all 322 inline handlers are converted** (index.html done 2026-09-23, batch 6 —
+>    `js/index-actions.js`). **First thing:** confirm batch 6 is live (see its session-log entry for
+>    the click-through list). **Left for C2:** (a) Shaka tries the wallet flows — one Manage action,
+>    a stake-row click, a Merge checkbox, and one real transaction's confirm → "Close" button;
+>    (b) move the head frame-buster `<script>` to a file (or CSP hash); (c) drop `'unsafe-inline'`
+>    from `script-src` in the CSP meta tag and live-check every tab for CSP errors in the console.
 >    Tests: `scripts/c2-tests/` (README there) — run them in the cloud clone after every file.
 >    Rules and design in the 2026-09-17 session log.
 >    Wallet-connected flows are untested by Claude (no wallet) — ask Shaka to try one Manage action,
@@ -1070,3 +1071,50 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   only console error was the known "Maximum call stack" that appears while the pane is hidden
   (innerWidth 0) — see 2026-09-17. Forensics suspects/sort/copy were covered offline only (they need
   a full probe run).
+
+### 2026-09-23 — Session 9, continued: C2 batch 6 — every handler in index.html (198)
+- Shaka: "go for it.. DONT BREAK ANYTHING". Done in one batch, mechanically, with a differential
+  test over all of them rather than by hand tab by tab.
+- `scripts/c2-tests/convert-index.py` (committed for the record) rewrote the markup:
+  `onclick="fn('a', 3, this)"` → `data-action="call" data-fn="fn" data-args='["a",3,{"$":"el"}]'`
+  (`{"$":"event"}` for `event`); oninput/onchange/onerror → `data-input="call-input"
+  data-input-fn/-args`, `data-change="call-change" …`, `data-onerror="call-error" data-error-fn`;
+  onfocus/onblur (skip-monitor lookup box) → `data-focus-fn` / `data-blur-fn` (focusin/focusout,
+  fired only for the element itself); `if(event.target===this) closeX()` (21 modal backdrops) →
+  `data-action="overlay-close" data-fn="closeX"`; `event.stopPropagation()` → the shared `stop`;
+  7 multi-statement handlers → named actions (`go-home`, `show-disclaimer` — both preventDefault
+  like the old `return false` —, `deleg-tile`, `staking-input`, `staking-price-input`,
+  `compound-input`, `breakeven-price-input`); the Google Fonts `<link onload="this.media='all'">`
+  → `data-async-css`, switched by js (immediately if already loaded, else on `load`).
+- `js/index-actions.js` (new, loaded right after core.js): a fixed allow-list `CALLS` of the 93
+  functions index.html may call (lazy arrows, never `window[name]`), the generic handlers above,
+  the named ones, focus/blur, fonts.
+- **Two traps found and avoided:**
+  1. **13 transaction confirm buttons + the 4 compare slots get their `.onclick` REASSIGNED by js**
+     (after a successful tx the confirm button becomes "Close": `btn.onclick = closeSendXntModal`;
+     compare slots toggle `focusCompareSearch`/`null`). A data-action there would fire *in addition*
+     to the reassigned property — i.e. clicking "Close" would re-submit the transaction. These 17
+     keep property semantics: attribute dropped, `index-actions.js` assigns the same initial
+     `.onclick` (`INITIAL_ONCLICK`), so later reassignments replace it exactly as before. **Rule for
+     the future: never put data-action on an element whose `.onX` js assigns.**
+  2. `closePerfExplainerModal(event)` compares `event.target` with `event.currentTarget`, which is
+     `document` under delegation — it would never have closed. Converted to `overlay-close`.
+  (Also checked: no js calls `el.onclick()`, reads on* attributes, dispatches non-bubbling
+  input/change at these elements, or stops propagation above them.)
+- **Differential test** `scripts/c2-tests/index-diff-test.js`: the page served twice (original vs
+  converted index.html, same js, both tagged `data-h=k` on the 196 handler elements), every function
+  the handlers mention replaced by a spy, disabled controls enabled, then for every element: click
+  on it and on its first child, input, change, error, focus, blur. Compared per trial: spied calls
+  + arguments (elements by data-h), defaultPrevented, and whether the event reached document.
+  Result: 241 trials, 206 with calls, **1 difference — the intended perfExplainer one**; 0 inline
+  handlers left; all 93 functions defined at load; fonts link ends `media="all"` on both. Scenario
+  checks: send confirm → `confirmSendXnt`; after `btn.onclick = closeSendXntModal` → only the close
+  (same for withdraw); empty compare slot → focus; filled (`onclick = null`) → nothing.
+- Real-function smoke (no spies, stub Chart): disclaimer checkbox enables Accept, Accept hides;
+  logo click prevented; compound "Custom" select shows the inputs and typing formats "12,345";
+  unstaking preset; epoch-timeline modal opens, inner click keeps it, backdrop closes; TPS modal ×;
+  skip-monitor scope buttons; empty compare slot focuses the search box; perf explainer inner
+  click keeps / backdrop closes. 0 page errors, 0 `[Actions]` warnings. Suites 1–5 re-run green.
+- Not changed yet: the CSP and the head frame-buster `<script>` (step (b)/(c) in Start-here).
+  `scripts/assemble-monolith.js` predates this (and batch 1–5) edits — only a historical tool now.
+- Not live-verified yet (push pending).
