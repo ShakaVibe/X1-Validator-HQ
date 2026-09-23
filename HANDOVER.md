@@ -17,9 +17,7 @@
 > 2. **③ (C2) is IN PROGRESS — 85 of 322 inline handlers converted.** Dispatcher = `Actions` in
 >    `js/core.js`; done: cards, delegation tile, manage, modals, card-details, leaderboards (+ the 7
 >    category buttons in index.html), skip-monitor, shared copy button — batches 1–4 all live-verified
->    (batch 4 on 2026-09-23). **First thing:** confirm the terminal-header push of 2026-09-23 is live
->    (`#/terminal` at < 980 px: the Snapshot/Updated/Live corner sits under the subtitle, not on the
->    title). Then continue file by file:
+>    (batch 4 on 2026-09-23). Nothing pending live-verification. Next: continue file by file:
 >    compare.js (4) · terminal.js (4) · forensics.js (5) · calculators.js (5) · wallet-tx.js (3) ·
 >    network-live.js (3) · app.js (2) · core.js (1) → `index.html` (210, incl. the `[onclick="…"]`
 >    selectors still in app.js (calc-nav, tab) and calculators.js) → frame-buster `<script>` → drop
@@ -1035,6 +1033,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `grid-row: 1`, so "Hourly snapshot · Updated … · LIVE" was drawn on top of "VALIDATOR TERMINAL"
   (phones too). Fix in `css/site.css`: inside that media query `.meta` → row 2, corner → row 3.
   Pane check at 760 and 375 px: corner now below the subtitle, no overlap, no horizontal overflow;
-  > 980 px untouched. Push pending.
+  > 980 px untouched. Live-verified (`418436e`, live CSS, no injected style): corner below the
+  subtitle at 760 px.
 - Data note: the terminal showed 146 delinquent of 723 right after the epoch 387 boundary (usually
   ~40). Probably a network event, not a site bug — worth a glance next session.
