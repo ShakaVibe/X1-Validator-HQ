@@ -43,12 +43,11 @@
         renderRewardBreakdown(body, sub, data, name);
       } catch (e) {
         console.error('[reward-breakdown] failed:', e);
-        const retry = "openRewardBreakdown('" + voteAccount + "', '" +
-          escAttrJs(name) + "', " + (commission || 0) + ")";
         body.innerHTML =
           '<div class="rb-error">Could not compute the breakdown.' +
           '<span>' + rbEsc((e && e.message) || String(e)) + '</span>' +
-          '<button onclick="' + retry + '">Retry</button></div>';
+          '<button data-action="reward-breakdown" data-vote="' + escHtml(voteAccount) + '" data-name="' +
+          escHtml(name) + '" data-commission="' + (Number(commission) || 0) + '">Retry</button></div>';
       }
     }
 
@@ -242,7 +241,7 @@
       const validators = (typeof myPortfolio !== 'undefined' && Array.isArray(myPortfolio)) ? myPortfolio : [];
       if (!validators.length) {
         body.innerHTML = '<div class="rb-error">No validators in your Data Center yet.' +
-          '<button onclick="closeRewardBreakdown()">Close</button></div>';
+          '<button data-action="rb-close">Close</button></div>';
         return;
       }
 
@@ -290,7 +289,7 @@
         console.error('[portfolio-breakdown] failed:', e);
         body.innerHTML = '<div class="rb-error">Could not compute the portfolio breakdown.' +
           '<span>' + rbEsc((e && e.message) || String(e)) + '</span>' +
-          '<button onclick="openPortfolioRewardBreakdown()">Retry</button></div>';
+          '<button data-action="rb-portfolio-retry">Retry</button></div>';
       }
     }
 
@@ -450,7 +449,7 @@
       // Build tooltip HTML
       let inner = '';
       if (isPinned) {
-        inner += '<button class="tps-tooltip-close" onclick="_closeTpsPin()" title="Close">×</button>';
+        inner += '<button class="tps-tooltip-close" data-action="tps-pin-close" title="Close">×</button>';
       }
       inner += '<div class="tps-tooltip-tps">' + _tpsFmt(meta.avgTps) + ' TPS</div>';
       inner += '<div class="tps-tooltip-time">'
@@ -461,15 +460,15 @@
             + ' <span class="tps-tooltip-tz">local</span></div>';
 
       if (canShowTxButton && !tx) {
-        inner += '<button class="tps-tooltip-fetch-btn" onclick="_fetchTxsForTpsBucket('
-              + activeIdx + ',' + meta.startSlot + ',' + meta.endSlot + ')">Show first/last tx</button>';
+        inner += '<button class="tps-tooltip-fetch-btn" data-action="tps-fetch-txs" data-idx="' + activeIdx
+              + '" data-start="' + meta.startSlot + '" data-end="' + meta.endSlot + '">Show first/last tx</button>';
       } else if (tx && tx.loading) {
         inner += '<div class="tps-tooltip-tx-loading">Loading transactions…</div>';
       } else if (tx && tx.error) {
         inner += '<div class="tps-tooltip-tx-error">'
               + tx.error
-              + '<button class="tps-tooltip-retry-btn" onclick="_fetchTxsForTpsBucket('
-              + activeIdx + ',' + meta.startSlot + ',' + meta.endSlot + ')">Retry</button>'
+              + '<button class="tps-tooltip-retry-btn" data-action="tps-fetch-txs" data-idx="' + activeIdx
+              + '" data-start="' + meta.startSlot + '" data-end="' + meta.endSlot + '">Retry</button>'
               + '</div>';
       } else if (tx && (tx.firstTx || tx.lastTx)) {
         inner += '<div class="tps-tooltip-tx-block">'
@@ -492,7 +491,7 @@
           '<div class="tps-tooltip ' + (isPinned ? 'tps-tooltip-pinned' : '')
         + '" style="' + positionStyle + '" data-edge="' + edge + '"'
         + ' data-flip="' + (flipBelow ? 'below' : 'above') + '"'
-        + ' onclick="event.stopPropagation()">'
+        + ' data-action="stop">'
         + inner
         + '</div>';
     }
@@ -512,7 +511,7 @@
       return '<div class="tps-tx-row">'
            + '<span class="tps-tx-label">' + label + '</span>'
            + '<a href="' + explorerUrl + '" target="_blank" rel="noopener noreferrer" class="tps-tx-sig" title="' + title.replace(/"/g, '&quot;') + '">' + trunc + '</a>'
-           + '<button class="tps-tx-copy" onclick="_copyTpsTx(\'' + sig + '\', this)" title="Copy signature">⧉</button>'
+           + '<button class="tps-tx-copy" data-action="tps-copy-tx" data-sig="' + escHtml(sig) + '" title="Copy signature">⧉</button>'
            + '</div>';
     }
 
@@ -648,7 +647,7 @@
         // Invisible full-height hit zone for hover/click. Sits over the
         // entire column so skinny low-TPS bars are easy to target.
         bars += `<rect x="${x}" y="0" width="${barW.toFixed(2)}" height="${H}" fill="transparent" style="cursor:pointer"`
-             + ` onmouseenter="_onTpsBarEnter(${i})" onmouseleave="_onTpsBarLeave(${i})" onclick="_onTpsBarClick(${i})"/>`;
+             + ` data-enter="tps-bar" data-leave="tps-bar" data-action="tps-bar" data-idx="${i}"/>`;
       }
 
       chartEl.innerHTML =
@@ -957,7 +956,7 @@
         const clabel = truncated
           ? `▾ Show more (${hidden.toLocaleString()} pips)`
           : `▾ Show all ${total.toLocaleString()} slots (${hidden.toLocaleString()} more)`;
-        html += `<button class="slot-tl-toggle" data-id="${id}" data-clabel="${clabel}" onclick="toggleSlotTimeline(this)">${clabel}</button>`;
+        html += `<button class="slot-tl-toggle" data-id="${id}" data-clabel="${clabel}" data-action="slot-tl-toggle">${clabel}</button>`;
       }
       if (truncated) {
         html += `<div class="slot-tl-note">Showing ${render.length.toLocaleString()} of ${total.toLocaleString()} slots — capped for performance.</div>`;
@@ -1139,7 +1138,7 @@
             </div>
           </div>
           <div class="sm-footer">
-            <button class="sm-refresh-btn" onclick="smRefreshAll()">↻ Refresh</button>
+            <button class="sm-refresh-btn" data-action="sm-refresh">↻ Refresh</button>
           </div>`;
       } else {
         box.classList.remove('wide');
@@ -1147,7 +1146,7 @@
         if (!d) return `<div class="slot-modal-loading"><div class="loading-spinner-small"></div> Loading…</div>`;
         return smRenderPanel(d) + `
           <div class="sm-footer">
-            <button class="sm-refresh-btn" onclick="smRefreshAll()">↻ Refresh</button>
+            <button class="sm-refresh-btn" data-action="sm-refresh">↻ Refresh</button>
           </div>`;
       }
     }
@@ -1204,8 +1203,7 @@
       const vInfo = allValidators?.find(v => v.nodePubkey === nodePubkey);
       const logoEl = document.getElementById('slotModalLogo');
       if (vInfo?.iconUrl) {
-        logoEl.innerHTML = `<img class="slot-modal-logo" src="${safeUrl(vInfo.iconUrl)}" alt=""
-          onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<div class=slot-modal-logo-ph>${escAttrJs(escHtml(name.charAt(0).toUpperCase()))}</div>')">`;
+        logoEl.innerHTML = `<img class="slot-modal-logo" src="${safeUrl(vInfo.iconUrl)}" alt="" data-onerror="img-fallback"><div class="slot-modal-logo-ph" style="display:none;">${escHtml(name.charAt(0).toUpperCase())}</div>`;
       } else {
         logoEl.innerHTML = `<div class="slot-modal-logo-ph">${escHtml(name.charAt(0).toUpperCase())}</div>`;
       }
@@ -1236,4 +1234,22 @@
       if (e.key === 'Escape') { closeSlotModal(); if (typeof closeDelegationModal === 'function') closeDelegationModal(); }
     });
 
-    init();
+        // ─── data-action handlers for the markup this file renders (see Actions in core.js) ───
+    Actions.register({
+      'reward-breakdown':   (el, e, d) => { e.stopPropagation(); openRewardBreakdown(d.vote, d.name, Number(d.commission) || 0); },
+      'rb-close':           () => closeRewardBreakdown(),
+      'rb-portfolio-retry': () => openPortfolioRewardBreakdown(),
+      'tps-pin-close':      () => _closeTpsPin(),
+      'tps-fetch-txs':      (el, e, d) => _fetchTxsForTpsBucket(Number(d.idx), Number(d.start), Number(d.end)),
+      'tps-copy-tx':        (el, e, d) => _copyTpsTx(d.sig, el),
+      'tps-bar':            (el, e, d) => {
+        const i = Number(d.idx);
+        if (e.type === 'mouseover') _onTpsBarEnter(i);
+        else if (e.type === 'mouseout') _onTpsBarLeave(i);
+        else _onTpsBarClick(i);
+      },
+      'slot-tl-toggle':     (el) => toggleSlotTimeline(el),
+      'sm-refresh':         () => smRefreshAll(),
+    });
+
+init();

@@ -87,7 +87,7 @@
     //
     //   <button data-action="card-share" data-vote="…" data-name="…">
     //   <img data-onerror="img-fallback">          <select data-change="…">
-    //   <input data-input="…">
+    //   <input data-input="…">                      <rect data-enter="…" data-leave="…">
     //
     // Each file registers its own handlers at the end of the file:
     //
@@ -114,6 +114,10 @@
         ['input',  'data-input',   false],
         ['error',  'data-onerror', true],   // error does not bubble: capture
         ['load',   'data-onload',  true],
+        // mouseenter/mouseleave don't bubble; emulate them from mouseover/out by
+        // ignoring transitions that stay inside the element (4th field).
+        ['mouseover', 'data-enter', false, true],
+        ['mouseout',  'data-leave', false, true],
       ];
       function register(map) {
         for (const name in map) {
@@ -121,12 +125,14 @@
           handlers[name] = map[name];
         }
       }
-      function dispatch(evt, attr) {
+      function dispatch(evt, attr, enterLeave) {
         let el = evt.target instanceof Element ? evt.target.closest('[' + attr + ']') : null;
         while (el) {
           const name = el.getAttribute(attr);
           const fn = handlers[name];
-          if (typeof fn === 'function') {
+          if (enterLeave && evt.relatedTarget instanceof Node && el.contains(evt.relatedTarget)) {
+            // moved between descendants of el — not an enter/leave of el itself
+          } else if (typeof fn === 'function') {
             try {
               fn.call(el, el, evt, el.dataset);
             } catch (err) {
@@ -139,8 +145,8 @@
           el = el.parentElement ? el.parentElement.closest('[' + attr + ']') : null;
         }
       }
-      ATTRS.forEach(([type, attr, capture]) => {
-        document.addEventListener(type, evt => dispatch(evt, attr), capture);
+      ATTRS.forEach(([type, attr, capture, enterLeave]) => {
+        document.addEventListener(type, evt => dispatch(evt, attr, enterLeave), capture);
       });
       // Shared helpers used by more than one file.
       register({
@@ -148,11 +154,12 @@
         // (e.g. a link inside a clickable tile).
         'stop': (el, e) => e.stopPropagation(),
         // <img … data-onerror="img-fallback"> — hide the broken image, show the
-        // placeholder that immediately follows it.
+        // placeholder that immediately follows it (rendered with style="display:none";
+        // clearing that restores the stylesheet's display — flex for every placeholder).
         'img-fallback': (el) => {
           el.style.display = 'none';
           const next = el.nextElementSibling;
-          if (next) next.style.display = 'flex';
+          if (next) next.style.display = '';
         },
         // <img … data-onerror="img-fallback-text" data-fallback="S"> — replace the
         // image's container content with the fallback letter.

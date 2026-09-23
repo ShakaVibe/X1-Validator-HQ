@@ -14,20 +14,25 @@
 >    Claude's own `git pull --rebase` works and leaves no locks (verified 2026-09-17). Claude still
 >    can't commit (no git identity in the VM): a local unpushed commit gets replayed as *staged
 >    changes* on top of origin/main, so Shaka's normal `git add -A && git commit` picks it up.
-> 2. Card redesign, duplicate-card fix and the split are all **live-verified 2026-09-16** (Shaka
->    saw the leader band go green), as are the Router double-apply fix, F15 "Where am I", the P2
->    session cache + stats-bar fast path, and P9 (Leaderboards 724 → 0 `getAccountInfo`).
->    Card header squeeze fix live-verified 2026-09-17. **③ (C2) is IN PROGRESS** — see the
->    2026-09-17 session log for the dispatcher design and the per-file checklist; pending live
->    check of batch 2 (`js/manage.js`, push pending) — batch 1 (dispatcher + card) is live-verified.
->    Then continue ③ (below), starting with `js/cards.js`; or the
->    visual pass if Shaka wants (Compare cards, Delegation tab, modals, Data Center summary tiles
->    still use the old look). Remaining backlog picks offered 2026-09-16 and not taken yet: F8b
->    rewards CSV export, F11 APR per validator.
+> 2. **③ (C2) is IN PROGRESS — 57 of 322 inline handlers converted.** Dispatcher = `Actions` in
+>    `js/core.js`; done: cards, delegation tile, manage, modals, shared copy button. **First thing:**
+>    confirm the last push of 2026-09-17 (batch 3, `js/modals.js`) is live — open `#/live`, click a
+>    TPS bar in the TPS modal (tooltip pins, × unpins) and a card's Slot explorer; console must have
+>    no `[Actions]` lines. Then continue file by file: `js/card-details.js` (6) → `js/leaderboards.js`
+>    (7) → `js/skip-monitor.js` (8) → the rest → `index.html` (217, incl. the `[onclick="…"]`
+>    selectors in app.js/leaderboards.js/calculators.js) → frame-buster `<script>` → drop
+>    `'unsafe-inline'` from `script-src`. Tests: `scripts/c2-tests/` (README there); run them in
+>    the cloud clone after every file. Rules and design in the 2026-09-17 session log.
+>    Wallet-connected flows are untested by Claude (no wallet) — ask Shaka to try one Manage action,
+>    a stake-row click and a Merge checkbox with his wallet connected.
+>    Everything from 2026-09-16 (card redesign, split, Router, F15, P2, P9) and the 2026-09-17 card
+>    header squeeze fix are live-verified. Other backlog (not taken yet): visual pass (Compare
+>    cards, Delegation tab, modals, Data Center summary tiles still old look), F8b rewards CSV
+>    export, F11 APR per validator, F4 fleet board.
 > 3. Under-the-hood queue: ② **split `index.html` — DONE 2026-09-16** (see §3 for the file map;
 >    `node scripts/assemble-monolith.js --check <file>` proves the split is a pure move). Next:
->    ③ replace the 263 inline `onclick` with a delegated `data-action` dispatcher, then drop
->    `unsafe-inline` from the CSP; ④ single RPC transport. Rule for the split files: load-time
+>    ③ replace the 322 inline `on*` handlers with the `data-action` dispatcher (IN PROGRESS, see
+>    item 2), then drop `unsafe-inline` from the CSP; ④ single RPC transport. Rule for the split files: load-time
 >    code in one file must not call into a later file (they are plain classic scripts run in
 >    order; function hoisting no longer crosses file boundaries). Known leftover: the dead
 >    `const originalSelectValidatorForSearch` in `js/compare.js` is now always `null` (it was
@@ -256,8 +261,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [x] **C1** split `index.html` — done 2026-09-16 (css + 18 js files, plain `<script src>`)
 - [ ] **C2** replace 322 inline `on*` handlers with delegated `data-action` listeners → drop
       `'unsafe-inline'` from `script-src`. Started 2026-09-17: `Actions` dispatcher in `js/core.js`;
-      done `js/cards.js` (17), `js/delegation.js` (2), `js/manage.js` (21), `getCopyButtonHtml` in
-      core.js. Remaining: index.html 217 · modals.js 15 · skip-monitor.js 8 · leaderboards.js 7 · card-details.js 6 · forensics.js 5 ·
+      done `js/cards.js` (17), `js/delegation.js` (2), `js/manage.js` (21), `js/modals.js` (15),
+      `getCopyButtonHtml` in core.js. Remaining: index.html 217 · skip-monitor.js 8 · leaderboards.js 7 · card-details.js 6 · forensics.js 5 ·
       calculators.js 5 · terminal.js 4 · compare.js 4 · wallet-tx.js 3 · network-live.js 3 ·
       app.js 3 · core.js 2; then the inline frame-buster `<script>` in the head (→ `js/frame-guard.js`
       or a CSP `sha256-` hash), then edit the CSP. The `[onclick="switchTab('…')"]`-style selectors
@@ -956,3 +961,30 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
     0 `[Actions]`/`[manage-call]` warnings. Not live-verified yet (needs the push).
 - Progress: 42 of 322 handlers converted (core 1 · cards 17 · delegation 2 · manage 21 + the
   shared copy button). Next: `js/modals.js` (15), `js/card-details.js` (6), `js/leaderboards.js` (7).
+- **Batch 2 live-verified** (`511cab6`): Manage Validator opens via `card-manage`; 14 action
+  buttons carry `data-fn` (6 enabled, 8 locked → explainer opens "No Stake Account Selected" and
+  Got it closes it); 9 real stake rows `select-account`; 14 copy buttons via the shared handler;
+  no `[Actions]` warnings. The 8 inline handlers left inside the modal are static index.html
+  markup (back, copy, connect/disconnect wallet, legend, refresh, vote row, authority badge).
+- **Batch 3 — `js/modals.js` (15):** reward-breakdown Retry (reuses `reward-breakdown`, whose
+  registration moved from cards.js to modals.js where `openRewardBreakdown` lives), `rb-close`,
+  `rb-portfolio-retry`; TPS modal: `tps-pin-close`, `tps-fetch-txs` (idx/start/end as data),
+  `tps-copy-tx`, tooltip container `stop`, and the SVG hit-zone rects `data-enter`/`data-leave`/
+  `data-action="tps-bar"`; `slot-tl-toggle`; `sm-refresh` ×2; slot-modal logo now renders a
+  hidden `.slot-modal-logo-ph` next to the img + `img-fallback` (was an `insertAdjacentHTML`
+  onerror). **Dispatcher additions (core.js):** `mouseover`→`data-enter` and `mouseout`→
+  `data-leave` with enter/leave semantics (a transition whose relatedTarget is inside the element
+  is ignored) because mouseenter/leave don't bubble; `img-fallback` now clears the placeholder's
+  inline `display:none` instead of forcing `flex` (every placeholder class is flex in the CSS).
+  Test `modals-test.js`: Retry button carries the escaped hostile name and stops propagation;
+  60 hit zones, enter → tooltip + `_tpsHoveredBucket`, leave (relatedTarget = neighbour) → cleared,
+  click → pinned, fetch button → `_fetchTxsForTpsBucket(5, 1000, 1999)`, tooltip click stopped,
+  close → unpinned; tx-row copy → `_copyTpsTx(sig, el)`; timeline toggle → `toggleSlotTimeline(el)`;
+  slot-modal broken icon → placeholder "E" shown flex. 0 inline handlers in each container, 0 page
+  errors, 0 warnings. Cards + manage tests re-run green after the dispatcher changes.
+- Progress: 57 of 322 (core 1 · cards 17 · delegation 2 · manage 21 · modals 15 + shared copy).
+  Next: `js/card-details.js` (6), `js/leaderboards.js` (7), `js/skip-monitor.js` (8).
+- **Wrap-up:** test harnesses committed as `scripts/c2-tests/` (cards / manage / modals + README) so
+  they survive the session — run from the cloud clone with Playwright. Session 8 totals
+  (2026-09-17): 4 pushes — card header squeeze; C2 batch 1 (dispatcher + card + delegation tile);
+  batch 2 (manage + shared copy); batch 3 (modals + hover pair, **push + live check pending**).

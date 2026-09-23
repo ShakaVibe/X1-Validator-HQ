@@ -997,7 +997,6 @@
       'slot-explorer':    (el, e, d) => { e.stopPropagation(); openSlotModal(d.node, d.name, d.vote); },
       'card-share':       (el, e, d) => shareValidator(d.vote, d.name, el),
       'card-manage':      (el, e, d) => openManageValidator(d.vote, d.name, Number(d.rewards) || 0, Number(d.commission) || 0, d.node || '', d.icon || ''),
-      'reward-breakdown': (el, e, d) => { e.stopPropagation(); openRewardBreakdown(d.vote, d.name, Number(d.commission) || 0); },
       'stake-selection':  (el, e, d) => openStakeSelection(d.vote, d.name),
       'perf-explainer':   (el, e, d) => openPerfExplainerModal(e, d.vote),
       'stake-details':    (el, e, d) => toggleStakeDetails(d.vote, d.name, Number(d.stake) || 0, Number(d.commission) || 0, el),
