@@ -309,35 +309,35 @@
 
     <!-- Tabs -->
     <div class="tabs">
-      <button class="tab" onclick="switchTab('skipmonitor')">
+      <button class="tab" data-action="tab" data-tab="skipmonitor">
         <span class="tab-icon"><span class="x1-logo-btn"><span style="color: #ffffff;">X</span><span style="color: var(--accent-blue);">1</span></span></span>
         <span class="tab-label">Network</span>
       </button>
-      <button class="tab" onclick="switchTab('vtterminal')">
+      <button class="tab" data-action="tab" data-tab="vtterminal">
         <span class="tab-icon">📊</span>
         <span class="tab-label">Validator Terminal</span>
       </button>
-      <button class="tab" onclick="switchTab('lookup')">
+      <button class="tab" data-action="tab" data-tab="lookup">
         <span class="tab-icon">🔍</span>
         <span class="tab-label">Validator Lookup</span>
       </button>
-      <button class="tab" onclick="switchTab('portfolio')">
+      <button class="tab" data-action="tab" data-tab="portfolio">
         <span class="tab-icon">🖥️</span>
         <span class="tab-label">My Data Center <span id="portfolioCount"></span></span>
       </button>
-      <button class="tab" onclick="switchTab('leaderboard')">
+      <button class="tab" data-action="tab" data-tab="leaderboard">
         <span class="tab-icon">🏆</span>
         <span class="tab-label">Leaderboards</span>
       </button>
-      <button class="tab" onclick="switchTab('delegation')">
+      <button class="tab" data-action="tab" data-tab="delegation">
         <span class="tab-icon">🏛️</span>
         <span class="tab-label">Delegation</span>
       </button>
-      <button class="tab" onclick="switchTab('compare')">
+      <button class="tab" data-action="tab" data-tab="compare">
         <span class="tab-icon">⚖️</span>
         <span class="tab-label">Compare <span id="compareCount"></span></span>
       </button>
-      <button class="tab" onclick="switchTab('calculators')">
+      <button class="tab" data-action="tab" data-tab="calculators">
         <span class="tab-icon">🔢</span>
         <span class="tab-label">Calculators</span>
       </button>
@@ -679,10 +679,10 @@
 
     <div class="tab-content" id="calculatorsTab">
       <div class="calculators-nav">
-        <button class="calc-nav-btn active" onclick="switchCalculator('staking')">💰 Staking Rewards</button>
-        <button class="calc-nav-btn" onclick="switchCalculator('compound')">🔄 Compound Growth</button>
-        <button class="calc-nav-btn" onclick="switchCalculator('unstaking')">⏱️ Unstaking Timeline</button>
-        <button class="calc-nav-btn" onclick="switchCalculator('breakeven')">💸 Break-Even</button>
+        <button class="calc-nav-btn active" data-action="calc-nav" data-calc="staking">💰 Staking Rewards</button>
+        <button class="calc-nav-btn" data-action="calc-nav" data-calc="compound">🔄 Compound Growth</button>
+        <button class="calc-nav-btn" data-action="calc-nav" data-calc="unstaking">⏱️ Unstaking Timeline</button>
+        <button class="calc-nav-btn" data-action="calc-nav" data-calc="breakeven">💸 Break-Even</button>
       </div>
 
       <!-- Staking Rewards Calculator -->

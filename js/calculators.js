@@ -27,7 +27,8 @@
       applyLiveXntPrice();
       // Update nav buttons
       document.querySelectorAll('.calc-nav-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelector(`.calc-nav-btn[onclick="switchCalculator('${calc}')"]`).classList.add('active');
+      const calcBtn = document.querySelector(`.calc-nav-btn[data-calc="${CSS.escape(calc)}"]`);
+      if (calcBtn) calcBtn.classList.add('active');
       
       // Show appropriate panel
       document.querySelectorAll('.calculator-panel').forEach(p => p.classList.remove('active'));
@@ -259,7 +260,7 @@
         document.getElementById('stakingCurrentStake').innerHTML = `
           <span style="color: var(--success);">✓ Stake breakdown loaded</span> - 
           Self: ${formatNumber(breakdownData.selfStake, 0)} | Delegated: ${formatNumber(breakdownData.delegatedStake, 0)} | Commission: ${commission}%
-          <span style="color: var(--accent-cyan); cursor: pointer; margin-left: 0.5rem;" onclick="openStakeBreakdown('${escAttrJs(validatorSelect.value)}', '${escAttrJs(validatorName)}', ${Number(currentStake) || 0}, ${Number(commission) || 0})">🔍</span>
+          <span style="color: var(--accent-cyan); cursor: pointer; margin-left: 0.5rem;" data-action="calc-open-breakdown" data-vote="${escHtml(validatorSelect.value)}" data-name="${escHtml(validatorName)}" data-stake="${Number(currentStake) || 0}" data-commission="${Number(commission) || 0}">🔍</span>
         `;
       } else {
         stakingCalcData.selfStake = 0;
@@ -267,7 +268,7 @@
         stakingCalcData.hasBreakdown = false;
         document.getElementById('stakingCurrentStake').innerHTML = `
           Total stake: ${formatNumber(currentStake, 0)} XNT | Commission: ${commission}%
-          <span style="color: var(--accent-gold); cursor: pointer; margin-left: 0.5rem;" onclick="fetchAndShowBreakdown('${escAttrJs(validatorSelect.value)}', '${escAttrJs(validatorName)}', ${Number(currentStake) || 0}, ${Number(commission) || 0})">🔍 Retry</span>
+          <span style="color: var(--accent-gold); cursor: pointer; margin-left: 0.5rem;" data-action="calc-fetch-breakdown" data-vote="${escHtml(validatorSelect.value)}" data-name="${escHtml(validatorName)}" data-stake="${Number(currentStake) || 0}" data-commission="${Number(commission) || 0}">🔍 Retry</span>
         `;
       }
       
@@ -620,8 +621,8 @@
             <div class="calc-projection-title">
               📈 Projected After Adding Stake
               <div class="calc-toggle">
-                <button class="calc-toggle-btn ${!isMonthly ? 'active' : ''}" onclick="setProjectionPeriod('yearly')">Year</button>
-                <button class="calc-toggle-btn ${isMonthly ? 'active' : ''}" onclick="setProjectionPeriod('monthly')">Month</button>
+                <button class="calc-toggle-btn ${!isMonthly ? 'active' : ''}" data-action="calc-period" data-period="yearly">Year</button>
+                <button class="calc-toggle-btn ${isMonthly ? 'active' : ''}" data-action="calc-period" data-period="monthly">Month</button>
               </div>
             </div>
             
@@ -1572,3 +1573,9 @@
       }
     }
 
+    Actions.register({
+      'calc-nav':             (el, e, d) => switchCalculator(d.calc),
+      'calc-open-breakdown':  (el, e, d) => openStakeBreakdown(d.vote, d.name, Number(d.stake) || 0, Number(d.commission) || 0),
+      'calc-fetch-breakdown': (el, e, d) => fetchAndShowBreakdown(d.vote, d.name, Number(d.stake) || 0, Number(d.commission) || 0),
+      'calc-period':          (el, e, d) => setProjectionPeriod(d.period),
+    });

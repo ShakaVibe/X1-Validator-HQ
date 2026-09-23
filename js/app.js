@@ -133,7 +133,7 @@
             })();
           } else if (tab === 'calculators' && rest[0]) {
             switchTab('calculators');
-            const btn = document.querySelector(`.calc-nav-btn[onclick="switchCalculator('${rest[0]}')"]`);
+            const btn = document.querySelector(`.calc-nav-btn[data-calc="${CSS.escape(rest[0])}"]`);
             if (btn) switchCalculator(rest[0]);
           } else {
             switchTab(tab);
@@ -219,7 +219,7 @@
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       // Tab button may not exist (e.g. skipmonitor has no visible button),
       // so guard against null.
-      const tabBtn = document.querySelector(`.tab[onclick="switchTab('${tab}')"]`);
+      const tabBtn = document.querySelector(`.tab[data-tab="${CSS.escape(tab)}"]`);
       if (tabBtn) tabBtn.classList.add('active');
 
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -302,3 +302,6 @@
       if (typeof Router !== 'undefined') Router.onTab(tab);
     }
 
+    Actions.register({
+      'tab': (el, e, d) => switchTab(d.tab),
+    });

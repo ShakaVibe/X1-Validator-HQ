@@ -33,12 +33,12 @@
         } else {
           resultsContainer.innerHTML = matches.map(v => {
             const logoHtml = v.iconUrl
-              ? `<img class="compare-search-result-logo" src="${safeUrl(v.iconUrl)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+              ? `<img class="compare-search-result-logo" src="${safeUrl(v.iconUrl)}" data-onerror="img-fallback">
                  <div class="compare-search-result-logo-placeholder" style="display:none;">${escHtml(v.name.charAt(0).toUpperCase())}</div>`
               : `<div class="compare-search-result-logo-placeholder">${escHtml(v.name.charAt(0).toUpperCase())}</div>`;
 
             return `
-              <div class="compare-search-result" onclick="addToComparison('${v.votePubkey}')">
+              <div class="compare-search-result" data-action="compare-add" data-vote="${escHtml(v.votePubkey)}">
                 ${logoHtml}
                 <div class="compare-search-result-info">
                   <div class="compare-search-result-name">${escHtml(v.name)}</div>
@@ -156,7 +156,7 @@
 
         if (validator) {
           const logoHtml = validator.iconUrl
-            ? `<img class="compare-slot-logo" src="${safeUrl(validator.iconUrl)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            ? `<img class="compare-slot-logo" src="${safeUrl(validator.iconUrl)}" data-onerror="img-fallback">
                <div class="compare-slot-logo-placeholder" style="display:none;">${escHtml(validator.name.charAt(0).toUpperCase())}</div>`
             : `<div class="compare-slot-logo-placeholder">${escHtml(validator.name.charAt(0).toUpperCase())}</div>`;
 
@@ -165,7 +165,7 @@
           slot.className = 'compare-slot filled';
           slot.onclick = null;
           slot.innerHTML = `
-            <button class="compare-slot-remove" onclick="removeFromComparison('${validator.votePubkey}')">&times;</button>
+            <button class="compare-slot-remove" data-action="compare-remove" data-vote="${escHtml(validator.votePubkey)}">&times;</button>
             <div class="compare-slot-header">
               ${logoHtml}
               <div class="compare-slot-name">${escHtml(validator.name)}</div>
@@ -378,8 +378,9 @@
       }
     });
 
-    // Modify the existing selectValidatorForSearch to handle compare mode
-    const originalSelectValidatorForSearch = typeof selectValidatorForSearch === 'function' ? selectValidatorForSearch : null;
     
 
-
+    Actions.register({
+      'compare-add':    (el, e, d) => addToComparison(d.vote),
+      'compare-remove': (el, e, d) => removeFromComparison(d.vote),
+    });

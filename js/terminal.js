@@ -437,7 +437,7 @@
                 '<div class="lbl">' + (_source === 'live' ? 'Live from api.x1.xyz' : snapshotAgeLabel()) + '</div>' +
                 '<div class="upd">Updated ' + isoTime + '</div>' +
               '</div>' +
-              '<button id="vtCornerRefresh" onclick="vtRefreshLive()" title="Fetch live data straight from api.x1.xyz (~13 MB download)">' +
+              '<button id="vtCornerRefresh" data-action="vt-refresh-live" title="Fetch live data straight from api.x1.xyz (~13 MB download)">' +
                 '<span class="vt-refresh-icon">&#x21bb;</span> Live' +
               '</button>' +
             '</div>' +
@@ -536,7 +536,7 @@
         const footerHtml =
           '<footer class="vt-footer">' +
             '<div class="row">' +
-              '<span><span class="vp-dot" onclick="vpOpenProbe()"></span>Generated ' + isoTime + '</span>' +
+              '<span><span class="vp-dot" data-action="vp-open-probe"></span>Generated ' + isoTime + '</span>' +
               '<span>Source &middot; ' + (_source === 'live'
                   ? 'live <code>' + API + '</code>'
                   : 'hourly snapshot <code>' + SNAPSHOT_URL + '</code> (built from <code>' + API + '</code>)') + '</span>' +
@@ -868,7 +868,7 @@
             '<div class="vt-error-detail">' + esc((err && err.message) || String(err)) + '</div>' +
             '<div class="vt-error-hint">The terminal downloads the full stake list from api.x1.xyz (~13 MB, uncompressed). ' +
               'Slow or unstable connections are the usual cause — the other tabs on this site do not need this download.</div>' +
-            '<button onclick="vtRetry()">Retry</button>' +
+            '<button data-action="vt-retry">Retry</button>' +
           '</div>';
       }
 
@@ -887,7 +887,7 @@
           '<span class="vt-stale-icon">&#9888;</span> ' +
           '<span>Refresh failed — showing data from <b>' + asOf + '</b>. ' +
           '<span class="vt-stale-why">' + esc((err && err.message) || String(err)) + '</span></span> ' +
-          '<button onclick="vtRetry()">Retry now</button>';
+          '<button data-action="vt-retry">Retry now</button>';
       }
 
       // ── Open / close ──────────────────────────────────
@@ -922,11 +922,16 @@
         stopAutoRefresh();
       }
 
-      // Expose globals for switchTab + inline onclick attributes
+      // Expose globals for switchTab and the data-action handlers below
       window.vtOpen  = open;
       window.vtClose = close;
       window.vtRetry = () => refresh(false);       // snapshot first, then live
       window.vtRefreshLive = () => refresh(true);  // "Live" button: api.x1.xyz first
     })();
 
-
+    Actions.register({
+      'vt-refresh-live': () => vtRefreshLive(),
+      'vt-retry':        () => vtRetry(),
+      // Forensics' hidden entry point (the dot in the terminal footer); vpOpenProbe lives in js/forensics.js.
+      'vp-open-probe':   () => vpOpenProbe(),
+    });

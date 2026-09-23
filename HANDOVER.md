@@ -14,14 +14,15 @@
 >    Claude's own `git pull --rebase` works and leaves no locks (verified 2026-09-17). Claude still
 >    can't commit (no git identity in the VM): a local unpushed commit gets replayed as *staged
 >    changes* on top of origin/main, so Shaka's normal `git add -A && git commit` picks it up.
-> 2. **③ (C2) is IN PROGRESS — 85 of 322 inline handlers converted.** Dispatcher = `Actions` in
->    `js/core.js`; done: cards, delegation tile, manage, modals, card-details, leaderboards (+ the 7
->    category buttons in index.html), skip-monitor, shared copy button — batches 1–4 all live-verified
->    (batch 4 on 2026-09-23). Nothing pending live-verification. Next: continue file by file:
->    compare.js (4) · terminal.js (4) · forensics.js (5) · calculators.js (5) · wallet-tx.js (3) ·
->    network-live.js (3) · app.js (2) · core.js (1) → `index.html` (210, incl. the `[onclick="…"]`
->    selectors still in app.js (calc-nav, tab) and calculators.js) → frame-buster `<script>` → drop
->    `'unsafe-inline'` from `script-src`. Tests: `scripts/c2-tests/` (README there); run them in
+> 2. **③ (C2) is IN PROGRESS — every js/*.js file is done; 198 inline handlers left, all static
+>    markup in `index.html`.** Dispatcher = `Actions` in `js/core.js`. Batches 1–4 live-verified;
+>    **first thing:** confirm batch 5 (2026-09-23, push pending: compare / terminal / forensics /
+>    calculators / wallet-tx / network-live + the 8 main tabs and 4 calculator nav buttons) is live —
+>    click every main tab, `#/calculators/compound` highlights that button, Compare search → add →
+>    ×, terminal Live button + Retry, next-leaders strip click, Forensics suspects/sort/copy; console
+>    must have no `[Actions]` lines. Then `index.html` tab by tab (198: modals, forms with
+>    `oninput`/`onchange`, the compare slots' `focusCompareSearch`, `portfolioDelegation`, …) →
+>    frame-buster `<script>` → drop `'unsafe-inline'` from `script-src`.
 >    the cloud clone after every file. Rules and design in the 2026-09-17 session log.
 >    Wallet-connected flows are untested by Claude (no wallet) — ask Shaka to try one Manage action,
 >    a stake-row click and a Merge checkbox with his wallet connected.
@@ -265,7 +266,9 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
       `getCopyButtonHtml` in core.js; 2026-09-23: `js/card-details.js` (6), `js/leaderboards.js` (7)
       + index.html leaderboard buttons (7), `js/skip-monitor.js` (8). Remaining (237): index.html 210 ·
       forensics.js 5 · calculators.js 5 · terminal.js 4 · compare.js 4 · wallet-tx.js 3 ·
-      network-live.js 3 · app.js 2 · core.js 1; then the inline frame-buster `<script>` in the head (→ `js/frame-guard.js`
+      network-live.js 3 · app.js 2 · core.js 1 — all done in batch 5 (2026-09-23) except index.html,
+      now 198 (the "27" counted `el.onclick = fn` property assignments and a comment, which CSP
+      allows — only markup attributes need converting); then the inline frame-buster `<script>` in the head (→ `js/frame-guard.js`
       or a CSP `sha256-` hash), then edit the CSP. The `[onclick="switchTab('…')"]`-style selectors
       in app.js / leaderboards.js / calculators.js must change when index.html is converted.
 - [ ] **C3/C4** single RPC transport; normalise records at ingestion
@@ -1037,3 +1040,27 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   subtitle at 760 px.
 - Data note: the terminal showed 146 delinquent of 723 right after the epoch 387 boundary (usually
   ~40). Probably a network event, not a site bug — worth a glance next session.
+
+### 2026-09-23 — Session 9, continued: C2 batch 5 — the last js/*.js handlers
+- Converted (35): `js/compare.js` 4 (`compare-add`, `compare-remove`, 2 logo `img-fallback`; the dead
+  `originalSelectValidatorForSearch` const deleted), `js/terminal.js` 4 (`vt-refresh-live`, `vt-retry`
+  ×2, `vp-open-probe` — the hidden Forensics dot), `js/forensics.js` 5 (`vp-filter-to`, `vp-sort`,
+  `vp-copy`, 2 avatar `img-fallback` — `.vp-ava-fb` is inline-flex in the CSS so the shared action
+  works), `js/calculators.js` 4 (`calc-open-breakdown`, `calc-fetch-breakdown`, `calc-period` ×2),
+  `js/wallet-tx.js` 3 (`wallet-install-close`, `wallet-select`, `wallet-select-close`),
+  `js/network-live.js` 3 (next-leaders `leader-lookup`, 2 leader logos `img-fallback-text`), and in
+  index.html the 8 main `.tab` buttons (`data-action="tab" data-tab`) + 4 `.calc-nav-btn`
+  (`calc-nav`, `data-calc`). The `[onclick="switchTab(…)"]` / `[onclick="switchCalculator(…)"]`
+  selectors in `switchTab`, `switchCalculator` and the Router are now `[data-tab=…]` /
+  `[data-calc=…]` with `CSS.escape`. No `[onclick…]` selector is left anywhere in js/.
+- Not converted on purpose: `el.onclick = fn` property assignments (wallet-tx modals, current-leader
+  card, compare empty slot) — they are not inline script, CSP allows them.
+- Test `scripts/c2-tests/batch5-test.js` (Forensics served with a seam exposing `S`/renderers; a
+  stub `Chart` because Chart.js is blocked offline): tabs + calc nav (child click bubbles, active
+  class, Router `#/calculators/compound`), Compare search → add / slot × (hostile name), staking
+  calculator breakdown link + Retry link (name round-trips, numbers stay numbers) + Year/Month
+  toggle, wallet select + install modals, next-leaders strip (5 clickable, broken icons → initial),
+  Forensics suspects/sort header/copy, terminal Live button + footer dot on the snapshot render, and
+  a second page with `data/terminal.json` 404 → error screen → Retry. All spies once with original
+  args, 0 inline in every rendered container, 0 page errors, 0 `[Actions]` warnings; suites 1–4 re-run
+  green. Not live-verified yet (push pending).

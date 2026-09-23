@@ -793,7 +793,7 @@
               <span>Backpack</span>
             </a>
           </div>
-          <button class="wallet-modal-close" onclick="closeWalletInstallModal()">Close</button>
+          <button class="wallet-modal-close" data-action="wallet-install-close">Close</button>
         </div>
       `;
       document.body.appendChild(modal);
@@ -818,7 +818,7 @@
           ? `<span class="wallet-option-icon x1-wallet-icon"><img src="${x1LogoBase64}" alt="X1 Wallet"></span>`
           : `<span class="wallet-option-icon">${w.icon}</span>`;
         return `
-          <button class="wallet-option" onclick="selectWallet('${w.name}')">
+          <button class="wallet-option" data-action="wallet-select" data-wallet="${escHtml(w.name)}">
             ${iconHtml}
             <span>${w.name}</span>
           </button>
@@ -832,7 +832,7 @@
           <div class="wallet-options">
             ${walletButtons}
           </div>
-          <button class="wallet-modal-close" onclick="closeWalletSelectModal()">Cancel</button>
+          <button class="wallet-modal-close" data-action="wallet-select-close">Cancel</button>
         </div>
       `;
       document.body.appendChild(modal);
@@ -1990,3 +1990,8 @@
       if (e.key === 'Enter') performSearch();
     });
 
+    Actions.register({
+      'wallet-install-close': () => closeWalletInstallModal(),
+      'wallet-select':        (el, e, d) => selectWallet(d.wallet),
+      'wallet-select-close':  () => closeWalletSelectModal(),
+    });

@@ -10,6 +10,7 @@ state, replaces the target functions with spies and clicks through.
     node scripts/c2-tests/manage-test.js /path/to/repo
     node scripts/c2-tests/modals-test.js /path/to/repo
     node scripts/c2-tests/batch4-test.js /path/to/repo   # card-details, leaderboards, skip-monitor
+    node scripts/c2-tests/batch5-test.js /path/to/repo   # compare, terminal, forensics, calculators, wallet-tx, network-live, tabs
 
 Pass the repo as an absolute path (or `$PWD`) — a bare `.` makes the static server 404 everything.
 

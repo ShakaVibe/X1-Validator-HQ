@@ -1042,11 +1042,11 @@
         listEl.innerHTML = suspects.map((r, i) => {
           const letter = esc(((r.name || r.votePubkey).trim()[0] || '?').toUpperCase());
           const ava = r.iconUrl
-            ? '<img class="vp-ava" src="' + esc(r.iconUrl) + '" alt="" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline-flex\';">'
+            ? '<img class="vp-ava" src="' + esc(r.iconUrl) + '" alt="" loading="lazy" data-onerror="img-fallback">'
               + '<span class="vp-ava-fb" style="display:none;">' + letter + '</span>'
             : '<span class="vp-ava-fb">' + letter + '</span>';
           const nm = r.name ? esc(r.name) : (r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4));
-          return '<div class="vp-sus-row" onclick="vpFilterTo(\'' + r.votePubkey + '\')" title="' + r.votePubkey + '&#10;' + esc(r.riskWhy || '') + '&#10;click to filter the table to this validator">'
+          return '<div class="vp-sus-row" data-action="vp-filter-to" data-vote="' + esc(r.votePubkey) + '" title="' + r.votePubkey + '&#10;' + esc(r.riskWhy || '') + '&#10;click to filter the table to this validator">'
             + '<span class="vp-sus-rank">' + (i + 1) + '</span>'
             + ava
             + '<span class="vp-sus-name">' + nm + '</span>'
@@ -1139,7 +1139,7 @@
 
         document.getElementById('vpTheadRow').innerHTML = cols.map(c => {
           const arrow = S.sortKey === c.key ? ' <span class="vp-arrow">' + (S.sortDir < 0 ? '▼' : '▲') + '</span>' : '';
-          const click = c.sortable === false ? '' : ' onclick="vpSetSort(\'' + c.key + '\')"';
+          const click = c.sortable === false ? '' : ' data-action="vp-sort" data-key="' + esc(c.key) + '"';
           const tip = c.tip ? ' title="' + c.tip + '"' : '';
           return '<th class="' + (c.left ? 'vp-left' : '') + '"' + click + tip + '>' + c.label + arrow + '</th>';
         }).join('');
@@ -1171,7 +1171,7 @@
               : '');
           const letter = esc(((r.name || r.votePubkey).trim()[0] || '?').toUpperCase());
           const ava = r.iconUrl
-            ? '<img class="vp-ava" src="' + esc(r.iconUrl) + '" alt="" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'inline-flex\';">'
+            ? '<img class="vp-ava" src="' + esc(r.iconUrl) + '" alt="" loading="lazy" data-onerror="img-fallback">'
               + '<span class="vp-ava-fb" style="display:none;">' + letter + '</span>'
             : '<span class="vp-ava-fb">' + letter + '</span>';
           const nameHtml = r.name
@@ -1180,7 +1180,7 @@
           let cells = '<td class="vp-muted">' + (i + 1) + '</td>';
           cells += '<td class="vp-left">' + ava + nameHtml + '</td>';
           cells += '<td class="vp-left"><span class="vp-pk" title="' + r.votePubkey + '&#10;node: ' + r.nodePubkey + '">' + r.votePubkey.slice(0, 6) + '…' + r.votePubkey.slice(-4) + '</span>'
-            + '<span class="vp-copy" onclick="vpCopyPk(\'' + r.votePubkey + '\', this)" title="Copy vote account address">⧉</span>' + badges + '</td>';
+            + '<span class="vp-copy" data-action="vp-copy" data-vote="' + esc(r.votePubkey) + '" title="Copy vote account address">⧉</span>' + badges + '</td>';
           if (S.deepDone) {   // HW class header is shown only after deep scan — keep cells in lockstep
             if (r.hwScore === null) {
               cells += '<td class="vp-muted" title="No leader slots produced in the analysis window — validator has not led recently">—</td>';
@@ -1776,7 +1776,7 @@
         URL.revokeObjectURL(a.href);
       }
 
-      // Expose globals for the dot + inline onclick attributes
+      // Expose globals (index.html's static controls + the data-action handlers below)
       window.vpOpenProbe   = openProbe;
       window.vpCloseProbe  = closeProbe;
       window.vpRunProbe    = runProbe;
@@ -1796,3 +1796,9 @@
       window.vpDeepScan    = deepScan;
       window.vpLeaderBench = leaderBench;
     })();
+
+    Actions.register({
+      'vp-filter-to': (el, e, d) => vpFilterTo(d.vote),
+      'vp-sort':      (el, e, d) => vpSetSort(d.key),
+      'vp-copy':      (el, e, d) => vpCopyPk(d.vote, el),
+    });

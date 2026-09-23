@@ -688,7 +688,7 @@
           }
           const logoEl = document.getElementById('currentLeaderLogo');
           if (currentLeaderInfo.iconUrl) {
-            logoEl.innerHTML = `<img src="${safeUrl(currentLeaderInfo.iconUrl)}" alt="${escHtml(currentLeaderInfo.name.charAt(0))}" onerror="this.style.display='none';this.parentElement.textContent='${escAttrJs(currentLeaderInfo.name.charAt(0).toUpperCase())}';">`;
+            logoEl.innerHTML = `<img src="${safeUrl(currentLeaderInfo.iconUrl)}" alt="${escHtml(currentLeaderInfo.name.charAt(0))}" data-onerror="img-fallback-text" data-fallback="${escHtml(currentLeaderInfo.name.charAt(0).toUpperCase())}">`;
           } else {
             logoEl.textContent = currentLeaderInfo.name.charAt(0).toUpperCase();
           }
@@ -720,12 +720,12 @@
             const initial = fullName.charAt(0).toUpperCase();
             let logoHtml;
             if (info && info.iconUrl) {
-              logoHtml = `<div class="leader-next-logo"><img src="${safeUrl(info.iconUrl)}" alt="${escHtml(initial)}" onerror="this.style.display='none';this.parentElement.textContent='${escAttrJs(initial)}';"></div>`;
+              logoHtml = `<div class="leader-next-logo"><img src="${safeUrl(info.iconUrl)}" alt="${escHtml(initial)}" data-onerror="img-fallback-text" data-fallback="${escHtml(initial)}"></div>`;
             } else {
               logoHtml = `<div class="leader-next-logo">${escHtml(initial)}</div>`;
             }
             const isClickable = info && info.votePubkey;
-            const clickAttr = isClickable ? `onclick="lookupValidator('${escAttrJs(info.votePubkey)}')"` : '';
+            const clickAttr = isClickable ? `data-action="leader-lookup" data-vote="${escHtml(info.votePubkey)}"` : '';
             const clickClass = isClickable ? ' clickable' : '';
             const titleAttr = isClickable ? `title="View ${escHtml(fullName)} in Validator Lookup"` : `title="${escHtml(fullName)}"`;
             return `
@@ -1039,3 +1039,6 @@
       setInterval(loadTpsSamples, 60000);
     }
 
+    Actions.register({
+      'leader-lookup': (el, e, d) => lookupValidator(d.vote),
+    });
