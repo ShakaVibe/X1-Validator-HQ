@@ -23,8 +23,9 @@
 >    tab for CSP errors in the console.
 >    Tests: `scripts/c2-tests/` (README there) — run them in the cloud clone after every file.
 >    Rules and design in the 2026-09-17 session log.
->    Wallet-connected flows are untested by Claude (no wallet) — ask Shaka to try one Manage action,
->    a stake-row click and a Merge checkbox with his wallet connected.
+>    If Shaka can't do (a) yet, don't block on it: next agreed work is **F3 Telegram alerts**
+>    (then F4 fleet board). Open offer: harden `js/frame-guard.js` (blank the page if still framed
+>    after the escape attempt — see batch 7 finding).
 >    Everything from 2026-09-16 (card redesign, split, Router, F15, P2, P9) and the 2026-09-17 card
 >    header squeeze fix are live-verified. Other backlog (not taken yet): visual pass (Compare
 >    cards, Delegation tab, modals, Data Center summary tiles still old look), F8b rewards CSV
@@ -1158,3 +1159,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   that used to recurse): `js/frame-guard.js` loaded, page builds normally unframed;
   `toggleGlobeRotation()` ×4 and the button ×2 — no throw; **console completely clean on load**, so
   the pane's "Maximum call stack" error seen on every load since 2026-09-13 is gone too (same bug).
+- **Session 9 totals (2026-09-23):** 9 pushes, all live-verified — batch 3 (modals), batch 4
+  (card-details / leaderboards / skip-monitor + stake-section id fix), terminal header overlap,
+  batch 5 (last js/*.js + tabs/calc nav), batch 6 (all 198 index.html handlers, differential-tested),
+  batch 7 (frame-guard file + globe recursion), plus HANDOVER commits. C2 is one step (the CSP edit)
+  from done, waiting only on Shaka's wallet test. Cloud clone + scratch harnesses are session-only.
