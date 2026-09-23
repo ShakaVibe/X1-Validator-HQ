@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-23T18:26:35.267Z",
-  "totalNodes": 590,
-  "totalLocations": 586,
+  "lastUpdated": "2026-09-23T20:03:16.863Z",
+  "totalNodes": 589,
+  "totalLocations": 585,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4084,13 +4084,6 @@
       "lat": -1.2841,
       "lon": 36.8155
     },
-    "151.80.18.55": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6974,
-      "lon": 3.178
-    },
     "169.58.110.30": {
       "country": "France",
       "countryCode": "FR",
@@ -4107,45 +4100,45 @@
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 73
+    "DE": {
+      "name": "Germany",
+      "count": 128
     },
     "US": {
       "name": "United States",
       "count": 198
     },
-    "FI": {
-      "name": "Finland",
-      "count": 77
+    "FR": {
+      "name": "France",
+      "count": 54
     },
     "CA": {
       "name": "Canada",
       "count": 19
     },
-    "FR": {
-      "name": "France",
-      "count": 55
+    "PL": {
+      "name": "Poland",
+      "count": 73
     },
-    "DE": {
-      "name": "Germany",
-      "count": 128
+    "FI": {
+      "name": "Finland",
+      "count": 77
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 22
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
     "SE": {
       "name": "Sweden",
       "count": 5
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 22
+    "GB": {
+      "name": "United Kingdom",
+      "count": 5
     },
     "SG": {
       "name": "Singapore",
