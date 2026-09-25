@@ -25,13 +25,18 @@
        defense fails: (1) a hacker can't load their own external script, and
        (2) the page can't exfiltrate data to an attacker-controlled server.
 
-       NOTE on 'unsafe-inline' in script-src: this app uses ~300 inline event
-       handlers (onclick/oninput/etc.) that run core functionality, so inline
-       script execution must remain allowed for the site to work. The XSS
-       injection path those would otherwise expose is already closed upstream
-       by escaping all on-chain data before it reaches the DOM (Issue #3).
-       Removing 'unsafe-inline' here would require migrating every inline
-       handler to addEventListener first — a separate, larger effort.
+       script-src has NO 'unsafe-inline' (since 2026-09-25): every one of the
+       former ~320 inline event handlers (onclick/oninput/onerror/…) was
+       replaced by data-action / data-input / data-change / data-onerror
+       attributes handled by the `Actions` dispatcher in js/core.js (+ the
+       js/index-actions.js allow-list for this file), and the inline
+       frame-buster moved to js/frame-guard.js. The browser now refuses ANY
+       inline script or inline handler, even one injected through an XSS
+       hole — so a name/icon that slips past escaping can no longer run code.
+       RULES FOR NEW CODE: no on*="…" attributes, no inline <script>, no
+       javascript: URLs, no setTimeout("string"); `el.onclick = fn` property
+       assignments in js are fine (they are not inline script).
+       ('unsafe-inline' in style-src stays: ~130 style="…" attributes.)
 
        Every allowed origin below was mapped from actual usage in this file:
          script  : self + cdnjs (Chart.js) + unpkg (globe.gl + topojson-client,
@@ -63,7 +68,7 @@
        or the browser will block it. -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com;
+    script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https:;

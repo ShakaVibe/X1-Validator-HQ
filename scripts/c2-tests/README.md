@@ -11,6 +11,7 @@ state, replaces the target functions with spies and clicks through.
     node scripts/c2-tests/modals-test.js /path/to/repo
     node scripts/c2-tests/batch4-test.js /path/to/repo   # card-details, leaderboards, skip-monitor
     node scripts/c2-tests/batch5-test.js /path/to/repo   # compare, terminal, forensics, calculators, wallet-tx, network-live, tabs
+    node scripts/c2-tests/csp-walk-test.js /path/to/repo # strict CSP: walk every route + modals, 0 script-src violations, inline control refused
 
 **index.html (batch 6)** is covered by a differential test instead: the page is loaded with
 the pre-conversion index.html and with the converted one, every handler element is fired,
