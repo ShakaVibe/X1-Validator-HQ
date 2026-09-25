@@ -6,7 +6,13 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-09-23):**
+> **Start here next session (as of 2026-09-25):**
+> 0. **Privacy follow-up (2026-09-25):** a GitHub Support ticket asking for a GC of the dangling
+>    pre-rewrite commits is pending. When Support confirms, check that
+>    `api.github.com/repos/ShakaVibe/X1-Validator-HQ/commits/3ad83423365dd53c8fe8c3e81e0748bca585c9b4`
+>    returns 404, and re-run the Actions-runs scan (session 10 log). Still on the owner's list:
+>    GitHub → Settings → Emails → "Keep my email addresses private" + "Block command line pushes
+>    that expose my email"; registrar WHOIS privacy for x1valhq.xyz.
 > 1. `cd ~/Desktop/X1VHQ && git pull` — bots commit hourly (via the heartbeat; verified 2026-09-16:
 >    scores at :04, snapshots at :43, geo every 2 h at :03 — 79 bot commits in 24 h, no gaps).
 >    If Shaka's `git add` complains about `index.lock`, `rm -f .git/index.lock .git/objects/maintenance.lock`.
@@ -1165,3 +1171,29 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   batch 5 (last js/*.js + tabs/calc nav), batch 6 (all 198 index.html handlers, differential-tested),
   batch 7 (frame-guard file + globe recursion), plus HANDOVER commits. C2 is one step (the CSP edit)
   from done, waiting only on Shaka's wallet test. Cloud clone + scratch harnesses are session-only.
+
+### 2026-09-25 — Session 10: privacy cleanup (~45 min)
+- Owner's goal: no way to find the owner's real name from anything public. The repo was *not* made
+  private — on GitHub Free, Pages does not publish from private repos (the site would go down) and
+  private repos get 2,000 Actions min/month while the heartbeat chain alone uses ~42,000 (one
+  runner sleeping ~58 min/h). Private also would not hide the deployed files (Pages serves the
+  whole repo, incl. this file). Decision: keep public, close the actual leaks.
+- **Audit (all clean):** working tree and the entire reachable history (4,569 commits) contain no
+  real name / email / Mac name / `/Users/` path (`git grep` over every revision; only hit is the
+  privacy rule in §1). Unreachable local objects: bots + ShakaVibe only. GitHub profile fields
+  empty, 0 forks, 1 star, no Wayback snapshots of the repo, the profile or `x1valhq.xyz/HANDOVER.md`.
+- **Leak 1 — Actions run records.** `GET /actions/runs` returns `head_commit.author.name` as it
+  was when the run was triggered; the history rewrite cannot change that. 89 runs (2026-09-10 →
+  09-23: 46 pages-build, 12 scores, 11 terminal, 9 geo, 11 heartbeat) still carried the old author
+  name. Deleted all 89 via `DELETE /actions/runs/{id}` with a one-off fine-grained PAT (Actions:
+  read/write, this repo only; revoked afterwards). Re-scan of 3,900 runs: 0 left.
+- **Leak 2 — dangling commits.** GitHub still serves the pre-rewrite commits by SHA (verified:
+  `3ad83423…` returns the old author). Only GitHub Support can GC them — ticket text given to the
+  owner (see Start-here item 0).
+- Prevention: global git identity on the Mac set to `ShakaVibe <145924450+ShakaVibe@users.noreply.github.com>`
+  (verified with `git config --global --get-regexp user`). Rule stays: never write personal data
+  into this file or any commit; a scan of run records is the check after any future incident:
+  `GET /repos/ShakaVibe/X1-Validator-HQ/actions/runs?per_page=100&page=N` → `head_commit.author`.
+- Repo state: clean and level with origin/main at start (`a80e42fc`); heartbeat healthy (bot
+  commits 19:03 / 20:03 UTC). C2 status unchanged: 0 inline handlers/scripts in index.html, only
+  the CSP edit (step (c)) is left, still waiting on the owner's wallet test (step (a)).
