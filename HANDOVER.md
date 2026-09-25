@@ -20,30 +20,22 @@
 >    Claude's own `git pull --rebase` works and leaves no locks (verified 2026-09-17). Claude still
 >    can't commit (no git identity in the VM): a local unpushed commit gets replayed as *staged
 >    changes* on top of origin/main, so Shaka's normal `git add -A && git commit` picks it up.
-> 2. **③ (C2): all 322 inline handlers are converted** (index.html done 2026-09-23, batch 6 —
->    `js/index-actions.js`, live-verified). **Left for C2:** (a) Shaka tries the wallet flows — one Manage action,
->    a stake-row click, a Merge checkbox, and one real transaction's confirm → "Close" button;
->    (b) ~~move the head frame-buster `<script>` to a file~~ done 2026-09-23 (`js/frame-guard.js`,
->    live-verified); (c) drop `'unsafe-inline'` from `script-src` in the CSP meta tag
->    (and update the CSP comment that still says "~300 inline event handlers") and live-check every
->    tab for CSP errors in the console.
->    Tests: `scripts/c2-tests/` (README there) — run them in the cloud clone after every file.
->    Rules and design in the 2026-09-17 session log.
->    If Shaka can't do (a) yet, don't block on it: next agreed work is **F3 Telegram alerts**
->    (then F4 fleet board). Open offer: harden `js/frame-guard.js` (blank the page if still framed
->    after the escape attempt — see batch 7 finding).
->    Everything from 2026-09-16 (card redesign, split, Router, F15, P2, P9) and the 2026-09-17 card
->    header squeeze fix are live-verified. Other backlog (not taken yet): visual pass (Compare
->    cards, Delegation tab, modals, Data Center summary tiles still old look), F8b rewards CSV
->    export, F11 APR per validator, F4 fleet board.
-> 3. Under-the-hood queue: ② **split `index.html` — DONE 2026-09-16** (see §3 for the file map;
->    `node scripts/assemble-monolith.js --check <file>` proves the split is a pure move). Next:
->    ③ replace the 322 inline `on*` handlers with the `data-action` dispatcher (IN PROGRESS, see
->    item 2), then drop `unsafe-inline` from the CSP; ④ single RPC transport. Rule for the split files: load-time
->    code in one file must not call into a later file (they are plain classic scripts run in
->    order; function hoisting no longer crosses file boundaries). Known leftover: the dead
->    `const originalSelectValidatorForSearch` in `js/compare.js` is now always `null` (it was
->    never read) — delete it during ③.
+> 2. **③ (C2) is DONE (2026-09-25):** `index.html` has 0 inline handlers and 0 inline `<script>`, and the
+>    CSP `script-src` no longer carries `'unsafe-inline'` (push `35eacda0`, live-verified on every tab —
+>    session 10 log). Still open on Shaka's side: try the wallet flows once (one Manage action, a
+>    stake-row click, a Merge checkbox, one real transaction's confirm → "Close") — they use `.onclick`
+>    properties, which the strict CSP allows, so no breakage is expected. Test suites:
+>    `scripts/c2-tests/` (README there) — `csp-walk-test.js` is the strict-CSP check to re-run after
+>    any edit to `index.html`. **Rule for all new code: no `on*="…"` attributes, no inline `<script>`,
+>    no `javascript:` URLs — the browser now refuses them silently (check the console for "Refused to").**
+>    Next agreed work: **F3 Telegram alerts** (then F4 fleet board). Open offer: harden
+>    `js/frame-guard.js` (blank the page if still framed after the escape attempt — batch 7 finding).
+>    Other backlog (not taken yet): visual pass (Compare cards, Delegation tab, modals, Data Center
+>    summary tiles still old look), F8b rewards CSV export, F11 APR per validator, F4 fleet board.
+> 3. Under-the-hood queue: ② split `index.html` — DONE 2026-09-16 (see §3 for the file map);
+>    ③ `data-action` dispatcher + strict CSP — DONE 2026-09-25; next: ④ single RPC transport (C3/C4).
+>    Rule for the split files: load-time code in one file must not call into a later file (they are
+>    plain classic scripts run in order; function hoisting no longer crosses file boundaries).
 > 4. Useful console diagnostics on the live site: `rpcStats.byMethod` (RPC calls by method since
 >    load / `rpcStats.reset()`), `RewardsLedger.doc`, `PowerSaver.forceIdle(true/false)`.
 > 5. Shelved — don't re-propose: earnings chart/sparkline on the card ("takes up too much real
@@ -267,17 +259,10 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 
 ### Phase 3 — ongoing (platform)
 - [x] **C1** split `index.html` — done 2026-09-16 (css + 18 js files, plain `<script src>`)
-- [ ] **C2** replace 322 inline `on*` handlers with delegated `data-action` listeners → drop
-      `'unsafe-inline'` from `script-src`. Started 2026-09-17: `Actions` dispatcher in `js/core.js`;
-      done `js/cards.js` (17), `js/delegation.js` (2), `js/manage.js` (21), `js/modals.js` (15),
-      `getCopyButtonHtml` in core.js; 2026-09-23: `js/card-details.js` (6), `js/leaderboards.js` (7)
-      + index.html leaderboard buttons (7), `js/skip-monitor.js` (8). Remaining (237): index.html 210 ·
-      forensics.js 5 · calculators.js 5 · terminal.js 4 · compare.js 4 · wallet-tx.js 3 ·
-      network-live.js 3 · app.js 2 · core.js 1 — all done in batch 5 (2026-09-23) except index.html,
-      now 198 (the "27" counted `el.onclick = fn` property assignments and a comment, which CSP
-      allows — only markup attributes need converting); then the inline frame-buster `<script>` in the head (→ `js/frame-guard.js`
-      or a CSP `sha256-` hash), then edit the CSP. The `[onclick="switchTab('…')"]`-style selectors
-      in app.js / leaderboards.js / calculators.js must change when index.html is converted.
+- [x] **C2** done 2026-09-25 — all 322 inline `on*` handlers → `data-action` dispatcher (`Actions` in
+      `js/core.js`, `js/index-actions.js` allow-list for index.html), frame-buster → `js/frame-guard.js`,
+      `'unsafe-inline'` dropped from `script-src`. Batches 1–7 in the 2026-09-17 / 09-23 logs; CSP in the
+      2026-09-25 log. Tests: `scripts/c2-tests/`.
 - [ ] **C3/C4** single RPC transport; normalise records at ingestion
 - [ ] **P6/D5** PWA shell, light theme; **C8** public changelog
 
@@ -1197,3 +1182,32 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Repo state: clean and level with origin/main at start (`a80e42fc`); heartbeat healthy (bot
   commits 19:03 / 20:03 UTC). C2 status unchanged: 0 inline handlers/scripts in index.html, only
   the CSP edit (step (c)) is left, still waiting on the owner's wallet test (step (a)).
+
+### 2026-09-25 — Session 10, continued: C2 finished — strict CSP (~1 hour)
+- Pre-flight on the working tree: 0 `on*=` attributes and 0 inline `<script>` in `index.html` (the only
+  html file); no `javascript:` URLs, string timers, `new Function`, `eval` or `document.write` in js/;
+  the only dynamic `<script>` is globe.js loading globe.gl from unpkg (allowed by `script-src`).
+- `index.html`: `script-src 'self' https://cdnjs.cloudflare.com https://unpkg.com` (no
+  `'unsafe-inline'`); the head comment now documents the dispatcher and the rules for new code
+  (`el.onclick = fn` in js is fine; `style-src 'unsafe-inline'` stays for the ~130 `style=` attrs).
+- New `scripts/c2-tests/csp-walk-test.js`: serves the repo, records `securitypolicyviolation`
+  events + CSP console errors + page errors while walking all 13 routes, the disclaimer flow and
+  the epoch-timeline / TPS / browse modals, then a positive control (an injected inline `onclick`
+  and an inline `<script>` must both be refused). Result offline: 0 script-src violations, 0 page
+  errors, control refused (those two "Refused to execute" lines in the output are the control).
+  Suites cards / manage / modals / batch4 / batch5 re-run green under the strict policy.
+- **Live-verified** (`35eacda0`, fresh pane tab, `fetch('/index.html', {cache:'reload'})` +
+  reload): CSP meta is the strict one; Chart.js, web3.js and globe.gl all load; 0 inline handlers /
+  scripts in the DOM; `securitypolicyviolation` listener stayed empty across `#/live #/terminal
+  (723 rows) #/lookup/… #/datacenter #/leaderboard/performance|efficient|commission (50 rows,
+  category click routes) #/delegation #/compare (search "Shaka" → 5, add → "(1)", × → removed)
+  #/calculators/staking|breakeven #/globe`; real dispatcher clicks: epoch-timeline modal open/close,
+  TPS modal (60 hit zones) open/close, card → Manage Validator (22 `data-fn` buttons) → close button,
+  Delegation Details open/close, Stake details (self 21,498 / delegated 1,289,320 XNT, 8 accounts),
+  Data Center "Browse all validators" (200 rows) open/close, terminal Live button present. Console:
+  no errors except one external 404 (a validator icon; img-fallback handles it), no `[Actions]`
+  lines, no "Refused to" lines.
+- Not exercised live: wallet signing flows (need Shaka's wallet) — they are `.onclick` property
+  assignments, which CSP does not restrict.
+- Session 10 totals (2026-09-25): privacy cleanup (89 Actions runs purged, Support ticket for the
+  dangling commits pending) + C2 finished. 2 pushes (`565de5aa` HANDOVER, `35eacda0` CSP) + this one.
