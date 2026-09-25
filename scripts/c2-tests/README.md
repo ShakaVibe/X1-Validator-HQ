@@ -16,7 +16,7 @@ state, replaces the target functions with spies and clicks through.
 the pre-conversion index.html and with the converted one, every handler element is fired,
 and the spied calls must match one for one:
 
-    git show 02bbad2:index.html > /tmp/o.html        # last commit before batch 6
+    git show 03836c7:index.html > /tmp/o.html        # last commit before batch 6
     python3 scripts/c2-tests/convert-index.py /tmp/o.html /tmp/conv.html --instrument
     node scripts/c2-tests/index-diff-test.js "$PWD" /tmp/conv.orig.html /tmp/conv.html
 

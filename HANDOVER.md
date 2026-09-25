@@ -75,6 +75,7 @@
 | **What it is** | Single-page dashboard + validator management tool for the X1 blockchain: Network, Validator Terminal, Validator Lookup, My Data Center (portfolio), Leaderboards, Compare, Calculators |
 | **Stack** | Static: `index.html` (3.3k lines of HTML) + `css/site.css` + 18 plain `js/*.js` files loaded with `<script src>` in a fixed order (split from one 39k-line file on 2026-09-16, no build step), vendored `@solana/web3.js`, GitHub Actions that commit data files hourly |
 | **Owner** | Shaka (ShakaVibe) — (private) |
+| **Privacy** | This file is PUBLIC (repo and https://x1valhq.xyz/HANDOVER.md). Never write the owner's real name, email, Mac name or `/Users/...` paths into any file or commit. Git author must be `ShakaVibe <145924450+ShakaVibe@users.noreply.github.com>`. History was scrubbed with git-filter-repo on 2026-09-25 (49 commits re-authored; every commit ID from 2026-09-10 on changed, references in docs updated). |
 
 ## 2. Daily workflow
 
@@ -135,7 +136,7 @@ js/delegation.js              Delegation Program module (IIFE: delegOpen/delegRe
 js/price-pill.js              XNT price pill (XDEX)
 js/forensics.js               Validator Forensics (hidden tool)
 scripts/assemble-monolith.js  rebuilds the single-file index.html from the pieces; `--check FILE`
-                              exits 0 iff byte-identical (proved against 0101736 on 2026-09-16)
+                              exits 0 iff byte-identical (proved against ca33c03 on 2026-09-16)
 data/scores.json              canonical validator scores — written hourly by Action
 data/history.json             7-day rolling history behind the scores
 validator-locations.json      geo data — written every 2h by Action
@@ -423,7 +424,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   and read by nothing — it's the raw material for history charts.
 
 ### 2026-09-10 — Session 2 (hygiene pass, ~1 hour)
-- `git pull` clean (no bot commits had landed since cb48789 — the :07 scores run hadn't fired
+- `git pull` clean (no bot commits had landed since 9f0b549 — the :07 scores run hadn't fired
   yet; GitHub cron is often late). Cloud sandbox cannot reach x1valhq.xyz (proxy 403), so live
   checks run in the desktop-app browser; Playwright previews use a staged copy of `index.html`.
 - **Verified live:** Delegation tile renders exactly one "Details" link
@@ -690,7 +691,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Verified: `node --check` on all 5 inline scripts; Playwright smoke (offline, fake validator) at
   1440 / 1000 / 390 px — no page errors, `LeaderCountdown` ticks the new chip. Not yet live-verified
   (needs the push) — do that first next session.
-- Pushed by Shaka during the session (`e7c9f08`/`87ebfa3` card, `51d32c4` first button). Follow-ups
+- Pushed by Shaka during the session (`c1d3c5f`/`b773bee` card, `dc0f068` first button). Follow-ups
   after seeing it live: stat tiles stayed 4-up down to a ~700px card (container query on
   `.stat-group`, was a 1100px media query); **Manage Validator button** rebuilt after a reference
   Shaka liked (dark fill, thin luminous border, bold uppercase glowing label, icon in a ringed disc,
@@ -742,7 +743,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `index.html` split (③ in the Start-here list).
 
 ### 2026-09-16 — Session 7, continued: split `index.html` (C1), ~1.5 hours
-- Shaka confirmed the leader band goes green live. Push `0101736` (duplicate-card fix) live-verified:
+- Shaka confirmed the leader band goes green live. Push `ca33c03` (duplicate-card fix) live-verified:
   Data Center card fills (26.88), its Earnings trend / Stake details open on the DC card only,
   `chart-lk-…` / `chart-dc-…` ids, console clean on a fresh tab (the pane's "Maximum call stack"
   error is gone too).
@@ -765,7 +766,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   last statement of the last main file. Async continuations that start at load
   (`loadCanonicalScores`, `loadPortfolioSafe`) touch only their own file.
 - **Verification:** `node scripts/assemble-monolith.js --check` (new, committed) rebuilds the
-  monolith from the pieces and is byte-identical to `git show 0101736:index.html`, both in the
+  monolith from the pieces and is byte-identical to `git show ca33c03:index.html`, both in the
   cloud and on the Mac; `node --check` on all 18 files; offline Playwright parity run — same page
   served as monolith and as split, visiting `#/live #/terminal #/lookup/… #/datacenter
   #/leaderboard/performance #/delegation #/compare #/calculators/staking #/globe`, comparing page
@@ -780,7 +781,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   scheme without a build step — but keep it in mind when a report says "broke right after deploy".
 - Comments in `scripts/build-*.js` still say "in index.html" for RewardsLedger / inflateSnapshot /
   DELEGATION PROGRAM — now `js/core.js`, `js/terminal.js`, `js/delegation.js` (fixed in this commit).
-- **Split live-verified** (push `d28aa32`): `css/site.css` + 18 `js/*.js` all 200, 320 KB gzipped
+- **Split live-verified** (push `ee8dcfc`): `css/site.css` + 18 `js/*.js` all 200, 320 KB gzipped
   on the wire, 2,038 CSS rules; walked `#/live #/terminal (723 rows, 7,453 stake accounts)
   #/lookup/… (card, 26.88, delegation tile, band) #/datacenter #/leaderboard (50 rows)
   #/delegation (702 rows) #/compare #/calculators (live price 0.2708) #/globe (canvas)` in a fresh
@@ -795,8 +796,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `js/app.js`: `onNavigate()` applies a route only if it differs from `lastApplied` (which
   `set()` also records). Playwright before/after: `addToComparison` calls 2 → 1, `switchTab`
   2 → 1, back/forward still route. First real edit of a split file; `assemble-monolith.js
-  --check` against `0101736` will now (correctly) report a mismatch in the Router.
-- Router fix live-verified (`fbe8852`): `#/compare/a,b` → exactly two validators, "(2)", back/
+  --check` against `ca33c03` will now (correctly) report a mismatch in the Router.
+- Router fix live-verified (`c96e37e`): `#/compare/a,b` → exactly two validators, "(2)", back/
   forward route, no console errors. Note the **cache skew** from the deploy caveat happened for
   real: right after the push the pane ran the cached old `js/app.js` (transfer 0 bytes) while a
   `cache:'no-store'` fetch already returned the new one — `fetch(url, {cache:'reload'})` then a
@@ -830,7 +831,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `getProgramAccounts` / `getSupply`; expired caches fall through to the RPC. Trade-off: a
   validator who changes name/icon is seen on reload up to 1 h later in the same tab (new tab =
   fresh). Not yet live-verified.
-- **Live-verified** (`502721e`, pane with Shaka_Vibes_1–5 in the pane's own storage, cleared
+- **Live-verified** (`f6bafba`, pane with Shaka_Vibes_1–5 in the pane's own storage, cleared
   after): performance / stake / commission / reliable / delegations show 50 rows and no divider
   (all five are top-50 there); **Most Efficient** shows the divider + 5 pinned rows
   "#360 Shaka_Vibes_5 … #365 Shaka_Vibes_1". Second load: `x1IdentitiesCache`, `x1SupplyCache`,
@@ -871,7 +872,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   Claude's `git pull --rebase` first failed mid-rebase (can't delete `.git/rebase-merge`); after
   Shaka granted delete permission on the folder the rebase ran, but the VM has no git identity so
   the commit could not be re-created — its HANDOVER change is now a **staged modification** on top
-  of `f8975f1`. Heartbeat healthy (scores :03, snapshots :43).
+  of `d0c6313`. Heartbeat healthy (scores :03, snapshots :43).
 - Shaka: at narrower window widths the Share / Remove / Manage buttons dropped under the identity;
   asked to abbreviate the address so the meta line (copy · version · Active) moves left and the
   buttons fit. Cause: `.validator-header` is `flex-wrap: wrap` and `.validator-info` had
@@ -888,7 +889,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   before, the actions dropped under at card width ≤ ~940 px; after, they stay beside the identity
   down to ~800 px (Remove) / ~850 px ("Add to Data Center" + a long name), no horizontal overflow,
   no page errors, ≤ 768 px column layout unchanged. Contact sheet delivered in chat.
-- **Live-verified** (`b1f1406`, pane with emulated viewports): address `5ar5xXje…TvQNac`, computed
+- **Live-verified** (`0d14bd4`, pane with emulated viewports): address `5ar5xXje…TvQNac`, computed
   `flex: 1 1 0px` on `.validator-info`; at 1000 px the actions sit beside the identity (before:
   dropped); at 850 px the Lookup card (wider "Add to Data Center") drops them — as designed by the
   300 px floor; a Data Center card (Remove) holds there. No overflow. Band showed "Leader now".
@@ -903,7 +904,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 ### 2026-09-17 — Session 8, continued: C2 started — `data-action` dispatcher (~1 hour)
 - Shaka chose ③ after a short cons list (silent breakage risk, no visible change, all-or-nothing
   CSP benefit, big diffs, third-party libs under strict CSP, new-button discipline).
-- **Inventory** (b1f1406): 322 inline handlers — 263 `onclick`, 23 `oninput`, 18 `<img onerror>`,
+- **Inventory** (0d14bd4): 322 inline handlers — 263 `onclick`, 23 `oninput`, 18 `<img onerror>`,
   13 `onchange`, 1 each onmouseenter/onmouseleave/onmousedown/onload/onfocus/onblur; 217 in
   `index.html`, 105 in the js renderers. One inline `<script>` (frame-buster, head line 19).
   `style-src 'unsafe-inline'` (361 `style=` attrs) is out of scope — the goal is `script-src`.
@@ -933,7 +934,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   handlers left in the rendered card, 0 page errors, 0 `[Actions]` warnings.
 - Not live-verified yet. Next file: `js/manage.js` (21 — Manage Validator modal, where wallet
   signing lives), then `js/modals.js` (15), `js/card-details.js` (6).
-- **Batch 1 live-verified** (`219035d`, pane, fresh load): the Lookup card has 0 inline handlers,
+- **Batch 1 live-verified** (`0244ce2`, pane, fresh load): the Lookup card has 0 inline handlers,
   13 `data-action` elements all registered (`Actions.has`), Earnings trend / Breakdown / Delegation
   Details open through the dispatcher, copy fires (clipboard denied only because the pane wasn't
   focused), no `[Actions]` warnings.
@@ -965,7 +966,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
     0 `[Actions]`/`[manage-call]` warnings. Not live-verified yet (needs the push).
 - Progress: 42 of 322 handlers converted (core 1 · cards 17 · delegation 2 · manage 21 + the
   shared copy button). Next: `js/modals.js` (15), `js/card-details.js` (6), `js/leaderboards.js` (7).
-- **Batch 2 live-verified** (`511cab6`): Manage Validator opens via `card-manage`; 14 action
+- **Batch 2 live-verified** (`273bf68`): Manage Validator opens via `card-manage`; 14 action
   buttons carry `data-fn` (6 enabled, 8 locked → explainer opens "No Stake Account Selected" and
   Got it closes it); 9 real stake rows `select-account`; 14 copy buttons via the shared handler;
   no `[Actions]` warnings. The 8 inline handlers left inside the modal are static index.html
@@ -997,7 +998,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Start: 458 bot commits behind (heartbeat healthy). **Batch 3 had never been pushed** on 09-17 —
   modals.js/core.js/cards.js + `scripts/c2-tests/` were still uncommitted. Delete permission granted
   at start; stale `index.lock` / `maintenance.lock` removed; `git pull --rebase --autostash` clean.
-  Re-ran the three suites in a cloud clone → green; Shaka pushed `dd3ad2e`.
+  Re-ran the three suites in a cloud clone → green; Shaka pushed `7e625ea`.
 - **Batch 3 live-verified** (fresh pane tab, cache-reloaded files): TPS modal 60 hit zones, hover →
   tooltip, click → pinned, × → unpinned; card Slot explorer opens (Shaka_Vibes_1, 324/324); console:
   no errors, no `[Actions]` lines.
@@ -1025,7 +1026,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   green. README: pass the repo as an absolute path — `.` made the static server 404 everything.
 - Noticed: `renderTimeline()` in skip-monitor.js targets `#skipmonTimelineTrack`, which no longer
   exists in index.html — dead path (kept, converted anyway). Candidate for removal.
-- **Batch 4 live-verified** (`f686736`, fresh pane tab): `#/leaderboard/efficient` highlights that
+- **Batch 4 live-verified** (`3592515`, fresh pane tab): `#/leaderboard/efficient` highlights that
   button, category click → `#/leaderboard/stake`, 50 rows, broken logos fall back, row click → Lookup
   (#1 of 723); Stake details → accounts toggle opens/closes, APY 7 → 30-day select updates (6.86 % →
   6.88 %); Network tab: 500 grid cells, cell click opens `skipmonScorecardModal`, scrubber clicks; no
@@ -1036,7 +1037,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `grid-row: 1`, so "Hourly snapshot · Updated … · LIVE" was drawn on top of "VALIDATOR TERMINAL"
   (phones too). Fix in `css/site.css`: inside that media query `.meta` → row 2, corner → row 3.
   Pane check at 760 and 375 px: corner now below the subtitle, no overlap, no horizontal overflow;
-  > 980 px untouched. Live-verified (`418436e`, live CSS, no injected style): corner below the
+  > 980 px untouched. Live-verified (`51db5eb`, live CSS, no injected style): corner below the
   subtitle at 760 px.
 - Data note: the terminal showed 146 delinquent of 723 right after the epoch 387 boundary (usually
   ~40). Probably a network event, not a site bug — worth a glance next session.
@@ -1064,7 +1065,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   a second page with `data/terminal.json` 404 → error screen → Retry. All spies once with original
   args, 0 inline in every rendered container, 0 page errors, 0 `[Actions]` warnings; suites 1–4 re-run
   green.
-- **Batch 5 live-verified** (`a2eb148`, fresh pane tab): `#/calculators/compound` deep link → that
+- **Batch 5 live-verified** (`3df9150`, fresh pane tab): `#/calculators/compound` deep link → that
   button + Calculators tab active; all 8 main tabs switch to their panel by real click; calc nav →
   `#/calculators/breakeven`; Compare search "Shaka" → add Shaka_Vibes_1 → × removes it; next-leaders
   strip (10 clickable) → Lookup; terminal Live button reaches `vtRefreshLive` (spied — no 13 MB
@@ -1119,7 +1120,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   click keeps / backdrop closes. 0 page errors, 0 `[Actions]` warnings. Suites 1–5 re-run green.
 - Not changed yet: the CSP and the head frame-buster `<script>` (step (b)/(c) in Start-here).
   `scripts/assemble-monolith.js` predates this (and batch 1–5) edits — only a historical tool now.
-- **Batch 6 live-verified** (`76190c7`, fresh pane tab): 0 inline handlers on the page, fonts link
+- **Batch 6 live-verified** (`55b7331`, fresh pane tab): 0 inline handlers on the page, fonts link
   `media="all"`, all 17 property-semantics elements carry a function `.onclick` and no data-action;
   Network scope buttons, epoch-timeline modal (backdrop close), TPS modal (×), globe pause/resume,
   skip-monitor lookup (focus + typing → 5 results); Lookup search box + Search button → Shaka_Vibes_1
@@ -1155,7 +1156,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   WebGL): old and new globe.js behave the same on a visible page (pause → autoRotate off + settle
   timer, resume → on, no errors); the recursion itself only reproduced in the hidden pane, so check
   it there after the push (`toggleGlobeRotation()` must not throw).
-- **Batch 7 live-verified** (`ebffd30`, fresh pane tab, hidden, 0 px wide — the exact conditions
+- **Batch 7 live-verified** (`8a72227`, fresh pane tab, hidden, 0 px wide — the exact conditions
   that used to recurse): `js/frame-guard.js` loaded, page builds normally unframed;
   `toggleGlobeRotation()` ×4 and the button ×2 — no throw; **console completely clean on load**, so
   the pane's "Maximum call stack" error seen on every load since 2026-09-13 is gone too (same bug).
