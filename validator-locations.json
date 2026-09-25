@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-25T20:03:17.084Z",
-  "totalNodes": 592,
-  "totalLocations": 588,
+  "lastUpdated": "2026-09-25T22:03:11.308Z",
+  "totalNodes": 593,
+  "totalLocations": 589,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4118,9 +4118,32 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "188.40.45.100": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
+    "DE": {
+      "name": "Germany",
+      "count": 130
+    },
+    "US": {
+      "name": "United States",
+      "count": 198
+    },
+    "FR": {
+      "name": "France",
+      "count": 55
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 19
+    },
     "PL": {
       "name": "Poland",
       "count": 73
@@ -4129,21 +4152,13 @@
       "name": "Finland",
       "count": 78
     },
-    "FR": {
-      "name": "France",
-      "count": 55
-    },
-    "US": {
-      "name": "United States",
-      "count": 198
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 129
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 22
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SE": {
       "name": "Sweden",
@@ -4152,14 +4167,6 @@
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 19
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "SG": {
       "name": "Singapore",
