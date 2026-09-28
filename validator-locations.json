@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-28T20:36:23.443Z",
-  "totalNodes": 597,
-  "totalLocations": 593,
+  "lastUpdated": "2026-09-28T22:03:14.567Z",
+  "totalNodes": 596,
+  "totalLocations": 592,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1997,13 +1997,6 @@
       "city": "Frankfurt am Main",
       "lat": 50.1169,
       "lon": 8.6837
-    },
-    "107.181.240.134": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ogden",
-      "lat": 41.2627,
-      "lon": -111.9837
     },
     "185.189.46.62": {
       "country": "Sweden",
@@ -4170,7 +4163,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 199
+      "count": 198
     },
     "DE": {
       "name": "Germany",
