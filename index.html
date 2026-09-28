@@ -422,6 +422,7 @@
         <button class="primary" data-action="call" data-fn="openValidatorList">+ Add Validator</button>
         <button data-action="call" data-fn="refreshPortfolio">↻ Refresh</button>
         <button data-action="call" data-fn="clearPortfolio">Clear All</button>
+        <button data-action="alerts-open" title="Get a Telegram message when one of your validators goes delinquent, skips leader slots or changes Delegation Program status">🔔 Telegram alerts</button>
       </div>
 
       <div class="loading" id="portfolioLoading" style="display: none;">
@@ -1335,6 +1336,23 @@
         <button class="modal-close" aria-label="Close" data-action="call" data-fn="closeDelegationModal">&times;</button>
       </div>
       <div class="modal-body" id="delegationModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Telegram alerts (F3) — opens the alerts bot with a ready-made /watch command; js/alerts.js -->
+  <div class="modal-overlay" id="alertsModal" data-action="alerts-overlay">
+    <div class="modal" style="max-width: 560px;">
+      <div class="modal-header">
+        <div class="modal-brand-head">
+          <div class="x1-logo-brand"><span class="x-char">X</span><span class="one-char">1</span></div>
+          <div class="brand-title">
+            <div class="brand-title-main">Telegram alerts</div>
+            <div class="brand-title-sub">Delinquency · skipped slots · delegation · version</div>
+          </div>
+        </div>
+        <button class="modal-close" aria-label="Close" data-action="alerts-close">&times;</button>
+      </div>
+      <div class="modal-body" id="alertsModalBody"></div>
     </div>
   </div>
 
@@ -3157,6 +3175,7 @@
   </div>
   <script src="js/terminal.js"></script>
   <script src="js/delegation.js"></script>
+  <script src="js/alerts.js"></script>
 
   <script src="js/price-pill.js"></script>
 

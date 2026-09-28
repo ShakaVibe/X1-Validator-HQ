@@ -29,3 +29,12 @@ Pass the repo as an absolute path (or `$PWD`) — a bare `.` makes the static se
 
 Pass = every expected call listed once, `inline*: 0` in every container,
 `page errors: []`, `[Actions] warnings: []`.
+
+**Telegram alerts entry point (F3, 2026-09-28)** — `js/alerts.js` + `#alertsModal`:
+
+    node scripts/c2-tests/alerts-modal-test.js "$PWD"
+
+Opens My Data Center with a 2-validator portfolio, clicks "🔔 Telegram alerts" through the
+dispatcher, checks the generated `/watch …` command, Copy (clipboard), ×/Escape/backdrop close,
+the empty-portfolio hint and the 375 px layout. The bot itself is tested without a browser:
+`node scripts/test-alerts-bot.js`.

@@ -1,0 +1,115 @@
+name: Telegram alerts bot
+
+# WHAT THIS IS
+# The F3 alerts bot (scripts/alerts-bot.js): Telegram users /watch validators
+# and get a message when one goes delinquent / comes back, skips leader slots,
+# changes Delegation Program status or falls below the Foundation's minimum
+# version. Nothing runs outside GitHub Actions.
+#
+# HOW IT KEEPS RUNNING
+# Same idea as heartbeat.yml: one job runs the bot loop for ~5h45m (a job may
+# run 6 h), then dispatches its successor. The concurrency group makes sure two
+# loops never poll Telegram at the same time (a second run just waits, and only
+# one waiting run is kept). The cron is a SAFETY NET only — if the chain ever
+# dies, the next cron firing restarts it (or queues behind a live one, which is
+# harmless: it starts when that one ends).
+#
+# STATE
+# Subscriptions + last-seen validator state live in data/alerts-state.enc,
+# AES-256-GCM-encrypted with the ALERTS_STATE_KEY secret (other people's
+# Telegram chat ids must not be readable from this public repo). The bot
+# commits that file itself when it changes.
+#
+# SECRETS (Settings → Secrets and variables → Actions)
+#   TELEGRAM_BOT_TOKEN   the bot (shared with the failure alerts)
+#   ALERTS_STATE_KEY     64 hex chars: `openssl rand -hex 32` — lose it and the
+#                        subscriptions are lost (users must /watch again)
+#   TELEGRAM_CHAT_ID     optional: admin chat for /stats and RPC-down notices
+# Without the first two the job exits immediately (nothing to do) and does not
+# re-dispatch itself.
+#
+# To stop the bot: cancel the running job in the Actions tab AND disable this
+# workflow (… menu → Disable workflow), otherwise the cron restarts it.
+
+on:
+  schedule:
+    - cron: '23 */2 * * *'   # backup restart only; the chain does the real work
+  workflow_dispatch: {}
+
+permissions:
+  actions: write     # gh workflow run (self-dispatch)
+  contents: write    # commit data/alerts-state.enc
+  issues: write      # failure alert
+
+concurrency:
+  group: alerts-bot
+  cancel-in-progress: false
+
+env:
+  LOOP_MINUTES: 345
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 358
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run the bot loop
+        id: bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ALERTS_STATE_KEY: ${{ secrets.ALERTS_STATE_KEY }}
+          X1_RPC_URL: https://rpc.mainnet.x1.xyz
+          SITE_URL: https://x1valhq.xyz
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$ALERTS_STATE_KEY" ]; then
+            echo "::notice::TELEGRAM_BOT_TOKEN / ALERTS_STATE_KEY not set — the alerts bot is inactive."
+            echo "configured=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "configured=1" >> "$GITHUB_OUTPUT"
+          git config user.name "x1hq-alerts-bot"
+          git config user.email "actions@users.noreply.github.com"
+          node scripts/alerts-bot.js --minutes "$LOOP_MINUTES" --commit
+
+      - name: Dispatch the next run
+        if: steps.bot.outputs.configured == '1'
+        run: |
+          for i in 1 2 3 4 5; do
+            gh workflow run alerts.yml && { echo "next alerts run dispatched"; exit 0; }
+            echo "self-dispatch failed (attempt $i); retrying in 30s"; sleep 30
+          done
+          echo "::error::could not dispatch the next run — the backup cron will restart the chain"
+          exit 1
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          TITLE="[bot] ${{ github.workflow }} is failing"
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="Run failed at $(date -u +'%Y-%m-%d %H:%M UTC'): $RUN_URL"
+          EXISTING=$(gh issue list --repo "${{ github.repository }}" --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number' || true)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "${{ github.repository }}" --body "$BODY" || true
+          else
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" --body "$BODY" --label bot-failure || \
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" --body "$BODY" || true
+          fi
+          if [ -n "$TELEGRAM_BOT_TOKEN" ] && [ -n "$TELEGRAM_CHAT_ID" ]; then
+            curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
+              -d chat_id="$TELEGRAM_CHAT_ID" -d text="⚠️ $TITLE — $RUN_URL" > /dev/null || true
+          fi
