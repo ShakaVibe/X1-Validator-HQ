@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-30T08:03:16.859Z",
-  "totalNodes": 603,
-  "totalLocations": 598,
+  "lastUpdated": "2026-09-30T10:03:15.488Z",
+  "totalNodes": 602,
+  "totalLocations": 597,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4181,13 +4181,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "45.136.215.90": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.352,
-      "lon": 4.9392
     }
   },
   "countries": {
@@ -4213,7 +4206,7 @@
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 23
+      "count": 22
     },
     "SE": {
       "name": "Sweden",
