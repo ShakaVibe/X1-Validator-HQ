@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-03T16:03:10.870Z",
-  "totalNodes": 601,
-  "totalLocations": 597,
+  "lastUpdated": "2026-10-03T16:31:24.321Z",
+  "totalNodes": 587,
+  "totalLocations": 583,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -23,13 +23,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "89.58.55.202": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4423,
-      "lon": 11.0191
     },
     "135.181.139.140": {
       "country": "Finland",
@@ -955,13 +948,6 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "38.129.136.13": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "204.13.234.162": {
       "country": "United States",
       "countryCode": "US",
@@ -1585,13 +1571,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "95.217.203.38": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "65.19.133.227": {
       "country": "United States",
       "countryCode": "US",
@@ -1619,13 +1598,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "23.239.108.38": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ogden",
-      "lat": 41.2632,
-      "lon": -111.993
     },
     "45.131.114.66": {
       "country": "The Netherlands",
@@ -1683,13 +1655,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "51.77.43.192": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "54.38.80.196": {
       "country": "France",
       "countryCode": "FR",
@@ -1731,13 +1696,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "152.53.249.250": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Karlsruhe",
-      "lat": 49.0291,
-      "lon": 8.35696
     },
     "193.247.77.230": {
       "country": "Germany",
@@ -1787,13 +1745,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "45.136.31.65": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4423,
-      "lon": 11.0191
     },
     "65.109.61.57": {
       "country": "Finland",
@@ -2306,13 +2257,6 @@
       "lat": 37.4595,
       "lon": -122.196
     },
-    "159.195.20.72": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.405,
-      "lon": 11.1617
-    },
     "167.235.3.78": {
       "country": "Germany",
       "countryCode": "DE",
@@ -2816,13 +2760,6 @@
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
-    },
-    "54.37.82.188": {
-      "country": "United Kingdom",
-      "countryCode": "GB",
-      "city": "London",
-      "lat": 51.5072,
-      "lon": -0.127586
     },
     "147.135.130.108": {
       "country": "France",
@@ -3510,13 +3447,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "69.10.51.14": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "205.209.102.138": {
       "country": "United States",
       "countryCode": "US",
@@ -3741,13 +3671,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "89.58.15.69": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
     "95.214.55.7": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3782,13 +3705,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "45.129.183.164": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
     },
     "188.117.169.90": {
       "country": "Poland",
@@ -3838,13 +3754,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "159.195.84.232": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
     },
     "205.209.113.106": {
       "country": "United States",
@@ -3922,13 +3831,6 @@
       "city": "Secaucus",
       "lat": 40.7876,
       "lon": -74.06
-    },
-    "173.214.163.242": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "24.128.216.38": {
       "country": "United States",
@@ -4186,43 +4088,43 @@
   "countries": {
     "PL": {
       "name": "Poland",
-      "count": 73
-    },
-    "US": {
-      "name": "United States",
-      "count": 201
+      "count": 72
     },
     "FI": {
       "name": "Finland",
-      "count": 79
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 19
+      "count": 78
     },
     "FR": {
       "name": "France",
       "count": 58
     },
+    "US": {
+      "name": "United States",
+      "count": 197
+    },
     "DE": {
       "name": "Germany",
-      "count": 131
+      "count": 124
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
+    "NL": {
+      "name": "The Netherlands",
+      "count": 22
     },
     "SE": {
       "name": "Sweden",
       "count": 5
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 22
+    "GB": {
+      "name": "United Kingdom",
+      "count": 4
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 19
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SG": {
       "name": "Singapore",
