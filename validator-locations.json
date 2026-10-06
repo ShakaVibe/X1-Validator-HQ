@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-06T12:03:12.440Z",
-  "totalNodes": 590,
-  "totalLocations": 586,
+  "lastUpdated": "2026-10-06T14:03:17.633Z",
+  "totalNodes": 591,
+  "totalLocations": 587,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4104,6 +4104,13 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "149.50.110.100": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
@@ -4125,7 +4132,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 72
+      "count": 73
     },
     "FI": {
       "name": "Finland",
