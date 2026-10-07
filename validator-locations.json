@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-07T16:03:16.218Z",
-  "totalNodes": 586,
-  "totalLocations": 582,
+  "lastUpdated": "2026-10-07T17:27:33.474Z",
+  "totalNodes": 589,
+  "totalLocations": 583,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1473,13 +1473,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "157.180.55.185": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "157.180.55.184": {
       "country": "Finland",
       "countryCode": "FI",
@@ -1830,13 +1823,6 @@
       "lat": 44.3456,
       "lon": -88.4343
     },
-    "65.109.97.142": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "51.222.105.217": {
       "country": "Canada",
       "countryCode": "CA",
@@ -1913,13 +1899,6 @@
       "city": "Stockholm",
       "lat": 59.3287,
       "lon": 18.0717
-    },
-    "45.131.114.162": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "23.175.144.149": {
       "country": "United States",
@@ -2746,13 +2725,6 @@
       "city": "Warsaw",
       "lat": 52.2297,
       "lon": 21.0122
-    },
-    "149.50.101.54": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "149.50.101.82": {
       "country": "Poland",
@@ -4076,48 +4048,83 @@
       "city": "Draper",
       "lat": 40.5247,
       "lon": -111.8638
+    },
+    "213.199.38.207": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
+    },
+    "173.212.208.17": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
+    },
+    "149.50.116.114": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "135.181.11.142": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "212.69.86.45": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Paris",
+      "lat": 48.8558,
+      "lon": 2.3494
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 72
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 82
+    "DE": {
+      "name": "Germany",
+      "count": 124
     },
     "US": {
       "name": "United States",
       "count": 196
     },
+    "FR": {
+      "name": "France",
+      "count": 56
+    },
     "CA": {
       "name": "Canada",
       "count": 19
     },
-    "FR": {
-      "name": "France",
-      "count": 53
+    "NL": {
+      "name": "Netherlands",
+      "count": 21
     },
-    "DE": {
-      "name": "Germany",
-      "count": 124
+    "PL": {
+      "name": "Poland",
+      "count": 74
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 81
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
     "SE": {
       "name": "Sweden",
       "count": 5
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 22
+    "GB": {
+      "name": "United Kingdom",
+      "count": 5
     },
     "SG": {
       "name": "Singapore",
