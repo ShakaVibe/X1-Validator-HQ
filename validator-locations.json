@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-07T20:03:16.225Z",
+  "lastUpdated": "2026-10-07T22:03:11.780Z",
   "totalNodes": 589,
   "totalLocations": 583,
   "locations": {
@@ -9,13 +9,6 @@
       "city": "Amsterdam",
       "lat": 52.3676,
       "lon": 4.90414
-    },
-    "185.54.58.162": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Zamość",
-      "lat": 50.7213,
-      "lon": 23.2619
     },
     "65.109.20.72": {
       "country": "Finland",
@@ -107,13 +100,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "185.54.58.163": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Zamość",
-      "lat": 50.7213,
-      "lon": 23.2619
     },
     "51.161.119.180": {
       "country": "Canada",
@@ -4083,12 +4069,26 @@
       "city": "Paris",
       "lat": 48.8558,
       "lon": 2.3494
+    },
+    "144.76.184.240": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "46.4.100.138": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
     }
   },
   "countries": {
     "DE": {
       "name": "Germany",
-      "count": 124
+      "count": 126
     },
     "US": {
       "name": "United States",
@@ -4108,7 +4108,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 74
+      "count": 72
     },
     "FI": {
       "name": "Finland",
