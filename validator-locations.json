@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-07T10:03:15.725Z",
-  "totalNodes": 586,
-  "totalLocations": 582,
+  "lastUpdated": "2026-10-07T12:03:17.537Z",
+  "totalNodes": 587,
+  "totalLocations": 583,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -4076,6 +4076,13 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "38.129.136.13": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5247,
+      "lon": -111.8638
     }
   },
   "countries": {
@@ -4089,7 +4096,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 196
+      "count": 197
     },
     "CA": {
       "name": "Canada",
