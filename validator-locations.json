@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-07T23:11:28.081Z",
-  "totalNodes": 589,
-  "totalLocations": 583,
+  "lastUpdated": "2026-10-08T00:03:13.336Z",
+  "totalNodes": 587,
+  "totalLocations": 581,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -219,13 +219,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "67.211.211.74": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "104.37.184.102": {
       "country": "United States",
@@ -578,13 +571,6 @@
       "lon": -74.0743
     },
     "104.37.187.90": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "69.10.52.82": {
       "country": "United States",
       "countryCode": "US",
       "city": "Secaucus",
@@ -4086,6 +4072,26 @@
     }
   },
   "countries": {
+    "DE": {
+      "name": "Germany",
+      "count": 126
+    },
+    "US": {
+      "name": "United States",
+      "count": 194
+    },
+    "FR": {
+      "name": "France",
+      "count": 56
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 19
+    },
+    "NL": {
+      "name": "Netherlands",
+      "count": 21
+    },
     "PL": {
       "name": "Poland",
       "count": 72
@@ -4094,21 +4100,9 @@
       "name": "Finland",
       "count": 81
     },
-    "FR": {
-      "name": "France",
-      "count": 56
-    },
-    "US": {
-      "name": "United States",
-      "count": 196
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 126
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 21
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SE": {
       "name": "Sweden",
@@ -4117,14 +4111,6 @@
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 19
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "SG": {
       "name": "Singapore",
