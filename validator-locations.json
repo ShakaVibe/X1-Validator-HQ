@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-10-08T14:03:15.387Z",
-  "totalNodes": 589,
+  "lastUpdated": "2026-10-08T16:03:16.171Z",
+  "totalNodes": 1188,
   "totalLocations": 483,
   "locations": {
     "45.94.82.34": {
@@ -675,13 +675,6 @@
       "lat": 52.2297,
       "lon": 21.0122
     },
-    "74.50.84.138": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "45.94.81.242": {
       "country": "The Netherlands",
       "countryCode": "NL",
@@ -779,13 +772,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "66.45.238.86": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "67.217.54.142": {
       "country": "United States",
@@ -3383,6 +3369,20 @@
       "city": "Salt Lake City",
       "lat": 40.7608,
       "lon": -111.891
+    },
+    "75.119.156.130": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
+    },
+    "89.144.55.100": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
     }
   },
   "countries": {
@@ -3396,11 +3396,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 57
+      "count": 58
     },
     "US": {
       "name": "United States",
-      "count": 277
+      "count": 875
     },
     "NL": {
       "name": "The Netherlands",
