@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-08T10:03:18.933Z",
-  "totalNodes": 588,
-  "totalLocations": 582,
+  "lastUpdated": "2026-10-08T12:03:14.342Z",
+  "totalNodes": 589,
+  "totalLocations": 583,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -716,13 +716,6 @@
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "178.63.170.31": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "65.108.200.244": {
       "country": "Finland",
@@ -4076,16 +4069,30 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "37.187.146.167": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "23.239.108.38": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Salt Lake City",
+      "lat": 40.7608,
+      "lon": -111.891
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 276
+      "count": 277
     },
     "FR": {
       "name": "France",
-      "count": 56
+      "count": 57
     },
     "CA": {
       "name": "Canada",
@@ -4105,7 +4112,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 45
+      "count": 44
     },
     "KE": {
       "name": "Kenya",
