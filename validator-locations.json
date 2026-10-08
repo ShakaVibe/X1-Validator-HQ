@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-08T20:03:13.518Z",
-  "totalNodes": 1186,
-  "totalLocations": 483,
+  "lastUpdated": "2026-10-08T22:03:19.703Z",
+  "totalNodes": 1185,
+  "totalLocations": 482,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -247,13 +247,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "64.20.49.142": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "69.10.60.142": {
       "country": "United States",
@@ -3400,7 +3393,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 875
+      "count": 874
     },
     "NL": {
       "name": "The Netherlands",
