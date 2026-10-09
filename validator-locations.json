@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-09T00:28:48.456Z",
+  "lastUpdated": "2026-10-09T02:03:15.013Z",
   "totalNodes": 1183,
-  "totalLocations": 499,
+  "totalLocations": 519,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3495,6 +3495,146 @@
       "city": "Secaucus",
       "lat": 40.7876,
       "lon": -74.06
+    },
+    "89.144.55.20": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.2": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.17": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.10": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.6": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.19": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.4": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.18": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.3": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.21": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.12": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.11": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.5": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.14": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.9": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.7": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.13": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.16": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.8": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
+    },
+    "89.144.55.15": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "New York",
+      "lat": 40.7128,
+      "lon": -74.006
     }
   },
   "countries": {
@@ -3506,37 +3646,37 @@
       "name": "Finland",
       "count": 81
     },
-    "FR": {
-      "name": "France",
-      "count": 57
-    },
     "US": {
       "name": "United States",
       "count": 873
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 21
+    "CA": {
+      "name": "Canada",
+      "count": 19
     },
-    "SE": {
-      "name": "Sweden",
+    "FR": {
+      "name": "France",
+      "count": 57
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "GB": {
+      "name": "United Kingdom",
       "count": 5
     },
     "DE": {
       "name": "Germany",
       "count": 44
     },
-    "GB": {
-      "name": "United Kingdom",
+    "SE": {
+      "name": "Sweden",
       "count": 5
     },
-    "CA": {
-      "name": "Canada",
-      "count": 19
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "NL": {
+      "name": "The Netherlands",
+      "count": 21
     },
     "SG": {
       "name": "Singapore",
