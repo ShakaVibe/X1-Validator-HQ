@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-10T02:03:13.075Z",
-  "totalNodes": 521,
-  "totalLocations": 519,
+  "lastUpdated": "2026-10-10T04:03:11.896Z",
+  "totalNodes": 517,
+  "totalLocations": 515,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2544,13 +2544,6 @@
       "lat": 50.7012,
       "lon": 3.21501
     },
-    "161.129.67.226": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "46.170.40.94": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3328,13 +3321,6 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "89.144.55.100": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
-    },
     "69.169.101.206": {
       "country": "United States",
       "countryCode": "US",
@@ -3420,13 +3406,6 @@
       "lon": -74.0743
     },
     "69.169.101.203": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
-    "162.250.125.210": {
       "country": "United States",
       "countryCode": "US",
       "city": "Secaucus",
@@ -3628,19 +3607,12 @@
       "city": "Philadelphia",
       "lat": 39.9598,
       "lon": -75.1607
-    },
-    "89.144.55.101": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "New York",
-      "lat": 40.7128,
-      "lon": -74.006
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 215
+      "count": 211
     },
     "FR": {
       "name": "France",
