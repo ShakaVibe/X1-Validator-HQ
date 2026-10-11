@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-11T08:03:15.234Z",
-  "totalNodes": 517,
-  "totalLocations": 515,
+  "lastUpdated": "2026-10-11T10:03:11.267Z",
+  "totalNodes": 525,
+  "totalLocations": 523,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3607,6 +3607,62 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
+    },
+    "168.119.194.80": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Falkenstein",
+      "lat": 50.4777,
+      "lon": 12.3649
+    },
+    "65.108.236.21": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "205.209.101.222": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "65.21.34.60": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "162.245.187.106": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "65.108.71.178": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.109.20.72": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.108.200.151": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -3616,7 +3672,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 81
+      "count": 86
     },
     "FR": {
       "name": "France",
@@ -3624,7 +3680,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 212
+      "count": 214
     },
     "NL": {
       "name": "The Netherlands",
@@ -3636,7 +3692,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 44
+      "count": 45
     },
     "GB": {
       "name": "United Kingdom",
