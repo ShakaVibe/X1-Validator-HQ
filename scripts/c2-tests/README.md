@@ -48,3 +48,14 @@ invented delinquent node on an old version) and checks the severity sort, the ba
 chips, Details open/close + localStorage memory across a reload, chip filters, row click and
 Enter → `lookupValidator`, the all-healthy and empty states, the 375 px card layout, 0 inline
 handlers, 0 page errors.
+
+**Delegator APR (F11, 2026-10-13)** — `js/apr.js` + `.apr-section` tile + `#aprModal`:
+
+    node scripts/c2-tests/apr-test.js "$PWD"
+
+Renders real cards offline, lets the served `data/rewards.json` load and checks the 4 + 4 card
+layout (APR in Earnings, Foundation delegation in Health, no Commission tile), the tile value
+against the same formula run in node over the served ledger, the 7-epoch trend pill, the Details
+modal (hero, network median / top 10 %, rows, × / Escape / backdrop), the 100 % and 0 % commission
+paths, the no-history path, the 375 px modal, 0 inline handlers, 0 page errors. The ledger
+builder's `st` / `c` columns are covered by `node scripts/test-rewards-ledger.js`.

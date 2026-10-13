@@ -288,10 +288,12 @@
               </div>
             </div>
             
-            <div class="stat-item deleg-section" data-vote="${escHtml(validator.voteAccount)}" title="X1 Foundation Delegation Program — official status and delegated stake. Click Details for the criteria checklist.">
-              <div class="stat-label">Foundation delegation</div>
-              <div class="stat-value" style="color: var(--text-dim);">…</div>
-              <div class="stat-subtext">Program</div>
+            <div class="stat-item apr-section" data-vote="${escHtml(validator.voteAccount)}" data-stake="${Number(validator.activatedStake) || 0}" data-commission="${validator.commission == null ? '' : Number(validator.commission)}" title="Estimated annual return for a delegator, net of this validator's commission, from its last 30 completed epochs of on-chain rewards. Click Details for the working.">
+              <div class="stat-label">Delegator APR</div>
+              <div class="last-epoch-value-row">
+                <span class="stat-value" style="color: var(--text-dim);">…</span>
+              </div>
+              <div class="stat-subtext">estimated · loading</div>
             </div>
             
             </div>
@@ -314,10 +316,10 @@
               <div class="stat-subtext">${skipLabel}</div>
             </div>
 
-            <div class="stat-item" title="Commission is the percentage of staking rewards the validator keeps. The remaining percentage goes to delegators.">
-              <div class="stat-label">Commission</div>
-              <div class="stat-value">${validator.commission}%</div>
-              <div class="stat-subtext">Fee rate</div>
+            <div class="stat-item deleg-section" data-vote="${escHtml(validator.voteAccount)}" title="X1 Foundation Delegation Program — official status and delegated stake. Click Details for the criteria checklist.">
+              <div class="stat-label">Foundation delegation</div>
+              <div class="stat-value" style="color: var(--text-dim);">…</div>
+              <div class="stat-subtext">Program</div>
             </div>
             
             <div class="stat-item perf-score-wrapper" data-action="perf-explainer" data-vote="${escHtml(validator.voteAccount)}">

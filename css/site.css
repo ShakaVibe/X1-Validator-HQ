@@ -12311,3 +12311,29 @@
       .fleet-kv label { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 1px; }
       .fleet-foot { padding: 0.6rem 0.9rem; gap: 0.5rem 1rem; }
     }
+
+    /* ═══════════════ DELEGATOR APR — card tile + modal (js/apr.js, F11, 2026-10-13) ═══════════════ */
+    .apr-section .stat-value small { font-size: 0.8rem; color: var(--text-secondary); font-weight: 500; margin-left: 2px; }
+    .apr-section .apr-trend.up { color: var(--success); }
+    .apr-section .apr-trend.down { color: var(--warning); }
+    .apm-hero { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+    .apm-hero > div { background: rgba(0, 212, 255, 0.06); border: 1px solid rgba(0, 212, 255, 0.18); border-radius: 12px; padding: 0.75rem 0.85rem; min-width: 0; }
+    .apm-hero label { display: block; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 0.3rem; }
+    .apm-hero b { font-family: 'JetBrains Mono', monospace; font-size: 1.35rem; font-weight: 600; color: var(--success); overflow-wrap: anywhere; }
+    .apm-hero b.dim { color: var(--text-primary); }
+    .apm-hero span { display: block; font-size: 0.68rem; color: var(--text-dim); margin-top: 0.2rem; }
+    .apm-bars { margin: 0.25rem 0 1rem; }
+    .apm-bars label { font-size: 0.7rem; color: var(--text-secondary); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; display: block; margin-bottom: 0.5rem; }
+    .apm-bar { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr) 3.8rem; align-items: center; gap: 0.6rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-dim); margin-bottom: 0.3rem; }
+    .apm-bar i { display: block; height: 8px; border-radius: 4px; background: rgba(0, 230, 118, 0.75); }
+    .apm-bar i.net { background: rgba(0, 212, 255, 0.6); }
+    .apm-bar em { font-style: normal; color: var(--text-primary); text-align: right; }
+    .apm-rows { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.75rem; }
+    .apm-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.5rem 0.7rem; border-radius: 8px; background: var(--bg-secondary); font-size: 0.82rem; color: var(--text-secondary); }
+    .apm-row b { font-family: 'JetBrains Mono', monospace; color: var(--text-primary); font-weight: 500; text-align: right; }
+    .apm-row b small { color: var(--text-dim); font-size: 0.68rem; }
+    @media (max-width: 560px) {
+      .apm-hero { grid-template-columns: 1fr; }
+      .apm-row { flex-direction: column; gap: 0.15rem; }
+      .apm-row b { text-align: left; }
+    }

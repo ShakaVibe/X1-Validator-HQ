@@ -33,7 +33,12 @@
  *   { v, generatedAt, currentEpoch, epochs: [asc],
  *     counts: { validators, selfAccounts, rpcCalls },
  *     validators: { <vote>: { w: <withdrawer>, self: [<stake pubkey>…],
- *                             v: [vote reward…], s: [self-stake reward sum…] } } }
+ *                             v: [vote reward…], s: [self-stake reward sum…],
+ *                             st: [active stake, XNT…], c: [commission %…] } } }
+ *   `st` / `c` (added 2026-10-13, F11 APR) hold the validator's active stake
+ *   and commission as seen when that epoch's `v` cell was fetched — i.e. the
+ *   stake the reward was earned on. Cells carried over from a ledger written
+ *   before this field existed are null; the site falls back to current stake.
  *
  * Node 20+, zero dependencies.   Usage: node scripts/build-rewards-ledger.js
  * Env: X1_RPC_URL (default https://rpc.mainnet.x1.xyz)
@@ -209,7 +214,15 @@ async function buildLedger(prev, options = {}) {
   log(`current epoch ${cur}; window ${epochs[0]}..${epochs[epochs.length - 1]} (${epochs.length} epochs)`);
 
   const va = await rpc('getVoteAccounts');
-  const votes = [...(va.current || []), ...(va.delinquent || [])].map(v => v.votePubkey).sort();
+  const vaAll = [...(va.current || []), ...(va.delinquent || [])];
+  const votes = vaAll.map(v => v.votePubkey).sort();
+  // Current stake (XNT) + commission per vote account — recorded against every
+  // epoch cell fetched this run (see `st` / `c` in the output shape).
+  const stakeOf = {}, cmOf = {};
+  for (const v of vaAll) {
+    stakeOf[v.votePubkey] = v.activatedStake != null ? Math.round(Number(v.activatedStake) / 1e6) / 1e3 : null; // lamports → XNT, 3 dp
+    cmOf[v.votePubkey] = v.commission != null ? Number(v.commission) : null;
+  }
   log(`${votes.length} vote accounts (${(va.current || []).length} current, ${(va.delinquent || []).length} delinquent)`);
 
   const withdrawerOf = await fetchVoteWithdrawers(rpc, votes, opts);
@@ -232,14 +245,16 @@ async function buildLedger(prev, options = {}) {
     const p = prevOk ? prev.validators[vote] : null;
     const selfList = self[vote] || [];
     const selfSame = !!p && sameList(p.self || [], selfList);
-    const entry = { w: withdrawerOf[vote] || null, self: selfList, v: new Array(epochs.length).fill(null) };
+    const entry = { w: withdrawerOf[vote] || null, self: selfList, v: new Array(epochs.length).fill(null),
+                    st: new Array(epochs.length).fill(null), c: new Array(epochs.length).fill(null) };
     if (selfList.length) entry.s = new Array(epochs.length).fill(null);
+    const carry = (i, pi) => { entry.st[i] = (p.st && p.st[pi] != null) ? p.st[pi] : null; entry.c[i] = (p.c && p.c[pi] != null) ? p.c[pi] : null; };
     epochs.forEach((ep, i) => {
       const pi = prevIdx.get(ep);
       const recheck = ep >= cur - opts.recheckNewest;
-      // vote reward
-      if (p && pi !== undefined && p.v && p.v[pi] != null) { entry.v[i] = p.v[pi]; reusedCells++; knownNonNull.set(ep, (knownNonNull.get(ep) || 0) + 1); }
-      else if (p && pi !== undefined && p.v && !recheck) { entry.v[i] = null; reusedCells++; } // known-null, old
+      // vote reward (+ the stake / commission it was earned on)
+      if (p && pi !== undefined && p.v && p.v[pi] != null) { entry.v[i] = p.v[pi]; carry(i, pi); reusedCells++; knownNonNull.set(ep, (knownNonNull.get(ep) || 0) + 1); }
+      else if (p && pi !== undefined && p.v && !recheck) { entry.v[i] = null; carry(i, pi); reusedCells++; } // known-null, old
       else { (needV.get(ep) || needV.set(ep, []).get(ep)).push(vote); }
       // self-stake reward
       if (!selfList.length) return;
@@ -261,7 +276,7 @@ async function buildLedger(prev, options = {}) {
     if (vList.length) {
       const r = await fetchEpochRewards(rpc, vList, ep, opts);
       let nonNull = 0;
-      for (const vote of vList) { const a = r[vote]; entries[vote].v[i] = a; if (a != null) nonNull++; }
+      for (const vote of vList) { const a = r[vote]; entries[vote].v[i] = a; entries[vote].st[i] = stakeOf[vote]; entries[vote].c[i] = cmOf[vote]; if (a != null) nonNull++; }
       // A whole epoch of nulls for every vote account = RPC has not computed
       // the epoch's rewards yet (or it is out of its history). Do not publish
       // it — the site will top it up live and we retry next run. (Not when
@@ -290,7 +305,7 @@ async function buildLedger(prev, options = {}) {
   const validators = {};
   for (const vote of votes) {
     const e = entries[vote];
-    const o = { w: e.w, self: e.self, v: keep.map(x => e.v[x.i]) };
+    const o = { w: e.w, self: e.self, v: keep.map(x => e.v[x.i]), st: keep.map(x => e.st[x.i]), c: keep.map(x => e.c[x.i]) };
     if (e.s) o.s = keep.map(x => e.s[x.i]);
     validators[vote] = o;
   }

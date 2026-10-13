@@ -1326,6 +1326,23 @@
 
   <!-- Delegation Program modal — opened from the Delegation stat tile on a
        validator card; body rendered by the DELEGATION PROGRAM module. -->
+  <!-- F11 Delegator APR details (js/apr.js) -->
+  <div class="modal-overlay" id="aprModal" data-action="apr-overlay">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <div class="modal-brand-head">
+          <div class="x1-logo-brand"><span class="x-char">X</span><span class="one-char">1</span></div>
+          <div class="brand-title">
+            <div class="brand-title-main">Delegator APR</div>
+            <div class="brand-title-sub" id="aprModalSub">estimated from on-chain rewards</div>
+          </div>
+        </div>
+        <button class="modal-close" aria-label="Close" data-action="apr-close">&times;</button>
+      </div>
+      <div class="modal-body" id="aprModalBody"></div>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="delegationModal" data-action="overlay-close" data-fn="closeDelegationModal">
     <div class="modal" style="max-width: 560px;">
       <div class="modal-header">
@@ -3180,6 +3197,7 @@
   <script src="js/delegation.js"></script>
   <script src="js/alerts.js"></script>
   <script src="js/fleet.js"></script>
+  <script src="js/apr.js"></script>
 
   <script src="js/price-pill.js"></script>
 
