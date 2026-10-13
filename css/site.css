@@ -10889,7 +10889,10 @@
 
     @media (max-width: 900px) {
       .skipmon-stats { grid-template-columns: repeat(2, 1fr); }
-      .skipmon-main  { grid-template-columns: 1fr; }
+      /* minmax(0, …): with a plain 1fr the auto-fill slot grid's intrinsic width
+         (1,500 cells) set the track's minimum and pushed the panel past the screen */
+      .skipmon-main  { grid-template-columns: minmax(0, 1fr); }
+      .skipmon-panel { min-width: 0; }
       .skipmon-header { align-items: flex-start; }
     }
     /* Phones (2026-10-13): three things pushed the Network tab wider than the
