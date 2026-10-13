@@ -43,7 +43,8 @@
 >    `#aprModal`; the ledger builder now records `st`/`c` (stake XNT, commission) per epoch cell.
 >    Next options (Shaka to pick): F3 loose ends (`/help`, `/status`, `TELEGRAM_CHAT_ID`, close issues
 >    #1/#2, "Watch on Telegram" link in the fleet bar), APR as a fleet-table column and a Leaderboards
->    category, F8b rewards CSV export, phone layouts for Delegation / Leaderboards / Terminal tables,
+>    category, **F12 validator cost → net return** (see §5), F8b rewards CSV export, phone layouts
+>    for Delegation / Leaderboards / Terminal tables,
 >    the 817 "unknown version" validators, ④ single RPC transport. Open offer: harden `js/frame-guard.js`.
 >    **Mobile rule (2026-10-13):** any grid/flex track that holds monospace numbers or a table must
 >    be `minmax(0, 1fr)` / `min-width: 0` — a plain `1fr` never shrinks below its content and the
@@ -323,6 +324,15 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] **F8b** rewards CSV export from the ledger; **F9** change feeds
       (F8 ledger itself is DONE 2026-09-13 — `data/rewards.json`; F2 history charts can read it)
 - [x] **F11** APR per validator — done 2026-10-13 (`js/apr.js`; follow-ups: fleet-table column, Leaderboards category)
+- [ ] **F12** Validator cost → net return (added 2026-10-13, Shaka's idea). Operator-facing, NOT the
+      Delegator APR box (a delegator does not pay the server bill): a "Monthly cost" field (USD or XNT,
+      converted at the live XNT price) next to the Validator APY in **Stake Details** and the **staking
+      calculator**, stored per validator in localStorage (device-local, never in the repo), with a
+      gross / net-of-cost toggle on the headline ("24.09 % gross · ≈ 21.5 % net at $150/mo"), the
+      cost shown in XNT/yr so the subtraction is visible; the same stored cost pre-fills the Break-Even
+      calculator (which already does cost → profit → break-even price, default 100) and a fleet total
+      in the Data Center summary ("10,500 XNT/yr gross · 8,900 net of costs"). Optional delegator-side
+      companion: a "What you'd earn" amount box in the Delegator APR modal (per epoch / per year).
 
 - [x] **P9** done 2026-09-16 — scores.json now carries `credits` (last 8 epochs), `creditsFirstEpoch`,
       `creditsEpochs` per validator; Leaderboards read them (`publishedCreditsMap`) and only fall back
