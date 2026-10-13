@@ -6,9 +6,9 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-09-28):**
+> **Start here next session (as of 2026-10-13):**
 > 0. **Privacy follow-up (2026-09-25):** a GitHub Support ticket asking for a GC of the dangling
->    pre-rewrite commits is pending. When Support confirms, check that
+>    pre-rewrite commits is pending (still **200** on 2026-10-13 — chase Support). When Support confirms, check that
 >    `api.github.com/repos/ShakaVibe/X1-Validator-HQ/commits/3ad83423365dd53c8fe8c3e81e0748bca585c9b4`
 >    returns 404, and re-run the Actions-runs scan (session 10 log). Still on the owner's list:
 >    GitHub → Settings → Emails → "Keep my email addresses private" + "Block command line pushes
@@ -41,6 +41,13 @@
 >    Next agreed work: **F4 fleet board** (Data Center, issues first). Open offer: harden
 >    `js/frame-guard.js`. Backlog: visual pass (Compare cards, Delegation tab, modals, Data Center
 >    summary tiles), F8b rewards CSV export, F11 APR per validator.
+>    **Mobile rule (2026-10-13):** any grid/flex track that holds monospace numbers or a table must
+>    be `minmax(0, 1fr)` / `min-width: 0` — a plain `1fr` never shrinks below its content and the
+>    overflow is hidden by the card. Phone check = the 375 px clip scan in the session 12 log.
+>    Network grew from ~725 to **1,337 validators** between 09-28 and 10-13 (817 with unknown
+>    version in gossip) — watch payload sizes and anything that assumed ~725 rows.
+>    Two stale "[bot] … is failing" issues (#1 terminal 10-04, #2 geo 10-10) are transient — all
+>    bots green since; Shaka can close them.
 > 3. Under-the-hood queue: ② split `index.html` — DONE 2026-09-16 (see §3 for the file map);
 >    ③ `data-action` dispatcher + strict CSP — DONE 2026-09-25; next: ④ single RPC transport (C3/C4).
 >    Rule for the split files: load-time code in one file must not call into a later file (they are
@@ -1292,3 +1299,38 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   `epochStart … tip−64` — the newest slots can show a produced block as missing at confirmed
   commitment. (4) `device_commit_files` refuses `.github/workflows/*`.
 - Session 11 totals: 1 push by Shaka (`4fe4494f`) + this HANDOVER commit; bot live.
+
+### 2026-10-13 — Session 12: mobile clipping fixes (~1 hour)
+- Start: 1,178 bot commits behind (15 days), tree clean, `git pull --rebase --autostash` clean with
+  delete permission granted at start, no locks. Heartbeat healthy (scores :03/:04, snapshots :03,
+  geo every 2 h, 78 bot commits in 24 h); alerts bot loop in_progress and committing state (8 state
+  commits in 24 h). Dangling commit `3ad83423…` still 200. Open issues #1/#2 are one-off bot
+  failures (10-04, 10-10) with green runs since. **1,337 validators** in the snapshot (was ~725).
+- Shaka (phone screenshot): Validator Terminal **Self-Stake Percentiles** box clips P85/P99.
+  Cause: `.vt-pctrow` at ≤980 px used `1fr 1fr 1fr`; a `1fr` track's minimum is its content's
+  min-content, so the 1.2rem monospace values forced 136 px columns → 409 px grid in a 301 px
+  card, hidden by `overflow: hidden`. Fix (`css/site.css`): `repeat(3, minmax(0,1fr))` + 1.05rem
+  values at ≤980 px; `repeat(2, minmax(0,1fr))` with tighter padding at ≤560 px; cell borders
+  re-done per layout (row-enders 4/7 at 3 cols, 3/5/7 at 2 cols).
+- **Clip scan** of every route at 375 px in the pane (elements with `scrollWidth > clientWidth`
+  inside `overflow:hidden`, or `right > viewport`, outside intentional `overflow-x:auto` scrollers):
+  only other hits were on the **Network tab** — the page itself scrolled sideways (document
+  541 px): Top Skippers table (fixed `width:` on 4 `th`s = 378 px alone), `.skipmon-scope`
+  pills (nowrap, 434 px), "Current Slot" 8-digit value and the Epoch tile's This/Previous rates
+  clipped at 1.6rem, TPS strip 9 px over. New `@media (max-width: 560px)` block after the
+  skip-monitor 900 px rules: scope pills full-width/equal/wrapping labels; stat values
+  `clamp(1rem, 5.5vw, 1.6rem)` (epoch cols `4.6vw`, incl. the more specific `-prev` rule);
+  TPS strip gaps; Top Skippers `table-layout: fixed`, `th[style]{width:auto!important}` +
+  explicit 34/64/70 px, **"Assigned" column hidden on phones**, name ellipsis, `#skipmonTopWrap`
+  `overflow-x:auto` as safety net. Pushed `efd986fc`; live-verified at 375 px (fresh tab,
+  `fetch(…,{cache:'reload'})` + reload): percentiles 2×, document 375 px, 0 clipped stat tiles.
+- Follow-up found only after the grid filled: with 1,500 cells the Recent Slots panel grew to
+  408 px (`.skipmon-main { grid-template-columns: 1fr }` at ≤900 px — Chrome's intrinsic width
+  for the `repeat(auto-fill, 14px)` grid set the track minimum). Fix: `minmax(0, 1fr)` +
+  `.skipmon-panel { min-width: 0 }`. Pushed `74bb9902`; live-verified (1,456 cells, panel 341 px,
+  document 375 px).
+- Lessons: (1) `1fr` ≠ `minmax(0,1fr)` — every clipped-on-phone bug today was that; (2) run the
+  clip scan *after* the live pollers have filled the page, not just on first paint; (3) the pane
+  blocks third-party hosts (`ERR_BLOCKED_BY_CLIENT` for fonts/unpkg/icon CDNs) — those console
+  errors are pane-only.
+- Session 12 totals: 2 pushes by Shaka (`efd986fc`, `74bb9902`, css only) + this HANDOVER commit.
