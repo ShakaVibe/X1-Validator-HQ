@@ -1204,7 +1204,7 @@
       // Use actual slot timing instead of a hardcoded 1-day epoch.
       const slotsInEpoch = currentEpochData.slotsInEpoch;
       const slotIndex    = currentEpochData.slotIndex;
-      const slotMs = 400; // X1 / Solana target slot time
+      const slotMs = (typeof measuredSlotMs === 'function') ? measuredSlotMs() : 368; // measured (core.js), fallback = 2026-10-13 value
       const epochDurationMs = slotsInEpoch * slotMs;
       const progressRatio = slotIndex / slotsInEpoch;
       const currentEpochRemainingMs = epochDurationMs * (1 - progressRatio);

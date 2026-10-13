@@ -673,17 +673,26 @@
     let currentEpochNumber = null;
 
     // Live epoch length (slots), refreshed whenever getEpochInfo is fetched.
-    // Used to annualize per-epoch rewards correctly: X1 epochs are ~2 days
-    // (Solana-style), so assuming 365 epochs/year roughly doubled every APY
-    // and annual figure. epochsPerYear() derives the true factor from the
-    // live epoch length so it self-corrects to whatever the network runs.
+    // Annualisation factor for per-epoch rewards (calculators, Stake Details,
+    // Manage Validator, Delegator APR). An X1 epoch is 216,000 slots at a
+    // MEASURED ~367 ms ≈ 22 h → ~397 epochs a year. It is not 365: the old
+    // 400 ms "target slot" assumption under-stated every APY and annual
+    // figure by ~8 % (fixed 2026-10-13; verified against the chain — epoch
+    // 375 on 09-13, 408 on 10-13). The slot time is measured once per session
+    // by js/apr.js (getRecentPerformanceSamples, 60 samples) and cached in
+    // sessionStorage under SLOT_TIME_CACHE_KEY; until then the last measured
+    // value below is the fallback. One function, one number, site-wide.
     let currentSlotsInEpoch = null;
-    const EPOCH_CALC_SLOT_MS = 400; // target slot time (matches unstaking-timeline math)
+    const EPOCH_CALC_SLOT_MS = 368;                 // fallback: measured 2026-10-13
+    const SLOT_TIME_CACHE_KEY = 'x1SlotTimeCache';  // { ts, data: seconds } — written by js/apr.js
+    function measuredSlotMs() {
+      const s = SessionCache.get(SLOT_TIME_CACHE_KEY, 3600000);
+      return (typeof s === 'number' && s > 0.1 && s < 2) ? s * 1000 : EPOCH_CALC_SLOT_MS;
+    }
     function epochsPerYear() {
-      if (!currentSlotsInEpoch || currentSlotsInEpoch <= 0) return 365; // safe fallback
-      const epochMs = currentSlotsInEpoch * EPOCH_CALC_SLOT_MS;
-      const yearMs  = 365.25 * 24 * 60 * 60 * 1000;
-      return yearMs / epochMs;
+      const slots = (currentSlotsInEpoch > 0) ? currentSlotsInEpoch : 216000;
+      const yearMs = 365.25 * 24 * 60 * 60 * 1000;
+      return yearMs / (slots * measuredSlotMs());
     }
 
     // Persistent cache for self-stake account pubkeys (survives page reloads and epoch transitions)

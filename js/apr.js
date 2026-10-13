@@ -18,7 +18,7 @@
       const LONG = 30, SHORT = 7, MIN_EPOCHS = 3;
       const MIN_NETWORK_STAKE_XNT = 1000;            // ignore dust validators in the network comparison
       const FALLBACK_SLOTS = 216000, FALLBACK_SLOT_SEC = 0.368;  // measured 2026-10-13
-      const SLOT_CACHE_KEY = 'x1SlotTimeCache', SLOT_CACHE_MS = 3600000;
+      const SLOT_CACHE_KEY = 'x1SlotTimeCache', SLOT_CACHE_MS = 3600000;   // same key core.js's epochsPerYear() reads
       const esc = (s) => escHtml(String(s == null ? '' : s));
       const num = (n, d) => formatNumber(n, d == null ? 2 : d);
       const pct = (x, d) => (x == null || !isFinite(x)) ? '—' : num(x, d == null ? 2 : d) + '%';
@@ -42,7 +42,10 @@
         })();
         return _slotPromise;
       }
-      function epochsPerYear() {
+      // One epoch-length figure for the whole site: core.js's epochsPerYear()
+      // reads the slot time this module measured (via the session cache).
+      function epy() {
+        if (typeof epochsPerYear === 'function') return epochsPerYear();
         const slots = (typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS;
         return 365.25 * 86400 / (slots * (_slotSec || FALLBACK_SLOT_SEC));
       }
@@ -85,10 +88,10 @@
       }
       function summarise(r) {
         if (!r || r.rows.length < MIN_EPOCHS) return null;
-        const epy = epochsPerYear();
+        const k = epy();
         const avg = (k) => { const xs = r.rows.map(x => x[k]).filter(x => x != null); return xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null; };
         const net = avg('net'), gross = avg('gross');
-        return { netApr: net * epy * 100, grossApr: gross == null ? null : gross * epy * 100, netPerEpoch: net * 100, epochs: r.rows.length,
+        return { netApr: net * k * 100, grossApr: gross == null ? null : gross * k * 100, netPerEpoch: net * 100, epochs: r.rows.length,
                  first: r.rows[r.rows.length - 1].epoch, last: r.rows[0].epoch, method: r.method, commission: r.rows[0].c, stakeXnt: r.rows[0].stXnt, lastV: r.rows[0].v };
       }
       function aprFor(vote, fallback) {
@@ -102,7 +105,7 @@
       function network() {
         const doc = window.RewardsLedger && window.RewardsLedger.doc;
         if (!doc) return null;
-        const key = doc.generatedAt + '|' + Math.round(epochsPerYear());
+        const key = doc.generatedAt + '|' + Math.round(epy());
         if (_net && _netKey === key) return _net;
         const xs = [];
         for (const vote of Object.keys(doc.validators)) {
@@ -184,7 +187,7 @@
           body.innerHTML = '<div class="dm-empty">' + (cur && cur.commission >= 100 ? 'This validator keeps 100% of rewards, so delegators earn nothing.' : 'Not enough completed epochs with rewards in the ledger yet (needs ' + MIN_EPOCHS + ').') + '</div>';
           return;
         }
-        const S = a.short, net = network(), epy = epochsPerYear();
+        const S = a.short, net = network(), k = epy();
         const perTenK = L.netApr / 100 * 10000;
         const barW = (x, max) => Math.max(2, Math.min(100, (x / max) * 100)).toFixed(0) + '%';
         const maxBar = Math.max(L.netApr, net ? net.p90 : 0, S ? S.netApr : 0) * 1.1 || 1;
@@ -208,7 +211,7 @@
             '<div class="apm-row"><span>Active stake' + (L.method === 'self' ? '' : ' the reward was earned on') + '</span><b>' + esc(num(L.stakeXnt, 0)) + ' XNT</b></div>' +
             (L.method === 'self' ? '' : '<div class="apm-row"><span>Vote-account reward, epoch ' + esc(L.last) + ' (commission income)</span><b>' + esc(num(L.lastV / 1e9, 2)) + ' XNT</b></div>') +
             '<div class="apm-row"><span>Average yield per epoch</span><b>' + pct(L.netPerEpoch, 4) + '</b></div>' +
-            '<div class="apm-row"><span>Epochs per year</span><b>' + esc(num(epy, 0)) + ' <small>(' + esc(num((typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS, 0)) + ' slots × ' + esc(num((_slotSec || FALLBACK_SLOT_SEC) * 1000, 0)) + ' ms ≈ ' + esc(num(((typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS) * (_slotSec || FALLBACK_SLOT_SEC) / 3600, 1)) + ' h)</small></b></div>' +
+            '<div class="apm-row"><span>Epochs per year</span><b>' + esc(num(k, 0)) + ' <small>(' + esc(num((typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS, 0)) + ' slots × ' + esc(num((_slotSec || FALLBACK_SLOT_SEC) * 1000, 0)) + ' ms ≈ ' + esc(num(((typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS) * (_slotSec || FALLBACK_SLOT_SEC) / 3600, 1)) + ' h)</small></b></div>' +
             '<div class="apm-row"><span>On 10,000 XNT delegated</span><b>≈ ' + esc(num(perTenK, 0)) + ' XNT / year</b></div>' +
           '</div>' +
           '<div class="dm-foot">' + method + ' ' + stakeNote + ' Source: <code>data/rewards.json</code>, rebuilt hourly from on-chain inflation rewards. Estimates from past epochs; future rewards depend on inflation (currently ~' + esc(num(6.4, 1)) + '% to validators and falling), vote credits and stake.</div>';
@@ -246,5 +249,5 @@
       window.aprFor = aprFor;              // for other modules (fleet board / leaderboards later)
       window.aprHydrate = hydrateAll;
       window.aprNetwork = network;
-      window.aprEpochsPerYear = epochsPerYear;
+      window.aprEpochsPerYear = epy;
     })();

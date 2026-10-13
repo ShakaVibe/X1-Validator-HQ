@@ -38,9 +38,13 @@
 >    checkbox, one real tx confirm → "Close" — `.onclick` properties, strict CSP allows them).
 >    Rule for all new code stays: no `on*="…"` attributes, no inline `<script>`, no `javascript:` URLs;
 >    re-run `scripts/c2-tests/csp-walk-test.js` after any `index.html` edit (done this session: clean).
->    Next agreed work: **F4 fleet board** (Data Center, issues first). Open offer: harden
->    `js/frame-guard.js`. Backlog: visual pass (Compare cards, Delegation tab, modals, Data Center
->    summary tiles), F8b rewards CSV export, F11 APR per validator.
+>    **F4 Fleet Health is LIVE (2026-10-13)** — `js/fleet.js`, bar + collapsible table in My Data
+>    Center (`#fleetHealth`); **F11 Delegator APR is LIVE (2026-10-13)** — `js/apr.js`, card tile +
+>    `#aprModal`; the ledger builder now records `st`/`c` (stake XNT, commission) per epoch cell.
+>    Next options (Shaka to pick): F3 loose ends (`/help`, `/status`, `TELEGRAM_CHAT_ID`, close issues
+>    #1/#2, "Watch on Telegram" link in the fleet bar), APR as a fleet-table column and a Leaderboards
+>    category, F8b rewards CSV export, phone layouts for Delegation / Leaderboards / Terminal tables,
+>    the 817 "unknown version" validators, ④ single RPC transport. Open offer: harden `js/frame-guard.js`.
 >    **Mobile rule (2026-10-13):** any grid/flex track that holds monospace numbers or a table must
 >    be `minmax(0, 1fr)` / `min-width: 0` — a plain `1fr` never shrinks below its content and the
 >    overflow is hidden by the card. Phone check = the 375 px clip scan in the session 12 log.
@@ -169,9 +173,13 @@ generate-geo.js               geo updater run by the Action
 .github/workflows/update-terminal-snapshot.yml  hourly, minute :37 (commits data/terminal.json, delegation.json, rewards.json)
 .github/workflows/heartbeat.yml         self-rescheduling chain that dispatches the three bots hourly (GitHub cron is unreliable)
 js/alerts.js                  "Telegram alerts" modal in My Data Center (F3 entry point; bot username constant)
+js/fleet.js                   F4 Fleet Health: bar + issues-first table in My Data Center (fleetRender/fleetRefresh,
+                              actions fleet-toggle/-filter/-row; reads delegEvaluate, delegationCluster, RewardsLedger)
+js/apr.js                     F11 Delegator APR: card tile (.apr-section) + #aprModal (aprFor/aprNetwork/aprEpochsPerYear;
+                              actions apr-details/-close/-overlay; one cached getRecentPerformanceSamples per session)
 scripts/alerts-bot.js         F3 Telegram alerts bot (Node 20, zero deps) — see §4
 scripts/test-alerts-bot.js    mock tests for the bot (`node scripts/test-alerts-bot.js`)
-scripts/c2-tests/             offline Playwright suites (C2 dispatcher, strict CSP walk, alerts modal) — README there
+scripts/c2-tests/             offline Playwright suites (C2 dispatcher, strict CSP walk, alerts modal, fleet, apr) — README there
 data/alerts-state.enc         bot subscriptions + last-seen state, AES-256-GCM (key = ALERTS_STATE_KEY secret)
 .github/workflows/alerts.yml  Telegram alerts bot loop (~5h45m, self-dispatching, backup cron every 2 h)
 vendor/solana-web3.js-1.98.4.iife.min.js
@@ -218,6 +226,26 @@ CNAME / .nojekyll / _headers  Pages config
   in the 3 newest epochs) so a routine run is ~15 RPC calls; a full backfill of 36 epochs is ~400
   calls / ~1 min. An epoch whose vote rewards are all null (RPC hasn't computed it yet) is left
   out of the file rather than published as zeros.
+
+- **Delegator APR** (`js/apr.js`, F11, 2026-10-13): the vote account's inflation reward is the
+  validator's commission slice, so `v ÷ commission` = total reward paid on all stake delegated to it
+  that epoch; `× (1 − commission) ÷ active stake` = per-epoch delegator yield; `× epochs/year` = APR.
+  Epochs/year = 365.25 d ÷ (216,000 slots × measured slot time) ≈ **397–398** (slot ≈ 367 ms, epoch
+  ≈ 22 h — NOT 365; verified: epoch 375 on 09-13 → 408 on 10-13). **`core.js epochsPerYear()` is the
+  single source for this on the whole site** (calculators, Stake Details, Manage, APR tile); it reads
+  the measured slot time from `sessionStorage.x1SlotTimeCache` (written by `js/apr.js`), fallback 368 ms. Verified the commission-slice
+  assumption on fully self-staked validators (self reward = 9 × vote reward at 10 %, ratio 0.997).
+  Top-down cross-check: validator inflation 6.37 % × 1.079 B supply ≈ 173 k XNT/epoch ÷ 972 M staked
+  = 7.1 % gross network average; independents read ~15 % higher because X1 Labs' 12 nodes (684 M XNT,
+  70 % of stake, 0 % commission) collect less per XNT and the credit-weighted split hands the rest
+  to everyone else. Per-epoch stake/commission come from the ledger's new `st`/`c` arrays (recorded
+  from 2026-10-13 on; older cells null → today's stake used, understates APR if stake grew; the
+  7-epoch figure is the safer read until the history fills). 0 % commission → yield on the
+  validator's own self-stake accounts (`s ÷ ss` from the delegation snapshot); 100 % → 0 %; < 3
+  epochs → "—". Network comparison: validators with ≥ 1,000 XNT and 0 < c < 100 (n = 471 today),
+  median 8.8 %, p90 9.6 %. X1 docs confirm standard Solana economics (inflation 8 % → −15 %/yr →
+  1.5 % floor; commission on voting rewards; block fees to the leader; bootstrap bonus paid as a
+  one-time airdrop in Nov 2026, not through the vote account).
 
 - **Telegram alerts bot** (`scripts/alerts-bot.js`, F3, 2026-09-28): one Node process per Actions run.
   Loop: `getUpdates` long-poll (≤50 s, answers `/watch /unwatch /list /status /help`, admin `/stats`)
@@ -276,11 +304,11 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
       Follow-up: static per-validator pages with OG cards (F5) so shared links unfurl with the
       validator's name/score.
 - [ ] **F10** `data/status.json` + `data/events.json`; stable `scores.json` schema; /status page
-- [ ] **F4** fleet health board in My Data Center (issues first)
+- [x] **F4** fleet health board in My Data Center — done 2026-10-13 (bar + collapsible table, `js/fleet.js`)
 - [x] **F7** version tracker — done (see Phase 0). v4.0 feature-gate feed still open.
 - [x] **F1** Delegation Program eligibility checker — done 2026-09-10 (see Session Log). Follow-ups:
       - [ ] Bootstrap Bonus checker (docs.x1.xyz/validating/validator-rewards/bootstrap-bonus)
-      - [ ] Data Center summary line ("3 approved · 1 failing") + fleet board column (F4)
+      - [x] Data Center summary line + fleet board column — done (summary tile 09-11, fleet board 10-13)
       - [x] Alert on eligibility loss — done 2026-09-28 (F3 bot: Delegation Program status/criteria alerts)
 - [x] **P2** done — 2026-09-10: leader schedule lazy (R6), TPS light poll (P8), fonts non-blocking (P4);
       2026-09-16: sessionStorage cache for identities (1 h) + supply (1 h), stats-bar fast path from
@@ -292,8 +320,9 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
       Follow-ups: Discord webhook, `/digest` per-epoch summary, commission-change alert, admin chat id
 - [ ] **F6** score coach ("+3.0 if you upgrade"); publish `interp()` anchors in scores.json
 - [ ] **F5** public profile pages + OG share cards generated by the Action
-- [ ] **F8b** rewards CSV export from the ledger; **F9** change feeds; **F11** APR per validator
+- [ ] **F8b** rewards CSV export from the ledger; **F9** change feeds
       (F8 ledger itself is DONE 2026-09-13 — `data/rewards.json`; F2 history charts can read it)
+- [x] **F11** APR per validator — done 2026-10-13 (`js/apr.js`; follow-ups: fleet-table column, Leaderboards category)
 
 - [x] **P9** done 2026-09-16 — scores.json now carries `credits` (last 8 epochs), `creditsFirstEpoch`,
       `creditsEpochs` per validator; Leaderboards read them (`publishedCreditsMap`) and only fall back
@@ -314,6 +343,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] Ask people who reported the terminal error which device/network they were on.
 
 ### Done
+- [x] 2026-10-13 — **F4 Fleet Health** bar + table and **F11 Delegator APR** tile + modal live; ledger
+      records stake/commission per epoch; phone clipping fixes (Terminal percentiles, Network tab). See Session Log.
 - [x] 2026-09-28 — **F3 Telegram alerts** live: bot + workflow + Data Center entry point. See Session Log.
 - [x] 2026-09-16 — **F15 "Where am I"** pinned rows on every leaderboard; **P2** session cache +
       stats-bar fast path. See Session Log.
@@ -1334,3 +1365,71 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   blocks third-party hosts (`ERR_BLOCKED_BY_CLIENT` for fonts/unpkg/icon CDNs) — those console
   errors are pane-only.
 - Session 12 totals: 2 pushes by Shaka (`efd986fc`, `74bb9902`, css only) + this HANDOVER commit.
+
+### 2026-10-13 — Session 12, continued: F4 Fleet Health (~2 hours)
+- Mockups first (Playwright renders of the real card/Data Center with today's data, PNGs via
+  SendUserFile — hosted artifacts still not used). Shaka: an always-open table is "ugly"; wanted a
+  **collapsed bar with the totals and a Details button**. Then: the green left stripe looked
+  "too Claude-ish" → removed; **the whole border carries the state** (green / amber / red + faint
+  glow), row stripes removed too.
+- Built `js/fleet.js` (IIFE, ~320 lines, `Actions.register` fleet-toggle / fleet-filter / fleet-row;
+  no index-actions change). `#fleetHealth` host sits between `.portfolio-summary-wrapper` and
+  `#portfolioValidatorResults`; `loadPortfolio()` calls `window.fleetRender(sortedValidators)` after
+  storing `combinedChartValidators`, and `fetchPortfolioLastEpochRewards()` calls `window.fleetRefresh()`
+  once the ledger rows are in. `js/delegation.js` exposes `window.delegationCluster` and
+  `window.delegLoad()` (resolves with the snapshot). Rules (same as the bot): **critical** =
+  delinquent · version below `minValidatorVersion` · skip rate over cluster + tolerance · Program
+  rejected; **watch** = any skip above the cluster rate · Program failing · self-stake within 10 % of
+  the minimum · vote credits near the threshold · no version in gossip. Bar sentence names up to
+  three problems then "N healthy"; chips filter (a chip also opens the table); Details/Hide
+  remembered in `localStorage.x1FleetOpen`; rows + Enter → `lookupValidator`. ≤ 760 px: stacked cards.
+  Columns: Validator · Issues · Score · Skip·epoch (live rate, slots from the snapshot) · Version ·
+  Delegation Program (status + XNT delegated) · Self-stake · Last epoch (ledger).
+- Test `scripts/c2-tests/fleet-test.js` (25 checks: sort, text, chips, toggle + memory across reload,
+  filters, row click, keyboard, all-healthy, empty, phone, 0 inline, 0 errors); CSP walk + alerts
+  suite green. Pushed `53c8c632`, border change `7e60087a`. **Live-verified** with a test portfolio
+  in the pane (never Shaka's Chrome): real `loadPortfolio()` path → "All 5 healthy · voting · v4.0.3 ·
+  Delegation Program approved", table hidden, 5 cards, no JS errors.
+- Lesson: `.github/workflows` is still protected for `device_commit_files`, but every other path
+  (incl. new files under `js/` and `scripts/c2-tests/`) writes fine; check `git diff --quiet HEAD -- <files>`
+  on the Mac before overwriting so a bot commit or a local edit is never clobbered.
+
+### 2026-10-13 — Session 12, continued: F11 Delegator APR (~2 hours)
+- Shaka chose variant **B** (4 + 4 kept): Earnings = Rewards balance · Earned last epoch · Active
+  stake · **Delegator APR**; Health = Epoch credits · Skip rate · **Foundation delegation** (moved) ·
+  Performance; the Commission tile is gone (fee lives in the APR subtext "30 ep · net of 10% fee").
+- "Are you sure the math is right?" → verified before building (see §4 "Delegator APR"): the
+  formula held, **epochs/year was wrong in the mockup (365 → ~397)**, so every mockup APR was ~9 % low.
+- `scripts/build-rewards-ledger.js`: new per-epoch `st` (stake, XNT, 3 dp) and `c` (commission) arrays,
+  recorded from `getVoteAccounts` against every `v` cell fetched in that run and carried over on
+  reuse; cells from pre-F11 ledgers stay null (never back-filled with today's stake). Ledger version
+  unchanged (fields optional). `scripts/test-rewards-ledger.js` extended (3 new assertions).
+- `js/apr.js` (IIFE): `rates()` per epoch from the ledger (`st`/`c` else current stake/commission from
+  `allValidators` or the tile's `data-stake`/`data-commission`), `summarise()` over 30 and 7 epochs,
+  `network()` median/p90 cached per ledger build, `slotSeconds()` = one `getRecentPerformanceSamples(60)`
+  cached 1 h in `SessionCache` (fallback 368 ms), `epochsPerYear()` from `currentSlotsInEpoch`.
+  Tile hydrated by a MutationObserver on `.apr-section` (same pattern as the delegation tile);
+  `#aprModal` in index.html uses its own actions (apr-overlay / apr-close), no allow-list change.
+- Test `scripts/c2-tests/apr-test.js` (21 checks; the tile value is matched against the same formula
+  run in node over the served ledger; 100 % / 0 % / no-history paths via synthetic ledger + Program
+  entries); fleet, alerts, cards suites + CSP walk green. Pushed `017f9bba`. **Live-verified**: Lookup
+  card Shaka_Vibes_1 → 9.46 % (7d 7.89 %, amber = recent epochs lower), modal: 398 epochs/yr from a
+  measured 367 ms slot, median 8.78 % / top-10 % 9.60 % over 471 validators, Escape closes; no JS errors.
+- **Epoch-length fix (same session, after Shaka asked whether the calculator APR matched):** it did
+  not. `core.js epochsPerYear()` multiplied 216,000 slots by a hard-coded **400 ms** (→ 365 epochs/yr;
+  the comment still said "X1 epochs are ~2 days"), so the staking / compound / breakeven calculators,
+  Stake Details ("Validator APY", "base APY") and the Manage Validator projection were all ~8 % low.
+  Live before the fix: Stake Details Shaka_Vibes_1 = 22.15 % Validator APY / 7.7 % base (7-day) vs
+  the tile's 7.89 % net / 8.77 % gross. Fix: `epochsPerYear()` now uses `measuredSlotMs()` — the slot
+  time `js/apr.js` measures once per session (`getRecentPerformanceSamples(60)`) and caches in
+  `sessionStorage.x1SlotTimeCache`; fallback **368 ms** (measured 2026-10-13) instead of 400. `apr.js`
+  calls that same function (`epy()`), so the site has exactly one epochs/year figure (≈ 397). The
+  unstaking timelines (`calculators.js`, `manage.js`) use `measuredSlotMs()` too. Remaining gap between
+  Stake Details' base APY and the tile's gross is by design: Stake Details derives the rate from the
+  self-stake split (depends on account classification — it auto-detected 43,596 XNT of self-stake vs
+  54,899 in the Foundation snapshot), the tile from commission income over total stake. "Validator
+  APY" (= income ÷ self-stake, operator ROI) is a different quantity from the delegator APR. Labels
+  say "APY" but nothing compounds — rename to APR when the calculators are next touched.
+- Session 12 totals (2026-10-13): 7 pushes by Shaka (`efd986fc`, `74bb9902` mobile; `53c8c632`,
+  `7e60087a` F4; `017f9bba` F11; epochs/year fix; + HANDOVER `282cc34a`) + this HANDOVER commit. Scratch harnesses
+  (`/home/claude/mock`, `/home/claude/x1site`) were session-only.

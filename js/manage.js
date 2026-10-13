@@ -1623,7 +1623,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const currentEpoch = currentEpochData?.epoch ?? null;
       const slotsInEpoch = currentEpochData?.slotsInEpoch ?? 432000;
       const slotIndex    = currentEpochData?.slotIndex ?? 0;
-      const slotMs       = 400;
+      const slotMs       = (typeof measuredSlotMs === 'function') ? measuredSlotMs() : 368; // measured (core.js)
       const epochDurationMs = slotsInEpoch * slotMs;
       const currentEpochRemainingMs = epochDurationMs * (1 - slotIndex / slotsInEpoch);
       const now = new Date();
