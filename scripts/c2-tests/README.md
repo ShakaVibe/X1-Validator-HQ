@@ -38,3 +38,13 @@ Opens My Data Center with a 2-validator portfolio, clicks "🔔 Telegram alerts"
 dispatcher, checks the generated `/watch …` command, Copy (clipboard), ×/Escape/backdrop close,
 the empty-portfolio hint and the 375 px layout. The bot itself is tested without a browser:
 `node scripts/test-alerts-bot.js`.
+
+**Fleet health (F4, 2026-10-13)** — `js/fleet.js` + `#fleetHealth` in My Data Center:
+
+    node scripts/c2-tests/fleet-test.js "$PWD"
+
+Feeds `fleetRender()` three validators (two real vote keys from `data/delegation.json`, one
+invented delinquent node on an old version) and checks the severity sort, the bar text and
+chips, Details open/close + localStorage memory across a reload, chip filters, row click and
+Enter → `lookupValidator`, the all-healthy and empty states, the 375 px card layout, 0 inline
+handlers, 0 page errors.

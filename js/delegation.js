@@ -42,6 +42,7 @@
             if (!d || d.version !== 1 || !d.validators) throw new Error('unexpected format');
             _doc = d; _err = null;
             window.delegationConfig = d.config;
+            window.delegationCluster = d.cluster || null;   // fleet board: cluster skip rate / avg credits / epoch
             if (typeof renderVersionStrip === 'function') renderVersionStrip();
             return d;
           } catch (e) {
@@ -386,7 +387,8 @@
 
       window.delegOpen = open;
       window.delegRefresh = () => load(true).then(() => { hydrateAll(); renderTab(); });
-      window.delegEvaluate = evaluate;   // for other modules (fleet board later)
+      window.delegEvaluate = evaluate;   // for other modules (fleet board)
+      window.delegLoad = () => load(false); // resolves when the snapshot is in (fleet board re-renders on it)
       window.openDelegationModal = openDelegationModalImpl;
       Actions.register({
         'delegation-details': (el, e, d) => { e.stopPropagation(); openDelegationModalImpl(d.vote); },

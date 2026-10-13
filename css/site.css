@@ -12180,3 +12180,137 @@
       .tga-cmd { flex-direction: column; }
       .tga-copy { padding: 0.5rem 0.9rem; }
     }
+
+    /* ═══════════════ FLEET HEALTH — My Data Center (js/fleet.js, F4, 2026-10-13) ═══════════════ */
+    /* The bar */
+    .fleet-bar {
+      margin: 1.25rem 0 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0.7rem 1.1rem 0.7rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid rgba(77, 166, 255, 0.35);
+      border-radius: 12px;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.05), 0 0 18px rgba(0, 212, 255, 0.04);
+    }
+    .fleet-bar::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--success); }
+    .fleet-bar.has-warn::before { background: var(--warning); }
+    .fleet-bar.has-crit::before { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+    .fleet-bar.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; }
+    .fleet-bar-title { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--accent-cyan); white-space: nowrap; flex-shrink: 0; }
+    .fleet-bar-text { flex: 1 1 auto; min-width: 0; font-size: 0.86rem; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fleet-bar-text b { color: var(--text-primary); font-weight: 600; }
+    .fleet-bar-text .c { color: var(--danger); font-weight: 600; }
+    .fleet-bar-text .w { color: var(--warning); font-weight: 600; }
+    .fleet-sum { display: flex; gap: 0.5rem; flex-wrap: nowrap; flex-shrink: 0; }
+    .fleet-chip {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.3rem 0.65rem; border-radius: 999px;
+      font-size: 0.74rem; font-weight: 600; font-family: inherit;
+      border: 1px solid var(--border); color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.02); cursor: pointer; white-space: nowrap;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .fleet-chip b { font-family: 'JetBrains Mono', monospace; color: var(--text-primary); }
+    .fleet-chip.crit { border-color: rgba(255, 82, 82, 0.45); color: #ff8a8a; }
+    .fleet-chip.crit b { color: var(--danger); }
+    .fleet-chip.warn { border-color: rgba(255, 171, 0, 0.45); color: #ffc453; }
+    .fleet-chip.warn b { color: var(--warning); }
+    .fleet-chip.ok { border-color: rgba(0, 230, 118, 0.4); color: #7ee8b0; }
+    .fleet-chip.ok b { color: var(--success); }
+    .fleet-chip:hover { background: rgba(255, 255, 255, 0.05); }
+    .fleet-chip.active { background: rgba(0, 212, 255, 0.12); border-color: rgba(0, 212, 255, 0.45); color: var(--accent-cyan); }
+    .fleet-bar-meta { font-size: 0.7rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+    .fleet-bar-btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: rgba(0, 212, 255, 0.08); border: 1px solid rgba(0, 212, 255, 0.4); color: var(--accent-cyan);
+      font-weight: 600; font-size: 0.78rem; padding: 0.45rem 0.85rem; border-radius: 8px;
+      font-family: inherit; white-space: nowrap; cursor: pointer; flex-shrink: 0;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    .fleet-bar-btn:hover { background: rgba(0, 212, 255, 0.15); box-shadow: 0 0 10px rgba(0, 212, 255, 0.25); }
+    .fleet-bar-btn .chev { font-size: 0.7rem; }
+
+    /* The table (opens under the bar) */
+    .fleet-board {
+      margin: 0 0 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid rgba(77, 166, 255, 0.35); border-top: none;
+      border-radius: 0 0 14px 14px;
+      overflow: hidden;
+      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.05), 0 0 18px rgba(0, 212, 255, 0.04);
+    }
+    .fleet-board[hidden] { display: none; }
+    .fleet-tbl-wrap { overflow-x: auto; }
+    table.fleet-tbl { width: 100%; border-collapse: collapse; font-size: 0.82rem; table-layout: fixed; }
+    .fleet-tbl col.c-name { width: 200px; } .fleet-tbl col.c-score { width: 64px; } .fleet-tbl col.c-skip { width: 92px; }
+    .fleet-tbl col.c-ver { width: 86px; } .fleet-tbl col.c-deleg { width: 160px; } .fleet-tbl col.c-self { width: 112px; } .fleet-tbl col.c-earn { width: 100px; }
+    .fleet-tbl th {
+      text-align: left; padding: 0.6rem 0.7rem;
+      font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700;
+      color: var(--text-secondary); border-bottom: 1px solid var(--border); white-space: nowrap;
+      background: rgba(0, 212, 255, 0.04);
+    }
+    .fleet-tbl th.r, .fleet-tbl td.r { text-align: right; }
+    .fleet-tbl td {
+      padding: 0.65rem 0.7rem; border-bottom: 1px solid var(--border); vertical-align: middle;
+      font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums;
+      color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .fleet-tbl tr:last-child td { border-bottom: none; }
+    .fleet-tbl tbody tr { cursor: pointer; transition: background 0.15s; }
+    .fleet-tbl tbody tr:hover, .fleet-tbl tbody tr:focus-visible { background: var(--bg-card-hover); }
+    .fleet-tbl tr.sev-crit { background: rgba(255, 82, 82, 0.06); box-shadow: inset 3px 0 0 var(--danger); }
+    .fleet-tbl tr.sev-warn { background: rgba(255, 171, 0, 0.05); box-shadow: inset 3px 0 0 var(--warning); }
+    .fleet-tbl tr.sev-ok   { box-shadow: inset 3px 0 0 rgba(0, 230, 118, 0.55); }
+    .fleet-tbl tr.sev-crit:hover { background: rgba(255, 82, 82, 0.1); }
+    .fleet-tbl tr.sev-warn:hover { background: rgba(255, 171, 0, 0.09); }
+    .fleet-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
+    .fleet-name-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .fleet-name small { display: block; font-weight: 400; font-size: 0.68rem; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; white-space: normal; line-height: 1.5; }
+    .fleet-logo {
+      width: 26px; height: 26px; border-radius: 50%; background: var(--bg-primary);
+      display: inline-flex; align-items: center; justify-content: center; overflow: hidden;
+      font-size: 0.72rem; font-weight: 700; color: var(--accent-blue); flex-shrink: 0; border: 1px solid var(--border);
+    }
+    .fleet-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .fleet-issues { font-family: 'Space Grotesk', sans-serif; display: flex; flex-direction: column; gap: 0.25rem; white-space: normal; }
+    .fleet-issue { display: block; position: relative; padding-left: 0.95rem; font-size: 0.8rem; line-height: 1.3; color: var(--text-secondary); }
+    .fleet-issue::before { content: ''; position: absolute; left: 0; top: 0.42em; width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+    .fleet-issue.crit { color: #ff8a8a; } .fleet-issue.crit::before { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
+    .fleet-issue.warn { color: #ffc453; } .fleet-issue.warn::before { background: var(--warning); }
+    .fleet-issue b { color: var(--text-primary); font-weight: 600; }
+    .fleet-pill { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.03em; font-family: 'Space Grotesk', sans-serif; vertical-align: middle; }
+    .fleet-pill.ok { background: rgba(0, 230, 118, 0.12); color: var(--success); }
+    .fleet-pill.bad { background: rgba(255, 82, 82, 0.14); color: var(--danger); }
+    .fleet-pill.warn { background: rgba(255, 171, 0, 0.14); color: var(--warning); }
+    .fleet-pill.dim { background: rgba(138, 143, 152, 0.16); color: var(--text-secondary); }
+    .fleet-sub { display: block; font-size: 0.66rem; color: var(--text-dim); margin-top: 2px; }
+    .fleet-dim { color: var(--text-dim); } .fleet-good { color: var(--success); } .fleet-bad { color: var(--danger); } .fleet-warnc { color: var(--warning); }
+    .fleet-empty { padding: 1.5rem 1rem; text-align: center; color: var(--text-dim); font-size: 0.85rem; font-family: 'Space Grotesk', sans-serif; }
+    .fleet-foot { padding: 0.6rem 1.25rem; font-size: 0.72rem; color: var(--text-dim); border-top: 1px solid var(--border); display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    .fleet-foot code { color: var(--accent-cyan); font-family: 'JetBrains Mono', monospace; }
+
+    /* Phones: the bar wraps, the table becomes stacked cards */
+    .fleet-cards { display: none; }
+    @media (max-width: 760px) {
+      .fleet-bar { flex-wrap: wrap; gap: 0.5rem 0.75rem; padding: 0.7rem 0.9rem 0.7rem 0.85rem; }
+      .fleet-bar-text { flex: 1 1 100%; white-space: normal; order: 3; font-size: 0.8rem; }
+      .fleet-bar .fleet-sum { margin-left: 0; order: 2; flex-wrap: wrap; }
+      .fleet-bar-btn { margin-left: auto; order: 1; }
+      .fleet-bar-meta { display: none; }
+      .fleet-chip { padding: 0.25rem 0.55rem; font-size: 0.7rem; }
+      .fleet-tbl-wrap { display: none; }
+      .fleet-cards { display: flex; flex-direction: column; }
+      .fleet-card { padding: 0.85rem 1rem 0.9rem 0.95rem; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.35rem 0.75rem; cursor: pointer; }
+      .fleet-card:last-child { border-bottom: none; }
+      .fleet-card.sev-crit { background: rgba(255, 82, 82, 0.06); box-shadow: inset 3px 0 0 var(--danger); }
+      .fleet-card.sev-warn { background: rgba(255, 171, 0, 0.05); box-shadow: inset 3px 0 0 var(--warning); }
+      .fleet-card.sev-ok { box-shadow: inset 3px 0 0 rgba(0, 230, 118, 0.55); }
+      .fleet-card .fleet-name { font-size: 0.95rem; }
+      .fleet-card .fleet-issues { grid-column: 1 / -1; }
+      .fleet-card .fleet-kv { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin-top: 0.3rem; }
+      .fleet-kv div { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+      .fleet-kv label { display: block; font-family: 'Space Grotesk', sans-serif; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 1px; }
+      .fleet-foot { padding: 0.6rem 0.9rem; gap: 0.5rem 1rem; }
+    }

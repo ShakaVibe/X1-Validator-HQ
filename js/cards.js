@@ -792,6 +792,8 @@
 
         // Store combined chart data (sorted)
         window.combinedChartValidators = sortedValidators;
+        // Fleet health bar + table (js/fleet.js) — evaluates these same objects
+        if (typeof window.fleetRender === 'function') window.fleetRender(sortedValidators);
         
         // Store color mapping for each validator
         window.validatorColorMap = {};
@@ -861,6 +863,8 @@
         });
 
         const allRewards = await Promise.all(rewardPromises);
+        // Ledger rows are in now — let the fleet table fill its "Earned · epoch" column
+        if (typeof window.fleetRefresh === 'function') window.fleetRefresh();
 
         // Collect every epoch we saw across any validator, sorted newest first.
         const epochSet = new Set();
