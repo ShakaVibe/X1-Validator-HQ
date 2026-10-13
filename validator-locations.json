@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-13T04:03:16.082Z",
-  "totalNodes": 531,
-  "totalLocations": 529,
+  "lastUpdated": "2026-10-13T06:03:13.960Z",
+  "totalNodes": 522,
+  "totalLocations": 520,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2327,20 +2327,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "37.59.96.131": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
-    "37.59.96.57": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "149.50.101.149": {
       "country": "Poland",
       "countryCode": "PL",
@@ -2369,26 +2355,12 @@
       "lat": 53.6498,
       "lon": 10.0844
     },
-    "51.91.53.221": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "188.117.169.89": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Żory",
       "lat": 50.0433,
       "lon": 18.6828
-    },
-    "51.91.53.223": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "51.91.53.222": {
       "country": "France",
@@ -2452,27 +2424,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "149.202.227.110": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
-    "149.202.227.108": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
-    "149.202.227.109": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
     },
     "46.170.40.94": {
       "country": "Poland",
@@ -2768,26 +2719,12 @@
       "lat": 50.043,
       "lon": 18.6838
     },
-    "51.255.32.85": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "198.96.94.26": {
       "country": "United States",
       "countryCode": "US",
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "51.91.253.20": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "135.181.11.137": {
       "country": "Finland",
@@ -3718,7 +3655,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 62
+      "count": 53
     },
     "US": {
       "name": "United States",
