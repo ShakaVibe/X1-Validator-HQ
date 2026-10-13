@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-13T14:03:17.261Z",
-  "totalNodes": 520,
-  "totalLocations": 518,
+  "lastUpdated": "2026-10-13T16:03:13.677Z",
+  "totalNodes": 522,
+  "totalLocations": 520,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2971,13 +2971,6 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "37.60.242.149": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "64.20.34.78": {
       "country": "United States",
       "countryCode": "US",
@@ -3628,12 +3621,33 @@
       "city": "Salt Lake City",
       "lat": 40.7608,
       "lon": -111.891
+    },
+    "159.195.87.97": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
+    },
+    "83.168.90.73": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
+    },
+    "185.53.155.129": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Bielsko-Biala",
+      "lat": 49.8207,
+      "lon": 19.0512
     }
   },
   "countries": {
     "PL": {
       "name": "Poland",
-      "count": 65
+      "count": 67
     },
     "FI": {
       "name": "Finland",
@@ -3641,7 +3655,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 52
+      "count": 51
     },
     "US": {
       "name": "United States",
@@ -3657,7 +3671,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 45
+      "count": 46
     },
     "GB": {
       "name": "United Kingdom",
