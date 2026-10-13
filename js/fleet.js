@@ -164,7 +164,7 @@
           const n = rows.length;
           const vers = [...new Set(rows.map(r => r.ver).filter(Boolean))];
           const allApproved = rows.every(r => r.delegStatus === 'approved' || r.delegStatus === 'delegated');
-          return '<b>All ' + n + ' healthy</b> · voting' + (vers.length === 1 ? ' · v' + esc(vers[0]) : '') + (allApproved ? ' · Delegation Program approved' : '') + ' · nothing needs attention';
+          return '<b>All ' + n + ' healthy</b> · voting' + (vers.length === 1 ? ' · v' + esc(vers[0]) : '') + (allApproved ? ' · Delegation Program approved' : '');
         }
         // name the worst problems first, short form
         const parts = [];
@@ -238,7 +238,7 @@
       const statusPill = (r) => r.delinquent ? '<span class="fleet-pill bad">DELINQUENT</span>' : '<span class="fleet-pill ok">VOTING</span>';
       const shortVote = (v) => esc(v.slice(0, 4)) + '…' + esc(v.slice(-4));
 
-      function renderTable(rows) {
+      function renderTable(rows, stateCls) {
         const shown = _filter === 'all' ? rows : rows.filter(r => r.sev === _filter);
         const trs = shown.map(r =>
           '<tr class="sev-' + r.sev + '" data-action="fleet-row" data-vote="' + esc(r.vote) + '" title="Open ' + esc(r.name) + ' in Validator Lookup" tabindex="0">' +
@@ -266,7 +266,7 @@
           '</div></div>').join('');
         const empty = '<div class="fleet-empty">Nothing in this group.</div>';
         const cfg = window.delegationConfig || {};
-        return '<div class="fleet-board" id="fleetBoard"' + (_open ? '' : ' hidden') + '>' +
+        return '<div class="fleet-board ' + (stateCls || '') + '" id="fleetBoard"' + (_open ? '' : ' hidden') + '>' +
           '<div class="fleet-tbl-wrap"><table class="fleet-tbl">' +
           '<colgroup><col class="c-name"><col class="c-issues"><col class="c-score"><col class="c-skip"><col class="c-ver"><col class="c-deleg"><col class="c-self"><col class="c-earn"></colgroup>' +
           '<thead><tr><th>Validator</th><th>Issues</th><th class="r">Score</th><th class="r">Skip · epoch</th><th>Version</th><th>Delegation Program</th><th class="r">Self-stake XNT</th><th class="r">Last epoch</th></tr></thead>' +
@@ -285,7 +285,8 @@
         if (!_validators.length) { host.innerHTML = ''; return; }
         const rows = sortRows(_validators.map(evaluate));
         if (_filter !== 'all' && !rows.some(r => r.sev === _filter)) _filter = 'all';
-        host.innerHTML = renderBar(rows) + renderTable(rows);
+        const stateCls = rows.some(r => r.sev === 'crit') ? 'has-crit' : rows.some(r => r.sev === 'warn') ? 'has-warn' : '';
+        host.innerHTML = renderBar(rows) + renderTable(rows, stateCls);
       }
 
       // ── Hooks: re-render when the async sources arrive ───────────

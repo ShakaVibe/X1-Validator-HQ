@@ -12188,14 +12188,14 @@
       display: flex; align-items: center; gap: 1rem;
       padding: 0.7rem 1.1rem 0.7rem 1rem;
       background: var(--bg-card);
-      border: 1px solid rgba(77, 166, 255, 0.35);
+      border: 1px solid;
       border-radius: 12px;
       position: relative; overflow: hidden;
-      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.05), 0 0 18px rgba(0, 212, 255, 0.04);
     }
-    .fleet-bar::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--success); }
-    .fleet-bar.has-warn::before { background: var(--warning); }
-    .fleet-bar.has-crit::before { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+    /* The whole border carries the state: green = all healthy, amber = something to watch, red = critical */
+    .fleet-bar, .fleet-board { border-color: rgba(0, 230, 118, 0.45); box-shadow: 0 0 0 1px rgba(0, 230, 118, 0.05), 0 0 18px rgba(0, 230, 118, 0.07); }
+    .fleet-bar.has-warn, .fleet-board.has-warn { border-color: rgba(255, 171, 0, 0.5); box-shadow: 0 0 0 1px rgba(255, 171, 0, 0.05), 0 0 18px rgba(255, 171, 0, 0.08); }
+    .fleet-bar.has-crit, .fleet-board.has-crit { border-color: rgba(255, 82, 82, 0.6); box-shadow: 0 0 0 1px rgba(255, 82, 82, 0.06), 0 0 22px rgba(255, 82, 82, 0.14); }
     .fleet-bar.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; }
     .fleet-bar-title { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--accent-cyan); white-space: nowrap; flex-shrink: 0; }
     .fleet-bar-text { flex: 1 1 auto; min-width: 0; font-size: 0.86rem; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -12235,10 +12235,9 @@
     .fleet-board {
       margin: 0 0 1.5rem;
       background: var(--bg-card);
-      border: 1px solid rgba(77, 166, 255, 0.35); border-top: none;
+      border: 1px solid; border-top: none;
       border-radius: 0 0 14px 14px;
       overflow: hidden;
-      box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.05), 0 0 18px rgba(0, 212, 255, 0.04);
     }
     .fleet-board[hidden] { display: none; }
     .fleet-tbl-wrap { overflow-x: auto; }
@@ -12260,9 +12259,8 @@
     .fleet-tbl tr:last-child td { border-bottom: none; }
     .fleet-tbl tbody tr { cursor: pointer; transition: background 0.15s; }
     .fleet-tbl tbody tr:hover, .fleet-tbl tbody tr:focus-visible { background: var(--bg-card-hover); }
-    .fleet-tbl tr.sev-crit { background: rgba(255, 82, 82, 0.06); box-shadow: inset 3px 0 0 var(--danger); }
-    .fleet-tbl tr.sev-warn { background: rgba(255, 171, 0, 0.05); box-shadow: inset 3px 0 0 var(--warning); }
-    .fleet-tbl tr.sev-ok   { box-shadow: inset 3px 0 0 rgba(0, 230, 118, 0.55); }
+    .fleet-tbl tr.sev-crit { background: rgba(255, 82, 82, 0.06); }
+    .fleet-tbl tr.sev-warn { background: rgba(255, 171, 0, 0.05); }
     .fleet-tbl tr.sev-crit:hover { background: rgba(255, 82, 82, 0.1); }
     .fleet-tbl tr.sev-warn:hover { background: rgba(255, 171, 0, 0.09); }
     .fleet-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; display: flex; align-items: center; gap: 0.6rem; min-width: 0; }
@@ -12304,9 +12302,8 @@
       .fleet-cards { display: flex; flex-direction: column; }
       .fleet-card { padding: 0.85rem 1rem 0.9rem 0.95rem; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.35rem 0.75rem; cursor: pointer; }
       .fleet-card:last-child { border-bottom: none; }
-      .fleet-card.sev-crit { background: rgba(255, 82, 82, 0.06); box-shadow: inset 3px 0 0 var(--danger); }
-      .fleet-card.sev-warn { background: rgba(255, 171, 0, 0.05); box-shadow: inset 3px 0 0 var(--warning); }
-      .fleet-card.sev-ok { box-shadow: inset 3px 0 0 rgba(0, 230, 118, 0.55); }
+      .fleet-card.sev-crit { background: rgba(255, 82, 82, 0.06); }
+      .fleet-card.sev-warn { background: rgba(255, 171, 0, 0.05); }
       .fleet-card .fleet-name { font-size: 0.95rem; }
       .fleet-card .fleet-issues { grid-column: 1 / -1; }
       .fleet-card .fleet-kv { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin-top: 0.3rem; }

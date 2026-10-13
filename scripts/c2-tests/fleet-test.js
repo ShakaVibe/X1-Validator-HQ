@@ -79,7 +79,8 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
       earned: board ? [...board.querySelectorAll('tbody tr td:nth-child(8)')].map(td => td.textContent.trim()) : [],
     };
   });
-  check(s1.bar && /has-crit/.test(s1.cls), 'bar renders with the critical edge', s1.cls);
+  check(s1.bar && /has-crit/.test(s1.cls), 'bar renders with the critical (red) border', s1.cls);
+  check(await page.evaluate(() => document.getElementById('fleetBoard').classList.contains('has-crit') && getComputedStyle(document.getElementById('fleetBar'), '::before').content === 'none'), 'table border follows the bar state; no left edge stripe');
   check(s1.hidden === true && /Details/.test(s1.btn), 'table hidden by default, button says Details', { hidden: s1.hidden, btn: s1.btn });
   check(/Bad_Node is delinquent/.test(s1.text) && /Mid_Skipper skipped/.test(s1.text) && /1 healthy/.test(s1.text), 'bar text names the problems, then the healthy count', s1.text);
   check(s1.chips.join('|') === 'Critical 1|Watch 1|Healthy 1', 'chips: Critical 1 · Watch 1 · Healthy 1', s1.chips);
@@ -122,7 +123,7 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   // All-healthy variant: one validator, nothing wrong
   await page.evaluate((v) => window.fleetRender([v]), VALIDATORS[0]);
   const q = await page.evaluate(() => ({ cls: document.getElementById('fleetBar').className, text: document.getElementById('fleetBar').querySelector('.fleet-bar-text').textContent, chips: [...document.querySelectorAll('#fleetBar .fleet-chip')].map(c => c.textContent.replace(/\s+/g, ' ').trim()) }));
-  check(!/has-crit|has-warn/.test(q.cls) && /All 1 healthy/.test(q.text) && /nothing needs attention/.test(q.text) && q.chips.join('|') === 'Healthy 1', 'all-healthy: green edge, quiet text, single chip', q);
+  check(!/has-crit|has-warn/.test(q.cls) && /All 1 healthy/.test(q.text) && q.chips.join('|') === 'Healthy 1', 'all-healthy: green border, quiet text, single chip', q);
   // Empty portfolio → nothing rendered
   await page.evaluate(() => window.fleetRender([]));
   check((await page.evaluate(() => document.getElementById('fleetHealth').innerHTML)) === '', 'empty portfolio renders nothing');
