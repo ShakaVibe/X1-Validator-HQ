@@ -174,7 +174,7 @@ generate-geo.js               geo updater run by the Action
 .github/workflows/update-terminal-snapshot.yml  hourly, minute :37 (commits data/terminal.json, delegation.json, rewards.json)
 .github/workflows/heartbeat.yml         self-rescheduling chain that dispatches the three bots hourly (GitHub cron is unreliable)
 js/alerts.js                  "Telegram alerts" modal in My Data Center (F3 entry point; bot username constant)
-js/fleet.js                   F4 Fleet Health: bar + issues-first table in My Data Center (fleetRender/fleetRefresh,
+js/fleet.js                   F4 Fleet Health: bar (v2, artwork img/fleet-art.jpg) + issues-first table in My Data Center (fleetRender/fleetRefresh,
                               actions fleet-toggle/-filter/-row; reads delegEvaluate, delegationCluster, RewardsLedger)
 js/apr.js                     F11 Delegator APR: card tile (.apr-section) + #aprModal (aprFor/aprNetwork/aprEpochsPerYear;
                               actions apr-details/-close/-overlay; one cached getRecentPerformanceSamples per session)
@@ -1403,6 +1403,20 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Lesson: `.github/workflows` is still protected for `device_commit_files`, but every other path
   (incl. new files under `js/` and `scripts/c2-tests/`) writes fine; check `git diff --quiet HEAD -- <files>`
   on the Mac before overwriting so a bot commit or a local edit is never clobbered.
+
+### 2026-10-13 — Session 12, continued: Fleet Health bar v2 (artwork)
+- Shaka supplied a design mockup + artwork (server-room corridor with a painted X1). New bar: artwork
+  left (`img/fleet-art.jpg`, 820×434, 77 KB, a crop of the art) fading into the bar; **the painted-in
+  X1 was removed with OpenCV inpainting** (it blurred when scaled — "fuzzy and ugly") and replaced by
+  a crisp vector X1 (`.fleet-x1` SVG strokes: blue tube + white core + layered drop-shadow glow, bevel
+  joins). "FLEET HEALTH" with HEALTH in the state colour, status dot + problems line (ellipsis),
+  sub line ("voting · v4.0.3 · Delegation Program approved" or "N of M healthy · …"), ring gauge
+  (healthy / total), **Offline** (= delinquent) and **Issues** (= every other non-healthy) as buttons
+  that filter the table, Epoch, Details. State colour via `--fleet-state` on `.fleet-bar`. Chips
+  (Critical / Watch / Healthy) removed; filters are now `offline` / `issues`. Phone: art strip on top,
+  ring + counts on one row, full-width Details. fleet-test updated (28 checks).
+- Source art kept out of the repo (scratch only); if it ever needs re-cropping: X1 centre in the
+  2172×724 original ≈ (1080, 372), crop x 17 %–80 %.
 
 ### 2026-10-13 — Session 12, continued: F11 Delegator APR (~2 hours)
 - Shaka chose variant **B** (4 + 4 kept): Earnings = Rewards balance · Earned last epoch · Active

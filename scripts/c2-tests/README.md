@@ -44,8 +44,9 @@ the empty-portfolio hint and the 375 px layout. The bot itself is tested without
     node scripts/c2-tests/fleet-test.js "$PWD"
 
 Feeds `fleetRender()` three validators (two real vote keys from `data/delegation.json`, one
-invented delinquent node on an old version) and checks the severity sort, the bar text and
-chips, Details open/close + localStorage memory across a reload, chip filters, row click and
+invented delinquent node on an old version) and checks the severity sort, the v2 bar (artwork +
+vector X1, status / sub lines, ring, Offline / Issues / Epoch), Details open/close + localStorage
+memory across a reload, the Offline / Issues filters, row click and
 Enter → `lookupValidator`, the all-healthy and empty states, the 375 px card layout, 0 inline
 handlers, 0 page errors.
 

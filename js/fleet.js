@@ -17,7 +17,7 @@
       const LS_OPEN = 'x1FleetOpen';
       const DEFAULT_MIN_SELF = 5000;          // XNT, used only until the Program config has loaded
       let _validators = [];                   // from loadPortfolio (sorted by name)
-      let _filter = 'all';                    // all | crit | warn | ok
+      let _filter = 'all';                    // all | offline | issues
       let _open = readOpen();
       let _hooked = false;
 
@@ -157,17 +157,17 @@
         return rows.slice().sort((a, b) => (SEV_RANK[a.sev] - SEV_RANK[b.sev]) || a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
       }
 
+      // Bar text: `status` = the problems (or "All N healthy"), `sub` = the quieter second line.
       function summaryText(rows) {
         const crit = rows.filter(r => r.sev === 'crit'), warn = rows.filter(r => r.sev === 'warn'), ok = rows.filter(r => r.sev === 'ok');
-        if (!rows.length) return 'No validators in your Data Center yet';
+        const n = rows.length;
+        if (!n) return { status: 'No validators in your Data Center yet', sub: '' };
         if (!crit.length && !warn.length) {
-          const n = rows.length;
           const vers = [...new Set(rows.map(r => r.ver).filter(Boolean))];
           const allApproved = rows.every(r => r.delegStatus === 'approved' || r.delegStatus === 'delegated');
-          return '<b>All ' + n + ' healthy</b> · voting' + (vers.length === 1 ? ' · v' + esc(vers[0]) : '') + (allApproved ? ' · Delegation Program approved' : '');
+          return { status: 'All ' + n + ' healthy', sub: 'voting' + (vers.length === 1 ? ' · <b>v' + esc(vers[0]) + '</b>' : '') + (allApproved ? ' · Delegation Program approved' : '') };
         }
         // name the worst problems first, short form
-        const parts = [];
         const headline = (r) => {
           if (r.delinquent) return '<span class="c">' + esc(r.name) + ' is delinquent</span>';
           if (r.verState === 'below') return '<span class="c">' + esc(r.name) + ' is on v' + esc(r.ver) + '</span> (min ' + esc(r.minVer) + ')';
@@ -179,24 +179,44 @@
           if (r.verState === 'unknown') return '<span class="w">' + esc(r.name) + ' has no version in gossip</span>';
           return '<span class="w">' + esc(r.name) + ' needs a look</span>';
         };
-        crit.concat(warn).slice(0, 3).forEach(r => parts.push(headline(r)));
+        const parts = crit.concat(warn).slice(0, 3).map(headline);
         const more = crit.length + warn.length - 3;
         if (more > 0) parts.push('+' + more + ' more');
-        if (ok.length) parts.push('<b>' + ok.length + '</b> healthy');
-        return parts.join(' · ');
+        return { status: parts.join(' · '), sub: '<b>' + ok.length + '</b> of ' + n + ' healthy · Details for the per-validator list' };
       }
 
+      // Crisp vector "X1" sign drawn over the artwork (the letters painted into
+      // the image were removed so they don't blur when the photo is scaled).
+      const X1_SIGN = '<svg class="fleet-x1" viewBox="0 0 112 72" aria-hidden="true" focusable="false">' +
+        '<g class="tube"><path d="M10 7 L56 65 M56 7 L10 65"/><path d="M74 19 L90 7 L90 66"/></g>' +
+        '<g class="core"><path d="M10 7 L56 65 M56 7 L10 65"/><path d="M74 19 L90 7 L90 66"/></g></svg>';
+      const isOffline = (r) => r.delinquent;
+      const isIssue = (r) => r.sev !== 'ok' && !r.delinquent;
       function renderBar(rows) {
-        const crit = rows.filter(r => r.sev === 'crit').length, warn = rows.filter(r => r.sev === 'warn').length, ok = rows.filter(r => r.sev === 'ok').length;
-        const cls = crit ? 'has-crit' : warn ? 'has-warn' : '';
+        const n = rows.length, ok = rows.filter(r => r.sev === 'ok').length;
+        const offline = rows.filter(isOffline).length, issues = rows.filter(isIssue).length;
+        const cls = rows.some(r => r.sev === 'crit') ? 'has-crit' : rows.some(r => r.sev === 'warn') ? 'has-warn' : '';
         const cl = window.delegationCluster || {};
-        const meta = cl.epoch ? 'epoch ' + esc(cl.epoch) : '';
-        const chip = (key, label, n) => n ? '<button type="button" class="fleet-chip ' + key + (_filter === key ? ' active' : '') + '" data-action="fleet-filter" data-filter="' + key + '" title="Show only these">' + label + ' <b>' + n + '</b></button>' : '';
+        const t = summaryText(rows);
+        const R = 29, C = 2 * Math.PI * R, frac = n ? ok / n : 0;
+        const stat = (key, label, count) => count
+          ? '<button type="button" class="fleet-stat ' + key + (_filter === key ? ' active' : '') + '" data-action="fleet-filter" data-filter="' + key + '" title="Show only these"><b>' + count + '</b><small>' + label + '</small></button>'
+          : '<div class="fleet-stat ' + key + '"><b>0</b><small>' + label + '</small></div>';
         return '<div class="fleet-bar ' + cls + (_open ? ' open' : '') + '" id="fleetBar">' +
-          '<span class="fleet-bar-title">Fleet health</span>' +
-          '<span class="fleet-bar-text">' + summaryText(rows) + '</span>' +
-          '<div class="fleet-sum">' + chip('crit', 'Critical', crit) + chip('warn', 'Watch', warn) + chip('ok', 'Healthy', ok) + '</div>' +
-          (meta ? '<span class="fleet-bar-meta">' + meta + '</span>' : '') +
+          '<div class="fleet-art">' + X1_SIGN + '</div>' +
+          '<div class="fleet-main">' +
+            '<div class="fleet-title">FLEET <em>HEALTH</em></div>' +
+            '<div class="fleet-status"><span class="t">' + t.status + '</span></div>' +
+            (t.sub ? '<div class="fleet-subline">' + t.sub + '</div>' : '') +
+          '</div>' +
+          '<div class="fleet-stats">' +
+            '<div class="fleet-ring" role="img" aria-label="' + ok + ' of ' + n + ' healthy">' +
+              '<svg viewBox="0 0 66 66"><circle class="track" cx="33" cy="33" r="' + R + '"/>' +
+              '<circle class="val" cx="33" cy="33" r="' + R + '" stroke-dasharray="' + (C * frac).toFixed(1) + ' ' + C.toFixed(1) + '"/></svg>' +
+              '<div class="txt"><b>' + ok + '/' + n + '</b><small>HEALTHY</small></div></div>' +
+            stat('offline', 'Offline', offline) + stat('issues', 'Issues', issues) +
+            (cl.epoch ? '<div class="fleet-stat ep"><small>Epoch</small><b>' + esc(cl.epoch) + '</b></div>' : '') +
+          '</div>' +
           '<button type="button" class="fleet-bar-btn" data-action="fleet-toggle" aria-expanded="' + (_open ? 'true' : 'false') + '" aria-controls="fleetBoard">' + (_open ? 'Hide <span class="chev">▲</span>' : 'Details <span class="chev">▼</span>') + '</button>' +
           '</div>';
       }
@@ -239,7 +259,7 @@
       const shortVote = (v) => esc(v.slice(0, 4)) + '…' + esc(v.slice(-4));
 
       function renderTable(rows, stateCls) {
-        const shown = _filter === 'all' ? rows : rows.filter(r => r.sev === _filter);
+        const shown = _filter === 'offline' ? rows.filter(isOffline) : _filter === 'issues' ? rows.filter(isIssue) : rows;
         const trs = shown.map(r =>
           '<tr class="sev-' + r.sev + '" data-action="fleet-row" data-vote="' + esc(r.vote) + '" title="Open ' + esc(r.name) + ' in Validator Lookup" tabindex="0">' +
           '<td><div class="fleet-name">' + logo(r) + '<div class="fleet-name-text">' + esc(r.name) + '<small>' + shortVote(r.vote) + ' · ' + statusPill(r) + '</small></div></div></td>' +
@@ -284,7 +304,7 @@
         if (!host) return;
         if (!_validators.length) { host.innerHTML = ''; return; }
         const rows = sortRows(_validators.map(evaluate));
-        if (_filter !== 'all' && !rows.some(r => r.sev === _filter)) _filter = 'all';
+        if ((_filter === 'offline' && !rows.some(isOffline)) || (_filter === 'issues' && !rows.some(isIssue))) _filter = 'all';
         const stateCls = rows.some(r => r.sev === 'crit') ? 'has-crit' : rows.some(r => r.sev === 'warn') ? 'has-warn' : '';
         host.innerHTML = renderBar(rows) + renderTable(rows, stateCls);
       }

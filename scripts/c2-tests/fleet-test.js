@@ -2,7 +2,8 @@
 // serve the repo, abort external requests, open My Data Center, feed fleetRender()
 // three validators (two real vote keys that exist in data/delegation.json, one
 // made-up delinquent node on an old version) and check: severity sorting, the
-// bar text / chips, Details toggle + localStorage memory, chip filters, row →
+// bar v2 (artwork + crisp X1, status / sub lines, ring, Offline / Issues / Epoch), Details toggle +
+// localStorage memory, Offline / Issues filters, row →
 // lookupValidator through the dispatcher, the phone layout, 0 inline handlers,
 // 0 page errors, 0 [Actions] warnings.
 //   node scripts/c2-tests/fleet-test.js /path/to/repo
@@ -68,8 +69,10 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   const s1 = await page.evaluate(() => {
     const bar = document.getElementById('fleetBar'), board = document.getElementById('fleetBoard');
     return {
-      bar: !!bar, cls: bar && bar.className, text: bar && bar.querySelector('.fleet-bar-text').textContent,
-      chips: bar ? [...bar.querySelectorAll('.fleet-chip')].map(c => c.textContent.replace(/\s+/g, ' ').trim()) : [],
+      bar: !!bar, cls: bar && bar.className, text: bar && bar.querySelector('.fleet-status').textContent, sub: bar && (bar.querySelector('.fleet-subline') || {}).textContent,
+      chips: bar ? [...bar.querySelectorAll('.fleet-ring .txt, .fleet-stat')].map(c => c.textContent.replace(/\s+/g, ' ').trim()) : [],
+      art: bar ? { x1: !!bar.querySelector('.fleet-art svg.fleet-x1'), bg: getComputedStyle(bar.querySelector('.fleet-art')).backgroundImage } : null,
+      title: bar && bar.querySelector('.fleet-title').textContent,
       btn: bar && bar.querySelector('.fleet-bar-btn').textContent.trim(),
       hidden: board ? board.hidden : null,
       order: board ? [...board.querySelectorAll('tbody tr')].map(tr => tr.className + ':' + tr.querySelector('.fleet-name-text').firstChild.textContent) : [],
@@ -82,8 +85,10 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   check(s1.bar && /has-crit/.test(s1.cls), 'bar renders with the critical (red) border', s1.cls);
   check(await page.evaluate(() => document.getElementById('fleetBoard').classList.contains('has-crit') && getComputedStyle(document.getElementById('fleetBar'), '::before').content === 'none'), 'table border follows the bar state; no left edge stripe');
   check(s1.hidden === true && /Details/.test(s1.btn), 'table hidden by default, button says Details', { hidden: s1.hidden, btn: s1.btn });
-  check(/Bad_Node is delinquent/.test(s1.text) && /Mid_Skipper skipped/.test(s1.text) && /1 healthy/.test(s1.text), 'bar text names the problems, then the healthy count', s1.text);
-  check(s1.chips.join('|') === 'Critical 1|Watch 1|Healthy 1', 'chips: Critical 1 · Watch 1 · Healthy 1', s1.chips);
+  check(/Bad_Node is delinquent/.test(s1.text) && /Mid_Skipper skipped/.test(s1.text) && !/healthy/.test(s1.text), 'status line names the problems only', s1.text);
+  check(s1.chips.join('|') === '1/3HEALTHY|1Offline|1Issues' || /^1\/3HEALTHY\|1Offline\|1Issues\|EpochEpoch|^1\/3HEALTHY\|1Offline\|1Issues\|Epoch\d+$/.test(s1.chips.join('|')), 'ring 1/3 healthy · Offline 1 · Issues 1 (· Epoch)', s1.chips);
+  check(s1.art && s1.art.x1 && /img\/fleet-art\.jpg/.test(s1.art.bg) && s1.title === 'FLEET HEALTH', 'artwork background + vector X1 sign + FLEET HEALTH title', { art: s1.art, title: s1.title });
+  check(/1 of 3 healthy/.test(s1.sub), 'sub line: 1 of 3 healthy', s1.sub);
   check(s1.order.join(',') === 'sev-crit:Bad_Node,sev-warn:Mid_Skipper,sev-ok:Zed_Healthy', 'rows sorted critical → watch → healthy (not by name)', s1.order);
   check(s1.issues[0].some(t => /Delinquent/.test(t)) && s1.issues[0].some(t => new RegExp('3\\.1\\.14.*below the Foundation minimum ' + minVer.replace(/\./g, '\\.')).test(t)), 'critical row lists delinquency + version lines', s1.issues[0]);
   check(s1.issues[1].length === 1 && /Skipped .* this epoch/.test(s1.issues[1][0]) && /cluster/.test(s1.issues[1][0]), 'watch row has exactly the skip line with the cluster rate', s1.issues[1]);
@@ -103,11 +108,14 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   check((await page.evaluate(() => document.getElementById('fleetBoard').hidden)) === false, 'reload keeps the table open');
 
   // Chip filter: Critical → one row; again → all
-  await page.click('#fleetBar .fleet-chip.crit');
+  await page.click('#fleetBar .fleet-stat.offline');
   await page.waitForTimeout(100);
-  const f1 = await page.evaluate(() => ({ rows: document.querySelectorAll('#fleetBoard tbody tr').length, active: (document.querySelector('#fleetBar .fleet-chip.active') || {}).className }));
-  check(f1.rows === 1 && /crit/.test(f1.active), 'Critical chip filters to the one critical row', f1);
-  await page.click('#fleetBar .fleet-chip.crit');
+  const f1 = await page.evaluate(() => ({ rows: document.querySelectorAll('#fleetBoard tbody tr').length, active: (document.querySelector('#fleetBar .fleet-stat.active') || {}).className }));
+  check(f1.rows === 1 && /offline/.test(f1.active), 'Offline filters to the one delinquent row', f1);
+  await page.click('#fleetBar .fleet-stat.issues');
+  const f2 = await page.evaluate(() => [...document.querySelectorAll('#fleetBoard tbody tr')].map(tr => tr.className));
+  check(f2.join() === 'sev-warn', 'Issues filters to the watch row (not the offline one)', f2);
+  await page.click('#fleetBar .fleet-stat.issues');
   await page.waitForTimeout(100);
   check((await page.evaluate(() => document.querySelectorAll('#fleetBoard tbody tr').length)) === 3, 'clicking the chip again shows all rows');
 
@@ -122,8 +130,8 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
 
   // All-healthy variant: one validator, nothing wrong
   await page.evaluate((v) => window.fleetRender([v]), VALIDATORS[0]);
-  const q = await page.evaluate(() => ({ cls: document.getElementById('fleetBar').className, text: document.getElementById('fleetBar').querySelector('.fleet-bar-text').textContent, chips: [...document.querySelectorAll('#fleetBar .fleet-chip')].map(c => c.textContent.replace(/\s+/g, ' ').trim()) }));
-  check(!/has-crit|has-warn/.test(q.cls) && /All 1 healthy/.test(q.text) && q.chips.join('|') === 'Healthy 1', 'all-healthy: green border, quiet text, single chip', q);
+  const q = await page.evaluate(() => ({ cls: document.getElementById('fleetBar').className, text: document.getElementById('fleetBar').querySelector('.fleet-status').textContent, buttons: document.querySelectorAll('#fleetBar button.fleet-stat').length, ring: document.querySelector('#fleetBar .fleet-ring .txt').textContent }));
+  check(!/has-crit|has-warn/.test(q.cls) && /All 1 healthy/.test(q.text) && q.buttons === 0 && q.ring === '1/1HEALTHY', 'all-healthy: green, "All 1 healthy", ring 1/1, zero counts not clickable', q);
   // Empty portfolio → nothing rendered
   await page.evaluate(() => window.fleetRender([]));
   check((await page.evaluate(() => document.getElementById('fleetHealth').innerHTML)) === '', 'empty portfolio renders nothing');
