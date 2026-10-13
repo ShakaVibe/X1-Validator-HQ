@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-13T12:03:21.707Z",
-  "totalNodes": 519,
-  "totalLocations": 517,
+  "lastUpdated": "2026-10-13T14:03:17.261Z",
+  "totalNodes": 520,
+  "totalLocations": 518,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3621,6 +3621,13 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "23.239.108.38": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Salt Lake City",
+      "lat": 40.7608,
+      "lon": -111.891
     }
   },
   "countries": {
@@ -3638,7 +3645,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 212
+      "count": 213
     },
     "NL": {
       "name": "The Netherlands",
