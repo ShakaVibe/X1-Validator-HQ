@@ -10892,6 +10892,38 @@
       .skipmon-main  { grid-template-columns: 1fr; }
       .skipmon-header { align-items: flex-start; }
     }
+    /* Phones (2026-10-13): three things pushed the Network tab wider than the
+       screen or clipped inside their tile — the scope pill group (nowrap, 434 px),
+       the 8-digit slot number at 1.6rem, and the Top Skippers table whose fixed
+       column widths alone add up to 378 px. */
+    @media (max-width: 560px) {
+      .skipmon-scope { display: flex; width: 100%; box-sizing: border-box; }
+      .skipmon-scope-btn {
+        flex: 1 1 0; min-width: 0; padding: 0.5rem 0.3rem; font-size: 0.78rem;
+        white-space: normal; line-height: 1.2;
+      }
+      .skipmon-stats { gap: 0.6rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .skipmon-stat { padding: 0.9rem 0.85rem; min-width: 0; }
+      .skipmon-stat-value { font-size: clamp(1rem, 5.5vw, 1.6rem); }
+      .skipmon-stat-epoch-row { gap: 0.6rem; }
+      .skipmon-stat-epoch-col-value,
+      .skipmon-stat-epoch-col-prev .skipmon-stat-epoch-col-value { font-size: clamp(0.95rem, 4.6vw, 1.6rem); }
+      /* TPS strip: head (min-width 180) + stats (131) + gaps no longer fit in 343 px */
+      .tps-strip { gap: 0.6rem; padding: 0.5rem 0.7rem; }
+      .tps-strip-head { min-width: 0; }
+      .tps-strip-stats { gap: 0.5rem; }
+      #skipmonTopWrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .skipmon-top-table { table-layout: fixed; }
+      .skipmon-top-table th, .skipmon-top-table td { padding: 0.55rem 0.4rem; font-size: 0.8rem; }
+      .skipmon-top-table th { font-size: 0.62rem; letter-spacing: 0.3px; }
+      .skipmon-top-table th[style] { width: auto !important; }
+      .skipmon-top-table th:nth-child(1) { width: 34px !important; }
+      .skipmon-top-table th:nth-child(4) { width: 64px !important; }
+      .skipmon-top-table th:nth-child(5) { width: 70px !important; }
+      /* "Assigned" is implied by Skipped ÷ Skip Rate — dropped on phones */
+      .skipmon-top-table th:nth-child(3), .skipmon-top-table td:nth-child(3) { display: none; }
+      .skipmon-top-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    }
 
     /* ═══════════════════════════════════════════════════════
        VALIDATOR TERMINAL — Bloomberg-style overlay
@@ -11636,8 +11668,23 @@
     }
 
     @media (max-width: 980px) {
-      .vt-pctrow { grid-template-columns: 1fr 1fr 1fr; }
+      /* minmax(0, …): a plain 1fr track can never shrink below its content, so the
+         monospace values pushed the grid wider than the card and the last column
+         was clipped by overflow:hidden (phones, 2026-10-13). */
+      .vt-pctrow { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .vt-pctrow .head { grid-column: 1 / -1; }
+      .vt-pctrow > div:nth-child(5) { border-right: 1px solid var(--border); }
+      .vt-pctrow > div:nth-child(4),
+      .vt-pctrow > div:nth-child(7) { border-right: none; }
+      .vt-pctrow .v { font-size: 1.05rem; overflow-wrap: anywhere; }
+    }
+    @media (max-width: 560px) {
+      .vt-pctrow { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-left: 1rem; margin-right: 1rem; }
+      .vt-pctrow > div { padding: 0.8rem 0.85rem 0.9rem; }
+      .vt-pctrow > div:nth-child(4) { border-right: 1px solid var(--border); }
+      .vt-pctrow > div:nth-child(3),
+      .vt-pctrow > div:nth-child(5),
+      .vt-pctrow > div:nth-child(7) { border-right: none; }
     }
 
     /* Hover tooltip — per-validator stake breakdown */
