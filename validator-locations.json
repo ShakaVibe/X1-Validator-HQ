@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-14T02:03:12.980Z",
-  "totalNodes": 515,
-  "totalLocations": 513,
+  "lastUpdated": "2026-10-14T04:03:13.616Z",
+  "totalNodes": 512,
+  "totalLocations": 510,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -765,13 +765,6 @@
       "city": "Singapore",
       "lat": 1.35208,
       "lon": 103.82
-    },
-    "45.94.81.178": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "149.86.227.119": {
       "country": "Poland",
@@ -3579,62 +3572,48 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
-    },
-    "83.168.90.73": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2297,
-      "lon": 21.0122
-    },
-    "185.53.155.129": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Bielsko-Biala",
-      "lat": 49.8207,
-      "lon": 19.0512
     }
   },
   "countries": {
     "PL": {
       "name": "Poland",
-      "count": 67
+      "count": 65
     },
     "FI": {
       "name": "Finland",
       "count": 87
     },
-    "FR": {
-      "name": "France",
-      "count": 45
-    },
     "US": {
       "name": "United States",
       "count": 212
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 21
+    "CA": {
+      "name": "Canada",
+      "count": 19
     },
-    "SE": {
-      "name": "Sweden",
+    "FR": {
+      "name": "France",
+      "count": 45
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "GB": {
+      "name": "United Kingdom",
       "count": 5
     },
     "DE": {
       "name": "Germany",
       "count": 46
     },
-    "GB": {
-      "name": "United Kingdom",
+    "SE": {
+      "name": "Sweden",
       "count": 5
     },
-    "CA": {
-      "name": "Canada",
-      "count": 19
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "NL": {
+      "name": "The Netherlands",
+      "count": 20
     },
     "SG": {
       "name": "Singapore",
