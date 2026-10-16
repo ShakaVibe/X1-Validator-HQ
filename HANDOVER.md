@@ -156,7 +156,7 @@ js/modals.js                  reward breakdown modal, TPS modal, skipmon scoreca
                               Escape handler, and the final `init();` call
 js/terminal.js                Validator Terminal module (IIFE: vtOpen/vtClose/vtRetry/vtRefreshLive)
 js/delegation.js              Delegation Program module (IIFE: delegOpen/delegRefresh/delegEvaluate)
-js/price-pill.js              XNT price pill (XDEX)
+js/price-pill.js              XNT price pill (XDEX WXNT/USDC.X pool reserves read on-chain; XDEX API fallback)
 js/forensics.js               Validator Forensics (hidden tool)
 scripts/assemble-monolith.js  rebuilds the single-file index.html from the pieces; `--check FILE`
                               exits 0 iff byte-identical (proved against ca33c03 on 2026-09-16)
@@ -1517,5 +1517,14 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   on blur — before, the preview popping in on blur moved the Update button between mousedown and
   mouseup, so a direct click was lost. Test: `scripts/c2-tests/identity-test.js` (20 checks); CSP walk clean.
   Still needs a real run by someone with the identity key in a wallet (Shaka).
+- **XNT price pill was ~6 % low.** It showed XDEX's API `token1_price` for WXNT ($0.1814), a cached
+  number that lagged the pool; the WXNT/USDC.X pool's own reserves gave **$0.1928**, exactly what
+  x1report.com (also on-chain) showed. `js/price-pill.js` now reads the pool on-chain: one
+  `getMultipleAccounts([pool CAJeVEoS…, vault0 8wvV4H…, vault1 7iw2ad…])` per minute, price =
+  (USDC vault − protocol − fund fees) ÷ (WXNT vault − fees); pool layout = Raydium CP-swap (637 B; vaults
+  @72/@104, mints @168/@200, decimals @331/332, fees @341/349/357/365); it checks the pool still
+  points at those vaults/mints before trusting it. Falls back to the XDEX API (tooltip "may lag"), hides
+  if both fail. The tooltip now names the source (it used to say "api.x1.xyz", which was never true).
+  Verified live in the pane: $0.1927 from the same read. Test `scripts/c2-tests/price-pill-test.js` (4 checks).
 - `scripts/c2-tests/manage-test.js` fails with "renderValidatorList is not defined" on the unchanged
   tree too (pre-existing, the suite predates a rename).

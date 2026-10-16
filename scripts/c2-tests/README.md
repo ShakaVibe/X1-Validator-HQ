@@ -72,3 +72,11 @@ identity without one → "will create" note, createAccount (643 B, rent, owner C
 the new account partial-signed; other wallet → locked; name > 80 / website without http(s) refused,
 nothing sent; a direct click on Update right after typing an icon URL still registers.
 
+**XNT price pill (2026-10-16)** — `js/price-pill.js`:
+
+    node scripts/c2-tests/price-pill-test.js "$PWD"
+
+Mocks `getMultipleAccounts` with a synthetic XDEX WXNT/USDC.X pool (real vault / mint addresses,
+fees at their offsets) and checks the pill shows USDC ÷ WXNT reserves net of fees, with the on-chain
+tooltip; RPC broken → XDEX API fallback with a "may lag" tooltip; both broken → pill hidden.
+
