@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-15T22:03:12.223Z",
-  "totalNodes": 515,
-  "totalLocations": 512,
+  "lastUpdated": "2026-10-16T00:03:13.841Z",
+  "totalNodes": 513,
+  "totalLocations": 510,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1395,13 +1395,6 @@
       "city": "Clatskanie",
       "lat": 46.1012,
       "lon": -123.2068
-    },
-    "173.225.104.214": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Whippany",
-      "lat": 40.8207,
-      "lon": -74.4231
     },
     "51.89.65.27": {
       "country": "United Kingdom",
@@ -3524,13 +3517,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "65.109.79.247": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "159.195.87.97": {
       "country": "Germany",
       "countryCode": "DE",
@@ -3595,7 +3581,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 86
+      "count": 85
     },
     "FR": {
       "name": "France",
@@ -3603,7 +3589,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 212
+      "count": 211
     },
     "NL": {
       "name": "The Netherlands",
