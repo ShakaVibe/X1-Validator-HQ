@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-16T20:03:14.781Z",
-  "totalNodes": 507,
-  "totalLocations": 504,
+  "lastUpdated": "2026-10-16T21:23:29.553Z",
+  "totalNodes": 509,
+  "totalLocations": 506,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -366,13 +366,6 @@
       "city": "Warsaw",
       "lat": 52.2299,
       "lon": 21.0093
-    },
-    "104.37.190.250": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "74.50.75.30": {
       "country": "United States",
@@ -1157,13 +1150,6 @@
       "city": "Warsaw",
       "lat": 52.1783,
       "lon": 21.0602
-    },
-    "162.246.16.2": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "149.202.69.96": {
       "country": "France",
@@ -3530,32 +3516,52 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "69.10.34.34": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "67.211.214.178": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "205.209.101.222": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "74.50.95.238": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 205
-    },
     "PL": {
       "name": "Poland",
       "count": 69
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 46
     },
     "FI": {
       "name": "Finland",
       "count": 85
     },
-    "CA": {
-      "name": "Canada",
-      "count": 19
-    },
     "FR": {
       "name": "France",
       "count": 45
+    },
+    "US": {
+      "name": "United States",
+      "count": 207
     },
     "NL": {
       "name": "The Netherlands",
@@ -3565,13 +3571,21 @@
       "name": "Sweden",
       "count": 5
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "DE": {
+      "name": "Germany",
+      "count": 46
     },
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 19
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SG": {
       "name": "Singapore",
