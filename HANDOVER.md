@@ -6,7 +6,11 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-10-13):**
+> **Start here next session (as of 2026-10-16):**
+> 0a. **Validator count (2026-10-13, session 13):** delinquent vote accounts with < 100 XNT are
+>    "dust" and not counted anywhere (`isDustVoteAccount` in `js/core.js`, same rule in
+>    `compute-scores.js`). Header should read ~533 / 507 / 26; after the 408→409 epoch boundary the
+>    600 deactivating 1-XNT accounts drop out of the RPC entirely (dust ~804 → ~200).
 > 0. **Privacy follow-up (2026-09-25):** a GitHub Support ticket asking for a GC of the dangling
 >    pre-rewrite commits is pending (still **200** on 2026-10-13 — chase Support). When Support confirms, check that
 >    `api.github.com/repos/ShakaVibe/X1-Validator-HQ/commits/3ad83423365dd53c8fe8c3e81e0748bca585c9b4`
@@ -1457,3 +1461,46 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Session 12 totals (2026-10-13): 7 pushes by Shaka (`efd986fc`, `74bb9902` mobile; `53c8c632`,
   `7e60087a` F4; `017f9bba` F11; epochs/year fix; + HANDOVER `282cc34a`) + this HANDOVER commit. Scratch harnesses
   (`/home/claude/mock`, `/home/claude/x1site`) were session-only.
+
+### 2026-10-13 — Session 13: validator count fix ("dust" vote accounts, ~45 min)
+- Shaka: header said **1338 validators / 507 active / 831 delinquent**; real number is in the 500s.
+- Not a math bug. Snapshot history: between 10-08 05:03 and 16:03 UTC the count jumped 731 → 1,330
+  (delinquent 261 → 859) with no jump in stake accounts. 600 long-dead vote accounts (creditsFirstEpoch
+  ~166–172) each received **exactly 1 XNT** of stake (non-pool), active epochs 403–407, all set
+  **deactivating in epoch 408** — so ~600 drop out of `getVoteAccounts` at the 408→409 boundary on
+  their own. Even then ~230 delinquent vote accounts remain, ~200 of them holding < 10 XNT.
+- Shaka's rule: **a DELINQUENT vote account with < 100 XNT activated stake is "dust" and not a
+  validator.** Voting validators always count. Today: 507 current + 26 real delinquent = **533**,
+  804 dust.
+- Code: `DUST_STAKE_XNT`, `isDustVoteAccount()`, `splitVoteAccounts()` in `js/core.js` (above Session
+  cache). Applied in `loadNetworkStats` (header counts, `allValidators` → ranks, tier badges,
+  leaderboards, compare, globe "x of y located", network average credits; Total Stake still includes
+  dust stake), `paintStatsBarFastPath` (skips `dust` entries), `getValidatorInfo` (lookup of a dust
+  vote account works, `isDust: true`, rank null → card says "Unranked" with its own tooltip,
+  `js/cards.js`), Validator Terminal `compute()` (counts, percentiles, mean self-stake; Total
+  Activated still sums every vote account so it matches the cluster). `scripts/compute-scores.js`:
+  same constant (keep in sync), per-validator `dust: true`, `validatorCount` excludes dust, new
+  top-level `dustVoteAccounts`. Tests pass (`node scripts/test-compute-scores.js`).
+- Verified offline (Playwright, RPC mocked from `data/terminal.json`): header 533 / 507 / 26,
+  971.86M stake; `allValidators` 533, ranks 1…533; dust lookup → Unranked; Terminal "across 533
+  validators · 26 delinquent", Total Activated unchanged at 971,863,506; no page errors.
+- Not touched: `generate-geo.js`, rewards ledger, alerts bot, Delegation tab (Foundation's own list).
+
+### 2026-10-16 — Session 14: "Withdraw from ID Wallet" — built, then dropped (~1 hour)
+- Start: 234 bot commits behind; session 13's dust-count changes were still uncommitted (they go out
+  with this session's push). `git pull --rebase --autostash` clean with delete permission.
+- Shaka asked for a way to move XNT back OUT of the validator identity wallet. Built a modal (sign in
+  the browser when the connected wallet is the identity key, else a `solana transfer` command for the
+  server), tested offline, then **Shaka scrapped it** — decision: the site stays send-only for the ID
+  wallet; withdrawing is done on the server with the CLI. Don't re-propose. (For the record: it was not
+  a security hole — a transfer out of an identity needs that identity's private key, so the site can
+  never move anyone else's XNT.)
+- Facts measured on mainnet worth keeping: **vote transactions cost 0 fee on X1** (15 vote txs, 5
+  validators); the identity is still the fee payer, so an emptied identity account is deleted and the
+  validator stops voting (rent-exempt minimum for 0 bytes = 890,880 lamports). Identity balances seen:
+  908 XNT (top stake) … 0.13 XNT; the income is block rewards from leader slots.
+- Spotted, not touched: "Update Identity" (`js/wallet-tx.js` ~1640) writes the validator-info config
+  account as `u32 length + JSON`; the Config program expects serialized ConfigKeys (short_vec of pubkey +
+  signer flag) followed by a bincode string — that update probably fails on-chain. Test before relying on it.
+- `scripts/c2-tests/manage-test.js` fails with "renderValidatorList is not defined" on the unchanged
+  tree too (pre-existing, the suite predates a rename).

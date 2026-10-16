@@ -50,6 +50,7 @@ const COMMISSION_RUG_PENALTY = 15;
 const MIN_UPTIME_OBSERVATIONS = 12; // below this, fall back to current status
 const LATENCY_SAMPLES = 5;          // vote-lag samples per run
 const LATENCY_SAMPLE_GAP_MS = Number(process.env.LATENCY_SAMPLE_GAP_MS || 8000);
+const DUST_STAKE_XNT = 100;          // keep in sync with js/core.js
 const VOTE_LAG_CAP = 512;           // slots; delinquent validators pin here
 const ROOT_DIST_CAP = 5000;
 
@@ -236,7 +237,12 @@ async function main() {
   const validators = [];
   for (const v of voteAccounts.current) validators.push({ ...v, delinquent: false });
   for (const v of voteAccounts.delinquent) validators.push({ ...v, delinquent: true });
-  console.log(`[scores] epoch ${currentEpoch}, ${validators.length} validators (${voteAccounts.delinquent.length} delinquent)`);
+  // Dust vote accounts — same rule as js/core.js isDustVoteAccount(): a
+  // delinquent vote account with < DUST_STAKE_XNT activated stake is still
+  // scored (lookups work) but flagged `dust` and left out of validatorCount.
+  for (const v of validators) v.dust = v.delinquent && Number(v.activatedStake || 0) < DUST_STAKE_XNT * 1e9;
+  const dustCount = validators.filter(v => v.dust).length;
+  console.log(`[scores] epoch ${currentEpoch}, ${validators.length} vote accounts (${voteAccounts.delinquent.length} delinquent, ${dustCount} of them dust)`);
 
   const activeVoteKeys = new Set(validators.map(v => v.votePubkey));
 
@@ -558,6 +564,7 @@ async function main() {
       nodePubkey: v.nodePubkey,
       commission: v.commission,
       delinquent: v.delinquent,
+      ...(v.dust ? { dust: true } : {}),
       version: ver,
       voteLag: avgLag !== null ? Math.round(avgLag * 10) / 10 : null,
       rootDistance: avgRoot !== null ? Math.round(avgRoot) : null,
@@ -588,7 +595,8 @@ async function main() {
     generatedAt: new Date().toISOString(),
     epoch: currentEpoch,
     slot: epochInfo.absoluteSlot,
-    validatorCount: validators.length,
+    validatorCount: validators.length - dustCount,
+    dustVoteAccounts: dustCount,
     networkAverageCredits: networkAverageCredits ? Math.round(networkAverageCredits) : null,
     networkSkipRate: Math.round(networkSkipRate * 1000) / 1000,
     skipEpochsCovered: epochProduction.length,

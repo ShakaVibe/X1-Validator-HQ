@@ -223,8 +223,8 @@
               ${logoHtml}
               <div class="validator-identity">
                 <div class="validator-name">
-                  ${escHtml(validator.name)}${validator.isZombie ? '' : getTierBadge(validator.rank, validator.totalValidators)}
-                  <span class="validator-rank" title="${validator.isZombie ? 'This validator is not in the active set — its activated stake has dropped to zero. It is hidden from the main list by default.' : 'Stake rank: Position among all validators sorted by total stake'}">${validator.isZombie ? 'Unranked' : `#${validator.rank} of ${validator.totalValidators}`}</span>
+                  ${escHtml(validator.name)}${(validator.isZombie || validator.isDust) ? '' : getTierBadge(validator.rank, validator.totalValidators)}
+                  <span class="validator-rank" title="${validator.isZombie ? 'This validator is not in the active set — its activated stake has dropped to zero. It is hidden from the main list by default.' : validator.isDust ? 'Delinquent with under ' + DUST_STAKE_XNT + ' XNT active stake — not counted as a validator in network totals or ranks.' : 'Stake rank: Position among all validators sorted by total stake'}">${(validator.isZombie || validator.isDust) ? 'Unranked' : `#${validator.rank} of ${validator.totalValidators}`}</span>
                 </div>
                 <div class="validator-meta">
                   <span class="validator-address" title="${escHtml(validator.voteAccount)}">${escHtml(String(validator.voteAccount).slice(0, 8))}…${escHtml(String(validator.voteAccount).slice(-6))}</span>

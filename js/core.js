@@ -292,6 +292,32 @@
     window.canonicalScoresPromise = loadCanonicalScores();
 
     // ---------------------------------------------------------------
+    // Dust vote accounts (2026-10-13). getVoteAccounts lists every vote account
+    // that has any activated stake. On 2026-10-08 someone delegated exactly
+    // 1 XNT to 600 long-dead vote accounts, and the network "validator" count
+    // jumped from ~731 to 1,338 (830 delinquent, median stake 1 XNT) while only
+    // ~507 were voting. Rule used everywhere on the site (header, ranks, tier
+    // badges, leaderboards, globe, Validator Terminal) and by
+    // scripts/compute-scores.js: a DELINQUENT vote account with less than
+    // DUST_STAKE_XNT activated stake is not counted as a validator. Voting
+    // validators always count, whatever their stake. Lookups of a dust vote
+    // account still work — the card just shows it unranked.
+    // ---------------------------------------------------------------
+    const DUST_STAKE_XNT = 100;
+    function isDustVoteAccount(activatedStakeLamports, delinquent) {
+      return !!delinquent && Number(activatedStakeLamports || 0) < DUST_STAKE_XNT * 1e9;
+    }
+    // Split a getVoteAccounts result into { current, delinquent, dust }.
+    function splitVoteAccounts(va) {
+      const current = (va && va.current) || [];
+      const delinquent = [], dust = [];
+      for (const v of ((va && va.delinquent) || [])) {
+        (isDustVoteAccount(v.activatedStake, true) ? dust : delinquent).push(v);
+      }
+      return { current, delinquent, dust };
+    }
+
+    // ---------------------------------------------------------------
     // Session cache (P2): sessionStorage-backed, per-tab, survives reloads.
     // Used for the two slow, rarely-changing startup fetches — the validator
     // identity accounts (a ~1 MB getProgramAccounts) and the token supply —
@@ -332,9 +358,11 @@
       };
       try {
         if (doc && doc.validators && typeof doc._ageMs === 'number' && doc._ageMs < 3 * 3600000) {
-          const vals = Object.values(doc.validators);
+          // `dust` (delinquent + < DUST_STAKE_XNT) is set by compute-scores.js;
+          // older files lack it, so derive the count from the flags here too.
+          const vals = Object.values(doc.validators).filter(v => !v.dust);
           const delinquent = vals.filter(v => v.delinquent).length;
-          put('totalValidators', doc.validatorCount || vals.length);
+          put('totalValidators', vals.length);
           put('activeValidators', vals.length - delinquent);
           put('delinquentValidators', delinquent);
           if (doc.epoch) put('currentEpoch', doc.epoch);
@@ -1652,13 +1680,14 @@
         // carries the server's answer too; prefer whichever is newer.
         window.latestValidatorVersion = computeLatestVersion(versionMap, window.canonicalScores && window.canonicalScores.latestVersion);
 
-        const currentValidators = voteAccounts.current || [];
-        const delinquentValidators = voteAccounts.delinquent || [];
+        // Dust vote accounts (delinquent, < DUST_STAKE_XNT) are left out of
+        // every count and of allValidators; their stake still counts in Total Stake.
+        const { current: currentValidators, delinquent: delinquentValidators, dust: dustVoteAccounts } = splitVoteAccounts(voteAccounts);
         const totalValidatorsCount = currentValidators.length + delinquentValidators.length;
-        
+        window.dustVoteAccountCount = dustVoteAccounts.length;
+
         let totalStake = 0;
-        const allValidatorsList = [...currentValidators, ...delinquentValidators];
-        allValidatorsList.forEach(v => {
+        [...currentValidators, ...delinquentValidators, ...dustVoteAccounts].forEach(v => {
           totalStake += v.activatedStake;
         });
 
@@ -1690,6 +1719,7 @@
         window.validatorIdentities = identities;
 
         // Build all validators list with names
+        const delinquentKeys = new Set(delinquentValidators.map(d => d.votePubkey));
         allValidators = [...currentValidators, ...delinquentValidators].map(v => {
           const identity = identities[v.nodePubkey];
           return {
@@ -1701,7 +1731,7 @@
             activatedStake: v.activatedStake,
             commission: v.commission,
             epochCredits: v.epochCredits,
-            delinquent: delinquentValidators.some(d => d.votePubkey === v.votePubkey),
+            delinquent: delinquentKeys.has(v.votePubkey),
             version: versionMap[v.nodePubkey] || null
           };
         });
@@ -1756,10 +1786,18 @@
       } else {
         // Fetch fresh
         const voteAccounts = await rpcCall('getVoteAccounts');
-        const all = [...voteAccounts.current, ...voteAccounts.delinquent];
+        const split = splitVoteAccounts(voteAccounts);
+        const all = [...split.current, ...split.delinquent];   // ranked set (no dust)
         validator = all.find(v => v.votePubkey === voteAccount);
+        const dustHit = validator ? null : split.dust.find(v => v.votePubkey === voteAccount);
 
-        if (!validator) {
+        if (!validator && dustHit) {
+          // Dust vote account (delinquent, < DUST_STAKE_XNT): real, but outside
+          // the counted set — shown unranked.
+          validator = Object.assign({}, dustHit, { delinquent: true, isDust: true });
+          rank = null;
+          totalValidators = all.length;
+        } else if (!validator) {
           // Not in the active validator set — try zombie fallback (stake-drained
           // delinquent or similar). Returns null if the vote account is actually
           // closed or invalid, in which case we honor the original "not found".
@@ -1803,6 +1841,7 @@
         commission: validator.commission,
         isDelinquent: validator.delinquent,
         isZombie: validator.isZombie === true,
+        isDust: validator.isDust === true,
         epochCredits: epochCreditsHistory.length > 0 ? epochCreditsHistory[epochCreditsHistory.length - 1][1] : 0,
         epochCreditsHistory: epochCreditsHistory,
         skipRate: skipRate,

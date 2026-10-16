@@ -264,7 +264,12 @@
 
       // ── Compute breakdown + aggregates ────────────────
       function compute(raw) {
-        const { cluster, validators, stakes } = raw;
+        const { cluster, stakes } = raw;
+        // Dust vote accounts (delinquent, < DUST_STAKE_XNT — see js/core.js) are
+        // not validators for the counts, percentiles and mean self-stake here.
+        const validators = typeof isDustVoteAccount === 'function'
+          ? raw.validators.filter(v => !isDustVoteAccount(v.activatedStake, v.delinquent))
+          : raw.validators;
         const breakdown  = new Map();
         const stakeIndex = new Map();
 
@@ -308,7 +313,8 @@
 
         const tFnd = rows.reduce((s, r) => s + r.b.fActive, 0n);
         const tSlf = rows.reduce((s, r) => s + r.b.sActive, 0n);
-        const tAct = rows.reduce((s, r) => s + BigInt(r.v.activatedStake || 0), 0n);
+        // Total activated keeps the dust stake so it matches the cluster total.
+        const tAct = raw.validators.reduce((s, v) => s + BigInt(v.activatedStake || 0), 0n);
         const totalSelfPct = tAct > 0n ? Number(tSlf * 1000000n / tAct) / 10000 : 0;
 
         const x1Rows = rows.filter(r => r.v.x1Labs);
