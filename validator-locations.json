@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-16T18:10:31.976Z",
-  "totalNodes": 512,
-  "totalLocations": 509,
+  "lastUpdated": "2026-10-16T20:03:14.781Z",
+  "totalNodes": 507,
+  "totalLocations": 504,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -794,13 +794,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "67.211.214.178": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "65.108.71.172": {
       "country": "Finland",
       "countryCode": "FI",
@@ -1214,26 +1207,12 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "74.50.95.238": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "135.181.216.181": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "216.158.236.102": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "51.222.248.49": {
       "country": "Canada",
@@ -3482,13 +3461,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "205.209.101.222": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "65.21.34.60": {
       "country": "Finland",
       "countryCode": "FI",
@@ -3558,27 +3530,24 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "69.10.34.34": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     }
   },
   "countries": {
+    "US": {
+      "name": "United States",
+      "count": 205
+    },
     "PL": {
       "name": "Poland",
       "count": 69
     },
+    "DE": {
+      "name": "Germany",
+      "count": 46
+    },
     "FI": {
       "name": "Finland",
       "count": 85
-    },
-    "US": {
-      "name": "United States",
-      "count": 210
     },
     "CA": {
       "name": "Canada",
@@ -3588,6 +3557,14 @@
       "name": "France",
       "count": 45
     },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 20
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
+    },
     "KE": {
       "name": "Kenya",
       "count": 7
@@ -3595,18 +3572,6 @@
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 46
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
-    },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 20
     },
     "SG": {
       "name": "Singapore",
