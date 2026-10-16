@@ -60,3 +60,15 @@ against the same formula run in node over the served ledger, the 7-epoch trend p
 modal (hero, network median / top 10 %, rows, × / Escape / backdrop), the 100 % and 0 % commission
 paths, the no-history path, the 375 px modal, 0 inline handlers, 0 page errors. The ledger
 builder's `st` / `c` columns are covered by `node scripts/test-rewards-ledger.js`.
+
+**Update Identity (2026-10-16)** — validator-info publish in `js/wallet-tx.js` (Manage Validator):
+
+    node scripts/c2-tests/identity-test.js "$PWD"
+
+Mocks the RPC and checks: an identity with an info account → form pre-filled from chain, the update
+is one Config Store ix (info writable / not signer, identity signer) whose data is ConfigKeys
+[Va1idator1nfo, identity*] + u64 length + JSON, unknown fields (`details`) kept, keys sorted; an
+identity without one → "will create" note, createAccount (643 B, rent, owner Config) + Store with
+the new account partial-signed; other wallet → locked; name > 80 / website without http(s) refused,
+nothing sent; a direct click on Update right after typing an icon URL still registers.
+

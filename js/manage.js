@@ -4514,6 +4514,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const iconInput = document.getElementById('identityIconInput');
       if (iconInput) {
         iconInput.addEventListener('blur', previewIcon);
+        // Also preview while typing: showing it only on blur moved the Update button down
+        // between mousedown and mouseup, so a direct click on Update was lost.
+        let iconPreviewTimer = null;
+        iconInput.addEventListener('input', () => { clearTimeout(iconPreviewTimer); iconPreviewTimer = setTimeout(previewIcon, 400); });
       }
       
       const createStakeInput = document.getElementById('createStakeAmountInput');

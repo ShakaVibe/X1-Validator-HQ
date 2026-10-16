@@ -1505,6 +1505,7 @@
       document.getElementById('identityCancelBtn').textContent = 'Cancel';
       document.getElementById('identityAuthorityWarning').style.display = 'none';
       document.getElementById('iconPreviewSection').style.display = 'none';
+      lastPreviewedIconUrl = null;
       
       // Check if connected wallet is the identity
       checkIdentityAuthority();
@@ -1526,7 +1527,7 @@
       if (identityPubkey && identityPubkey === walletPublicKey) {
         userHasIdentityAuthority = true;
         document.getElementById('identityAuthorityWarning').style.display = 'none';
-        document.getElementById('identityConfirmBtn').disabled = false;
+        document.getElementById('identityConfirmBtn').disabled = !identityInfoLoaded;
       } else {
         userHasIdentityAuthority = false;
         document.getElementById('identityAuthorityWarning').style.display = 'flex';
@@ -1534,33 +1535,108 @@
       }
     }
 
+    // ─── On-chain validator info (what `solana validator-info publish` writes) ───
+    // A Config-program account, 643 bytes, created at a RANDOM address on the first
+    // publish (not a PDA — checked 2026-10-16: 0 of 50 accounts match a PDA). Layout:
+    //   ConfigKeys  = short_vec len (1 byte: 2) + [Va1idator1nfo…, false] + [identity, true]   (67 bytes)
+    //   ValidatorInfo { info: String } = u64 LE length + JSON utf-8                             (≤ 576 bytes)
+    // The Config Store instruction data is exactly those bytes; its accounts are the info
+    // account (writable; signer only when it is being created) + the identity (signer).
+    const VALIDATOR_INFO_KEY = 'Va1idator1nfo111111111111111111111111111111';
+    const CONFIG_PROGRAM_KEY = 'Config1111111111111111111111111111111111111';
+    const VALIDATOR_INFO_SPACE = 643;
+    const VALIDATOR_INFO_MAX_JSON = VALIDATOR_INFO_SPACE - 67 - 8;   // 568 bytes
+    const VALIDATOR_INFO_MAX_SHORT = 80;                             // name / website / iconUrl (CLI limit)
+    let identityInfoAccount = null;   // { pubkey, info } for the existing account, or null
+    let identityInfoLoaded = false;
+
+    // Find this identity's validator-info account and parse its JSON.
+    async function fetchIdentityInfoAccount(identity) {
+      const res = await fetch(RPC_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0', id: 1, method: 'getProgramAccounts',
+          params: [CONFIG_PROGRAM_KEY, {
+            encoding: 'base64',
+            filters: [
+              { dataSize: VALIDATOR_INFO_SPACE },
+              { memcmp: { offset: 1, bytes: VALIDATOR_INFO_KEY } },
+              { memcmp: { offset: 34, bytes: identity } }
+            ]
+          }]
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message || 'RPC error');
+      const found = [];
+      for (const a of (data.result || [])) {
+        try {
+          const bytes = Uint8Array.from(atob(a.account.data[0]), c => c.charCodeAt(0));
+          if (bytes[0] !== 2 || bytes[66] !== 1) continue;            // identity must be the signer key
+          const len = Number(new DataView(bytes.buffer).getBigUint64(67, true));
+          const info = JSON.parse(new TextDecoder().decode(bytes.slice(75, 75 + len)));
+          found.push({ pubkey: a.pubkey, info: (info && typeof info === 'object') ? info : {} });
+        } catch (e) { /* unparsable account — skip */ }
+      }
+      if (found.length > 1) console.warn('[identity] ' + found.length + ' validator-info accounts for this identity; updating', found[0].pubkey);
+      return found[0] || null;
+    }
+
+    // Config Store instruction data for a validator-info update.
+    function encodeValidatorInfo(identityPubkey, json) {
+      const { PublicKey } = solanaWeb3;
+      const str = new TextEncoder().encode(json);
+      const out = new Uint8Array(75 + str.length);
+      out[0] = 2;
+      out.set(new PublicKey(VALIDATOR_INFO_KEY).toBytes(), 1); out[33] = 0;
+      out.set(identityPubkey.toBytes(), 34);                   out[66] = 1;
+      new DataView(out.buffer).setBigUint64(67, BigInt(str.length), true);
+      out.set(str, 75);
+      return out;
+    }
+
+    // Pre-fill the form from the account on chain and remember it for the update.
     async function loadCurrentIdentityInfo() {
-      if (!currentManageValidator.identityPubkey) return;
-      
+      const identity = currentManageValidator && currentManageValidator.identityPubkey;
+      identityInfoAccount = null;
+      identityInfoLoaded = false;
+      if (!identity) return;
+      const btn = document.getElementById('identityConfirmBtn');
+      btn.disabled = true;
+      btn.textContent = 'Loading current info…';
       try {
-        // Try to fetch existing validator info
-        const response = await fetch(RPC_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'getAccountInfo',
-            params: [currentManageValidator.identityPubkey, { encoding: 'jsonParsed' }]
-          })
-        });
-        
-        const data = await response.json();
-        // The identity info is stored separately, this just confirms the account exists
+        const acct = await fetchIdentityInfoAccount(identity);
+        if (!currentManageValidator || currentManageValidator.identityPubkey !== identity) return;
+        identityInfoAccount = acct;
+        if (acct) {
+          const i = acct.info;
+          if (typeof i.name === 'string') document.getElementById('identityNameInput').value = i.name;
+          document.getElementById('identityWebsiteInput').value = typeof i.website === 'string' ? i.website : '';
+          document.getElementById('identityIconInput').value = typeof i.iconUrl === 'string' ? i.iconUrl : '';
+          if (typeof previewIcon === 'function') previewIcon();
+        } else {
+          showIdentityMessage('No validator info published for this identity yet — saving will create it (about 0.0054 XNT of rent, paid by the identity).', 'info');
+        }
+        identityInfoLoaded = true;
       } catch (e) {
-        console.log('Could not load current identity info:', e);
+        console.error('Could not load current identity info:', e);
+        showIdentityMessage('Could not load the current validator info (' + (e.message || 'network error') + '). Close and reopen to retry.', 'error');
+      } finally {
+        btn.textContent = 'Update Identity';
+        btn.disabled = !(userHasIdentityAuthority && identityInfoLoaded);
       }
     }
 
+    // Last URL previewed, so a blur with an unchanged URL does not re-show a preview whose
+    // image failed (that re-show moved the Update button mid-click). Reset when the modal opens.
+    let lastPreviewedIconUrl = null;
     function previewIcon() {
       const iconUrl = document.getElementById('identityIconInput').value.trim();
       const previewSection = document.getElementById('iconPreviewSection');
       const previewImg = document.getElementById('iconPreviewImg');
+      if (iconUrl === lastPreviewedIconUrl) return;
+      lastPreviewedIconUrl = iconUrl;
       
       if (iconUrl && iconUrl.startsWith('http')) {
         previewImg.src = iconUrl;
@@ -1579,137 +1655,117 @@
         showIdentityMessage('You do not have authority to update this validator\'s identity.', 'error');
         return;
       }
-      
+      if (!identityInfoLoaded) {
+        showIdentityMessage('Current validator info has not loaded yet.', 'error');
+        return;
+      }
+
       const validatorName = document.getElementById('identityNameInput').value.trim();
       const website = document.getElementById('identityWebsiteInput').value.trim();
       const iconUrl = document.getElementById('identityIconInput').value.trim();
-      
-      if (!validatorName) {
-        showIdentityMessage('Please enter a validator name.', 'error');
+
+      if (!validatorName) { showIdentityMessage('Please enter a validator name.', 'error'); return; }
+      for (const [label, val] of [['Name', validatorName], ['Website', website], ['Icon URL', iconUrl]]) {
+        if (val.length > VALIDATOR_INFO_MAX_SHORT) { showIdentityMessage(label + ' is too long (max ' + VALIDATOR_INFO_MAX_SHORT + ' characters).', 'error'); return; }
+      }
+      if (website && !/^https?:\/\/\S+$/i.test(website)) { showIdentityMessage('Website must start with http:// or https://', 'error'); return; }
+      if (iconUrl && !/^https?:\/\/\S+$/i.test(iconUrl)) { showIdentityMessage('Icon URL must start with http:// or https://', 'error'); return; }
+
+      // Keep every field already on chain (details, keybaseUsername, …); only these three change.
+      const merged = Object.assign({}, identityInfoAccount ? identityInfoAccount.info : {});
+      merged.name = validatorName;
+      if (website) merged.website = website; else delete merged.website;
+      if (iconUrl) merged.iconUrl = iconUrl; else delete merged.iconUrl;
+      const sorted = {};
+      Object.keys(merged).sort().forEach(k => { sorted[k] = merged[k]; });   // same key order as the CLI
+      const infoJson = JSON.stringify(sorted);
+      if (new TextEncoder().encode(infoJson).length > VALIDATOR_INFO_MAX_JSON) {
+        showIdentityMessage('Validator info is too long to fit on chain (max ' + VALIDATOR_INFO_MAX_JSON + ' bytes). Shorten a field.', 'error');
         return;
       }
-      
+
+      const btn = document.getElementById('identityConfirmBtn');
       try {
-        const btn = document.getElementById('identityConfirmBtn');
         btn.disabled = true;
         btn.textContent = 'Preparing Transaction...';
-        
         showIdentityMessage('Preparing validator info update...', 'info');
-        
-        const { Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram } = solanaWeb3;
-        
+
+        const { Connection, PublicKey, Transaction, TransactionInstruction, SystemProgram, Keypair } = solanaWeb3;
         const connection = new Connection(RPC_URL, 'confirmed');
         const identityPubkey = new PublicKey(walletPublicKey);
-        
-        // Config Program ID (used for validator info)
-        const CONFIG_PROGRAM_ID = new PublicKey('Config1111111111111111111111111111111111111');
-        
-        // Derive the validator info account address
-        // The validator info account is a PDA derived from the identity pubkey
-        const validatorInfoSeed = 'validator-info';
-        const [validatorInfoAccount] = await PublicKey.findProgramAddress(
-          [new TextEncoder().encode(validatorInfoSeed), identityPubkey.toBytes()],
-          CONFIG_PROGRAM_ID
-        );
-        
-        // Build the validator info JSON
-        const validatorInfo = {
-          name: validatorName
-        };
-        if (website) validatorInfo.website = website;
-        if (iconUrl) validatorInfo.iconUrl = iconUrl;
-        
-        const infoString = JSON.stringify(validatorInfo);
-        const infoBytes = new TextEncoder().encode(infoString);
-        
-        // Check if account exists
-        const accountInfo = await connection.getAccountInfo(validatorInfoAccount);
-        
-        let transaction;
-        
-        if (!accountInfo) {
-          // Account doesn't exist, need to create it
-          // This is more complex - for now we'll show a message
-          showIdentityMessage('Validator info account not found. Please use CLI: solana validator-info publish "' + validatorName + '"', 'info');
-          btn.disabled = false;
-          btn.textContent = 'Update Identity';
-          return;
+        const configProgram = new PublicKey(CONFIG_PROGRAM_KEY);
+        const transaction = new Transaction();
+        let newInfoKeypair = null;
+        let infoPubkey;
+
+        if (identityInfoAccount) {
+          infoPubkey = new PublicKey(identityInfoAccount.pubkey);
+        } else {
+          // First publish: create the 643-byte account at a fresh address, like the CLI.
+          newInfoKeypair = Keypair.generate();
+          infoPubkey = newInfoKeypair.publicKey;
+          const rent = await connection.getMinimumBalanceForRentExemption(VALIDATOR_INFO_SPACE);
+          const bal = await connection.getBalance(identityPubkey);
+          if (bal < rent + 1000000) {
+            throw new Error('The identity wallet needs about ' + ((rent + 1000000) / 1e9).toFixed(4) + ' XNT to create the info account (has ' + (bal / 1e9).toFixed(4) + ').');
+          }
+          transaction.add(SystemProgram.createAccount({
+            fromPubkey: identityPubkey,
+            newAccountPubkey: infoPubkey,
+            lamports: rent,
+            space: VALIDATOR_INFO_SPACE,
+            programId: configProgram
+          }));
         }
-        
-        // Build the config data instruction
-        // Config instruction: write data starting at offset
-        const configKeys = [
-          { pubkey: validatorInfoAccount, isSigner: false, isWritable: true },
-          { pubkey: identityPubkey, isSigner: true, isWritable: false }
-        ];
-        
-        // The config program expects specific data format
-        // For validator-info, we need to use the proper serialization
-        
-        // Create instruction data for config program
-        // This is a simplified version - actual validator-info uses borsh serialization
-        const instructionData = new Uint8Array(4 + infoBytes.length);
-        const dataView = new DataView(instructionData.buffer);
-        dataView.setUint32(0, infoBytes.length, true); // Length prefix
-        instructionData.set(infoBytes, 4);
-        
-        const updateInstruction = new TransactionInstruction({
-          keys: configKeys,
-          programId: CONFIG_PROGRAM_ID,
-          data: instructionData
-        });
-        
-        transaction = new Transaction().add(updateInstruction);
-        
-        // Get recent blockhash
+
+        transaction.add(new TransactionInstruction({
+          programId: configProgram,
+          keys: [
+            { pubkey: infoPubkey, isSigner: !!newInfoKeypair, isWritable: true },
+            { pubkey: identityPubkey, isSigner: true, isWritable: false }
+          ],
+          data: encodeValidatorInfo(identityPubkey, infoJson)
+        }));
+
         const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash('finalized');
         transaction.recentBlockhash = blockhash;
         transaction.feePayer = identityPubkey;
-        
+
+        if (newInfoKeypair) {
+          // Priority fee BEFORE partialSign, or the new account's signature is invalidated.
+          await refreshPriorityFee(connection);
+          addPriorityFee(transaction);
+          transaction.partialSign(newInfoKeypair);
+        }
+
         btn.textContent = 'Awaiting Wallet Approval...';
         showIdentityMessage('Please approve the transaction in your wallet...', 'info');
-        
-        // Sign and send
-        if (connectedWallet && connectedWallet.provider) {
-          let signature;
-          
-          signature = await signSendTx(connection, transaction);
-          
-          btn.textContent = 'Confirming...';
-          showIdentityMessage('Transaction sent! Waiting for confirmation...', 'info');
-          
-          // Wait for confirmation
-          await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
-          
-          btn.textContent = 'Success!';
-          btn.onclick = closeIdentityModal;
-          btn.disabled = false;
-          document.getElementById('identityCancelBtn').textContent = 'Close';
-          showIdentityMessage(`Identity updated! Signature: ${signature.slice(0, 16)}...`, 'success', signature);
-          
-          // Update local state
-          currentManageValidator.name = validatorName;
-          if (iconUrl) currentManageValidator.iconUrl = iconUrl;
-          document.getElementById('manageValidatorName').textContent = validatorName;
-          
-        } else {
-          throw new Error('Wallet not connected properly');
-        }
-        
+        if (!connectedWallet || !connectedWallet.provider) throw new Error('Wallet not connected properly');
+
+        const signature = await signSendTx(connection, transaction);
+        btn.textContent = 'Confirming...';
+        showIdentityMessage('Transaction sent! Waiting for confirmation...', 'info');
+        await confirmWithFallback(connection, signature, blockhash, lastValidBlockHeight, 'confirmed');
+
+        btn.textContent = 'Success!';
+        btn.onclick = closeIdentityModal;
+        btn.disabled = false;
+        document.getElementById('identityCancelBtn').textContent = 'Close';
+        showIdentityMessage((newInfoKeypair ? 'Validator info published' : 'Validator info updated') + '! Other sites pick it up as they refresh.', 'success', signature);
+
+        // Local state + this tab's identity cache, so the new name shows after a reload.
+        identityInfoAccount = { pubkey: infoPubkey.toBase58(), info: sorted };
+        currentManageValidator.name = validatorName;
+        currentManageValidator.iconUrl = iconUrl || '';
+        document.getElementById('manageValidatorName').textContent = validatorName;
+        try { sessionStorage.removeItem(IDENTITIES_CACHE_KEY); } catch (e) { /* storage blocked */ }
       } catch (e) {
         console.error('Identity update error:', e);
-        
-        const btn = document.getElementById('identityConfirmBtn');
         btn.disabled = false;
         btn.textContent = 'Update Identity';
-        
-        if (e.message && (e.message.includes('User rejected') || e.message.includes('rejected'))) {
-          showIdentityMessage('Transaction cancelled by user.', 'error');
-        } else if (e.message && e.message.includes('invalid account data')) {
-          showIdentityMessage('Unable to update via web interface. Please use CLI: solana validator-info publish "' + document.getElementById('identityNameInput').value + '"', 'error');
-        } else {
-          showIdentityMessage(`Transaction failed: ${e.message || 'Unknown error'}. Try using CLI: solana validator-info publish`, 'error');
-        }
+        const m = (e && e.message) || 'Unknown error';
+        if (/reject/i.test(m)) showIdentityMessage('Transaction cancelled by user.', 'error');
+        else showIdentityMessage('Transaction failed: ' + m, 'error');
       }
     }
 

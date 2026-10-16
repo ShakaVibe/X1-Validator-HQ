@@ -9,7 +9,7 @@
 > **Start here next session (as of 2026-10-16):**
 > 0a. **Validator count (2026-10-13, session 13):** delinquent vote accounts with < 100 XNT are
 >    "dust" and not counted anywhere (`isDustVoteAccount` in `js/core.js`, same rule in
->    `compute-scores.js`). Header should read ~533 / 507 / 26; after the 408→409 epoch boundary the
+>    `compute-scores.js`). Live 2026-10-16: 530 / 505 / 25 (verified); after the 408→409 epoch boundary the
 >    600 deactivating 1-XNT accounts drop out of the RPC entirely (dust ~804 → ~200).
 > 0. **Privacy follow-up (2026-09-25):** a GitHub Support ticket asking for a GC of the dangling
 >    pre-rewrite commits is pending (still **200** on 2026-10-13 — chase Support). When Support confirms, check that
@@ -1499,8 +1499,23 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   validators); the identity is still the fee payer, so an emptied identity account is deleted and the
   validator stops voting (rent-exempt minimum for 0 bytes = 890,880 lamports). Identity balances seen:
   908 XNT (top stake) … 0.13 XNT; the income is block rewards from leader slots.
-- Spotted, not touched: "Update Identity" (`js/wallet-tx.js` ~1640) writes the validator-info config
-  account as `u32 length + JSON`; the Config program expects serialized ConfigKeys (short_vec of pubkey +
-  signer flag) followed by a bincode string — that update probably fails on-chain. Test before relying on it.
+- **Update Identity fixed** (Shaka: "take a look"). It never worked: (1) it looked for the info account
+  at a PDA `["validator-info", identity]`, but `solana validator-info publish` creates it at a random
+  address — 0 of 50 real accounts are PDAs — so it always ended in "account not found, use the CLI";
+  (2) the write format was wrong too (`u32 + JSON`; a mainnet simulation of that returns
+  `InvalidInstructionData`). Now (`js/wallet-tx.js`, "On-chain validator info" block): finds the account
+  with `getProgramAccounts(Config, dataSize 643, memcmp 1 = Va1idator1nfo…, memcmp 34 = identity)`,
+  pre-fills name / website / icon from it, keeps other fields (`details`, `keybaseUsername`), sorts keys
+  like the CLI, checks the CLI limits (80 chars per field, JSON ≤ 568 bytes, http(s) URLs) and sends a
+  Config Store ix = ConfigKeys [Va1idator1nfo, identity (signer)] + u64 length + JSON, accounts [info
+  (writable), identity (signer)]. No account yet → createAccount (643 bytes, 5,366,160 lamports rent,
+  paid by the identity) at a fresh keypair + Store with that account as signer (partial-signed, priority
+  fee added first). **Verified on mainnet without sending anything** (simulateTransaction, sigVerify off):
+  update on Shaka_Vibes_1's account → success; create for a live validator with no info → success; old
+  format → InvalidInstructionData. The encoder reproduces Shaka_Vibes_1's on-chain bytes exactly.
+  Also: icon preview now appears while typing (400 ms debounce) and an unchanged URL is not re-previewed
+  on blur — before, the preview popping in on blur moved the Update button between mousedown and
+  mouseup, so a direct click was lost. Test: `scripts/c2-tests/identity-test.js` (20 checks); CSP walk clean.
+  Still needs a real run by someone with the identity key in a wallet (Shaka).
 - `scripts/c2-tests/manage-test.js` fails with "renderValidatorList is not defined" on the unchanged
   tree too (pre-existing, the suite predates a rename).
