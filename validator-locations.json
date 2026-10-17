@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-17T18:35:07.375Z",
-  "totalNodes": 505,
-  "totalLocations": 502,
+  "lastUpdated": "2026-10-17T20:03:09.569Z",
+  "totalNodes": 504,
+  "totalLocations": 501,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1949,13 +1949,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "185.189.46.23": {
-      "country": "Sweden",
-      "countryCode": "SE",
-      "city": "Stockholm",
-      "lat": 59.3287,
-      "lon": 18.0717
-    },
     "163.245.197.62": {
       "country": "United States",
       "countryCode": "US",
@@ -3541,7 +3534,7 @@
     },
     "SE": {
       "name": "Sweden",
-      "count": 5
+      "count": 4
     },
     "DE": {
       "name": "Germany",
