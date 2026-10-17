@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-17T02:03:11.530Z",
-  "totalNodes": 505,
-  "totalLocations": 502,
+  "lastUpdated": "2026-10-17T04:03:11.316Z",
+  "totalNodes": 509,
+  "totalLocations": 506,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3516,44 +3516,72 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "74.50.95.238": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "67.211.214.178": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "69.10.34.34": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "205.209.101.222": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 203
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 69
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 46
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 85
+      "count": 207
     },
     "CA": {
       "name": "Canada",
       "count": 19
     },
+    "NL": {
+      "name": "Netherlands",
+      "count": 20
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 85
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 69
+    },
     "FR": {
       "name": "France",
       "count": 45
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 20
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 5
+    "DE": {
+      "name": "Germany",
+      "count": 46
     },
     "KE": {
       "name": "Kenya",
       "count": 7
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 5
     },
     "GB": {
       "name": "United Kingdom",
