@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-17T20:03:09.569Z",
-  "totalNodes": 504,
-  "totalLocations": 501,
+  "lastUpdated": "2026-10-17T22:03:08.762Z",
+  "totalNodes": 503,
+  "totalLocations": 500,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -996,13 +996,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "104.178.118.239": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Wichita",
-      "lat": 37.737,
-      "lon": -97.2514
     },
     "45.94.82.2": {
       "country": "The Netherlands",
@@ -3526,7 +3519,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 203
+      "count": 202
     },
     "NL": {
       "name": "The Netherlands",
