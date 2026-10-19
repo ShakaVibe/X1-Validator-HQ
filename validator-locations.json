@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-19T06:03:09.778Z",
+  "lastUpdated": "2026-10-19T08:03:14.644Z",
   "totalNodes": 512,
   "totalLocations": 509,
   "locations": {
@@ -2978,13 +2978,6 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "173.212.208.17": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "149.50.116.114": {
       "country": "Poland",
       "countryCode": "PL",
@@ -3565,6 +3558,13 @@
       "city": "Wichita",
       "lat": 37.7779,
       "lon": -97.3151
+    },
+    "159.195.128.233": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Nuremberg",
+      "lat": 49.4527,
+      "lon": 11.0783
     }
   },
   "countries": {
@@ -3590,11 +3590,11 @@
     },
     "FR": {
       "name": "France",
-      "count": 45
+      "count": 44
     },
     "DE": {
       "name": "Germany",
-      "count": 56
+      "count": 57
     },
     "KE": {
       "name": "Kenya",
