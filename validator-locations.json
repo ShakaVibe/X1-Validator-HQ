@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-19T18:03:14.036Z",
-  "totalNodes": 511,
-  "totalLocations": 508,
+  "lastUpdated": "2026-10-19T20:00:09.869Z",
+  "totalNodes": 512,
+  "totalLocations": 509,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3558,12 +3558,19 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
+    },
+    "205.209.101.222": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 203
+      "count": 204
     },
     "PL": {
       "name": "Poland",
