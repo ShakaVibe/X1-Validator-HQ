@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-20T14:03:13.838Z",
+  "lastUpdated": "2026-10-20T16:03:15.915Z",
   "totalNodes": 503,
   "totalLocations": 500,
   "locations": {
@@ -2971,13 +2971,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "75.119.156.130": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "69.169.101.206": {
       "country": "United States",
       "countryCode": "US",
@@ -3502,12 +3495,19 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "162.35.169.6": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Los Angeles",
+      "lat": 34.0549,
+      "lon": -118.243
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 202
+      "count": 203
     },
     "PL": {
       "name": "Poland",
@@ -3527,7 +3527,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 43
+      "count": 42
     },
     "NL": {
       "name": "The Netherlands",
