@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-20T12:03:12.652Z",
-  "totalNodes": 509,
-  "totalLocations": 506,
+  "lastUpdated": "2026-10-20T14:03:13.838Z",
+  "totalNodes": 503,
+  "totalLocations": 500,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1221,13 +1221,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "45.94.81.250": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
     "65.108.110.43": {
       "country": "Finland",
       "countryCode": "FI",
@@ -2236,13 +2229,6 @@
       "lat": 52.2299,
       "lon": 21.0093
     },
-    "95.156.230.93": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Hamburg",
-      "lat": 53.6498,
-      "lon": 10.0844
-    },
     "188.117.169.89": {
       "country": "Poland",
       "countryCode": "PL",
@@ -2397,33 +2383,12 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "84.32.70.109": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Chicago",
-      "lat": 41.8483,
-      "lon": -87.6517
-    },
     "116.202.241.77": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "84.32.70.205": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Chicago",
-      "lat": 41.8483,
-      "lon": -87.6517
-    },
-    "185.191.118.190": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Frankfurt am Main",
-      "lat": 50.1169,
-      "lon": 8.6837
     },
     "135.181.56.180": {
       "country": "Finland",
@@ -2543,13 +2508,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "206.72.200.14": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "95.214.55.7": {
       "country": "Poland",
@@ -3549,43 +3507,43 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 205
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 19
-    },
-    "NL": {
-      "name": "Netherlands",
-      "count": 20
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 85
+      "count": 202
     },
     "PL": {
       "name": "Poland",
       "count": 67
     },
+    "DE": {
+      "name": "Germany",
+      "count": 51
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 85
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 19
+    },
     "FR": {
       "name": "France",
       "count": 43
     },
-    "DE": {
-      "name": "Germany",
-      "count": 53
+    "NL": {
+      "name": "The Netherlands",
+      "count": 19
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 4
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 4
     },
     "SG": {
       "name": "Singapore",
