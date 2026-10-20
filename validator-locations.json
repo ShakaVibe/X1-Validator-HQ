@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-20T10:03:09.232Z",
-  "totalNodes": 508,
-  "totalLocations": 505,
+  "lastUpdated": "2026-10-20T11:51:14.601Z",
+  "totalNodes": 509,
+  "totalLocations": 506,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3537,6 +3537,13 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "67.211.214.178": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
@@ -3554,7 +3561,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 204
+      "count": 205
     },
     "NL": {
       "name": "The Netherlands",
