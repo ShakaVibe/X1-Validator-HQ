@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-21T10:03:12.259Z",
-  "totalNodes": 503,
-  "totalLocations": 500,
+  "lastUpdated": "2026-10-21T12:03:13.518Z",
+  "totalNodes": 502,
+  "totalLocations": 499,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -500,13 +500,6 @@
       "lat": 50.1162,
       "lon": 8.6693
     },
-    "64.20.34.102": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "104.37.187.90": {
       "country": "United States",
       "countryCode": "US",
@@ -569,13 +562,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "65.21.128.122": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "64.20.46.78": {
       "country": "United States",
@@ -3335,13 +3321,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "65.21.34.60": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "65.108.71.178": {
       "country": "Finland",
       "countryCode": "FI",
@@ -3461,13 +3440,6 @@
       "lat": 49.4527,
       "lon": 11.0783
     },
-    "205.209.101.222": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "67.211.214.178": {
       "country": "United States",
       "countryCode": "US",
@@ -3502,6 +3474,27 @@
       "city": "Wichita",
       "lat": 37.7779,
       "lon": -97.3151
+    },
+    "185.191.118.190": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.1169,
+      "lon": 8.6837
+    },
+    "84.32.70.109": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Chicago",
+      "lat": 41.8483,
+      "lon": -87.6517
+    },
+    "84.32.70.205": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Chicago",
+      "lat": 41.8483,
+      "lon": -87.6517
     }
   },
   "countries": {
@@ -3519,7 +3512,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 85
+      "count": 83
     },
     "PL": {
       "name": "Poland",
@@ -3531,7 +3524,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 49
+      "count": 50
     },
     "KE": {
       "name": "Kenya",
