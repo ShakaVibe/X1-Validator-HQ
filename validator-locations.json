@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-21T12:03:13.518Z",
-  "totalNodes": 502,
-  "totalLocations": 499,
+  "lastUpdated": "2026-10-21T13:56:24.084Z",
+  "totalNodes": 496,
+  "totalLocations": 493,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3384,48 +3384,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "159.195.20.72": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
-    "152.53.249.250": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
-    "89.58.55.202": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
-    "159.195.84.232": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
-    "89.58.15.69": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
-    "45.136.31.65": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Nuremberg",
-      "lat": 49.4527,
-      "lon": 11.0783
-    },
     "159.195.128.233": {
       "country": "Germany",
       "countryCode": "DE",
@@ -3524,7 +3482,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 50
+      "count": 44
     },
     "KE": {
       "name": "Kenya",
