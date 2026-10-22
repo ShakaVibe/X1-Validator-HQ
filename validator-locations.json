@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-22T16:03:13.845Z",
-  "totalNodes": 495,
-  "totalLocations": 492,
+  "lastUpdated": "2026-10-22T17:20:01.100Z",
+  "totalNodes": 494,
+  "totalLocations": 491,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -548,13 +548,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "149.50.116.21": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "74.50.65.202": {
       "country": "United States",
@@ -3453,41 +3446,41 @@
       "name": "United States",
       "count": 205
     },
-    "PL": {
-      "name": "Poland",
-      "count": 66
+    "CA": {
+      "name": "Canada",
+      "count": 19
     },
-    "DE": {
-      "name": "Germany",
-      "count": 44
+    "NL": {
+      "name": "Netherlands",
+      "count": 19
     },
     "FI": {
       "name": "Finland",
       "count": 83
     },
-    "CA": {
-      "name": "Canada",
-      "count": 19
+    "PL": {
+      "name": "Poland",
+      "count": 65
     },
     "FR": {
       "name": "France",
       "count": 42
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 19
+    "DE": {
+      "name": "Germany",
+      "count": 44
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
     "SE": {
       "name": "Sweden",
       "count": 4
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 5
     },
     "SG": {
       "name": "Singapore",
