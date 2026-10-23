@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-23T18:29:17.776Z",
-  "totalNodes": 493,
-  "totalLocations": 490,
+  "lastUpdated": "2026-10-23T20:03:11.629Z",
+  "totalNodes": 492,
+  "totalLocations": 489,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1998,13 +1998,6 @@
       "lat": 41.2632,
       "lon": -111.993
     },
-    "38.97.61.214": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "38.46.220.85": {
       "country": "United States",
       "countryCode": "US",
@@ -3405,13 +3398,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "149.50.116.21": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "38.58.177.101": {
       "country": "United States",
       "countryCode": "US",
@@ -3432,6 +3418,13 @@
       "city": "Wichita",
       "lat": 37.7779,
       "lon": -97.3151
+    },
+    "38.97.61.154": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Draper",
+      "lat": 40.5247,
+      "lon": -111.8638
     }
   },
   "countries": {
@@ -3439,41 +3432,41 @@
       "name": "United States",
       "count": 204
     },
-    "PL": {
-      "name": "Poland",
-      "count": 66
+    "CA": {
+      "name": "Canada",
+      "count": 19
     },
-    "DE": {
-      "name": "Germany",
-      "count": 44
+    "NL": {
+      "name": "Netherlands",
+      "count": 19
     },
     "FI": {
       "name": "Finland",
       "count": 83
     },
-    "CA": {
-      "name": "Canada",
-      "count": 19
+    "PL": {
+      "name": "Poland",
+      "count": 65
     },
     "FR": {
       "name": "France",
       "count": 41
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 19
+    "DE": {
+      "name": "Germany",
+      "count": 44
     },
     "KE": {
       "name": "Kenya",
       "count": 7
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
     "SE": {
       "name": "Sweden",
       "count": 4
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 5
     },
     "SG": {
       "name": "Singapore",
