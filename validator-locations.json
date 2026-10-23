@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-23T12:03:12.480Z",
+  "lastUpdated": "2026-10-23T13:35:49.238Z",
   "totalNodes": 493,
-  "totalLocations": 490,
+  "totalLocations": 489,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2719,13 +2719,6 @@
       "lat": 32.7767,
       "lon": -96.797
     },
-    "38.46.219.203": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5247,
-      "lon": -111.8638
-    },
     "102.210.25.186": {
       "country": "Kenya",
       "countryCode": "KE",
@@ -3426,54 +3419,54 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "104.178.118.239": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Wichita",
-      "lat": 37.7779,
-      "lon": -97.3151
+    "149.50.116.21": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 205
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 19
-    },
-    "NL": {
-      "name": "Netherlands",
-      "count": 19
+    "PL": {
+      "name": "Poland",
+      "count": 66
     },
     "FI": {
       "name": "Finland",
       "count": 83
     },
-    "PL": {
-      "name": "Poland",
-      "count": 65
-    },
     "FR": {
       "name": "France",
       "count": 41
     },
-    "DE": {
-      "name": "Germany",
-      "count": 44
+    "US": {
+      "name": "United States",
+      "count": 204
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "NL": {
+      "name": "The Netherlands",
+      "count": 19
     },
     "SE": {
       "name": "Sweden",
       "count": 4
     },
+    "DE": {
+      "name": "Germany",
+      "count": 44
+    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 19
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SG": {
       "name": "Singapore",
