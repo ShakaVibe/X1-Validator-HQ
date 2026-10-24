@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-24T20:03:11.258Z",
-  "totalNodes": 481,
-  "totalLocations": 478,
+  "lastUpdated": "2026-10-24T22:03:11.725Z",
+  "totalNodes": 477,
+  "totalLocations": 475,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3237,27 +3237,6 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "83.168.90.87": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2297,
-      "lon": 21.0122
-    },
-    "185.53.155.129": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Bielsko-Biala",
-      "lat": 49.8207,
-      "lon": 19.0512
-    },
-    "83.168.90.74": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2297,
-      "lon": 21.0122
-    },
     "162.245.187.106": {
       "country": "United States",
       "countryCode": "US",
@@ -3369,7 +3348,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 64
+      "count": 60
     },
     "DE": {
       "name": "Germany",
