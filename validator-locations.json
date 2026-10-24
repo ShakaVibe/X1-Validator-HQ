@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-24T04:48:09.199Z",
-  "totalNodes": 492,
-  "totalLocations": 489,
+  "lastUpdated": "2026-10-24T06:03:11.813Z",
+  "totalNodes": 485,
+  "totalLocations": 482,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -16,13 +16,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "51.254.46.35": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "95.217.224.120": {
       "country": "Finland",
@@ -626,13 +619,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "213.136.82.92": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
-    },
     "198.96.89.222": {
       "country": "United States",
       "countryCode": "US",
@@ -898,13 +884,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "157.90.67.217": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "51.91.107.60": {
       "country": "France",
@@ -1760,33 +1739,12 @@
       "lat": 50.7012,
       "lon": 3.21501
     },
-    "141.95.172.91": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
-    "37.187.57.175": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
-    },
     "37.187.57.176": {
       "country": "France",
       "countryCode": "FR",
       "city": "Wattrelos",
       "lat": 50.7012,
       "lon": 3.21501
-    },
-    "146.59.71.17": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "146.59.71.156": {
       "country": "Poland",
@@ -2081,13 +2039,6 @@
       "city": "Boulogne-Billancourt",
       "lat": 48.8356,
       "lon": 2.23832
-    },
-    "5.135.83.195": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "167.114.209.111": {
       "country": "Canada",
@@ -3434,11 +3385,11 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 66
+      "count": 65
     },
     "DE": {
       "name": "Germany",
-      "count": 44
+      "count": 43
     },
     "FI": {
       "name": "Finland",
@@ -3450,11 +3401,15 @@
     },
     "FR": {
       "name": "France",
-      "count": 41
+      "count": 36
     },
     "NL": {
       "name": "The Netherlands",
       "count": 19
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 4
     },
     "KE": {
       "name": "Kenya",
@@ -3463,10 +3418,6 @@
     "GB": {
       "name": "United Kingdom",
       "count": 5
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 4
     },
     "SG": {
       "name": "Singapore",
