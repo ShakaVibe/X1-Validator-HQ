@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-24T12:03:11.286Z",
-  "totalNodes": 483,
-  "totalLocations": 480,
+  "lastUpdated": "2026-10-24T14:03:08.803Z",
+  "totalNodes": 482,
+  "totalLocations": 479,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1675,13 +1675,6 @@
       "city": "Philadelphia",
       "lat": 39.9522,
       "lon": -75.1647
-    },
-    "23.175.146.138": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9596,
-      "lon": -75.161
     },
     "23.146.144.123": {
       "country": "United States",
@@ -3367,7 +3360,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 202
+      "count": 201
     },
     "CA": {
       "name": "Canada",
