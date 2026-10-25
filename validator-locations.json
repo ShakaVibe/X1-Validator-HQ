@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-25T02:03:09.382Z",
-  "totalNodes": 477,
-  "totalLocations": 469,
+  "lastUpdated": "2026-10-25T04:03:12.899Z",
+  "totalNodes": 467,
+  "totalLocations": 465,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1837,13 +1837,6 @@
       "lat": 40.5084,
       "lon": -111.8838
     },
-    "163.245.197.62": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "65.19.133.254": {
       "country": "United States",
       "countryCode": "US",
@@ -2509,13 +2502,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "144.76.108.242": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "51.68.152.130": {
       "country": "Poland",
       "countryCode": "PL",
@@ -2641,13 +2627,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "167.235.3.81": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "188.40.45.100": {
       "country": "Germany",
@@ -3146,13 +3125,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "168.119.194.80": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "65.108.236.21": {
       "country": "Finland",
       "countryCode": "FI",
@@ -3290,7 +3262,7 @@
   "countries": {
     "US": {
       "name": "United States",
-      "count": 200
+      "count": 199
     },
     "CA": {
       "name": "Canada",
@@ -3302,7 +3274,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 89
+      "count": 83
     },
     "PL": {
       "name": "Poland",
@@ -3310,7 +3282,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 37
+      "count": 34
     },
     "FR": {
       "name": "France",
