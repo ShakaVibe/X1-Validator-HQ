@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-26T07:55:01.246Z",
-  "totalNodes": 455,
-  "totalLocations": 453,
+  "lastUpdated": "2026-10-26T08:03:20.620Z",
+  "totalNodes": 454,
+  "totalLocations": 452,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1830,13 +1830,6 @@
       "lat": 34.0479,
       "lon": -118.256
     },
-    "38.246.112.150": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "65.19.133.254": {
       "country": "United States",
       "countryCode": "US",
@@ -3190,7 +3183,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 198
+      "count": 197
     },
     "NL": {
       "name": "The Netherlands",
