@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-10-27T00:03:18.988Z",
+  "lastUpdated": "2026-10-27T01:31:18.329Z",
   "totalNodes": 443,
   "totalLocations": 441,
   "locations": {
@@ -3076,45 +3076,41 @@
       "lat": 52.2297,
       "lon": 21.0122
     },
-    "104.178.118.239": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Wichita",
-      "lat": 37.7779,
-      "lon": -97.3151
-    },
     "95.156.230.93": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Hamburg",
       "lat": 53.6498,
       "lon": 10.0844
+    },
+    "149.50.116.21": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 193
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 31
+    "PL": {
+      "name": "Poland",
+      "count": 60
     },
     "FI": {
       "name": "Finland",
       "count": 71
     },
-    "CA": {
-      "name": "Canada",
-      "count": 18
-    },
     "FR": {
       "name": "France",
       "count": 35
     },
-    "PL": {
-      "name": "Poland",
-      "count": 59
+    "US": {
+      "name": "United States",
+      "count": 192
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 31
     },
     "NL": {
       "name": "The Netherlands",
@@ -3124,13 +3120,17 @@
       "name": "Sweden",
       "count": 4
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 18
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SG": {
       "name": "Singapore",
