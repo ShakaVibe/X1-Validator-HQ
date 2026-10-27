@@ -7,10 +7,11 @@
 > notes below, so this file is always the single source of truth.
 
 > **Start here next session (as of 2026-10-27):**
-> 00. **Lifetime Credits (2026-10-27, session 15) — built + offline-tested, NOT yet pushed/live-checked.**
+> 00. **Lifetime Credits (2026-10-27, session 15) — pushed (efc803d1), NOT yet live-checked.**
 >    Terminal columns "Life Credits" + "Avg/Epoch" (cols 13/14; Ver/CC moved to 15/16) and the
->    🏆 Lifetime Credits leaderboard with a Lifetime total / Avg per epoch toggle. After Shaka's push:
->    live check `#/leaderboard/credits` + the Terminal columns in a fresh pane tab (cache trick, item 9).
+>    🏆 Lifetime Credits leaderboard with a Lifetime total / Avg per epoch toggle. First thing next
+>    session: live check `#/leaderboard/credits` (both toggle modes) + the Terminal columns in a fresh
+>    pane tab (cache trick, item 9), console clean.
 > 0a. **Validator count (2026-10-13, session 13):** delinquent vote accounts with < 100 XNT are
 >    "dust" and not counted anywhere (`isDustVoteAccount` in `js/core.js`, same rule in
 >    `compute-scores.js`). Live 2026-10-16: 530 / 505 / 25 (verified); after the 408→409 epoch boundary the
@@ -1565,5 +1566,6 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   order in both modes vs node, Where-am-I #121 pin, toggle show/hide, deep link, 375 px fit, 0 inline,
   0 page errors); `csp-walk-test` clean (0 script-src violations; the 2 console lines are its own
   positive controls); `batch4-test` / `batch5-test` no page errors.
+- Pushed by Shaka as efc803d1 (2026-10-27); session wrapped before the live check.
 - Not done / ideas: credits rank as a stat on the card (Shaka said no for now); a "Lifetime" column in
   the fleet table; sort state in the URL (`#/leaderboard/credits` always opens on Lifetime total).
