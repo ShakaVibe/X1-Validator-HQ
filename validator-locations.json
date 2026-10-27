@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-26T22:03:11.633Z",
-  "totalNodes": 454,
-  "totalLocations": 452,
+  "lastUpdated": "2026-10-27T00:03:18.988Z",
+  "totalNodes": 443,
+  "totalLocations": 441,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -381,13 +381,6 @@
       "lat": 34.0549,
       "lon": -118.243
     },
-    "66.23.227.246": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "66.45.230.54": {
       "country": "United States",
       "countryCode": "US",
@@ -745,13 +738,6 @@
       "lat": 52.3676,
       "lon": 4.90414
     },
-    "135.125.222.228": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
-    },
     "204.13.234.162": {
       "country": "United States",
       "countryCode": "US",
@@ -835,13 +821,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "69.164.250.98": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Dallas",
-      "lat": 32.7767,
-      "lon": -96.797
     },
     "205.209.96.2": {
       "country": "United States",
@@ -1102,13 +1081,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "216.158.235.182": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Paterson",
-      "lat": 40.9117,
-      "lon": -74.1786
-    },
     "37.187.249.141": {
       "country": "France",
       "countryCode": "FR",
@@ -1129,13 +1101,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "51.222.248.49": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5029,
-      "lon": -73.5723
     },
     "64.71.177.144": {
       "country": "United States",
@@ -1669,20 +1634,6 @@
       "lat": 39.9522,
       "lon": -75.1647
     },
-    "23.146.144.123": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9598,
-      "lon": -75.1607
-    },
-    "23.146.144.164": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9598,
-      "lon": -75.1607
-    },
     "213.25.37.210": {
       "country": "Poland",
       "countryCode": "PL",
@@ -1941,13 +1892,6 @@
       "city": "Warsaw",
       "lat": 52.2297,
       "lon": 21.0122
-    },
-    "135.125.109.224": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Wattrelos",
-      "lat": 50.7012,
-      "lon": 3.21501
     },
     "37.187.250.239": {
       "country": "France",
@@ -2460,13 +2404,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "148.251.92.39": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
-    },
     "102.210.25.187": {
       "country": "Kenya",
       "countryCode": "KE",
@@ -2501,20 +2438,6 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
-    },
-    "65.109.92.95": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "148.251.79.178": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "135.181.118.22": {
       "country": "Finland",
@@ -2557,13 +2480,6 @@
       "city": "Helsinki",
       "lat": 60.1719,
       "lon": 24.9347
-    },
-    "188.40.45.100": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "46.4.81.146": {
       "country": "Germany",
@@ -3166,28 +3082,35 @@
       "city": "Wichita",
       "lat": 37.7779,
       "lon": -97.3151
+    },
+    "95.156.230.93": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Hamburg",
+      "lat": 53.6498,
+      "lon": 10.0844
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 198
+      "count": 193
     },
     "DE": {
       "name": "Germany",
-      "count": 34
+      "count": 31
     },
     "FI": {
       "name": "Finland",
-      "count": 72
+      "count": 71
     },
     "CA": {
       "name": "Canada",
-      "count": 19
+      "count": 18
     },
     "FR": {
       "name": "France",
-      "count": 36
+      "count": 35
     },
     "PL": {
       "name": "Poland",
