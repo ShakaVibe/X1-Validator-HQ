@@ -298,11 +298,15 @@
           });
         }
 
+        // Lifetime vote credits + 7-epoch avg come from data/scores.json
+        // (voteCreditsSummary in js/core.js); api.x1.xyz has no such field.
+        const creditsMap = typeof getVoteCreditsMap === 'function' ? getVoteCreditsMap() : null;
         const rows = validators.map(v => {
           const b = breakdown.get(v.votePubkey) || { fActive:0n, fDel:0n, fCount:0, sActive:0n, sDel:0n, sCount:0, biggestSelf:0n };
           const total = b.fActive + b.sActive;
           const selfPct = total > 0n ? Number((b.sActive * 1000000n) / total) / 10000 : 0;
-          return { v, b, total, selfPct };
+          const cr = creditsMap ? (creditsMap.get(v.votePubkey) || null) : null;
+          return { v, b, total, selfPct, cr };
         });
 
         rows.sort((a, b) =>
@@ -381,7 +385,7 @@
         const isoTime = (_fetchedAt || new Date()).toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
 
         const trs = rows.map((r, i) => {
-          const { v, b, selfPct } = r;
+          const { v, b, selfPct, cr } = r;
           const status = v.delinquent ? 'DLQ' : v.active ? 'OK' : 'INA';
           const cls = v.delinquent ? 'dlq' : (v.active ? '' : 'ina');
           const x1 = v.x1Labs ? '<span class="vt-tag-x1">X1</span>' : '';
@@ -423,6 +427,12 @@
             '<td class="n dim" data-v="' + xntFnd + '">' + fmt2(b.fActive) + '</td>' +
             '<td class="r dim" data-v="' + b.fCount + '">' + b.fCount + '</td>' +
             '<td class="r ' + selfClass + '" data-v="' + selfPct + '">' + selfPct.toFixed(2) + '%</td>' +
+            (cr
+              ? '<td class="n" data-v="' + cr.lifetime + '" title="Lifetime vote credits of this vote account (as of epoch ' + cr.asOfEpoch + ')">' + cr.lifetime.toLocaleString('en-US') + '</td>'
+              : '<td class="n dim" data-v="-1">&mdash;</td>') +
+            (cr && cr.avg !== null
+              ? '<td class="n dim" data-v="' + cr.avg + '" title="Average over the last ' + cr.avgEpochs + ' completed epoch' + (cr.avgEpochs === 1 ? '' : 's') + ' · ' + (cr.avg / VOTE_CREDITS_MAX_PER_EPOCH * 100).toFixed(2) + '% of the ' + VOTE_CREDITS_MAX_PER_EPOCH.toLocaleString('en-US') + ' max">' + Math.round(cr.avg).toLocaleString('en-US') + '</td>'
+              : '<td class="n dim" data-v="-1">&mdash;</td>') +
             '<td class="dim small" data-v="' + esc(v.version || '') + '">' + esc(v.version || '?') + '</td>' +
             '<td class="dim small" data-v="' + esc(v.country || '') + '">' + esc(v.country || '') + '</td>' +
           '</tr>';
@@ -532,8 +542,10 @@
                 '<th class="r sortable" data-col="10" data-type="num">Foundation XNT<span class="arrow"></span></th>' +
                 '<th class="r sortable" data-col="11" data-type="num">#Fnd<span class="arrow"></span></th>' +
                 '<th class="r sortable" data-col="12" data-type="num">Self %<span class="arrow"></span></th>' +
-                '<th class="sortable" data-col="13" data-type="str">Ver<span class="arrow"></span></th>' +
-                '<th class="sortable" data-col="14" data-type="str">CC<span class="arrow"></span></th>' +
+                '<th class="r sortable" data-col="13" data-type="num" title="Total vote credits since the vote account was created">Life Credits<span class="arrow"></span></th>' +
+                '<th class="r sortable" data-col="14" data-type="num" title="Average vote credits per epoch, last 7 completed epochs">Avg/Epoch<span class="arrow"></span></th>' +
+                '<th class="sortable" data-col="15" data-type="str">Ver<span class="arrow"></span></th>' +
+                '<th class="sortable" data-col="16" data-type="str">CC<span class="arrow"></span></th>' +
               '</tr></thead>' +
               '<tbody>' + trs + '</tbody>' +
             '</table>' +
@@ -841,6 +853,7 @@
 
         try {
           _data = await loadData(!!preferLive);
+          if (window.canonicalScoresPromise) await window.canonicalScoresPromise;
           _computed = compute(_data);
           render();
           // Restore search query (wireUp recreated the input)
@@ -916,6 +929,7 @@
           '</div>';
         try {
           _data = await loadData(false);
+          if (window.canonicalScoresPromise) await window.canonicalScoresPromise;
           _computed = compute(_data);
           render();
           startAutoRefresh();

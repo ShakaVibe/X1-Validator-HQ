@@ -393,6 +393,56 @@
         generatedAt: window.canonicalScores.generatedAt
       };
     }
+    // ---------------------------------------------------------------
+    // Lifetime vote credits (2026-10-27). Every epochCredits entry is
+    // [epoch, credits, previousCredits] where `credits` is the vote account's
+    // CUMULATIVE count since it was created, so the newest entry is the
+    // lifetime total. It belongs to the vote account: an operator who made a
+    // new vote account started again from 0. Avg per epoch = the last
+    // VOTE_CREDITS_AVG_EPOCHS completed epochs (current one excluded); an epoch
+    // with no entry after the account's first epoch on record counts as 0
+    // (the account was delinquent all epoch), epochs before it don't count.
+    // Max per epoch = 216,000 slots x 16 (timely vote credits).
+    const VOTE_CREDITS_AVG_EPOCHS = 7;
+    const VOTE_CREDITS_MAX_PER_EPOCH = 216000 * 16;
+    function voteCreditsSummary(epochCredits, currentEpoch, firstEpoch) {
+      if (!Array.isArray(epochCredits) || epochCredits.length === 0) return null;
+      const last = epochCredits[epochCredits.length - 1];
+      const lifetime = Number(last[1]);
+      if (!Number.isFinite(lifetime)) return null;
+      const cur = Number.isFinite(currentEpoch) ? currentEpoch : Number(last[0]);
+      const first = Number.isFinite(firstEpoch) ? firstEpoch : Number(epochCredits[0][0]);
+      const byEpoch = new Map(epochCredits.map(e => [Number(e[0]), Number(e[1]) - Number(e[2])]));
+      let sum = 0, n = 0;
+      for (let ep = cur - VOTE_CREDITS_AVG_EPOCHS; ep < cur; ep++) {
+        if (ep < first) continue;
+        sum += byEpoch.get(ep) || 0;
+        n++;
+      }
+      return {
+        lifetime,
+        avg: n > 0 ? sum / n : null,
+        avgEpochs: n,
+        asOfEpoch: Number(last[0])
+      };
+    }
+    // vote pubkey -> voteCreditsSummary, from the published scores file (stale
+    // up to 48 h is fine: lifetime totals only grow). Null if unavailable.
+    let _voteCreditsMapCache = null;
+    function getVoteCreditsMap() {
+      const doc = window.canonicalScores || window.canonicalScoresDoc;
+      if (!doc || !doc.validators) return null;
+      if (doc._ageMs !== undefined && doc._ageMs > 48 * 3600000) return null;
+      if (_voteCreditsMapCache && _voteCreditsMapCache.doc === doc) return _voteCreditsMapCache.map;
+      const map = new Map();
+      for (const [vote, e] of Object.entries(doc.validators)) {
+        const s = voteCreditsSummary(e.credits, doc.epoch, e.creditsFirstEpoch);
+        if (s) map.set(vote, s);
+      }
+      _voteCreditsMapCache = { doc, map };
+      return map;
+    }
+
     const REWARDS_API_URL = null; // Set to your API URL when rewards tracker is running
 
     // ─────────────────────────────────────────────────────────────────────

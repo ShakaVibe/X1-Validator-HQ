@@ -88,6 +88,16 @@
       if (currentLeaderboard === 'delegations') renderLeaderboard('delegations');
     }
     
+    // Lifetime Credits board: rank by lifetime total or by 7-epoch avg.
+    let creditsSort = 'lifetime';
+    function setCreditsSort(sort) {
+      creditsSort = sort === 'avg' ? 'avg' : 'lifetime';
+      document.querySelectorAll('.delegations-segment-btn[data-credits-sort]').forEach(b => {
+        b.classList.toggle('active', b.dataset.creditsSort === creditsSort);
+      });
+      if (currentLeaderboard === 'credits') renderLeaderboard('credits');
+    }
+
     function switchLeaderboard(category) {
       currentLeaderboard = category;
       if (typeof Router !== 'undefined') Router.set('/leaderboard/' + category);
@@ -102,6 +112,10 @@
       if (delegControls) {
         delegControls.style.display = category === 'delegations' ? 'flex' : 'none';
       }
+      const creditsControls = document.getElementById('creditsControls');
+      if (creditsControls) {
+        creditsControls.style.display = category === 'credits' ? 'flex' : 'none';
+      }
 
       // Update header
       const header = document.getElementById('leaderboardHeader');
@@ -112,6 +126,7 @@
         'efficient': { title: '🎯 Most Efficient', subtitle: 'Validators earning the most credits relative to their stake (7-epoch average)' },
         'reliable': { title: '🛡️ Most Reliable', subtitle: 'Validators with the best 7-day uptime and lowest skip rates' },
         'newest': { title: '🆕 Newest Validators', subtitle: 'Most recently started validators on the network' },
+        'credits': { title: '🏆 Lifetime Credits', subtitle: 'Total vote credits earned since each vote account was created · avg per epoch over the last 7 completed epochs' },
         'delegations': { title: '🤝 Delegations', subtitle: 'Validators ranked by stake delegated from X1 Labs and the Ripper Pool' }
       };
       // Published-score stamp: proof to every viewer that the numbers they
@@ -395,6 +410,29 @@
               return b.performanceScore - a.performanceScore;
             });
           break;
+        case 'credits': {
+          // Lifetime vote credits (cumulative counter in the vote account) and
+          // the 7-completed-epoch average — voteCreditsSummary in js/core.js.
+          // Published scores first; the merged epochCredits from the RPC are
+          // the same cumulative counters, so they work as a fallback.
+          const cmap = typeof getVoteCreditsMap === 'function' ? getVoteCreditsMap() : null;
+          const doc = window.canonicalScores || window.canonicalScoresDoc;
+          const ep = (doc && Number.isFinite(doc.epoch)) ? doc.epoch : currentEpochNumber;
+          sorted = sorted.filter(v => !v.delinquent).map(v => {
+            const s = (cmap && cmap.get(v.votePubkey)) ||
+              voteCreditsSummary(v.epochCredits, ep ?? undefined, v.creditsFirstEpoch ?? undefined);
+            v.creditsLife = s ? s.lifetime : null;
+            v.creditsAvg = s ? s.avg : null;
+            v.creditsAvgEpochs = s ? s.avgEpochs : 0;
+            return v;
+          }).filter(v => v.creditsLife > 0 && (creditsSort !== 'avg' || v.creditsAvg !== null));
+          const byLife = (a, b) => b.creditsLife - a.creditsLife;
+          const byAvg = (a, b) => (b.creditsAvg ?? -1) - (a.creditsAvg ?? -1);
+          sorted.sort(creditsSort === 'avg'
+            ? (a, b) => byAvg(a, b) || byLife(a, b)
+            : (a, b) => byLife(a, b) || byAvg(a, b));
+          break;
+        }
         case 'newest':
           // Most recently activated validators - sorted by first epoch in their credits history
           // First, determine the current epoch from the data
@@ -600,6 +638,28 @@
                 <div class="leaderboard-stat-label">Score</div>
               </div>`;
             break;
+          case 'credits': {
+            const lifeHi = creditsSort === 'lifetime' ? ' highlight' : '';
+            const avgHi = creditsSort === 'avg' ? ' highlight' : '';
+            const avgTxt = v.creditsAvg !== null ? Math.round(v.creditsAvg).toLocaleString('en-US') : '—';
+            const avgTip = v.creditsAvg !== null
+              ? `Average over the last ${v.creditsAvgEpochs} completed epoch${v.creditsAvgEpochs === 1 ? '' : 's'} · ${(v.creditsAvg / VOTE_CREDITS_MAX_PER_EPOCH * 100).toFixed(2)}% of the ${VOTE_CREDITS_MAX_PER_EPOCH.toLocaleString('en-US')} max`
+              : 'No completed epochs yet';
+            statsHtml = `
+              <div class="leaderboard-stat" title="Total vote credits since this vote account was created">
+                <div class="leaderboard-stat-value${lifeHi}">${v.creditsLife.toLocaleString('en-US')}</div>
+                <div class="leaderboard-stat-label">Lifetime Credits</div>
+              </div>
+              <div class="leaderboard-stat" title="${escHtml(avgTip)}">
+                <div class="leaderboard-stat-value${avgHi}">${avgTxt}</div>
+                <div class="leaderboard-stat-label">Avg / Epoch</div>
+              </div>
+              <div class="leaderboard-stat">
+                <div class="leaderboard-stat-value">${formatStake(v.activatedStake)}</div>
+                <div class="leaderboard-stat-label">Stake</div>
+              </div>`;
+            break;
+          }
           case 'newest':
             const newScoreClass = v.performanceScore > 0 ? getScoreColorClass(v.performanceScore) : '';
             statsHtml = `
@@ -835,5 +895,6 @@
 
     Actions.register({
       'lb-category': (el, e, d) => switchLeaderboard(d.category),
+      'lb-credits-sort': (el, e, d) => setCreditsSort(d.creditsSort),
       'lb-lookup':   (el, e, d) => lookupValidator(d.vote),
     });

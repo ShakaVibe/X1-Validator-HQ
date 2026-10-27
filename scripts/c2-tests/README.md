@@ -80,3 +80,11 @@ Mocks `getMultipleAccounts` with a synthetic XDEX WXNT/USDC.X pool (real vault /
 fees at their offsets) and checks the pill shows USDC ÷ WXNT reserves net of fees, with the on-chain
 tooltip; RPC broken → XDEX API fallback with a "may lag" tooltip; both broken → pill hidden.
 
+**Lifetime Credits (2026-10-27)** — `voteCreditsSummary` / `getVoteCreditsMap` (`js/core.js`), the
+Terminal's Life Credits + Avg/Epoch columns, the 🏆 Lifetime Credits leaderboard + toggle:
+
+    node scripts/c2-tests/credits-test.js "$PWD"     # SHOT_DIR=… to keep the screenshots
+
+Checks the helper edge cases (missed epochs = 0, young accounts), every Terminal row against the same
+rule run in node over the served `data/scores.json`, header-click sorting, both leaderboard orders,
+the "Where am I" pin, the toggle, the deep link, the 375 px layout, 0 inline handlers, 0 page errors.

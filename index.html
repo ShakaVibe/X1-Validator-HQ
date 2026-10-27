@@ -534,6 +534,7 @@
         <button class="leaderboard-cat-btn" data-action="lb-category" data-category="efficient">🎯 Most Efficient</button>
         <button class="leaderboard-cat-btn" data-action="lb-category" data-category="reliable">🛡️ Most Reliable</button>
         <button class="leaderboard-cat-btn" data-action="lb-category" data-category="newest">🆕 Newest Validators</button>
+        <button class="leaderboard-cat-btn" data-action="lb-category" data-category="credits">🏆 Lifetime Credits</button>
         <button class="leaderboard-cat-btn" data-action="lb-category" data-category="delegations">🤝 Delegations</button>
       </div>
 
@@ -543,6 +544,14 @@
           <button class="delegations-segment-btn active" data-source="both" data-action="call" data-fn="setDelegationsSource" data-args='["both"]'>Both</button>
           <button class="delegations-segment-btn" data-source="x1Labs" data-action="call" data-fn="setDelegationsSource" data-args='["x1Labs"]'>X1 Labs</button>
           <button class="delegations-segment-btn" data-source="ripper" data-action="call" data-fn="setDelegationsSource" data-args='["ripper"]'>Ripper Pool</button>
+        </div>
+      </div>
+
+      <!-- Lifetime Credits rank-by toggle (only visible when Lifetime Credits is active) -->
+      <div class="delegations-segment-wrap" id="creditsControls" style="display: none;">
+        <div class="delegations-segment" role="tablist" aria-label="Rank by">
+          <button class="delegations-segment-btn active" data-credits-sort="lifetime" data-action="lb-credits-sort">Lifetime total</button>
+          <button class="delegations-segment-btn" data-credits-sort="avg" data-action="lb-credits-sort">Avg per epoch</button>
         </div>
       </div>
 

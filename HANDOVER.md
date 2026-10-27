@@ -6,7 +6,11 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-10-16):**
+> **Start here next session (as of 2026-10-27):**
+> 00. **Lifetime Credits (2026-10-27, session 15) — built + offline-tested, NOT yet pushed/live-checked.**
+>    Terminal columns "Life Credits" + "Avg/Epoch" (cols 13/14; Ver/CC moved to 15/16) and the
+>    🏆 Lifetime Credits leaderboard with a Lifetime total / Avg per epoch toggle. After Shaka's push:
+>    live check `#/leaderboard/credits` + the Terminal columns in a fresh pane tab (cache trick, item 9).
 > 0a. **Validator count (2026-10-13, session 13):** delinquent vote accounts with < 100 XNT are
 >    "dust" and not counted anywhere (`isDustVoteAccount` in `js/core.js`, same rule in
 >    `compute-scores.js`). Live 2026-10-16: 530 / 505 / 25 (verified); after the 408→409 epoch boundary the
@@ -184,7 +188,7 @@ js/apr.js                     F11 Delegator APR: card tile (.apr-section) + #apr
                               actions apr-details/-close/-overlay; one cached getRecentPerformanceSamples per session)
 scripts/alerts-bot.js         F3 Telegram alerts bot (Node 20, zero deps) — see §4
 scripts/test-alerts-bot.js    mock tests for the bot (`node scripts/test-alerts-bot.js`)
-scripts/c2-tests/             offline Playwright suites (C2 dispatcher, strict CSP walk, alerts modal, fleet, apr) — README there
+scripts/c2-tests/             offline Playwright suites (C2 dispatcher, strict CSP walk, alerts modal, fleet, apr, credits) — README there
 data/alerts-state.enc         bot subscriptions + last-seen state, AES-256-GCM (key = ALERTS_STATE_KEY secret)
 .github/workflows/alerts.yml  Telegram alerts bot loop (~5h45m, self-dispatching, backup cron every 2 h)
 vendor/solana-web3.js-1.98.4.iife.min.js
@@ -357,6 +361,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] Ask people who reported the terminal error which device/network they were on.
 
 ### Done
+- [x] 2026-10-27 — **Lifetime vote credits**: two sortable Terminal columns + 🏆 Lifetime Credits leaderboard
+      (rank by lifetime total or 7-epoch avg). See Session Log.
 - [x] 2026-10-13 — **F4 Fleet Health** bar + table and **F11 Delegator APR** tile + modal live; ledger
       records stake/commission per epoch; phone clipping fixes (Terminal percentiles, Network tab). See Session Log.
 - [x] 2026-09-28 — **F3 Telegram alerts** live: bot + workflow + Data Center entry point. See Session Log.
@@ -1528,3 +1534,36 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   Verified live in the pane: $0.1927 from the same read. Test `scripts/c2-tests/price-pill-test.js` (4 checks).
 - `scripts/c2-tests/manage-test.js` fails with "renderValidatorList is not defined" on the unchanged
   tree too (pre-existing, the suite predates a rename).
+
+### 2026-10-27 — Session 15: Lifetime vote credits (~1 hour)
+- Start: 952 bot commits behind; `git pull --rebase` clean with delete permission.
+- Shaka asked whether we have a validator's total lifetime credits. **Yes, already free:** every
+  `epochCredits` entry is `[epoch, credits, previousCredits]` with `credits` CUMULATIVE since the vote
+  account was created, so the newest entry = lifetime total. `compute-scores.js` already reads the
+  parsed vote accounts hourly and `data/scores.json` publishes `credits` (last 8) + `creditsFirstEpoch`
+  — no new RPC calls, no builder change. Facts (epoch 423): top 1,410,315,108, median 1,375,484,703
+  (most validators date from about genesis, so the top ~400 are within ~3 %); 436 of 443 have a full
+  64-epoch history, so their true start epoch is NOT knowable from the vote account. Max per epoch =
+  216,000 × 16 = 3,456,000 (timely vote credits); best seen 3,448,776. The total belongs to the vote
+  account — a new vote account restarts at 0 (one 97-score validator shows only 267 M).
+- Shaka's choices: rank by **raw lifetime total**, with **avg per epoch next to it, also sortable**;
+  both in the Terminal and the leaderboard; avg = **last 7 completed epochs**; **no card tile**.
+- Code: `js/core.js` (above `REWARDS_API_URL`) — `VOTE_CREDITS_AVG_EPOCHS = 7`,
+  `VOTE_CREDITS_MAX_PER_EPOCH`, `voteCreditsSummary(epochCredits, currentEpoch, firstEpoch)` →
+  `{lifetime, avg, avgEpochs, asOfEpoch}` (an epoch with no entry after the first on record counts as
+  0 = delinquent all epoch; epochs before it don't count — stricter than Most Efficient, which averages
+  only the entries present), `getVoteCreditsMap()` (from scores.json, stale ≤ 48 h OK, cached per doc).
+  `js/terminal.js`: `compute()` attaches `cr` per row; two sortable num columns after Self %
+  (tooltips: as-of epoch; window + % of max; "—" sorts last); open/refresh await
+  `canonicalScoresPromise` before compute. `js/leaderboards.js`: category `credits` (non-delinquent,
+  published map first, merged `v.epochCredits` as fallback), `creditsSort` + `setCreditsSort`, action
+  `lb-credits-sort`, row stats Lifetime Credits · Avg / Epoch · Stake (the ranked one highlighted).
+  `index.html`: 🏆 Lifetime Credits button (before Delegations) + `#creditsControls` toggle (reuses the
+  delegations segment styles). Deep link `#/leaderboard/credits` works through the existing Router.
+- Verified offline: new `scripts/c2-tests/credits-test.js` (24 checks — helper edge cases, all 443
+  Terminal rows vs node over the served scores.json, header-click sorts, Ver/CC shift, leaderboard
+  order in both modes vs node, Where-am-I #121 pin, toggle show/hide, deep link, 375 px fit, 0 inline,
+  0 page errors); `csp-walk-test` clean (0 script-src violations; the 2 console lines are its own
+  positive controls); `batch4-test` / `batch5-test` no page errors.
+- Not done / ideas: credits rank as a stat on the card (Shaka said no for now); a "Lifetime" column in
+  the fleet table; sort state in the URL (`#/leaderboard/credits` always opens on Lifetime total).
