@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-27T20:47:30.012Z",
-  "totalNodes": 442,
-  "totalLocations": 440,
+  "lastUpdated": "2026-10-27T22:03:11.746Z",
+  "totalNodes": 440,
+  "totalLocations": 439,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -527,13 +527,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "64.20.46.78": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "104.204.140.254": {
       "country": "Germany",
@@ -1507,13 +1500,6 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
-    },
-    "161.129.65.14": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "57.129.107.30": {
       "country": "Germany",
@@ -3082,12 +3068,19 @@
       "city": "Wichita",
       "lat": 37.7779,
       "lon": -97.3151
+    },
+    "69.164.250.98": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Dallas",
+      "lat": 32.7767,
+      "lon": -96.797
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 193
+      "count": 192
     },
     "DE": {
       "name": "Germany",
@@ -3095,7 +3088,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 71
+      "count": 70
     },
     "CA": {
       "name": "Canada",
