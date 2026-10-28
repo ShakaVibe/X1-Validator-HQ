@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-28T01:28:20.640Z",
-  "totalNodes": 440,
-  "totalLocations": 439,
+  "lastUpdated": "2026-10-28T02:03:12.311Z",
+  "totalNodes": 439,
+  "totalLocations": 438,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -3055,13 +3055,6 @@
       "lat": 53.6498,
       "lon": 10.0844
     },
-    "104.178.118.239": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Wichita",
-      "lat": 37.7779,
-      "lon": -97.3151
-    },
     "69.164.250.98": {
       "country": "United States",
       "countryCode": "US",
@@ -3078,29 +3071,25 @@
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 191
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 31
+    "PL": {
+      "name": "Poland",
+      "count": 60
     },
     "FI": {
       "name": "Finland",
       "count": 70
     },
-    "CA": {
-      "name": "Canada",
-      "count": 18
-    },
     "FR": {
       "name": "France",
       "count": 35
     },
-    "PL": {
-      "name": "Poland",
-      "count": 60
+    "US": {
+      "name": "United States",
+      "count": 190
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 31
     },
     "NL": {
       "name": "The Netherlands",
@@ -3110,13 +3099,17 @@
       "name": "Sweden",
       "count": 4
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 18
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     }
   }
 }
