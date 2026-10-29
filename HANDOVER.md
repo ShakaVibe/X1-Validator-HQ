@@ -17,18 +17,16 @@
 >    cached per epoch); consumers in `js/manage.js` (list badge COOLING · "88% cooled", Stake Account
 >    Details, Withdraw modal, classification modal) + the unstaking calculator's "observed" preset
 >    (`js/calculators.js`, `index.html` copy says 9 %). Test: `scripts/c2-tests/stake-activation-test.js`
->    (oracle = a mainnet `simulateTransaction`). **Live check** (fresh pane tab, cache trick, no wallet):
->    `#/lookup/9RqMzFzi7BDWMTGfCZhiBsXvLQjXK5UacAm6nNsyAfNp` → Manage Validator → `FpxU…xRiC` row shows
->    COOLING (or INACTIVE once epoch ≥ 426 and the cooldown finished), Stake Account Details split matches
->    `StakeActivation.compute(...)` in the console. See the session 16 log.
+>    (oracle = a mainnet `simulateTransaction`). Pushed `bbabf89d`, **live-verified** the same hour (see the
+>    session 16 log). Worth a second look once epoch ≥ 426: the same `FpxU…xRiC` row should read INACTIVE
+>    with "Close account" offered (if the operator hasn't withdrawn it by then).
 > 00a. **The cloud sandbox CAN now reach `rpc.mainnet.x1.xyz` and `api.x1.xyz`** (2026-10-29; it could
 >    not before 10-16). Use it for probes, `simulateTransaction` and fixtures — Playwright + `@solana/web3.js`
 >    in the scratchpad worked. (The Mac VM was not re-tested.)
-> 00. **Lifetime Credits (2026-10-27, session 15) — pushed (efc803d1), NOT yet live-checked.**
->    Terminal columns "Life Credits" + "Avg/Epoch" (cols 13/14; Ver/CC moved to 15/16) and the
->    🏆 Lifetime Credits leaderboard with a Lifetime total / Avg per epoch toggle. First thing next
->    session: live check `#/leaderboard/credits` (both toggle modes) + the Terminal columns in a fresh
->    pane tab (cache trick, item 9), console clean.
+> 00. **Lifetime Credits (2026-10-27, session 15) — pushed (efc803d1), live-verified 2026-10-29 (session 16):**
+>    `#/leaderboard/credits` 50 rows sorted by Lifetime total (top X1 Labs node1 1,417,948,046) and, after the
+>    toggle, by Avg/Epoch (top lux8.net 3,440,048); Terminal 439 rows with "Life Credits" / "Avg/Epoch"
+>    columns filled, Ver/CC after them; no console errors. Closed.
 > 0a. **Validator count (2026-10-13, session 13):** delinquent vote accounts with < 100 XNT are
 >    "dust" and not counted anywhere (`isDustVoteAccount` in `js/core.js`, same rule in
 >    `compute-scores.js`). Live 2026-10-16: 530 / 505 / 25 (verified); after the 408→409 epoch boundary the
@@ -1645,4 +1643,16 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   calculator preset. `csp-walk-test`, `batch5`, `identity`, `cards`, `modals`, `batch4`, `credits` green.
 - Not changed: Validator Terminal (`amount` from api.x1.xyz = effective stake, fine as is), rewards
   ledger, alerts bot, Stake details on the card (no cooldown label there).
-- Push + live check: see the Start-here item 000 (status updated below if done this session).
+- Pushed by Shaka as `bbabf89d` (one bot commit rebased under it). **Live-verified** in a fresh pane tab
+  (cache-reloaded `index.html`, `core.js`, `manage.js`, `calculators.js`; epoch 425, slot 175,855):
+  `#/lookup/9RqM…` → Manage Validator → 12 stake rows, `FpxU…xRiC` = **COOLING · 88% cooled** (active
+  233.357177042 / inactive 1,774.532777416 — identical to the simulation), `8GHg…vHtP` = DEACTIVATING
+  (deactivated in 425, nothing cooled yet), the other ten STAKE; Stake Account Details: Staked 233.3572 /
+  Liquid 1,774.5328, cooldown card 88.4 % "fully cooled at end of epoch 425"; Withdraw modal (pane-only
+  `walletPublicKey`, no wallet, nothing sent): "Cooling Down — 1,774.5328 XNT ready, 233.3572 XNT still
+  cooling", MAX → 1774.5328, Close account hidden; unstaking calculator: preset "90 % — Observed last
+  epoch", slider 90, "~4.1 hours" left. StakeHistory read = 1 extra `getAccountInfo` per Manage open.
+  Console: only one transient 503 on `js/calculators.js` during the Pages deploy (reload was 200).
+- Also closed Start-here item 00 (Lifetime Credits live check) in the same tab — see item 00.
+- Session 16 totals: 1 push by Shaka (`bbabf89d`, 7 files) + this HANDOVER commit. Scratch (cloud only):
+  `scratchpad/sim/` (web3.js withdraw simulation), `scratchpad/x1clone/` (test runs).
