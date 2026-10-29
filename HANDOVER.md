@@ -1664,5 +1664,18 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   limit (the rounded figure shown on the Available line) by sending exactly the limit. Test extended
   (58 checks: MAX → 1774.5327, typed 1774.5328 → ix for 1,774,532,777,416 lamports, 1774.5329 refused,
   vote MAX 1.2388 not 1.2389). Rule: never fill an input with a rounded-to-nearest maximum.
-- Session 16 totals: 2 pushes by Shaka (`bbabf89d` cooldown fix, 7 files; the MAX rounding fix) + HANDOVER commits. Scratch (cloud only):
+- **Follow-up 2 — the action grid was the real blocker.** With the accurate state ('deactivating'
+  while 88 % cooled) the Manage action grid's rule `'withdraw': stakeState === 'inactive'` LOCKED
+  "Withdraw from Stake" (🔒 → explainer "wait ~2 epochs"), so the operator could not even open the
+  withdraw modal — before the fix the wrong 'inactive' state had kept it open. On-chain check first:
+  `getSignaturesForAddress` on the stake account showed no withdraw attempt ever reached the chain
+  (only create+delegate 10-07 and deactivate 10-28), the withdrawer holds 1.54 XNT for fees, and a
+  1,774 XNT withdraw still simulated OK — so the block had to be in the UI. Fix (`renderActions`,
+  `js/manage.js`): `withdrawableNow = stake.inactiveLamports`; Withdraw unlocks when `state ===
+  'inactive' || withdrawableNow > 0`, its desc reads "1,774.53 XNT cooled — withdraw now"; Close still
+  needs 'inactive'; the `withdraw.deactivating` explainer ("Nothing Cooled Yet") explains the 9 % cap.
+  Test: 63 checks. Lesson: when a state label is corrected, grep every consumer of that state —
+  `stateAvailability` in `renderActions` was the one I missed on the first pass.
+- Session 16 totals: 3 pushes by Shaka (`bbabf89d` cooldown fix, 7 files; `12283976` MAX rounding;
+  the action-grid unlock) + HANDOVER commits. Scratch (cloud only):
   `scratchpad/sim/` (web3.js withdraw simulation), `scratchpad/x1clone/` (test runs).

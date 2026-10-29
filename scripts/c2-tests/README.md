@@ -105,4 +105,7 @@ the next-epoch (quiet and congested) outcomes, the sysvar-unavailable fallback, 
 preset relabelling to the observed share, and the amount inputs: MAX rounds *down* to 4 dp
 (`xntInputFloor4`) and a typed amount within 0.0001 XNT above the limit is clamped to it
 (`clampToLimitLamports`) — the send path is exercised with `signSendTx` stubbed and the Stake
-Withdraw instruction's lamports decoded. 58 checks, 0 page errors.
+Withdraw instruction's lamports decoded. The Manage action grid is checked too: "Withdraw from
+Stake" unlocks as soon as any of a deactivating stake has cooled (desc names the cooled amount),
+"Close Stake Account" only when fully cooled, and the locked-state explainer describes the 9 % cap.
+63 checks, 0 page errors.

@@ -151,7 +151,19 @@ let EPOCH = 425, history = HISTORY.slice(), sysvarBroken = false;
 
   // ── 4. Withdraw-from-stake modal ───────────────────────────────────────────────────────────
   console.log('4. Withdraw from stake (wallet = withdrawer)');
-  await page.evaluate((w) => { walletPublicKey = w; initiateWithdrawStake(); }, WITHDRAWER);
+  const grid = (label) => page.evaluate((label) => { const b = [...document.querySelectorAll('#manageValidatorModal .manage-action-btn')].find(x => x.querySelector('.action-title') && x.querySelector('.action-title').textContent.startsWith(label)); return b ? { fn: b.dataset.fn, args: b.dataset.args, desc: b.querySelector('.action-desc').textContent, locked: b.classList.contains('disabled') } : null; }, label);
+  await page.evaluate((w) => { walletPublicKey = w; selectAccount(selectedAccountType); }, WITHDRAWER);
+  const gW = await grid('Withdraw from Stake'), gC = await grid('Close Stake Account');
+  check(gW && gW.fn === 'initiateWithdrawStake' && !gW.locked && gW.desc === '1,774.53 XNT cooled — withdraw now', 'action grid: "Withdraw from Stake" UNLOCKED while partly cooled, desc names the cooled amount', gW);
+  check(gC && gC.fn === 'showActionExplainer' && gC.locked && gC.args === '["close","deactivating"]', 'action grid: "Close Stake Account" stays locked until fully cooled', gC);
+  const idxD = await page.evaluate((k) => stakeAccounts.findIndex(s => s.pubkey === k), DEACT);
+  await page.evaluate((i) => { walletPublicKey = stakeAccounts[i].withdrawer; selectAccount('stake-' + i); }, idxD);   // 8GHg… has a different withdrawer (Ripper pool)
+  const gW2 = await grid('Withdraw from Stake');
+  check(gW2 && gW2.locked && gW2.args === '["withdraw","deactivating"]', 'action grid: a stake deactivated THIS epoch (nothing cooled) keeps Withdraw locked', gW2);
+  const expl = await page.evaluate(() => { showActionExplainer('withdraw', 'deactivating'); const t = actionExplainerTitle.textContent; const c = actionExplainerContent.textContent.replace(/\s+/g, ' '); closeActionExplainerModal(); return { t, c }; });
+  check(expl.t === 'Nothing Cooled Yet' && /9% of all network stake per epoch/.test(expl.c), 'explainer explains the 9 % cap instead of "wait ~2 epochs"', expl);
+  await page.evaluate(({ i, w }) => { walletPublicKey = w; selectAccount('stake-' + i); }, { i: idx, w: WITHDRAWER });
+  await page.evaluate(() => initiateWithdrawStake());
   const wd = await page.evaluate(() => ({
     status: withdrawStakeStatus.textContent, note: withdrawStakeStatusNote.textContent, avail: withdrawStakeAvailableBalance.textContent, locked: withdrawStakeLockedBalance.textContent, total: withdrawStakeTotalBalance.textContent,
     cooldownRow: withdrawStakeCooldownRow.style.display, cooldownText: withdrawStakeCooldownText.textContent, close: withdrawStakeCloseSection.style.display, availLamports: withdrawStakeAvailableLamports,
@@ -223,7 +235,10 @@ let EPOCH = 425, history = HISTORY.slice(), sysvarBroken = false;
   check(r426(DEACT)[1] === 'inactive' && r426(DEACT)[2] === 0, '8GHg… @426: inactive too (cap not hit in 425)', r426(DEACT));
   check(r426(WARMING)[1] === 'active' && r426(WARMING)[2] === 1000e9, 'warming account @426: active', r426(WARMING));
   const idx2 = await page.evaluate((k) => stakeAccounts.findIndex(s => s.pubkey === k), COOLING);
-  await page.evaluate((i) => { selectAccount('stake-' + i); initiateWithdrawStake(); }, idx2);
+  await page.evaluate((i) => { selectAccount('stake-' + i); }, idx2);
+  const gW3 = await grid('Withdraw from Stake'), gC3 = await grid('Close Stake Account');
+  check(gW3 && !gW3.locked && gW3.desc === 'Withdraw XNT to wallet' && gC3 && !gC3.locked && gC3.fn === 'initiateCloseStakeAccount', '@426 action grid: Withdraw and Close both unlocked', { gW3, gC3 });
+  await page.evaluate(() => initiateWithdrawStake());
   const wd2 = await page.evaluate(() => ({ status: withdrawStakeStatus.textContent, avail: withdrawStakeAvailableBalance.textContent, close: withdrawStakeCloseSection.style.display, pct: cooldownProgressPct.textContent, summary: cooldownProgressSummary.textContent.trim() }));
   check(wd2.status === 'Inactive' && wd2.avail === '2,007.8900 XNT' && wd2.close === 'block', '@426 modal: Inactive, 2,007.8900 available, "Close account" offered', wd2);
   check(wd2.pct === '100.0%' && /Fully cooled/.test(wd2.summary), '@426 details card: 100 % / Fully cooled', wd2);

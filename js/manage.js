@@ -2447,12 +2447,19 @@ Please give me the diagnostic commands to run on my server so you can help me id
         stake = stakeAccounts[idx] || null;
       }
       
+      // Withdrawable now = the cooled part of a deactivating stake (+ any lamports above the
+      // delegation) — computed from the StakeHistory sysvar in fetchStakeAccounts. A stake that
+      // is still partly cooling is 'deactivating' but its cooled share can be withdrawn today.
+      const withdrawableNow = stake ? Math.max(0, stake.inactiveLamports || 0) : 0;
+      const withdrawableDesc = withdrawableNow > 0 && stake && stake.state === 'deactivating'
+        ? `${formatNumber(withdrawableNow / 1e9, 2)} XNT cooled — withdraw now`
+        : 'Withdraw XNT to wallet';
       const stakeActionDefs = [
         { id: 'delegate', icon: '🔄', title: 'Delegate Stake', desc: 'Delegate to a validator', call: ['initiateRedelegate'] },
         { id: 'undelegate', icon: '🔓', title: 'Undelegate Stake', desc: 'Begin deactivation process', call: ['initiateUndelegate'] },
         { id: 'split', icon: '✂️', title: 'Split Stake', desc: 'Divide into two accounts', call: ['initiateSplitStake'] },
         { id: 'merge', icon: '🔗', title: 'Merge Stakes', desc: 'Combine multiple stake accounts', call: ['initiateMergeStakes'] },
-        { id: 'withdraw', icon: '💸', title: 'Withdraw from Stake', desc: 'Withdraw XNT to wallet', call: ['initiateWithdrawStake'] },
+        { id: 'withdraw', icon: '💸', title: 'Withdraw from Stake', desc: withdrawableDesc, call: ['initiateWithdrawStake'] },
         { id: 'close', icon: '🗑️', title: 'Close Stake Account', desc: 'Withdraw all & close account', call: ['initiateCloseStakeAccount'] },
         { id: 'setStakeAuth', icon: '🔐', title: 'Set Stake Authority', desc: 'Change who can delegate', call: ['initiateSetStakeAuthority'] },
         { id: 'setWithdrawAuth', icon: '🔑', title: 'Set Withdraw Authority', desc: 'Change who can withdraw', call: ['initiateSetWithdrawAuthority'] }
@@ -2480,7 +2487,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
           'undelegate': stakeState === 'active' || stakeState === 'activating',
           'split': stakeState === 'active',
           'merge': stakeState === 'active' || stakeState === 'inactive',
-          'withdraw': stakeState === 'inactive',
+          'withdraw': stakeState === 'inactive' || withdrawableNow > 0,   // partly cooled → the cooled share
           'close': stakeState === 'inactive',
           'setStakeAuth': true,
           'setWithdrawAuth': true
@@ -2617,9 +2624,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
             action: { text: 'Undelegate Now', call: ['initiateUndelegate'] }
           },
           deactivating: {
-            title: 'Stake is Deactivating',
-            message: 'Your stake is deactivating. Once complete, you\'ll be able to withdraw.',
-            steps: ['Wait ~2 epochs for deactivation to complete', 'Then withdraw your XNT'],
+            title: 'Nothing Cooled Yet',
+            message: 'Your stake is deactivating but none of it has cooled down yet. The stake stays fully active until the end of the epoch you deactivated in; cooldown then releases at most 9% of all network stake per epoch, shared by everyone deactivating, so it can take more than one epoch.',
+            steps: ['Wait for the next epoch boundary', 'Withdraw the cooled part (the button unlocks as soon as any has cooled)', 'Repeat next epoch for the rest, or Close the account once fully cooled'],
             action: null
           },
           new: {
