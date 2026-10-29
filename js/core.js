@@ -1503,6 +1503,20 @@
       return formatNumber(xnt, 2);
     }
 
+    // Amount-input helpers. A MAX button must never fill a number the chain will refuse:
+    // toFixed(4) rounds to nearest, so a limit like 1,774.532777416 became "1774.5328" — 22,584
+    // lamports over the real limit — and the site's own "exceeds available" check (or the stake
+    // program) then rejected it (2026-10-29, OWL). xntInputFloor4 rounds DOWN to 4 dp;
+    // clampToLimitLamports forgives a typed amount that is within one display unit (0.0001 XNT)
+    // above the limit — e.g. the 4-dp figure shown on the "Available" line — by using the limit.
+    function xntInputFloor4(lamports) {
+      return (Math.floor(Math.max(0, lamports) / 1e5) / 1e4).toFixed(4);
+    }
+    function clampToLimitLamports(amountLamports, limitLamports) {
+      if (amountLamports > limitLamports && amountLamports - limitLamports < 100000) return limitLamports;
+      return amountLamports;
+    }
+
     function lamportsToXNT(lamports) {
       return lamports / 1e9;
     }

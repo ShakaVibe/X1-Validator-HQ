@@ -1124,9 +1124,8 @@
       if (availableLamports <= 0) return;
       
       const amountLamports = Math.floor(availableLamports * (percentage / 100));
-      const amount = lamportsToXNT(amountLamports);
       
-      document.getElementById('withdrawAmountInput').value = amount.toFixed(4);
+      document.getElementById('withdrawAmountInput').value = xntInputFloor4(amountLamports);   // round down, never past the limit
       updateWithdrawSummary();
     }
 
@@ -1154,9 +1153,10 @@
         return;
       }
       
-      const amountLamports = Math.floor(amount * 1000000000);
       const rentExempt = 20000000;
       const availableLamports = withdrawVoteBalanceLamports - rentExempt;
+      // A typed amount within 0.0001 XNT above the limit (the rounded figure shown) means "all of it".
+      const amountLamports = clampToLimitLamports(Math.floor(amount * 1000000000), availableLamports);
       
       if (amountLamports > availableLamports) {
         showWithdrawMessage('Amount exceeds available balance (after rent reserve).', 'error');

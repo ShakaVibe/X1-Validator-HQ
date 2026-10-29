@@ -102,4 +102,7 @@ the oracle is a mainnet `simulateTransaction` from that day (withdraw of 1,774.5
 accepted, one lamport more refused). Checks the lamport-exact split, badge COOLING + "88% cooled",
 details card 88.4 %, withdraw modal "1,774.5328 ready / 233.3572 still cooling" with Close hidden,
 the next-epoch (quiet and congested) outcomes, the sysvar-unavailable fallback, and the calculator
-preset relabelling to the observed share. 51 checks, 0 page errors.
+preset relabelling to the observed share, and the amount inputs: MAX rounds *down* to 4 dp
+(`xntInputFloor4`) and a typed amount within 0.0001 XNT above the limit is clamped to it
+(`clampToLimitLamports`) — the send path is exercised with `signSendTx` stubbed and the Stake
+Withdraw instruction's lamports decoded. 58 checks, 0 page errors.

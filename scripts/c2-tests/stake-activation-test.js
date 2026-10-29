@@ -71,6 +71,7 @@ let EPOCH = 425, history = HISTORY.slice(), sysvarBroken = false;
         }
         case 'getVoteAccounts': return ok({ current: [{ votePubkey: VOTE, nodePubkey: NODE, activatedStake: 1087270092473100, commission: 10, epochVoteAccount: true, epochCredits: [[EPOCH - 1, 1393691034, 1390000000]], lastVote: 89426700, rootSlot: 89426600 }], delinquent: [] });
         case 'getBalance': return ok({ context: { slot: 1 }, value: 3937000000 });
+        case 'getLatestBlockhash': return ok({ context: { slot: 1 }, value: { blockhash: 'EETubP5AKHgjPAhzPAFcb8BAY1hMH639CWCFTqi3hq1k', lastValidBlockHeight: 1000 } });
         case 'getRecentPerformanceSamples': return ok([]);
         case 'getStakeActivation': return { jsonrpc: '2.0', id: q.id, error: { code: -32601, message: 'Method not found' } };
         default: return ok(null);
@@ -162,8 +163,38 @@ let EPOCH = 425, history = HISTORY.slice(), sysvarBroken = false;
   check(wd.cooldownRow === 'block' && /88\.4%/.test(wd.cooldownText), 'cooldown progress row 88.4 %', wd.cooldownText);
   check(wd.close === 'none' && !wd.btnDisabled && wd.noBalance === 'none', '"Close account" hidden (still cooling), withdraw enabled', wd);
   const max = await page.evaluate(() => { setWithdrawStakeAmount(100); return { input: withdrawStakeAmountInput.value, sum: withdrawStakeSummaryAmount.textContent }; });
-  check(max.input === '1774.5328' && max.sum === '1,774.5328 XNT', 'MAX fills 1774.5328 (what the chain accepts)', max);
+  check(max.input === '1774.5327' && max.sum === '1,774.5327 XNT', 'MAX rounds DOWN to 1774.5327 (toFixed would give 1774.5328 = 22,584 lamports over the limit)', max);
+  // Send path with the signer stubbed: the withdraw instruction must carry the clamped lamports.
+  await page.waitForFunction(() => typeof solanaWeb3 !== 'undefined', null, { timeout: 15000 });
+  const sendWith = (typed) => page.evaluate(async (typed) => {
+    window.__tx = null; window.__msg = null;
+    window.signSendTx = async (c, tx) => { window.__tx = tx; return '5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW'; };
+    window.confirmWithFallback = async () => true;
+    withdrawStakeAmountInput.value = typed;
+    await confirmWithdrawFromStake();
+    const ix = window.__tx && window.__tx.instructions[0];
+    const lamports = ix ? Number(new DataView(ix.data.buffer, ix.data.byteOffset, ix.data.byteLength).getBigUint64(4, true)) : null;
+    return { lamports, program: ix && ix.programId.toBase58(), msg: withdrawStakeMessage.textContent.trim(), btn: withdrawStakeConfirmBtn.textContent };
+  }, typed);
+  const sMax = await sendWith('1774.5327');
+  check(sMax.lamports === 1774532700000 && sMax.program === 'Stake11111111111111111111111111111111111111' && /Withdrew 1,774\.5327 XNT/.test(sMax.msg), 'MAX → Stake Withdraw ix for 1,774.5327 XNT', sMax);
+  await page.evaluate(() => { withdrawStakeConfirmBtn.onclick = confirmWithdrawFromStake; });
+  const sShown = await sendWith('1774.5328');
+  check(sShown.lamports === 1774532777416 && /Withdrew 1,774\.5328 XNT/.test(sShown.msg), 'typing the rounded "Available" figure 1774.5328 is clamped to the exact limit 1,774.532777416', sShown);
+  await page.evaluate(() => { withdrawStakeConfirmBtn.onclick = confirmWithdrawFromStake; });
+  const sOver = await sendWith('1774.5329');
+  check(sOver.lamports === null && /exceeds available/i.test(sOver.msg), '1774.5329 (0.0001 over) is still refused client-side', sOver);
+  const sPart = await sendWith('1000');
+  check(sPart.lamports === 1000e9, 'typed 1000 → 1,000 XNT exactly', sPart);
   await page.evaluate(() => closeWithdrawStakeModal());
+  // Vote-account Withdraw XNT MAX + the shared helpers
+  const vw = await page.evaluate(() => {
+    withdrawVoteBalanceLamports = 1238877416 + 20000000;   // available = 1.238877416 XNT → nearest-4dp "1.2389" would exceed
+    setWithdrawAmount(100);
+    return { input: withdrawAmountInput.value, floor: xntInputFloor4(1774532777416), clampIn: clampToLimitLamports(1774532800000, 1774532777416), clampOut: clampToLimitLamports(1774532900000, 1774532777416), clampUnder: clampToLimitLamports(5, 10) };
+  });
+  check(vw.input === '1.2388', 'vote-account Withdraw XNT MAX rounds down too (1.2388, not 1.2389)', vw);
+  check(vw.floor === '1774.5327' && vw.clampIn === 1774532777416 && vw.clampOut === 1774532900000 && vw.clampUnder === 5, 'xntInputFloor4 / clampToLimitLamports helpers', vw);
 
   // ── 5. Stake classification modal ─────────────────────────────────────────────────────────
   console.log('5. Stake classification modal');

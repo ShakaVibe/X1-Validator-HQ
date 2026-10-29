@@ -1654,5 +1654,15 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   epoch", slider 90, "~4.1 hours" left. StakeHistory read = 1 extra `getAccountInfo` per Manage open.
   Console: only one transient 503 on `js/calculators.js` during the Pages deploy (reload was 200).
 - Also closed Start-here item 00 (Lifetime Credits live check) in the same tab — see item 00.
-- Session 16 totals: 1 push by Shaka (`bbabf89d`, 7 files) + this HANDOVER commit. Scratch (cloud only):
+- **Follow-up, same day — MAX rounding bug.** The operator still couldn't take the cooled part: the
+  withdraw modal's MAX button filled `(max).toFixed(4)` = "1774.5328", i.e. 22,584 lamports *above* the
+  real limit 1,774.532777416, and `confirmWithdrawFromStake` then refused its own number ("Amount exceeds
+  available balance"). Same pattern in the vote-account Withdraw XNT modal (`setWithdrawAmount`) and the
+  split / send / create-stake MAX buttons (those had fee buffers, mostly harmless). Fix: `xntInputFloor4()`
+  + `clampToLimitLamports()` in `js/core.js` (next to `lamportsToXNT`); every MAX/percent button rounds
+  DOWN to 4 dp; the stake and vote withdraw confirms accept a typed amount up to 0.0001 XNT above the
+  limit (the rounded figure shown on the Available line) by sending exactly the limit. Test extended
+  (58 checks: MAX → 1774.5327, typed 1774.5328 → ix for 1,774,532,777,416 lamports, 1774.5329 refused,
+  vote MAX 1.2388 not 1.2389). Rule: never fill an input with a rounded-to-nearest maximum.
+- Session 16 totals: 2 pushes by Shaka (`bbabf89d` cooldown fix, 7 files; the MAX rounding fix) + HANDOVER commits. Scratch (cloud only):
   `scratchpad/sim/` (web3.js withdraw simulation), `scratchpad/x1clone/` (test runs).

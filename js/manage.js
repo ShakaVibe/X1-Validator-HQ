@@ -3137,9 +3137,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // Calculate available amount (leaving minimum rent in original)
       const availableLamports = splitStakeBalanceLamports - STAKE_RENT_EXEMPT_MIN - 10000; // Leave rent + small buffer
       const amountLamports = Math.floor(availableLamports * (percentage / 100));
-      const amount = lamportsToXNT(amountLamports);
       
-      document.getElementById('splitStakeAmountInput').value = amount.toFixed(4);
+      document.getElementById('splitStakeAmountInput').value = xntInputFloor4(amountLamports);   // round down, never past the limit
       updateSplitStakeSummary();
     }
     
@@ -4054,8 +4053,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       // Don't change amount if closing account
       if (document.getElementById('withdrawStakeCloseCheckbox')?.checked) return;
       
-      const maxXnt = withdrawStakeAvailableLamports / 1e9;
-      const amount = (maxXnt * percent / 100).toFixed(4);
+      // Round DOWN to 4 dp so MAX never exceeds what the stake program accepts (see xntInputFloor4).
+      const amount = xntInputFloor4(withdrawStakeAvailableLamports * percent / 100);
       document.getElementById('withdrawStakeAmountInput').value = amount;
       updateWithdrawStakeSummary();
     }
@@ -4108,11 +4107,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
             throw new Error('Please enter an amount to withdraw.');
           }
           
-          amountLamports = Math.floor(amountXnt * 1e9);
+          // A typed amount within 0.0001 XNT above the limit (e.g. the rounded figure shown on the
+          // Available line) is treated as "all of it".
+          amountLamports = clampToLimitLamports(Math.floor(amountXnt * 1e9), withdrawStakeAvailableLamports);
           
           if (amountLamports > withdrawStakeAvailableLamports) {
             throw new Error('Amount exceeds available balance.');
           }
+          amountXnt = amountLamports / 1e9;
         }
         
         const destination = document.getElementById('withdrawStakeDestInput').value.trim();
@@ -4385,9 +4387,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const reserveForFees = percentage === 100 ? 10000000 : 0; // 0.01 XNT in lamports
       const availableLamports = Math.max(0, sendWalletBalanceLamports - reserveForFees);
       const amountLamports = Math.floor(availableLamports * (percentage / 100));
-      const amount = lamportsToXNT(amountLamports);
       
-      document.getElementById('sendAmountInput').value = amount.toFixed(4);
+      document.getElementById('sendAmountInput').value = xntInputFloor4(amountLamports);   // round down, never past the limit
       updateSendSummary();
     }
 
@@ -4625,9 +4626,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
       const reserveForRentAndFees = STAKE_ACCOUNT_RENT + 10000000; // rent + 0.01 XNT for fees
       const availableLamports = Math.max(0, createStakeWalletBalanceLamports - reserveForRentAndFees);
       const amountLamports = Math.floor(availableLamports * (percentage / 100));
-      const amount = lamportsToXNT(amountLamports);
       
-      document.getElementById('createStakeAmountInput').value = amount.toFixed(4);
+      document.getElementById('createStakeAmountInput').value = xntInputFloor4(amountLamports);   // round down, never past the limit
       updateCreateStakeSummary();
     }
 
