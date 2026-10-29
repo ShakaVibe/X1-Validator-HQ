@@ -680,13 +680,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
         let curEpoch = (typeof currentEpochNumber === 'number') ? currentEpochNumber : 0;
         try { const ei = await getEpochInfoCached(); if (ei && typeof ei.epoch === 'number') curEpoch = ei.epoch; } catch (e) { /* fall back to cached epoch */ }
 
-        // Parse each account's DELEGATED stake (delegation.stake) and a coarse
-        // state from the delegation epochs. We deliberately do NOT use
-        // getStakeActivation for the active number: it's deprecated and was
-        // reporting still-warming delegation as fully active, which disagreed
-        // with the validator's authoritative Active Stake (getVoteAccounts).
-        // The official active total comes from the card value instead; here we
-        // only need delegated amounts + an inactive flag to exclude cooled stake.
+        // Parse each account's DELEGATED stake (delegation.stake) and its state. The
+        // active / cooled split of a deactivating account comes from the StakeHistory
+        // sysvar (StakeActivation in js/core.js — getStakeActivation no longer exists on
+        // X1 RPCs); the authoritative ACTIVE total still comes from the card's
+        // getVoteAccounts figure, this list only needs per-account amounts + flags.
+        let stakeHistory = null;
+        try { stakeHistory = await fetchStakeHistory(curEpoch); } catch (e) { /* epoch-math fallback below */ }
         const MAX_U64 = '18446744073709551615';
         const stakeAccounts = data.result.map(acc => {
           const stakeInfo = acc.account.data.parsed?.info;
@@ -698,8 +698,14 @@ Please give me the diagnostic commands to run on my server so you can help me id
           const isDeact = deactRaw && deactRaw !== MAX_U64;
           const deactEpoch = isDeact ? parseInt(deactRaw) : null;
           let state = 'active';
-          if (!delegation || delegatedLamports === 0) state = 'inactive';
-          else if (isDeact) state = (deactEpoch >= curEpoch) ? 'deactivating' : 'inactive';
+          let effectiveLamports = delegatedLamports;   // part of the delegation still counted as stake
+          if (!delegation || delegatedLamports === 0) { state = 'inactive'; effectiveLamports = 0; }
+          else if (isDeact && deactEpoch <= curEpoch && stakeHistory) {
+            const a = computeStakeActivation(stakeInfo, acc.account.lamports, curEpoch, stakeHistory);
+            state = a.state;                   // 'deactivating' while anything is still cooling, else 'inactive'
+            effectiveLamports = a.effective;
+          }
+          else if (isDeact) { state = (deactEpoch >= curEpoch) ? 'deactivating' : 'inactive'; if (state === 'inactive') effectiveLamports = 0; }
           else if (!isNaN(actEpoch) && actEpoch >= curEpoch) state = 'activating';
           // "Active-eligible" = anything that contributes to (or is becoming)
           // active stake: fully active, cooling (still counts), or warming up.
@@ -709,6 +715,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
             pubkey: acc.pubkey,
             stakeXNT: delegatedLamports / 1e9,         // delegated stake (real per-account figure)
             delegatedXNT: delegatedLamports / 1e9,
+            effectiveXNT: effectiveLamports / 1e9,     // still active (cooling counts); delegated − this = cooled
+            cooledXNT: Math.max(0, delegatedLamports - effectiveLamports) / 1e9,
             state,
             activeEligible,
             countsActive: activeEligible,              // used for dim/sort below
@@ -783,7 +791,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
       stakeAccounts.forEach(acc => {
         if (!acc.activeEligible) { inactiveTotal += acc.delegatedXNT; return; }
         const c = cats.get(acc.pubkey) || 'community';
-        sums[c] += acc.delegatedXNT;
+        const eff = (typeof acc.effectiveXNT === 'number') ? acc.effectiveXNT : acc.delegatedXNT;
+        sums[c] += eff;                              // a cooling account counts only its still-active part
+        inactiveTotal += Math.max(0, acc.delegatedXNT - eff);   // …the cooled part is already withdrawable
       });
       const delegatedActive = sums.self + sums.foundation + sums.ripper + sums.community; // active-eligible delegated
 
@@ -852,6 +862,8 @@ Please give me the diagnostic commands to run on my server so you can help me id
               note = ` · <span style="color:var(--text-secondary);">inactive (cooled down)</span>`;
             } else if (acc.state === 'activating') {
               note = ` · <span style="color:var(--warning);">warming up</span>`;
+            } else if (acc.state === 'deactivating' && acc.cooledXNT > 0.00005) {
+              note = ` · <span style="color:var(--warning);">cooling down · ${formatNumber(acc.cooledXNT, 2)} XNT withdrawable now, ${formatNumber(acc.effectiveXNT, 2)} XNT next epoch</span>`;
             } else if (acc.state === 'deactivating') {
               note = ` · <span style="color:var(--warning);">cooling down (still active)</span>`;
             }
@@ -1379,7 +1391,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
               deactivationEpoch: deactivationEpochNum,
               isDeactivating: isDeactivating,
               delegatedLamports: delegatedLamports,
-              // Will be filled in second pass via getStakeActivation:
+              // Filled in the second pass from the StakeHistory sysvar (computeStakeActivation):
               activeLamports: 0,
               inactiveLamports: 0,
               activationDataLoaded: false,
@@ -1388,57 +1400,51 @@ Please give me the diagnostic commands to run on my server so you can help me id
             };
           });
           
-          // Second pass: for any stake that's transitioning OR appears inactive due to
-          // a past deactivation epoch, query getStakeActivation to find out how much has
-          // *actually* cooled down. Solana/X1 rate-limits deactivations per epoch via
-          // the stake history sysvar, so a stake that looks "inactive" by epoch math
-          // can still have an active (cooling) portion that is NOT yet withdrawable.
-          // This is what causes the "insufficient funds" error on withdraw attempts.
-          await Promise.all(basicRecords.map(async rec => {
-            // Only query for stakes where the active/inactive split matters.
-            // Pure 'active' stakes (never deactivated) and pure 'activating' stakes
-            // don't need this — the user can't withdraw them anyway.
-            if (rec.state !== 'deactivating' && rec.state !== 'inactive') {
-              // For active/activating stakes, the active portion is just the delegation.
+          // Second pass: the real active / cooled split. getStakeActivation is gone from
+          // Agave 2.x / X1 4.0.x RPCs ("Method not found"), so it is computed client-side
+          // from the StakeHistory sysvar (StakeActivation in js/core.js — the stake
+          // program's own math). Cooldown is rate-limited to 9 % of cluster stake per
+          // epoch, shared pro-rata, so a stake deactivated in epoch N is often only PARTLY
+          // withdrawable in N+1 — that is the "insufficient funds" people hit when the
+          // epoch-math fallback called it fully cooled and they tried to take it all.
+          const RENT_RESERVE = 2282880;
+          let stakeHistory = null;
+          try { stakeHistory = await fetchStakeHistory(currentEpoch); }
+          catch (e) { console.warn('stake history sysvar unavailable, using epoch math:', e.message); }
+          basicRecords.forEach(rec => {
+            const reserve = Number(rec.data?.meta?.rentExemptReserve) || RENT_RESERVE;
+            const pastDeactivation = rec.isDeactivating && rec.deactivationEpoch <= currentEpoch;
+            if (!pastDeactivation) {
+              // Not (yet) deactivating: Withdraw locks the whole delegation regardless of
+              // warm-up, so only lamports above delegation + rent are available.
               rec.activeLamports = rec.delegatedLamports;
-              rec.inactiveLamports = 0;
+              rec.inactiveLamports = Math.max(0, rec.lamports - rec.delegatedLamports - reserve);
+              if (stakeHistory) {
+                const act = computeStakeActivation(rec.data, rec.lamports, currentEpoch, stakeHistory);
+                if (act.state === 'active' || act.state === 'activating') rec.state = act.state;
+              }
               rec.activationDataLoaded = true;
               return;
             }
-            try {
-              const act = await rpcCall('getStakeActivation', [rec.pubkey, { commitment: 'confirmed' }]);
-              if (act && typeof act === 'object') {
-                rec.activeLamports   = parseInt(act.active   || 0) || 0;
-                rec.inactiveLamports = parseInt(act.inactive || 0) || 0;
-                rec.activationDataLoaded = true;
-                // Reclassify: if RPC says state is something different (e.g. still
-                // 'deactivating' even though we're past deactivationEpoch), trust it.
-                if (act.state === 'deactivating' || act.state === 'inactive' ||
-                    act.state === 'activating'  || act.state === 'active') {
-                  rec.state = act.state;
-                }
-                // Belt-and-suspenders: even if RPC says 'inactive' but active>0
-                // (shouldn't happen but seen on some forks), treat as still cooling.
-                if (rec.activeLamports > 0 && rec.isDeactivating) {
-                  rec.state = 'deactivating';
-                }
-              }
-            } catch (e) {
-              // getStakeActivation is deprecated in newer Solana releases. If it fails,
-              // fall back to a conservative estimate: assume the delegated amount is
-              // still cooling unless the deactivation epoch is well in the past.
-              console.warn('getStakeActivation failed for', rec.pubkey, e.message);
-              if (rec.state === 'inactive') {
-                // Best-effort: assume fully cooled (old behavior)
-                rec.activeLamports = 0;
-                rec.inactiveLamports = rec.delegatedLamports;
-              } else {
-                rec.activeLamports = rec.delegatedLamports;
-                rec.inactiveLamports = 0;
-              }
-              rec.activationDataLoaded = false;
+            if (stakeHistory) {
+              const act = computeStakeActivation(rec.data, rec.lamports, currentEpoch, stakeHistory);
+              rec.state = act.state;                 // 'deactivating' while anything is still cooling, else 'inactive'
+              rec.activeLamports = act.active;       // still effective = NOT withdrawable yet
+              rec.inactiveLamports = act.inactive;   // lamports − effective − rent = what Withdraw accepts now
+              rec.activationDataLoaded = true;
+              return;
             }
-          }));
+            // Fallback (sysvar unreadable): plain epoch math — assume fully cooled once past
+            // the deactivation epoch (old behaviour), still cooling during it.
+            if (rec.state === 'inactive') {
+              rec.activeLamports = 0;
+              rec.inactiveLamports = Math.max(0, rec.lamports - reserve);
+            } else {
+              rec.activeLamports = rec.delegatedLamports;
+              rec.inactiveLamports = Math.max(0, rec.lamports - rec.delegatedLamports - reserve);
+            }
+            rec.activationDataLoaded = false;
+          });
           
           stakeAccounts = basicRecords.sort((a, b) => b.lamports - a.lamports);
           
@@ -1637,16 +1643,17 @@ Please give me the diagnostic commands to run on my server so you can help me id
         completedEpochs = Math.max(0, currentEpoch - stake.deactivationEpoch - 1);
       }
       
-      // Estimate per-epoch rate (lamports). Prefer observation, fall back to
-      // a 50% default of the original total — that matches what users have
-      // been reporting on X1 right now and gives a reasonable "if congestion
-      // continues" projection.
+      // Estimate per-epoch rate (lamports). Prefer observation; otherwise assume the
+      // next boundary releases the same share of deactivating stake as the last one
+      // did cluster-wide (9 % of effective stake ÷ what was deactivating — see
+      // StakeActivation in core.js; 1 = everything), falling back to 50 %.
       let rateLamports, rateSource;
       if (cooled > 0 && completedEpochs >= 1) {
         rateLamports = cooled / completedEpochs;
         rateSource = 'observed';
       } else {
-        rateLamports = Math.max(1, total * 0.5);
+        const frac = (typeof lastClusterCooldownFraction === 'function') ? lastClusterCooldownFraction() : null;
+        rateLamports = Math.max(1, total * (frac || 0.5));
         rateSource = 'estimated';
       }
       
@@ -3877,10 +3884,10 @@ Please give me the diagnostic commands to run on my server so you can help me id
       
       // ── ACCURATE BALANCE COMPUTATION ────────────────────────────────────────
       // Use rate-limit-aware activeLamports / inactiveLamports populated by
-      // fetchStakeAccounts via getStakeActivation. The naive approach (treating
+      // fetchStakeAccounts from the StakeHistory sysvar. The naive approach (treating
       // anything past deactivationEpoch as fully cooled) gave wrong numbers
       // because Solana/X1 rate-limits cooldowns per epoch via the stake history
-      // sysvar — only ~25% of network active stake can deactivate per epoch, so
+      // sysvar — only 9% of network active stake can deactivate per epoch, so
       // a single account's cooldown can stretch over multiple epochs.
       const totalLamports = stake.lamports;
       const rentExemptLamports = 2282880;

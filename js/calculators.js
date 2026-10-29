@@ -1119,9 +1119,9 @@
         const slotsInEpoch = epochInfo.slotsInEpoch;
         const progress = ((slotIndex / slotsInEpoch) * 100).toFixed(1);
         
-        // Estimate time remaining (assuming ~400ms per slot)
+        // Estimate time remaining from the measured slot time (core.js, fallback 368 ms)
         const slotsRemaining = slotsInEpoch - slotIndex;
-        const msRemaining = slotsRemaining * 400;
+        const msRemaining = slotsRemaining * ((typeof measuredSlotMs === 'function') ? measuredSlotMs() : 368);
         const hoursRemaining = msRemaining / (1000 * 60 * 60);
         
         let timeStr;
@@ -1138,6 +1138,7 @@
         document.getElementById('unstakingTimeRemaining').textContent = '~' + timeStr;
         
         calculateUnstakingTimeline();
+        applyObservedCooldownRate(currentEpoch);   // async; re-renders when the sysvar is in
       } catch (err) {
         console.error('Failed to fetch epoch info:', err);
         document.getElementById('unstakingCurrentEpoch').textContent = 'Error';
@@ -1170,8 +1171,9 @@
       //   - Calling deactivate() during epoch N sets delegation.deactivationEpoch = N
       //   - Stake stays "active" through epoch N (still earns rewards)
       //   - In epoch N+1 the cooldown begins; an amount transitions active → inactive
-      //   - The protocol caps total network deactivation at 25% of active stake per
-      //     epoch via the stake history sysvar. When more than that is in the
+      //   - The protocol caps total network deactivation at 9% of active stake per
+      //     epoch via the stake history sysvar (StakeActivation in core.js has the exact
+      //     math; 2026-10-29: 101 M deactivating vs an 89.6 M cap → 88 %). When more is in the
       //     deactivation queue, each account gets a proportional share — which is
       //     a fixed lamport amount per epoch (linear decay, not exponential),
       //     because each account's fraction of the queue stays roughly constant
@@ -1320,7 +1322,30 @@
     }
     
     // Update slider value label and refresh calc
-    function onUnstakingRateChange() {
+    // Observed cluster cooldown share = what fraction of deactivating stake the last epoch
+    // boundary actually released (9 % of effective ÷ deactivating, from the StakeHistory
+    // sysvar — see StakeActivation in core.js). Relabels the "observed" preset and, until the
+    // user moves the slider, uses it as the default rate.
+    let unstakingRateTouched = false;
+    async function applyObservedCooldownRate(epoch) {
+      if (typeof fetchStakeHistory !== 'function' || typeof lastClusterCooldownFraction !== 'function') return;
+      try {
+        const frac = lastClusterCooldownFraction(await fetchStakeHistory(epoch));
+        if (frac == null) return;
+        const pct = Math.max(5, Math.min(100, Math.round(frac * 100 / 5) * 5));
+        const btn = document.querySelector('.unstaking-rate-preset[data-observed]');
+        if (btn) {
+          btn.dataset.rate = String(pct);
+          btn.dataset.args = JSON.stringify([pct]);
+          btn.textContent = `${pct}% — Observed last epoch`;
+        }
+        const slider = document.getElementById('unstakingRate');
+        if (slider && !unstakingRateTouched) { slider.value = pct; onUnstakingRateChange(false); }
+      } catch (e) { /* keep the static presets */ }
+    }
+
+    function onUnstakingRateChange(fromUser = true) {
+      if (fromUser) unstakingRateTouched = true;
       const slider = document.getElementById('unstakingRate');
       const v = slider ? slider.value : 50;
       const lbl = document.getElementById('unstakingRateValue');

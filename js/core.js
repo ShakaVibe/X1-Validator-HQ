@@ -909,6 +909,136 @@
       return _epochInfoPromise;
     }
 
+    // ── STAKE ACTIVATION — client-side replacement for the removed getStakeActivation RPC ──
+    // Agave 2.x (X1 4.0.x) no longer serves getStakeActivation, so the active / cooled split
+    // of a stake account is computed here exactly like the stake program does it:
+    // Delegation::stake_activating_and_deactivating over the StakeHistory sysvar. Only
+    // rate × cluster effective stake may warm up or cool down per epoch, shared pro-rata by
+    // everything (de)activating — so a stake deactivated in epoch N is often only PARTLY
+    // withdrawable in N+1 (2026-10-29: 101 M XNT deactivating vs an 89.6 M cap → 88.4 %
+    // cooled, the rest one epoch later). The old RPC's `inactive` = lamports − effective −
+    // rent reserve, i.e. what Withdraw will actually accept today; mirrored by compute().
+    const STAKE_HISTORY_SYSVAR = 'SysvarStakeHistory1111111111111111111111111';
+    const STAKE_RATE_OLD = 0.25;   // before feature reduce_stake_warmup_cooldown
+    const STAKE_RATE_NEW = 0.09;   // after it
+    // Epoch the 9 % rate took effect. X1 mainnet activated the feature
+    // (GvDsGDkH5gyzwpDhxNixx8vtx1kwYHH13RiNAPw27zXb) at slot 0 — verified 2026-10-29.
+    const STAKE_NEW_RATE_ACTIVATION_EPOCH = 0;
+    const STAKE_U64_MAX_STR = '18446744073709551615';
+    function stakeWarmupCooldownRate(epoch) {
+      return epoch < STAKE_NEW_RATE_ACTIVATION_EPOCH ? STAKE_RATE_OLD : STAKE_RATE_NEW;
+    }
+
+    // StakeHistory sysvar → Map(epoch → {effective, activating, deactivating}) in lamports.
+    // One getAccountInfo (~60 KB), cached for the epoch it was read in (the sysvar only
+    // changes at epoch boundaries); concurrent callers share the request.
+    let _stakeHistory = null, _stakeHistoryEpoch = null, _stakeHistoryPromise = null;
+    async function fetchStakeHistory(epoch) {
+      if (_stakeHistory && _stakeHistoryEpoch === epoch) return _stakeHistory;
+      if (_stakeHistoryPromise) return _stakeHistoryPromise;
+      _stakeHistoryPromise = rpcCall('getAccountInfo', [STAKE_HISTORY_SYSVAR, { encoding: 'jsonParsed' }])
+        .then(res => {
+          const rows = res && res.value && res.value.data && res.value.data.parsed && res.value.data.parsed.info;
+          if (!Array.isArray(rows)) throw new Error('stake history sysvar: unexpected shape');
+          const map = new Map();
+          rows.forEach(r => {
+            const h = r.stakeHistory || {};
+            map.set(Number(r.epoch), {
+              effective: Number(h.effective) || 0,
+              activating: Number(h.activating) || 0,
+              deactivating: Number(h.deactivating) || 0
+            });
+          });
+          _stakeHistory = map; _stakeHistoryEpoch = epoch; _stakeHistoryPromise = null;
+          return map;
+        })
+        .catch(e => { _stakeHistoryPromise = null; throw e; });
+      return _stakeHistoryPromise;
+    }
+
+    // Port of Delegation::stake_activating_and_deactivating (agave sdk/program/src/stake/state.rs).
+    // `delegation` = the jsonParsed object {stake, activationEpoch, deactivationEpoch} (epochs are
+    // strings; u64::MAX = never). Arithmetic is done in doubles exactly as the program does it
+    // (u64 → f64, truncating back to u64), so the result matches the chain to the lamport.
+    function stakeActivationStatus(delegation, targetEpoch, history) {
+      const stake = Number(delegation.stake) || 0;
+      const isBootstrap = String(delegation.activationEpoch) === STAKE_U64_MAX_STR;
+      const actEpoch = isBootstrap ? Infinity : Number(delegation.activationEpoch);
+      const deactRaw = delegation.deactivationEpoch;
+      const deactEpoch = (deactRaw == null || String(deactRaw) === STAKE_U64_MAX_STR) ? Infinity : Number(deactRaw);
+      const get = e => (history && history.get(e)) || null;
+      const newly = (weight, prev, epoch) => Math.max(Math.floor(weight * (prev.effective * stakeWarmupCooldownRate(epoch))), 1);
+
+      // 1. effective + activating (stake_and_activating)
+      let effective, activating;
+      if (isBootstrap) { effective = stake; activating = 0; }
+      else if (actEpoch === deactEpoch) { effective = 0; activating = 0; }
+      else if (targetEpoch === actEpoch) { effective = 0; activating = stake; }
+      else if (targetEpoch < actEpoch) { effective = 0; activating = 0; }
+      else {
+        let prev = get(actEpoch);
+        if (!prev) { effective = stake; activating = 0; }      // dropped out of history → fully effective
+        else {
+          let prevEpoch = actEpoch, cur = 0;
+          for (;;) {
+            const epoch = prevEpoch + 1;
+            if (prev.activating === 0) break;
+            cur += newly((stake - cur) / prev.activating, prev, epoch);
+            if (cur >= stake) { cur = stake; break; }
+            if (epoch >= targetEpoch || epoch >= deactEpoch) break;
+            const next = get(epoch); if (!next) break;
+            prevEpoch = epoch; prev = next;
+          }
+          effective = cur; activating = stake - cur;
+        }
+      }
+      // 2. then deactivate
+      if (targetEpoch < deactEpoch) return { effective, activating, deactivating: 0 };
+      if (targetEpoch === deactEpoch) return { effective, activating: 0, deactivating: effective };
+      let prev = get(deactEpoch);
+      if (!prev) return { effective: 0, activating: 0, deactivating: 0 };   // dropped out of history → fully deactivated
+      let prevEpoch = deactEpoch, cur = effective;
+      for (;;) {
+        const epoch = prevEpoch + 1;
+        if (prev.deactivating === 0) break;
+        cur = Math.max(cur - newly(cur / prev.deactivating, prev, epoch), 0);
+        if (cur === 0 || epoch >= targetEpoch) break;
+        const next = get(epoch); if (!next) break;
+        prevEpoch = epoch; prev = next;
+      }
+      return { effective: cur, activating: 0, deactivating: cur };
+    }
+
+    // Same shape the old RPC returned: { state, active, inactive } (+ the raw status).
+    // `parsedInfo` = account.data.parsed.info of a stake account, `lamports` its balance.
+    function computeStakeActivation(parsedInfo, lamports, targetEpoch, history) {
+      const delegation = parsedInfo && parsedInfo.stake && parsedInfo.stake.delegation;
+      const reserve = Number(parsedInfo && parsedInfo.meta && parsedInfo.meta.rentExemptReserve) || 0;
+      if (!delegation) return { state: 'inactive', active: 0, inactive: Math.max(0, lamports - reserve), effective: 0, activating: 0, deactivating: 0 };
+      const s = stakeActivationStatus(delegation, targetEpoch, history);
+      const state = s.deactivating > 0 ? 'deactivating' : s.activating > 0 ? 'activating' : s.effective > 0 ? 'active' : 'inactive';
+      return { state, active: s.effective, inactive: Math.max(0, lamports - s.effective - reserve), effective: s.effective, activating: s.activating, deactivating: s.deactivating };
+    }
+
+    // Share of the cluster's deactivating stake that was released at the most recent epoch
+    // boundary (1 = everything, 0.884 on 2026-10-29). The best single-number guess for the next
+    // boundary — used by the cooldown projection when there is no observation yet.
+    function lastClusterCooldownFraction(history) {
+      const h = history || _stakeHistory;
+      if (!h || h.size === 0) return null;
+      const newest = Math.max(...h.keys());
+      const row = h.get(newest);
+      if (!row || row.deactivating <= 0) return 1;
+      return Math.min(1, row.effective * stakeWarmupCooldownRate(newest + 1) / row.deactivating);
+    }
+    window.StakeActivation = {
+      fetchHistory: fetchStakeHistory,
+      status: stakeActivationStatus,
+      compute: computeStakeActivation,
+      rate: stakeWarmupCooldownRate,
+      lastCooldownFraction: lastClusterCooldownFraction
+    };
+
     async function fetchInflationRewards(voteAccount, numEpochs = 30) {
       // Check cache first - include numEpochs in cache key
       const cacheKey = `${voteAccount}-${numEpochs}`;

@@ -6,7 +6,24 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-10-27):**
+> **Start here next session (as of 2026-10-29):**
+> 000. **Stake cooldown fix (2026-10-29, session 16)** — an operator (OWL, vote `9RqMzFzi…`) saw a stake
+>    labelled "inactive (cooled down)" that refused to withdraw. Cause: `getStakeActivation` no longer
+>    exists on X1 4.0.x RPCs ("Method not found"), so the Manage Validator stake list fell back to epoch
+>    math and called anything past its deactivation epoch fully cooled — but X1 releases only **9 %** of
+>    cluster stake per epoch (feature `reduce_stake_warmup_cooldown`, active since slot 0), so a stake
+>    deactivated in epoch N is often only partly withdrawable in N+1 (that day: 88.4 %). Fix: `StakeActivation`
+>    in `js/core.js` replays the stake program's math over the StakeHistory sysvar (one `getAccountInfo`,
+>    cached per epoch); consumers in `js/manage.js` (list badge COOLING · "88% cooled", Stake Account
+>    Details, Withdraw modal, classification modal) + the unstaking calculator's "observed" preset
+>    (`js/calculators.js`, `index.html` copy says 9 %). Test: `scripts/c2-tests/stake-activation-test.js`
+>    (oracle = a mainnet `simulateTransaction`). **Live check** (fresh pane tab, cache trick, no wallet):
+>    `#/lookup/9RqMzFzi7BDWMTGfCZhiBsXvLQjXK5UacAm6nNsyAfNp` → Manage Validator → `FpxU…xRiC` row shows
+>    COOLING (or INACTIVE once epoch ≥ 426 and the cooldown finished), Stake Account Details split matches
+>    `StakeActivation.compute(...)` in the console. See the session 16 log.
+> 00a. **The cloud sandbox CAN now reach `rpc.mainnet.x1.xyz` and `api.x1.xyz`** (2026-10-29; it could
+>    not before 10-16). Use it for probes, `simulateTransaction` and fixtures — Playwright + `@solana/web3.js`
+>    in the scratchpad worked. (The Mac VM was not re-tested.)
 > 00. **Lifetime Credits (2026-10-27, session 15) — pushed (efc803d1), NOT yet live-checked.**
 >    Terminal columns "Life Credits" + "Avg/Epoch" (cols 13/14; Ver/CC moved to 15/16) and the
 >    🏆 Lifetime Credits leaderboard with a Lifetime total / Avg per epoch toggle. First thing next
@@ -131,7 +148,7 @@ them before handing over the push commands.
 ```
 index.html                    the page: head (CSP, meta), all tab markup + modals, script tags
 css/site.css                  all CSS (the old <style> block; "VALIDATOR CARD v2" rules at the end)
-js/core.js                    logging gate, XSS helpers (escHtml/escAttrJs/safeUrl), pubkey + u64
+js/core.js                    logging gate, XSS helpers (escHtml/escAttrJs/safeUrl), pubkey + u64, StakeActivation (cooldown math),
                               helpers, canonical scores loader, delegator identities, RPC throttle +
                               circuit breaker + rpcStats, state vars, self-stake selections,
                               RewardsLedger, fetchTotalValidatorRewards(+Live), format helpers,
@@ -257,6 +274,23 @@ CNAME / .nojekyll / _headers  Pages config
   1.5 % floor; commission on voting rewards; block fees to the leader; bootstrap bonus paid as a
   one-time airdrop in Nov 2026, not through the vote account).
 
+- **Stake cooldown** (`StakeActivation`, `js/core.js`, 2026-10-29): `getStakeActivation` is gone from
+  Agave 2.x / X1 4.0.x RPCs. `fetchStakeHistory(epoch)` reads the StakeHistory sysvar once per epoch
+  (jsonParsed, ~60 KB: per epoch `{effective, activating, deactivating}` cluster lamports, newest = the
+  previous epoch); `stakeActivationStatus(delegation, epoch, history)` is a port of
+  `Delegation::stake_activating_and_deactivating` (double arithmetic in the program's order, so it matches
+  the chain to the lamport); `computeStakeActivation(info, lamports, epoch, history)` returns the old
+  RPC's shape `{state, active, inactive}` with `inactive = lamports − effective − rentExemptReserve` =
+  what Withdraw accepts now. Rules: a stake deactivated in epoch N is fully active through N; at each
+  later boundary every deactivating account loses `its effective ÷ cluster deactivating × 9 % × cluster
+  effective` (X1 activated `reduce_stake_warmup_cooldown` at slot 0 → the 9 % rate always applies; the
+  `warmupCooldownRate: 0.25` field in the account is legacy and ignored). For a NOT-deactivated stake
+  Withdraw locks the whole `delegation.stake` regardless of warm-up. `lastClusterCooldownFraction()` =
+  the share released at the last boundary (0.884 on 10-29: 101.4 M XNT deactivating vs a 89.6 M cap) —
+  the unstaking calculator's "observed" preset and the cooldown projection use it. The Mac VM / cloud
+  can read the sysvar too (`getAccountInfo SysvarStakeHistory1111111111111111111111111`). api.x1.xyz's
+  `/v1/stakes` `amount` field is the *effective* (still-active) stake, not the balance — the terminal
+  snapshot showed 233.36 for the half-cooled account whose balance was 2,007.89.
 - **Telegram alerts bot** (`scripts/alerts-bot.js`, F3, 2026-09-28): one Node process per Actions run.
   Loop: `getUpdates` long-poll (≤50 s, answers `/watch /unwatch /list /status /help`, admin `/stats`)
   → every 5 min `getEpochInfo` + `getVoteAccounts` + `getBlockProduction` (range = epoch start …
@@ -362,6 +396,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] Ask people who reported the terminal error which device/network they were on.
 
 ### Done
+- [x] 2026-10-29 — **Stake cooldown fix**: active/cooled split from the StakeHistory sysvar (`StakeActivation`),
+      COOLING badge + exact withdrawable amount in Manage Validator, 9 % cap in the unstaking calculator. See Session Log.
 - [x] 2026-10-27 — **Lifetime vote credits**: two sortable Terminal columns + 🏆 Lifetime Credits leaderboard
       (rank by lifetime total or 7-epoch avg). See Session Log.
 - [x] 2026-10-13 — **F4 Fleet Health** bar + table and **F11 Delegator APR** tile + modal live; ledger
@@ -1569,3 +1605,44 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Pushed by Shaka as efc803d1 (2026-10-27); session wrapped before the live check.
 - Not done / ideas: credits rank as a stat on the card (Shaka said no for now); a "Lifetime" column in
   the fleet table; sort state in the URL (`#/leaderboard/credits` always opens on Lifetime total).
+
+### 2026-10-29 — Session 16: stake cooldown / "can't withdraw" (~2 hours)
+- Start: 160 bot commits behind, tree clean, `git pull --rebase --autostash` clean with delete permission.
+  Epoch 425. **New: the cloud sandbox reaches `rpc.mainnet.x1.xyz` (HTTP 200)** — probes, fixtures and
+  `simulateTransaction` ran from the cloud this session (Node 22 + `@solana/web3.js@1.98.4` in the scratchpad).
+- Shaka (for the OWL operator, vote `9RqMzFzi…`): stake `FpxUC1L1…GafyxRiC` (2,007.89 XNT, withdrawer =
+  the vote account's withdrawer) showed **INACTIVE / "inactive (cooled down)"** in Manage Validator and
+  "Fully cooled — 100 %" in Stake Account Details, yet the withdraw failed.
+- On-chain: `deactivationEpoch` 424, current 425, no lockup. StakeHistory for 424: effective 995.87 M,
+  deactivating **101.41 M** XNT; the per-epoch release cap is 9 % × effective = 89.63 M → every account
+  deactivated in 424 cooled only 88.4 % at the 424→425 boundary. For this account **233.357177042 XNT was
+  still active, 1,774.532777416 withdrawable** — confirmed with `simulateTransaction` (sigVerify off,
+  real withdrawer): withdraw of exactly 1,774.532777416 → success, +1 lamport → `InsufficientFunds`; a
+  full withdraw / close → `InsufficientFunds`. Feature `reduce_stake_warmup_cooldown`
+  (`GvDsGDkH5gyzwpDhxNixx8vtx1kwYHH13RiNAPw27zXb`) is activated at slot 0 on X1 → 9 % always; the
+  jsonParsed `warmupCooldownRate: 0.25` is a legacy field. Remainder frees at the 425→426 boundary unless
+  the cluster is congested again.
+- Site cause: `fetchStakeAccounts` (`js/manage.js`) asked the RPC for `getStakeActivation` → "Method not
+  found" on 4.0.3 → the catch fell back to epoch math ("deactivation epoch < current → fully cooled"),
+  so every consumer (badge, details split, cooldown card, withdraw modal max / Close account, classification
+  modal) advertised the full balance. The modal/card code for partial cooldown already existed — it just
+  never got real numbers.
+- Fix: `StakeActivation` in `js/core.js` (see §4) — sysvar read cached per epoch + a port of the program's
+  `stake_activating_and_deactivating`. `js/manage.js`: second pass of `fetchStakeAccounts` uses it (a
+  not-yet-deactivated stake keeps the whole delegation locked; sysvar failure → old epoch-math fallback,
+  `activationDataLoaded=false`, console.warn); classification modal rows carry `effectiveXNT`/`cooledXNT`
+  (category tiles count only the still-active part, the cooled part goes to "Inactive (cooled down)", note
+  "cooling down · X XNT withdrawable now, Y XNT next epoch"); cooldown projection estimate = the last
+  cluster share instead of a flat 50 %. `js/calculators.js` + `index.html`: unstaking copy says 9 % (was
+  25 %), the "50 % — Currently observed" preset is relabelled from the sysvar ("90 % — Observed last
+  epoch" today) and is the slider default until the user moves it; epoch time-remaining uses
+  `measuredSlotMs()` (was a hard 400 ms).
+- Test `scripts/c2-tests/stake-activation-test.js` (fixture = real sysvar rows 395–424 + three real stake
+  accounts; 51 checks): lamport-exact split vs the simulation oracle, edge cases (same-epoch
+  activate+deactivate, bootstrap, dropped out of history, empty history), list badges, details card 88.4 %,
+  withdraw modal (Cooling Down note, MAX = 1,774.5328, Close hidden), classification banner, epoch 426
+  quiet → INACTIVE + Close offered, epoch 426 congested → partial again, sysvar failure fallback,
+  calculator preset. `csp-walk-test`, `batch5`, `identity`, `cards`, `modals`, `batch4`, `credits` green.
+- Not changed: Validator Terminal (`amount` from api.x1.xyz = effective stake, fine as is), rewards
+  ledger, alerts bot, Stake details on the card (no cooldown label there).
+- Push + live check: see the Start-here item 000 (status updated below if done this session).

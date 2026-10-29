@@ -880,7 +880,7 @@
                 </div>
                 <div class="unstaking-rate-presets">
                   <button type="button" class="unstaking-rate-preset" data-rate="100" data-action="call" data-fn="setUnstakingRatePreset" data-args='[100]'>100% — No congestion</button>
-                  <button type="button" class="unstaking-rate-preset active" data-rate="50" data-action="call" data-fn="setUnstakingRatePreset" data-args='[50]'>50% — Currently observed</button>
+                  <button type="button" class="unstaking-rate-preset active" data-rate="50" data-observed data-action="call" data-fn="setUnstakingRatePreset" data-args='[50]'>50% — Observed last epoch</button>
                   <button type="button" class="unstaking-rate-preset" data-rate="25" data-action="call" data-fn="setUnstakingRatePreset" data-args='[25]'>25% — Heavy congestion</button>
                 </div>
               </div>
@@ -900,9 +900,9 @@
             <!-- Educational explainer -->
             <div class="unstaking-info-box">
               <strong>How the cooldown actually works</strong>
-              <p>X1 (and Solana) limit total network stake deactivation to <code>25%</code> of currently active stake per epoch. If only a small amount is being deactivated network-wide, your stake fully cools in a single epoch — the best case.</p>
-              <p>When many people deactivate at once, that 25% capacity is split proportionally across everyone. So for an individual account, only a fraction of the cooling stake unlocks each epoch, and the full unstake stretches across multiple epochs.</p>
-              <p>The slider above lets you model what you're observing: <code>100%</code> = ideal best case, <code>50%</code> = roughly what users are reporting on X1 right now, <code>25%</code> = heavy congestion. Once each portion has cooled, you must call withdraw to actually move the funds — they don't auto-return.</p>
+              <p>X1 (like Solana since the 2024 rate change) limits total network stake deactivation to <code>9%</code> of currently active stake per epoch. If only a small amount is being deactivated network-wide, your stake fully cools in a single epoch — the best case.</p>
+              <p>When many people deactivate at once, that 9% capacity is split proportionally across everyone. So for an individual account, only a fraction of the cooling stake unlocks each epoch, and the full unstake stretches across multiple epochs — and <strong>withdrawing more than the cooled part fails with "insufficient funds"</strong> until the next epoch boundary.</p>
+              <p>The slider above lets you model it: <code>100%</code> = ideal best case, the <em>observed</em> preset = the share the last epoch boundary actually released (read from the stake-history sysvar), <code>25%</code> = heavy congestion. Once each portion has cooled, you must call withdraw to actually move the funds — they don't auto-return.</p>
             </div>
           </div>
         </div>

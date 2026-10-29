@@ -88,3 +88,18 @@ Terminal's Life Credits + Avg/Epoch columns, the 🏆 Lifetime Credits leaderboa
 Checks the helper edge cases (missed epochs = 0, young accounts), every Terminal row against the same
 rule run in node over the served `data/scores.json`, header-click sorting, both leaderboard orders,
 the "Where am I" pin, the toggle, the deep link, the 375 px layout, 0 inline handlers, 0 page errors.
+
+**Stake cooldown / withdraw (2026-10-29)** — `StakeActivation` in `js/core.js` + the Manage
+Validator stake list, Stake Account Details, Withdraw-from-stake modal, Stake classification
+modal and the unstaking calculator's "observed" preset:
+
+    node scripts/c2-tests/stake-activation-test.js "$PWD"
+
+`getStakeActivation` no longer exists on X1 4.0.x RPCs, so the active / cooled split is replayed
+client-side from the StakeHistory sysvar (the stake program's own math, 9 % cap per epoch). The
+fixture is the real sysvar (epochs 395–424) plus three real stake accounts of validator 9RqMzFzi…;
+the oracle is a mainnet `simulateTransaction` from that day (withdraw of 1,774.532777416 XNT
+accepted, one lamport more refused). Checks the lamport-exact split, badge COOLING + "88% cooled",
+details card 88.4 %, withdraw modal "1,774.5328 ready / 233.3572 still cooling" with Close hidden,
+the next-epoch (quiet and congested) outcomes, the sysvar-unavailable fallback, and the calculator
+preset relabelling to the observed share. 51 checks, 0 page errors.
