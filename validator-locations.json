@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-30T14:03:11.511Z",
-  "totalNodes": 423,
-  "totalLocations": 420,
+  "lastUpdated": "2026-10-30T16:03:14.032Z",
+  "totalNodes": 417,
+  "totalLocations": 414,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -65,13 +65,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "67.217.48.230": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "51.161.119.180": {
       "country": "Canada",
@@ -212,13 +205,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "104.250.146.170": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Pleasant View",
-      "lat": 41.3072,
-      "lon": -111.992
     },
     "205.209.102.62": {
       "country": "United States",
@@ -408,13 +394,6 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
-    },
-    "148.251.9.2": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "161.129.66.90": {
       "country": "United States",
@@ -1795,13 +1774,6 @@
       "lat": 41.2632,
       "lon": -111.993
     },
-    "38.46.220.85": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Draper",
-      "lat": 40.5084,
-      "lon": -111.8838
-    },
     "64.20.39.74": {
       "country": "United States",
       "countryCode": "US",
@@ -1906,13 +1878,6 @@
       "city": "Draper",
       "lat": 40.5247,
       "lon": -111.8638
-    },
-    "158.69.52.15": {
-      "country": "Canada",
-      "countryCode": "CA",
-      "city": "Montreal",
-      "lat": 45.5075,
-      "lon": -73.5887
     },
     "149.50.101.149": {
       "country": "Poland",
@@ -2074,13 +2039,6 @@
       "city": "Warsaw",
       "lat": 52.1957,
       "lon": 20.9921
-    },
-    "116.202.241.77": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "135.181.56.180": {
       "country": "Finland",
@@ -2936,38 +2894,34 @@
       "lat": 50.0048,
       "lon": 18.4553
     },
-    "104.178.118.239": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Wichita",
-      "lat": 37.7779,
-      "lon": -97.3151
+    "188.117.169.81": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Wodzisław Śląski",
+      "lat": 50.0048,
+      "lon": 18.4553
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 188
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 30
+    "PL": {
+      "name": "Poland",
+      "count": 55
     },
     "FI": {
       "name": "Finland",
       "count": 67
     },
-    "CA": {
-      "name": "Canada",
-      "count": 17
-    },
     "FR": {
       "name": "France",
       "count": 33
     },
-    "PL": {
-      "name": "Poland",
-      "count": 54
+    "US": {
+      "name": "United States",
+      "count": 184
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 28
     },
     "NL": {
       "name": "The Netherlands",
@@ -2977,13 +2931,17 @@
       "name": "Sweden",
       "count": 4
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 16
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     }
   }
 }
