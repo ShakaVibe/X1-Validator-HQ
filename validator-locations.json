@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-30T02:03:11.484Z",
-  "totalNodes": 422,
-  "totalLocations": 420,
+  "lastUpdated": "2026-10-30T04:03:12.259Z",
+  "totalNodes": 423,
+  "totalLocations": 421,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2942,28 +2942,39 @@
       "city": "Wodzisław Śląski",
       "lat": 50.0048,
       "lon": 18.4553
+    },
+    "104.178.118.239": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Wichita",
+      "lat": 37.7779,
+      "lon": -97.3151
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 54
+    "US": {
+      "name": "United States",
+      "count": 188
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 30
     },
     "FI": {
       "name": "Finland",
       "count": 67
     },
+    "CA": {
+      "name": "Canada",
+      "count": 17
+    },
     "FR": {
       "name": "France",
       "count": 33
     },
-    "US": {
-      "name": "United States",
-      "count": 187
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 30
+    "PL": {
+      "name": "Poland",
+      "count": 54
     },
     "NL": {
       "name": "The Netherlands",
@@ -2973,17 +2984,13 @@
       "name": "Sweden",
       "count": 4
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 17
-    },
     "KE": {
       "name": "Kenya",
       "count": 7
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 5
     }
   }
 }
