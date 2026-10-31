@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-31T16:03:11.971Z",
-  "totalNodes": 413,
-  "totalLocations": 410,
+  "lastUpdated": "2026-10-31T18:03:09.752Z",
+  "totalNodes": 414,
+  "totalLocations": 411,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2872,6 +2872,13 @@
       "city": "Warsaw",
       "lat": 52.1783,
       "lon": 21.0602
+    },
+    "169.58.110.30": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
     }
   },
   "countries": {
@@ -2885,7 +2892,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 33
+      "count": 34
     },
     "US": {
       "name": "United States",
