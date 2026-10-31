@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-31T12:48:26.608Z",
-  "totalNodes": 417,
-  "totalLocations": 414,
+  "lastUpdated": "2026-10-31T14:03:10.940Z",
+  "totalNodes": 415,
+  "totalLocations": 412,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -31,13 +31,6 @@
       "lat": 32.7767,
       "lon": -96.797
     },
-    "74.50.69.74": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "65.108.65.53": {
       "country": "Finland",
       "countryCode": "FI",
@@ -51,13 +44,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "213.133.97.240": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Falkenstein",
-      "lat": 50.4777,
-      "lon": 12.3649
     },
     "66.23.238.10": {
       "country": "United States",
@@ -149,13 +135,6 @@
       "city": "Hattersheim",
       "lat": 50.0845,
       "lon": 8.4719
-    },
-    "157.180.2.244": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "51.222.104.113": {
       "country": "Canada",
@@ -366,13 +345,6 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
-    },
-    "135.125.222.229": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Limburg an der Lahn",
-      "lat": 50.3986,
-      "lon": 8.07958
     },
     "65.108.198.54": {
       "country": "Finland",
@@ -2900,44 +2872,58 @@
       "city": "Wichita",
       "lat": 37.7779,
       "lon": -97.3151
+    },
+    "158.69.52.15": {
+      "country": "Canada",
+      "countryCode": "CA",
+      "city": "Montreal",
+      "lat": 45.5075,
+      "lon": -73.5887
+    },
+    "80.47.18.105": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.1783,
+      "lon": 21.0602
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 185
+      "count": 184
     },
     "CA": {
       "name": "Canada",
-      "count": 16
-    },
-    "NL": {
-      "name": "Netherlands",
-      "count": 18
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 67
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 54
+      "count": 17
     },
     "DE": {
       "name": "Germany",
-      "count": 28
+      "count": 26
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 66
     },
     "FR": {
       "name": "France",
       "count": 33
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
+    "PL": {
+      "name": "Poland",
+      "count": 55
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 18
     },
     "SE": {
       "name": "Sweden",
       "count": 4
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "GB": {
       "name": "United Kingdom",
