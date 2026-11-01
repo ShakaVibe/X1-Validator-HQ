@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-01T12:03:10.338Z",
-  "totalNodes": 411,
-  "totalLocations": 406,
+  "lastUpdated": "2026-11-01T14:03:12.502Z",
+  "totalNodes": 409,
+  "totalLocations": 404,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -1010,13 +1010,6 @@
       "city": "Los Angeles",
       "lat": 34.0479,
       "lon": -118.256
-    },
-    "83.238.162.205": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Wolsztyn",
-      "lat": 52.1155,
-      "lon": 16.1171
     },
     "64.71.177.145": {
       "country": "United States",
@@ -2775,13 +2768,6 @@
       "lat": 40.5247,
       "lon": -111.8638
     },
-    "195.3.223.12": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2297,
-      "lon": 21.0122
-    },
     "95.156.230.93": {
       "country": "Germany",
       "countryCode": "DE",
@@ -2831,33 +2817,25 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "104.178.118.239": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Wichita",
-      "lat": 37.7779,
-      "lon": -97.3151
-    },
     "74.50.69.74": {
       "country": "United States",
       "countryCode": "US",
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "149.86.227.158": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 183
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 17
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 26
+    "PL": {
+      "name": "Poland",
+      "count": 53
     },
     "FI": {
       "name": "Finland",
@@ -2867,9 +2845,13 @@
       "name": "France",
       "count": 33
     },
-    "PL": {
-      "name": "Poland",
-      "count": 54
+    "US": {
+      "name": "United States",
+      "count": 182
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 26
     },
     "NL": {
       "name": "The Netherlands",
@@ -2879,12 +2861,16 @@
       "name": "Sweden",
       "count": 4
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 5
-    },
     "GB": {
       "name": "United Kingdom",
+      "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 17
+    },
+    "KE": {
+      "name": "Kenya",
       "count": 5
     }
   }
