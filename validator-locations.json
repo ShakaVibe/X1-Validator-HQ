@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-01T10:03:11.888Z",
-  "totalNodes": 414,
-  "totalLocations": 409,
+  "lastUpdated": "2026-11-01T12:03:10.338Z",
+  "totalNodes": 411,
+  "totalLocations": 406,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -88,13 +88,6 @@
       "lon": -74.0743
     },
     "74.50.94.66": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
-    "74.50.76.226": {
       "country": "United States",
       "countryCode": "US",
       "city": "Englewood Cliffs",
@@ -1739,13 +1732,6 @@
       "lat": 52.2297,
       "lon": 21.0122
     },
-    "37.187.250.239": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "188.117.169.88": {
       "country": "Poland",
       "countryCode": "PL",
@@ -2181,20 +2167,6 @@
       "lon": 24.9347
     },
     "102.210.25.187": {
-      "country": "Kenya",
-      "countryCode": "KE",
-      "city": "Nairobi",
-      "lat": -1.2841,
-      "lon": 36.8155
-    },
-    "102.210.25.188": {
-      "country": "Kenya",
-      "countryCode": "KE",
-      "city": "Nairobi",
-      "lat": -1.2841,
-      "lon": 36.8155
-    },
-    "102.210.25.190": {
       "country": "Kenya",
       "countryCode": "KE",
       "city": "Nairobi",
@@ -2865,6 +2837,13 @@
       "city": "Wichita",
       "lat": 37.7779,
       "lon": -97.3151
+    },
+    "74.50.69.74": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
@@ -2886,7 +2865,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 34
+      "count": 33
     },
     "PL": {
       "name": "Poland",
@@ -2902,7 +2881,7 @@
     },
     "KE": {
       "name": "Kenya",
-      "count": 7
+      "count": 5
     },
     "GB": {
       "name": "United Kingdom",
