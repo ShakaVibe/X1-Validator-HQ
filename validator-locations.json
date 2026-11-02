@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-02T06:03:08.869Z",
-  "totalNodes": 408,
-  "totalLocations": 405,
+  "lastUpdated": "2026-11-02T08:03:10.778Z",
+  "totalNodes": 406,
+  "totalLocations": 403,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -856,13 +856,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "45.131.114.138": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
     },
     "94.130.167.252": {
       "country": "Germany",
@@ -2824,53 +2817,38 @@
       "lat": 50.3986,
       "lon": 8.07958
     },
-    "104.178.118.239": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Wichita",
-      "lat": 37.7779,
-      "lon": -97.3151
-    },
-    "83.238.162.205": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2297,
-      "lon": 21.0122
+    "162.19.233.23": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Limburg an der Lahn",
+      "lat": 50.3986,
+      "lon": 8.07958
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 182
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 17
-    },
-    "NL": {
-      "name": "Netherlands",
-      "count": 17
+    "PL": {
+      "name": "Poland",
+      "count": 53
     },
     "FI": {
       "name": "Finland",
       "count": 66
     },
-    "PL": {
-      "name": "Poland",
-      "count": 54
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 25
-    },
     "FR": {
       "name": "France",
       "count": 33
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 5
+    "US": {
+      "name": "United States",
+      "count": 181
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 26
+    },
+    "NL": {
+      "name": "The Netherlands",
+      "count": 16
     },
     "SE": {
       "name": "Sweden",
@@ -2878,6 +2856,14 @@
     },
     "GB": {
       "name": "United Kingdom",
+      "count": 5
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 17
+    },
+    "KE": {
+      "name": "Kenya",
       "count": 5
     }
   }
