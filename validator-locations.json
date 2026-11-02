@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-02T04:03:12.475Z",
-  "totalNodes": 406,
-  "totalLocations": 403,
+  "lastUpdated": "2026-11-02T06:03:08.869Z",
+  "totalNodes": 408,
+  "totalLocations": 405,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -2823,32 +2823,54 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
+    },
+    "104.178.118.239": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Wichita",
+      "lat": 37.7779,
+      "lon": -97.3151
+    },
+    "83.238.162.205": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 53
+    "US": {
+      "name": "United States",
+      "count": 182
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 17
+    },
+    "NL": {
+      "name": "Netherlands",
+      "count": 17
     },
     "FI": {
       "name": "Finland",
       "count": 66
     },
-    "FR": {
-      "name": "France",
-      "count": 33
-    },
-    "US": {
-      "name": "United States",
-      "count": 181
+    "PL": {
+      "name": "Poland",
+      "count": 54
     },
     "DE": {
       "name": "Germany",
       "count": 25
     },
-    "NL": {
-      "name": "The Netherlands",
-      "count": 17
+    "FR": {
+      "name": "France",
+      "count": 33
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 5
     },
     "SE": {
       "name": "Sweden",
@@ -2856,14 +2878,6 @@
     },
     "GB": {
       "name": "United Kingdom",
-      "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 17
-    },
-    "KE": {
-      "name": "Kenya",
       "count": 5
     }
   }
