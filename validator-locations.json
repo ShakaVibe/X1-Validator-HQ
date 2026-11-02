@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-02T08:03:10.778Z",
-  "totalNodes": 406,
-  "totalLocations": 403,
+  "lastUpdated": "2026-11-02T09:39:30.269Z",
+  "totalNodes": 409,
+  "totalLocations": 406,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -163,13 +163,6 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
-    },
-    "66.45.225.50": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Teterboro",
-      "lat": 40.866,
-      "lon": -74.0544
     },
     "69.10.60.142": {
       "country": "United States",
@@ -555,13 +548,6 @@
       "city": "Dallas",
       "lat": 32.7767,
       "lon": -96.797
-    },
-    "146.59.47.13": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "65.108.78.88": {
       "country": "Finland",
@@ -1012,13 +998,6 @@
       "lon": -74.0743
     },
     "65.108.110.43": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "65.108.72.181": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
@@ -2684,13 +2663,6 @@
       "lat": 49.4527,
       "lon": 11.0783
     },
-    "162.35.169.6": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Los Angeles",
-      "lat": 34.0549,
-      "lon": -118.243
-    },
     "23.175.145.220": {
       "country": "United States",
       "countryCode": "US",
@@ -2823,47 +2795,96 @@
       "city": "Limburg an der Lahn",
       "lat": 50.3986,
       "lon": 8.07958
+    },
+    "102.210.25.188": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
+    },
+    "83.238.162.205": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
+    },
+    "37.187.250.239": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
+    },
+    "102.210.25.190": {
+      "country": "Kenya",
+      "countryCode": "KE",
+      "city": "Nairobi",
+      "lat": -1.2841,
+      "lon": 36.8155
+    },
+    "104.178.118.239": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Wichita",
+      "lat": 37.7779,
+      "lon": -97.3151
+    },
+    "74.50.76.226": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
+    },
+    "64.20.46.78": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 53
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 66
-    },
-    "FR": {
-      "name": "France",
-      "count": 33
-    },
     "US": {
       "name": "United States",
-      "count": 181
+      "count": 182
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 17
     },
     "DE": {
       "name": "Germany",
       "count": 26
     },
+    "FI": {
+      "name": "Finland",
+      "count": 65
+    },
+    "FR": {
+      "name": "France",
+      "count": 34
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 53
+    },
     "NL": {
-      "name": "The Netherlands",
+      "name": "Netherlands",
       "count": 16
     },
     "SE": {
       "name": "Sweden",
       "count": 4
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 5
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 17
-    },
     "KE": {
       "name": "Kenya",
+      "count": 7
+    },
+    "GB": {
+      "name": "United Kingdom",
       "count": 5
     }
   }
