@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-03T14:03:12.485Z",
+  "lastUpdated": "2026-11-03T16:03:16.733Z",
   "totalNodes": 403,
   "totalLocations": 400,
   "locations": {
@@ -2789,25 +2789,25 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "185.54.58.162": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Zamość",
-      "lat": 50.7213,
-      "lon": 23.2619
-    },
     "13.140.204.185": {
       "country": "Germany",
       "countryCode": "DE",
       "city": "Oberasbach",
       "lat": 49.4282,
       "lon": 10.9796
+    },
+    "23.175.145.220": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9522,
+      "lon": -75.1647
     }
   },
   "countries": {
     "PL": {
       "name": "Poland",
-      "count": 51
+      "count": 50
     },
     "FI": {
       "name": "Finland",
@@ -2819,7 +2819,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 179
+      "count": 180
     },
     "DE": {
       "name": "Germany",
