@@ -1,15 +1,8 @@
 {
-  "lastUpdated": "2026-11-04T04:03:18.944Z",
-  "totalNodes": 402,
-  "totalLocations": 399,
+  "lastUpdated": "2026-11-04T06:03:15.128Z",
+  "totalNodes": 399,
+  "totalLocations": 396,
   "locations": {
-    "45.94.82.34": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.3676,
-      "lon": 4.90414
-    },
     "135.181.139.140": {
       "country": "Finland",
       "countryCode": "FI",
@@ -72,13 +65,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "65.21.90.233": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "66.45.235.250": {
       "country": "United States",
@@ -219,13 +205,6 @@
       "city": "Montreal",
       "lat": 45.5029,
       "lon": -73.5723
-    },
-    "51.77.43.177": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "162.246.20.22": {
       "country": "United States",
@@ -506,13 +485,6 @@
       "city": "Warsaw",
       "lat": 52.2633,
       "lon": 21.0283
-    },
-    "65.108.200.244": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "198.96.89.222": {
       "country": "United States",
@@ -2733,13 +2705,6 @@
       "lat": 40.8854,
       "lon": -73.9524
     },
-    "64.20.46.78": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "65.109.123.178": {
       "country": "Finland",
       "countryCode": "FI",
@@ -2795,12 +2760,26 @@
       "city": "Dallas",
       "lat": 32.7767,
       "lon": -96.797
+    },
+    "149.50.101.152": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2299,
+      "lon": 21.0093
+    },
+    "194.50.156.181": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Ostrołęka",
+      "lat": 53.0721,
+      "lon": 21.5723
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 181
+      "count": 180
     },
     "CA": {
       "name": "Canada",
@@ -2808,15 +2787,15 @@
     },
     "NL": {
       "name": "Netherlands",
-      "count": 16
+      "count": 15
     },
     "FI": {
       "name": "Finland",
-      "count": 65
+      "count": 63
     },
     "PL": {
       "name": "Poland",
-      "count": 51
+      "count": 52
     },
     "DE": {
       "name": "Germany",
