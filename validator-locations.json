@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-04T02:03:10.289Z",
-  "totalNodes": 403,
-  "totalLocations": 400,
+  "lastUpdated": "2026-11-04T04:03:18.944Z",
+  "totalNodes": 402,
+  "totalLocations": 399,
   "locations": {
     "45.94.82.34": {
       "country": "The Netherlands",
@@ -919,13 +919,6 @@
       "city": "Warsaw",
       "lat": 52.1783,
       "lon": 21.0602
-    },
-    "149.202.69.96": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "162.220.15.6": {
       "country": "United States",
@@ -2726,13 +2719,6 @@
       "lat": -1.2841,
       "lon": 36.8155
     },
-    "37.187.250.239": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "102.210.25.190": {
       "country": "Kenya",
       "countryCode": "KE",
@@ -2802,44 +2788,51 @@
       "city": "Warsaw",
       "lat": 52.2297,
       "lon": 21.0122
+    },
+    "69.164.249.10": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Dallas",
+      "lat": 32.7767,
+      "lon": -96.797
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 180
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 26
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 65
+      "count": 181
     },
     "CA": {
       "name": "Canada",
       "count": 16
     },
-    "FR": {
-      "name": "France",
-      "count": 33
+    "NL": {
+      "name": "Netherlands",
+      "count": 16
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 65
     },
     "PL": {
       "name": "Poland",
       "count": 51
     },
-    "NL": {
-      "name": "Netherlands",
-      "count": 16
+    "DE": {
+      "name": "Germany",
+      "count": 26
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 4
+    "FR": {
+      "name": "France",
+      "count": 31
     },
     "KE": {
       "name": "Kenya",
       "count": 7
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 4
     },
     "GB": {
       "name": "United Kingdom",
