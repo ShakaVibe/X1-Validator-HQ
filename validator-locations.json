@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-05T02:03:21.681Z",
-  "totalNodes": 397,
-  "totalLocations": 393,
+  "lastUpdated": "2026-11-05T04:03:12.664Z",
+  "totalNodes": 398,
+  "totalLocations": 394,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -1655,13 +1655,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "109.238.10.15": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Boulogne-Billancourt",
-      "lat": 48.8356,
-      "lon": 2.23832
-    },
     "167.114.209.111": {
       "country": "Canada",
       "countryCode": "CA",
@@ -2753,6 +2746,20 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "65.21.90.233": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.108.200.244": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -2766,7 +2773,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 63
+      "count": 65
     },
     "CA": {
       "name": "Canada",
@@ -2774,7 +2781,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 29
+      "count": 28
     },
     "PL": {
       "name": "Poland",
