@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-05T12:03:13.482Z",
-  "totalNodes": 397,
-  "totalLocations": 393,
+  "lastUpdated": "2026-11-05T14:03:24.831Z",
+  "totalNodes": 398,
+  "totalLocations": 394,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -2753,12 +2753,19 @@
       "city": "Nuremberg",
       "lat": 49.4527,
       "lon": 11.0783
+    },
+    "83.238.162.205": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
     }
   },
   "countries": {
     "PL": {
       "name": "Poland",
-      "count": 51
+      "count": 52
     },
     "FI": {
       "name": "Finland",
