@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-06T00:03:14.616Z",
-  "totalNodes": 398,
-  "totalLocations": 395,
+  "lastUpdated": "2026-11-06T02:03:14.626Z",
+  "totalNodes": 395,
+  "totalLocations": 392,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -2131,13 +2131,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "173.214.163.242": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "37.187.146.167": {
       "country": "France",
       "countryCode": "FR",
@@ -2733,20 +2726,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "65.21.90.233": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "65.108.200.244": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "159.195.128.233": {
       "country": "Germany",
       "countryCode": "DE",
@@ -2776,7 +2755,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 64
+      "count": 62
     },
     "FR": {
       "name": "France",
@@ -2784,7 +2763,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 182
+      "count": 181
     },
     "DE": {
       "name": "Germany",
