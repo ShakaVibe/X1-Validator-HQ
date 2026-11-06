@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-06T12:03:11.059Z",
-  "totalNodes": 395,
-  "totalLocations": 392,
+  "lastUpdated": "2026-11-06T14:03:13.653Z",
+  "totalNodes": 394,
+  "totalLocations": 391,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -366,13 +366,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "217.182.175.238": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
     },
     "104.37.187.110": {
       "country": "United States",
@@ -2432,13 +2425,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "65.109.20.83": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "65.108.236.39": {
       "country": "Finland",
       "countryCode": "FI",
@@ -2467,13 +2453,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "65.109.20.70": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "65.108.236.19": {
       "country": "Finland",
       "countryCode": "FI",
@@ -2489,13 +2468,6 @@
       "lon": 24.9347
     },
     "65.108.71.178": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "65.109.20.72": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
@@ -2746,6 +2718,27 @@
       "city": "Englewood Cliffs",
       "lat": 40.8854,
       "lon": -73.9524
+    },
+    "65.108.200.153": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.108.71.181": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
+    },
+    "65.108.236.57": {
+      "country": "Finland",
+      "countryCode": "FI",
+      "city": "Helsinki",
+      "lat": 60.1719,
+      "lon": 24.9347
     }
   },
   "countries": {
@@ -2753,37 +2746,37 @@
       "name": "United States",
       "count": 181
     },
-    "DE": {
-      "name": "Germany",
-      "count": 27
+    "CA": {
+      "name": "Canada",
+      "count": 15
     },
     "FI": {
       "name": "Finland",
       "count": 62
     },
-    "CA": {
-      "name": "Canada",
-      "count": 15
-    },
-    "FR": {
-      "name": "France",
-      "count": 28
-    },
     "PL": {
       "name": "Poland",
       "count": 52
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 27
+    },
+    "FR": {
+      "name": "France",
+      "count": 27
     },
     "NL": {
       "name": "The Netherlands",
       "count": 15
     },
-    "SE": {
-      "name": "Sweden",
-      "count": 4
-    },
     "KE": {
       "name": "Kenya",
       "count": 7
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 4
     },
     "GB": {
       "name": "United Kingdom",
