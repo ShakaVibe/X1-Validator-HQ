@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-07T20:03:09.854Z",
-  "totalNodes": 366,
-  "totalLocations": 363,
+  "lastUpdated": "2026-11-07T22:01:08.718Z",
+  "totalNodes": 364,
+  "totalLocations": 361,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -745,13 +745,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "135.181.57.237": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "51.79.82.110": {
       "country": "Canada",
       "countryCode": "CA",
@@ -891,13 +884,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "135.181.216.181": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "64.71.177.144": {
       "country": "United States",
@@ -2047,13 +2033,6 @@
       "lat": 39.9598,
       "lon": -75.1607
     },
-    "69.164.250.194": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Dallas",
-      "lat": 32.7767,
-      "lon": -96.797
-    },
     "102.210.25.186": {
       "country": "Kenya",
       "countryCode": "KE",
@@ -2543,12 +2522,19 @@
       "city": "Falkenstein",
       "lat": 50.4777,
       "lon": 12.3649
+    },
+    "188.117.169.82": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 151
+      "count": 150
     },
     "DE": {
       "name": "Germany",
@@ -2556,7 +2542,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 62
+      "count": 60
     },
     "CA": {
       "name": "Canada",
@@ -2568,7 +2554,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 52
+      "count": 53
     },
     "NL": {
       "name": "The Netherlands",
