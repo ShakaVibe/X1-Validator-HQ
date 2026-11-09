@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-09T18:03:16.895Z",
-  "totalNodes": 356,
-  "totalLocations": 353,
+  "lastUpdated": "2026-11-09T20:03:16.248Z",
+  "totalNodes": 343,
+  "totalLocations": 340,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -86,13 +86,6 @@
       "city": "Warsaw",
       "lat": 52.2297,
       "lon": 21.0122
-    },
-    "91.198.137.15": {
-      "country": "Germany",
-      "countryCode": "DE",
-      "city": "Fröndenberg",
-      "lat": 51.4728,
-      "lon": 7.7583
     },
     "66.23.234.2": {
       "country": "United States",
@@ -457,13 +450,6 @@
       "city": "Teterboro",
       "lat": 40.866,
       "lon": -74.0544
-    },
-    "64.20.40.14": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "69.164.248.198": {
       "country": "United States",
@@ -969,13 +955,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "149.50.96.13": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
-    },
     "65.19.133.227": {
       "country": "United States",
       "countryCode": "US",
@@ -1410,13 +1389,6 @@
       "lat": 40.7128,
       "lon": -74.006
     },
-    "69.10.55.50": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0749
-    },
     "192.154.104.234": {
       "country": "United States",
       "countryCode": "US",
@@ -1501,13 +1473,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "68.168.213.6": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "149.50.108.93": {
       "country": "Poland",
       "countryCode": "PL",
@@ -1577,13 +1542,6 @@
       "city": "Amsterdam",
       "lat": 52.352,
       "lon": 4.9392
-    },
-    "74.50.78.254": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
     },
     "213.25.37.212": {
       "country": "Poland",
@@ -1655,13 +1613,6 @@
       "lat": 48.9742,
       "lon": 8.1851
     },
-    "147.135.130.108": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "173.214.172.174": {
       "country": "United States",
       "countryCode": "US",
@@ -1718,26 +1669,12 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "65.109.85.251": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "104.250.159.138": {
       "country": "United States",
       "countryCode": "US",
       "city": "Salt Lake City",
       "lat": 40.7687,
       "lon": -111.886
-    },
-    "66.23.239.186": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "205.209.102.138": {
       "country": "United States",
@@ -1767,26 +1704,12 @@
       "lat": 52.1783,
       "lon": 21.0602
     },
-    "45.94.81.226": {
-      "country": "The Netherlands",
-      "countryCode": "NL",
-      "city": "Amsterdam",
-      "lat": 52.352,
-      "lon": 4.9392
-    },
     "146.19.24.218": {
       "country": "Poland",
       "countryCode": "PL",
       "city": "Warsaw",
       "lat": 52.1957,
       "lon": 20.9921
-    },
-    "135.181.56.180": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "135.181.11.129": {
       "country": "Finland",
@@ -2032,13 +1955,6 @@
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
-    },
-    "64.20.34.78": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "209.159.154.82": {
       "country": "United States",
@@ -2306,13 +2222,6 @@
       "lat": 52.1783,
       "lon": 21.0602
     },
-    "74.50.69.74": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Englewood Cliffs",
-      "lat": 40.8854,
-      "lon": -73.9524
-    },
     "149.86.227.158": {
       "country": "Poland",
       "countryCode": "PL",
@@ -2476,45 +2385,45 @@
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 147
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 27
+    "PL": {
+      "name": "Poland",
+      "count": 52
     },
     "FI": {
       "name": "Finland",
-      "count": 58
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 15
+      "count": 56
     },
     "FR": {
       "name": "France",
-      "count": 27
+      "count": 26
     },
-    "PL": {
-      "name": "Poland",
-      "count": 53
+    "US": {
+      "name": "United States",
+      "count": 140
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 26
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 15
+      "count": 14
     },
     "SE": {
       "name": "Sweden",
       "count": 4
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
     "GB": {
       "name": "United Kingdom",
       "count": 3
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 15
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     }
   }
 }
