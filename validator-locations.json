@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-09T16:03:15.136Z",
-  "totalNodes": 359,
-  "totalLocations": 356,
+  "lastUpdated": "2026-11-09T18:03:16.895Z",
+  "totalNodes": 356,
+  "totalLocations": 353,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -58,13 +58,6 @@
       "city": "Manchester",
       "lat": 53.4809,
       "lon": -2.2374
-    },
-    "162.245.190.130": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Teterboro",
-      "lat": 40.866,
-      "lon": -74.0544
     },
     "66.45.235.250": {
       "country": "United States",
@@ -444,13 +437,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "95.217.202.139": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "66.23.236.110": {
       "country": "United States",
       "countryCode": "US",
@@ -716,13 +702,6 @@
       "city": "Ogden",
       "lat": 41.2627,
       "lon": -111.9837
-    },
-    "65.109.65.58": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
     },
     "151.80.19.59": {
       "country": "France",
@@ -2497,25 +2476,29 @@
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 53
+    "US": {
+      "name": "United States",
+      "count": 147
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 27
     },
     "FI": {
       "name": "Finland",
-      "count": 60
+      "count": 58
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 15
     },
     "FR": {
       "name": "France",
       "count": 27
     },
-    "US": {
-      "name": "United States",
-      "count": 148
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 27
+    "PL": {
+      "name": "Poland",
+      "count": 53
     },
     "NL": {
       "name": "The Netherlands",
@@ -2525,17 +2508,13 @@
       "name": "Sweden",
       "count": 4
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 3
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 15
-    },
     "KE": {
       "name": "Kenya",
       "count": 7
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 3
     }
   }
 }
