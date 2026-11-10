@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-10T08:03:14.828Z",
+  "lastUpdated": "2026-11-10T10:03:15.775Z",
   "totalNodes": 344,
   "totalLocations": 341,
   "locations": {
@@ -900,13 +900,6 @@
       "lon": 24.9347
     },
     "65.21.72.165": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
-    "65.109.81.232": {
       "country": "Finland",
       "countryCode": "FI",
       "city": "Helsinki",
@@ -2389,12 +2382,19 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
+    },
+    "23.146.144.164": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Philadelphia",
+      "lat": 39.9598,
+      "lon": -75.1607
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 141
+      "count": 142
     },
     "DE": {
       "name": "Germany",
@@ -2402,7 +2402,7 @@
     },
     "FI": {
       "name": "Finland",
-      "count": 56
+      "count": 55
     },
     "CA": {
       "name": "Canada",
