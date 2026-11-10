@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-10T06:03:15.407Z",
-  "totalNodes": 345,
-  "totalLocations": 342,
+  "lastUpdated": "2026-11-10T08:03:14.828Z",
+  "totalNodes": 344,
+  "totalLocations": 341,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -1928,13 +1928,6 @@
       "lat": 39.9598,
       "lon": -75.1607
     },
-    "102.210.25.186": {
-      "country": "Kenya",
-      "countryCode": "KE",
-      "city": "Nairobi",
-      "lat": -1.2841,
-      "lon": 36.8155
-    },
     "65.109.39.56": {
       "country": "Finland",
       "countryCode": "FI",
@@ -2433,7 +2426,7 @@
     },
     "KE": {
       "name": "Kenya",
-      "count": 7
+      "count": 6
     },
     "GB": {
       "name": "United Kingdom",
