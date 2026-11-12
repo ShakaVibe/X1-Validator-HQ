@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-11T22:03:13.526Z",
-  "totalNodes": 343,
-  "totalLocations": 340,
+  "lastUpdated": "2026-11-12T00:03:10.632Z",
+  "totalNodes": 344,
+  "totalLocations": 341,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -2382,12 +2382,19 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "104.178.118.239": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Wichita",
+      "lat": 37.7779,
+      "lon": -97.3151
     }
   },
   "countries": {
     "US": {
       "name": "United States",
-      "count": 142
+      "count": 143
     },
     "DE": {
       "name": "Germany",
