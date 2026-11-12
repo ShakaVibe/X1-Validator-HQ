@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-12T14:03:12.255Z",
-  "totalNodes": 344,
-  "totalLocations": 341,
+  "lastUpdated": "2026-11-12T16:03:19.184Z",
+  "totalNodes": 345,
+  "totalLocations": 342,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -2389,21 +2389,16 @@
       "city": "Wichita",
       "lat": 37.7779,
       "lon": -97.3151
+    },
+    "217.182.175.238": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Roubaix",
+      "lat": 50.6924,
+      "lon": 3.20113
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 52
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 55
-    },
-    "FR": {
-      "name": "France",
-      "count": 26
-    },
     "US": {
       "name": "United States",
       "count": 143
@@ -2411,6 +2406,22 @@
     "DE": {
       "name": "Germany",
       "count": 26
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 55
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 15
+    },
+    "FR": {
+      "name": "France",
+      "count": 27
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 52
     },
     "NL": {
       "name": "The Netherlands",
@@ -2420,17 +2431,13 @@
       "name": "Sweden",
       "count": 4
     },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 3
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 15
-    },
     "KE": {
       "name": "Kenya",
       "count": 6
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 3
     }
   }
 }
