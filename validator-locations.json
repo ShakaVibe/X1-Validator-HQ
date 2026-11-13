@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-13T16:03:18.665Z",
-  "totalNodes": 345,
-  "totalLocations": 342,
+  "lastUpdated": "2026-11-13T17:53:04.701Z",
+  "totalNodes": 346,
+  "totalLocations": 343,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -2396,6 +2396,13 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
+    },
+    "178.162.232.34": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.097,
+      "lon": 8.63004
     }
   },
   "countries": {
@@ -2425,7 +2432,7 @@
     },
     "DE": {
       "name": "Germany",
-      "count": 26
+      "count": 27
     },
     "NL": {
       "name": "The Netherlands",
