@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-13T04:03:09.679Z",
-  "totalNodes": 345,
-  "totalLocations": 342,
+  "lastUpdated": "2026-11-13T06:03:11.153Z",
+  "totalNodes": 346,
+  "totalLocations": 343,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -2396,40 +2396,39 @@
       "city": "Nairobi",
       "lat": -1.2841,
       "lon": 36.8155
+    },
+    "68.168.213.6": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
-    "US": {
-      "name": "United States",
-      "count": 143
-    },
-    "DE": {
-      "name": "Germany",
-      "count": 26
+    "PL": {
+      "name": "Poland",
+      "count": 52
     },
     "FI": {
       "name": "Finland",
       "count": 55
     },
-    "CA": {
-      "name": "Canada",
-      "count": 15
-    },
     "FR": {
       "name": "France",
       "count": 26
     },
-    "PL": {
-      "name": "Poland",
-      "count": 52
+    "US": {
+      "name": "United States",
+      "count": 144
+    },
+    "DE": {
+      "name": "Germany",
+      "count": 26
     },
     "NL": {
       "name": "The Netherlands",
       "count": 14
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "SE": {
       "name": "Sweden",
@@ -2438,6 +2437,14 @@
     "GB": {
       "name": "United Kingdom",
       "count": 3
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 15
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     }
   }
 }
