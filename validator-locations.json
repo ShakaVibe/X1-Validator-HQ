@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-13T08:03:12.780Z",
-  "totalNodes": 346,
-  "totalLocations": 343,
+  "lastUpdated": "2026-11-13T09:44:20.149Z",
+  "totalNodes": 345,
+  "totalLocations": 342,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -2383,13 +2383,6 @@
       "lat": 37.7779,
       "lon": -97.3151
     },
-    "217.182.175.238": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Roubaix",
-      "lat": 50.6924,
-      "lon": 3.20113
-    },
     "102.210.25.186": {
       "country": "Kenya",
       "countryCode": "KE",
@@ -2424,7 +2417,7 @@
     },
     "FR": {
       "name": "France",
-      "count": 26
+      "count": 25
     },
     "PL": {
       "name": "Poland",
