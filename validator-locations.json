@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-14T06:03:12.032Z",
-  "totalNodes": 346,
-  "totalLocations": 343,
+  "lastUpdated": "2026-11-14T06:44:29.428Z",
+  "totalNodes": 345,
+  "totalLocations": 342,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -948,13 +948,6 @@
       "lat": 51.5081,
       "lon": -0.1278
     },
-    "135.181.208.157": {
-      "country": "Finland",
-      "countryCode": "FI",
-      "city": "Helsinki",
-      "lat": 60.1719,
-      "lon": 24.9347
-    },
     "45.131.114.66": {
       "country": "The Netherlands",
       "countryCode": "NL",
@@ -1346,13 +1339,6 @@
       "city": "Wattrelos",
       "lat": 50.7012,
       "lon": 3.21501
-    },
-    "146.59.71.156": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2633,
-      "lon": 21.0283
     },
     "38.83.114.48": {
       "country": "United States",
@@ -2403,16 +2389,23 @@
       "city": "Frankfurt am Main",
       "lat": 50.097,
       "lon": 8.63004
+    },
+    "74.50.90.178": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Englewood Cliffs",
+      "lat": 40.8854,
+      "lon": -73.9524
     }
   },
   "countries": {
     "PL": {
       "name": "Poland",
-      "count": 52
+      "count": 51
     },
     "FI": {
       "name": "Finland",
-      "count": 55
+      "count": 54
     },
     "FR": {
       "name": "France",
@@ -2420,7 +2413,7 @@
     },
     "US": {
       "name": "United States",
-      "count": 144
+      "count": 145
     },
     "DE": {
       "name": "Germany",
