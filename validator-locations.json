@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-14T16:03:11.192Z",
+  "lastUpdated": "2026-11-14T18:03:08.914Z",
   "totalNodes": 345,
   "totalLocations": 341,
   "locations": {
@@ -1886,13 +1886,6 @@
       "lat": 60.1719,
       "lon": 24.9347
     },
-    "23.146.144.157": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Philadelphia",
-      "lat": 39.9598,
-      "lon": -75.1607
-    },
     "65.109.39.56": {
       "country": "Finland",
       "countryCode": "FI",
@@ -2384,6 +2377,13 @@
       "lon": -73.9524
     },
     "162.220.15.6": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
+    },
+    "64.20.40.14": {
       "country": "United States",
       "countryCode": "US",
       "city": "Secaucus",
