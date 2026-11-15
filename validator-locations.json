@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-15T04:03:12.002Z",
-  "totalNodes": 345,
-  "totalLocations": 341,
+  "lastUpdated": "2026-11-15T06:03:09.828Z",
+  "totalNodes": 344,
+  "totalLocations": 340,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -1122,13 +1122,6 @@
       "city": "Roubaix",
       "lat": 50.6924,
       "lon": 3.20113
-    },
-    "194.50.156.182": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Ostrołęka",
-      "lat": 53.0721,
-      "lon": 21.5723
     },
     "51.222.82.23": {
       "country": "Canada",
@@ -2392,6 +2385,18 @@
     }
   },
   "countries": {
+    "PL": {
+      "name": "Poland",
+      "count": 50
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 54
+    },
+    "FR": {
+      "name": "France",
+      "count": 25
+    },
     "US": {
       "name": "United States",
       "count": 145
@@ -2400,29 +2405,9 @@
       "name": "Germany",
       "count": 27
     },
-    "FI": {
-      "name": "Finland",
-      "count": 54
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 15
-    },
-    "FR": {
-      "name": "France",
-      "count": 25
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 51
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 14
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "SE": {
       "name": "Sweden",
@@ -2431,6 +2416,14 @@
     "GB": {
       "name": "United Kingdom",
       "count": 3
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 15
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     }
   }
 }
