@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-16T00:03:11.725Z",
+  "lastUpdated": "2026-11-16T02:03:11.449Z",
   "totalNodes": 344,
   "totalLocations": 341,
   "locations": {
@@ -1823,13 +1823,6 @@
       "lat": 52.2633,
       "lon": 21.0283
     },
-    "24.128.216.38": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Ypsilanti",
-      "lat": 42.244,
-      "lon": -83.5823
-    },
     "157.180.9.120": {
       "country": "Finland",
       "countryCode": "FI",
@@ -2389,9 +2382,24 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0749
+    },
+    "162.245.187.106": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Secaucus",
+      "lat": 40.7862,
+      "lon": -74.0743
     }
   },
   "countries": {
+    "PL": {
+      "name": "Poland",
+      "count": 49
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 54
+    },
     "FR": {
       "name": "France",
       "count": 24
@@ -2399,22 +2407,6 @@
     "US": {
       "name": "United States",
       "count": 147
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 15
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 54
-    },
-    "PL": {
-      "name": "Poland",
-      "count": 49
     },
     "DE": {
       "name": "Germany",
@@ -2431,6 +2423,14 @@
     "GB": {
       "name": "United Kingdom",
       "count": 3
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 15
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     }
   }
 }
