@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-17T10:03:12.281Z",
-  "totalNodes": 341,
-  "totalLocations": 338,
+  "lastUpdated": "2026-11-17T12:03:12.257Z",
+  "totalNodes": 337,
+  "totalLocations": 334,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -1886,13 +1886,6 @@
       "lat": 50.6924,
       "lon": 3.20113
     },
-    "173.225.109.206": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7876,
-      "lon": -74.06
-    },
     "69.169.101.195": {
       "country": "United States",
       "countryCode": "US",
@@ -1914,13 +1907,6 @@
       "lat": 40.7862,
       "lon": -74.0743
     },
-    "173.225.109.205": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7876,
-      "lon": -74.06
-    },
     "69.169.101.194": {
       "country": "United States",
       "countryCode": "US",
@@ -1941,20 +1927,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "173.225.109.203": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7876,
-      "lon": -74.06
-    },
-    "173.225.109.202": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7876,
-      "lon": -74.06
     },
     "65.108.71.183": {
       "country": "Finland",
@@ -2371,37 +2343,37 @@
     }
   },
   "countries": {
+    "FR": {
+      "name": "France",
+      "count": 24
+    },
     "US": {
       "name": "United States",
-      "count": 146
+      "count": 142
     },
-    "DE": {
-      "name": "Germany",
-      "count": 27
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 53
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "CA": {
       "name": "Canada",
       "count": 15
     },
-    "FR": {
-      "name": "France",
-      "count": 24
+    "FI": {
+      "name": "Finland",
+      "count": 53
     },
     "PL": {
       "name": "Poland",
       "count": 48
     },
+    "DE": {
+      "name": "Germany",
+      "count": 27
+    },
     "NL": {
       "name": "The Netherlands",
       "count": 14
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     },
     "SE": {
       "name": "Sweden",
