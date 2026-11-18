@@ -136,10 +136,13 @@ async function test(name, fn) {
   console.log('alerts-bot tests');
 
   await test('state file encrypts and round-trips; wrong key fails', () => {
-    const s = { v: 1, chats: { 42: { votes: [V1] } } };
+    // A 12-digit chat id: the old test used 42 and asserted the ciphertext never contains "42",
+    // which random base64 does about once in 13 runs (audit 2026-11-17 #21).
+    const CHAT = 987654321012;
+    const s = { v: 1, chats: { [CHAT]: { votes: [V1] } } };
     const text = encryptState(s, KEY);
     assert.ok(text.startsWith('X1HQ-ALERTS-v1\n'));
-    assert.ok(!text.includes('42') && !text.includes(V1), 'ciphertext must not leak the payload');
+    assert.ok(!text.includes(String(CHAT)) && !text.includes(V1), 'ciphertext must not leak the payload');
     assert.deepStrictEqual(decryptState(text, KEY), s);
     assert.throws(() => decryptState(text, 'cd'.repeat(32)));
   });

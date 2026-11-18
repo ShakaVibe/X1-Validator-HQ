@@ -1,11 +1,30 @@
-# C2 offline tests (data-action dispatcher)
+# Offline browser tests
 
-Playwright checks that every converted `data-action` control still calls its
-function exactly once with the original arguments. Each script serves the repo
+**Run everything with one command** (this is what CI runs, `.github/workflows/ci.yml`):
+
+    npm i -g playwright            # once (Chromium must be installed for Playwright)
+    NODE_PATH=$(npm root -g) node scripts/c2-tests/run-all.js "$PWD"
+
+It runs every suite below (three at a time, about 1½ minutes), prints one line per suite and exits 1
+if any failed. `--only apr,fleet` runs a few, `--jobs N` changes the parallelism. A suite that fails
+is run once more; "passed on retry" marks a flaky suite.
+
+The five oldest suites (cards, manage, modals, batch4, batch5) only print what happened and always
+exit 0. `run-all.js` compares their output with `expected/<suite>.txt`; a difference fails the suite
+and shows the differing lines. After an intended change, read the diff, then refresh the stored
+output with `run-all.js "$PWD" --only <suite> --update` and commit it. For `csp-walk-test` the runner
+reads the verdict lines (0 violations, positive control refused, no page errors).
+
+The node suites need no browser: `node scripts/test-compute-scores.js`,
+`node scripts/test-rewards-ledger.js`, `node scripts/test-alerts-bot.js`.
+
+## The suites
+
+**C2 dispatcher (data-action)** — Playwright checks that every converted `data-action` control still
+calls its function exactly once with the original arguments. Each script serves the repo
 on localhost, aborts every external request, renders the real markup with mocked
 state, replaces the target functions with spies and clicks through.
 
-    npm i -g playwright            # once (Chromium must be installed for Playwright)
     node scripts/c2-tests/cards-test.js  /path/to/repo
     node scripts/c2-tests/manage-test.js /path/to/repo
     node scripts/c2-tests/modals-test.js /path/to/repo
@@ -167,4 +186,4 @@ one-validator portfolio shows the card, the Fleet Health bar and a filled Delega
 the previous arrangement (rebuilt from today's files: `init();` at the end of modals.js, no start.js)
 opens nothing for both links and renders the card without the Fleet Health bar. Cache skew both ways:
 old index.html + new modals.js starts once at DOMContentLoaded; new index.html + old modals.js starts
-exactly once. 22 checks.
+exactly once. 21 checks.

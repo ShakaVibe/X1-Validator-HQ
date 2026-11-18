@@ -1,0 +1,109 @@
+{
+ "listLogoFallback": "E",
+ "secondAddDisabled": true,
+ "listInline": 0,
+ "popupGoneAfterConnect": true,
+ "popupGoneAfterCancel": true,
+ "catCycleStopped": true,
+ "stakeSelInline": 0,
+ "renderActions": "ok",
+ "validatorBtns": [
+  "initiateWithdraw",
+  "initiateChangeCommission",
+  "initiateUpdateIdentity",
+  "initiateChangeAuthority"
+ ],
+ "stakeBtns": [
+  "showActionExplainer:[\"delegate\",\"new\"]",
+  "showActionExplainer:[\"undelegate\",\"new\"]",
+  "showActionExplainer:[\"split\",\"new\"]",
+  "showActionExplainer:[\"merge\",\"new\"]",
+  "showActionExplainer:[\"withdraw\",\"new\"]",
+  "showActionExplainer:[\"close\",\"new\"]",
+  "showActionExplainer:[\"setStakeAuth\",\"new\"]",
+  "showActionExplainer:[\"setWithdrawAuth\",\"new\"]"
+ ],
+ "gridInline": 0,
+ "explainerOpen": "flex",
+ "explainerBtn": "<button class=\"explainer-action-btn\" data-action=\"manage-call\" data-fn=\"highlightAccountList\" data-args=\"[]\" data-then-close=\"1\">Select a Stake Account</button>",
+ "explainerClosedAfterAction": true,
+ "explainerClosedAfterGotIt": true,
+ "explainerInline": 0,
+ "renderStakeAccounts": "ok",
+ "accountRows": [
+  "stake-0",
+  "stake-1"
+ ],
+ "copyStopped": true,
+ "rowsInline": 0,
+ "redelegateInline": 0,
+ "renderMerge": "ok",
+ "mergeItems": [
+  "merge-toggle/merge-toggle-box",
+  "merge-toggle/merge-toggle-box",
+  "none/merge-toggle-box"
+ ],
+ "mergeBoxStopped": true,
+ "mergeInline": 0,
+ "calls": [
+  [
+   "selectValidatorForSearch",
+   "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+  ],
+  [
+   "addToPortfolioFromList",
+   "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+  ],
+  [
+   "addToComparisonFromList",
+   "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+  ],
+  [
+   "connectWallet"
+  ],
+  [
+   "cycleStakeCat",
+   "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+  ],
+  [
+   "saveStakeSelections",
+   "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+  ],
+  [
+   "closeStakeSelection"
+  ],
+  [
+   "initiateCreateStake"
+  ],
+  [
+   "initiateWithdraw"
+  ],
+  [
+   "highlightAccountList"
+  ],
+  [
+   "selectAccount",
+   "stake-0"
+  ],
+  [
+   "copyToClipboard",
+   "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac",
+   "<BUTTON>"
+  ],
+  [
+   "selectRedelegateValidator",
+   "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac",
+   "Evil \"<b>&'name"
+  ],
+  [
+   "toggleMergeStakeSelection",
+   "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+  ],
+  [
+   "toggleMergeStakeSelection",
+   "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+  ]
+ ]
+}
+page errors: []
+[Actions] warnings: []

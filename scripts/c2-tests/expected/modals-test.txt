@@ -1,0 +1,59 @@
+{
+ "rbRetry": "<button data-action=\"reward-breakdown\" data-vote=\"5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac\" data-name=\"Evil &quot;&lt;b&gt;&amp;'name\" data-commission=\"7\">Retry</button>",
+ "rbRetryStopped": true,
+ "rbInline": 0,
+ "registered": [
+  "rb-close:true",
+  "rb-portfolio-retry:true",
+  "tps-pin-close:true",
+  "tps-fetch-txs:true",
+  "tps-copy-tx:true",
+  "tps-bar:true",
+  "slot-tl-toggle:true",
+  "sm-refresh:true",
+  "reward-breakdown:true"
+ ],
+ "zones": 60,
+ "chartInline": 0,
+ "tooltipOnEnter": true,
+ "tooltipOnLeave": true,
+ "pinned": true,
+ "tooltipInline": 0,
+ "fetchBtn": "<button class=\"tps-tooltip-fetch-btn\" data-action=\"tps-fetch-txs\" data-idx=\"5\" data-start=\"1000\" data-end=\"1999\">Show first/last tx</button>",
+ "tooltipClickStopped": true,
+ "unpinned": true,
+ "rowInline": 0,
+ "tlBtn": "<button class=\"slot-tl-toggle\" data-id=\"stl1\" data-clabel=\"▾ Show all 400 slots (251 more)\" data-action=\"slot-tl-toggle\"",
+ "tlInline": 0,
+ "slotLogo": {
+  "imgHidden": true,
+  "phShown": "flex",
+  "phText": "E",
+  "inline": 0
+ },
+ "calls": [
+  [
+   "openRewardBreakdown",
+   "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac",
+   "Evil \"<b>&'name",
+   7
+  ],
+  [
+   "_fetchTxsForTpsBucket",
+   5,
+   1000,
+   1999
+  ],
+  [
+   "_copyTpsTx",
+   "sig\"<b>123",
+   "<BUTTON>"
+  ],
+  [
+   "toggleSlotTimeline",
+   "<BUTTON>"
+  ]
+ ]
+}
+page errors: []
+[Actions] warnings: []

@@ -1,0 +1,55 @@
+name: CI
+
+# Runs the test suites on every push by a person (audit 2026-11-17 #7).
+# The data bots do not trigger it: their commits carry "[skip ci]", which GitHub
+# honours for push workflows, and the files they write are ignored by path too.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'data/**'
+      - 'validator-locations.json'
+      - '**/*.md'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Syntax, node suites, browser suites
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # Pinned by commit (tags can be moved): checkout v7.0.1, setup-node v7.1.0 — looked up 2026-11-18.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: '22'
+
+      - name: Syntax check (every script)
+        run: |
+          for f in js/*.js scripts/*.js scripts/c2-tests/*.js generate-geo.js; do
+            node --check "$f" || exit 1
+          done
+
+      - name: Node suites (score generator, rewards ledger, alerts bot)
+        run: |
+          node scripts/test-compute-scores.js
+          node scripts/test-rewards-ledger.js
+          node scripts/test-alerts-bot.js
+
+      - name: Install Playwright (Chromium only)
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.63.0
+          npx playwright install --with-deps chromium
+
+      - name: Browser suites (offline, mocked RPC)
+        run: node scripts/c2-tests/run-all.js "$PWD" --jobs 2

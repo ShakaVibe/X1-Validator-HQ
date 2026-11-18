@@ -1,0 +1,153 @@
+{
+ "delegLink": "<span class=\"rb-open-link\" data-action=\"delegation-details\" data-vote=\"5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac\">Details</span>",
+ "delegStoppedOutside": true,
+ "calls": [
+  [
+   "copyToClipboard",
+   [
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac",
+    "ref: <Node>"
+   ],
+   "window"
+  ],
+  [
+   "shareValidator",
+   [
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac",
+    "Evil \"<b>&'name",
+    "ref: <Node>"
+   ],
+   "window"
+  ],
+  [
+   "addToPortfolio",
+   [
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+   ],
+   "window"
+  ],
+  [
+   "removeFromPortfolio",
+   [
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+   ],
+   "window"
+  ],
+  [
+   "openManageValidator",
+   [
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac",
+    "Evil \"<b>&'name",
+    99.25,
+    5,
+    "nodeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "http://127.0.0.1:PORT/does-not-exist.png"
+   ],
+   "window"
+  ],
+  [
+   "toggleCredTooltip",
+   [
+    "credTip-5ar5xXje"
+   ],
+   "window"
+  ],
+  [
+   "openSlotModal",
+   [
+    "nodeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB",
+    "Evil \"<b>&'name",
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+   ],
+   "window"
+  ],
+  [
+   "openRewardBreakdown",
+   [
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac",
+    "Evil \"<b>&'name",
+    5
+   ],
+   "window"
+  ],
+  [
+   "openStakeSelection",
+   [
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac",
+    "Evil \"<b>&'name"
+   ],
+   "window"
+  ],
+  [
+   "openPerfExplainerModal",
+   [
+    {
+     "isTrusted": false
+    },
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"
+   ],
+   "window"
+  ],
+  [
+   "toggleStakeDetails",
+   [
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac",
+    "Evil \"<b>&'name",
+    1234567.5,
+    5,
+    "ref: <Node>"
+   ],
+   "window"
+  ],
+  [
+   "toggleStakeDetails",
+   [
+    "5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac",
+    "Evil \"<b>&'name",
+    1234567.5,
+    5,
+    "ref: <Node>"
+   ],
+   "window"
+  ],
+  [
+   "toggleChart",
+   [
+    "chart-lk-5ar5xXje",
+    "ref: <Node>"
+   ],
+   "window"
+  ],
+  [
+   "switchChartType",
+   [
+    "chart-dc-5ar5xXje",
+    "credits",
+    "ref: <Node>"
+   ],
+   "window"
+  ],
+  [
+   "selectLookupValidator",
+   [
+    "VoteXYZ1234567890"
+   ],
+   "window"
+  ]
+ ],
+ "copyStoppedOutside": true,
+ "shareReachedOutside": true,
+ "imgs": [
+  [
+   "none",
+   "flex"
+  ],
+  [
+   "none",
+   "flex"
+  ]
+ ],
+ "inlineLeft": 0,
+ "nameOk": 7
+}
+page errors: []

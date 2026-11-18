@@ -1,0 +1,52 @@
+{
+ "registered": [],
+ "cdInline": 0,
+ "accountsDcOpen": true,
+ "accountsLkClosed": true,
+ "apyDc": "33.33%",
+ "apyLk": "11.11%",
+ "manageStopped": true,
+ "cancelBtn": true,
+ "cancelled": true,
+ "slowInline": 0,
+ "catInline": 0,
+ "catBtns": "performance,stake,commission,efficient,reliable,newest,credits,delegations",
+ "lbErrors": [],
+ "rows_stake": 50,
+ "inline_stake": 0,
+ "imgFallback_stake": 25,
+ "rows_newest": 50,
+ "inline_newest": 0,
+ "imgFallback_newest": 25,
+ "rows_delegations": 2,
+ "inline_delegations": 0,
+ "avatarImgsBefore": 6,
+ "smCounts": [
+  "skipmonGrid:100/0",
+  "skipmonFeed:15/0",
+  "skipmonTopWrap:4/0",
+  "skipmonTimelineTrack:101/0",
+  "skipmonScrubber:100/0"
+ ],
+ "avatarImgsLeft": 0,
+ "scorecardInline": 0,
+ "lookupInline": 0,
+ "routerActive": "efficient",
+ "clickActive": "reliable #/leaderboard/reliable"
+}
+calls:
+  ["openStakeSelection","5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac","Evil \"<b>&'name"]
+  ["retryStakeLoad","5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac","<BUTTON>"]
+  ["switchLeaderboard","stake"]
+  ["lookupValidator","Votexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0"]
+  ["lookupValidator","Votexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0"]
+  ["skipmonJumpToValidator","Nodeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy0"]
+  ["skipmonJumpToValidator","Nodeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy4"]
+  ["skipmonJumpToValidator","Nodeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy7"]
+  ["skipmonJumpToValidator","Nodeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy3"]
+  ["skipmonScrubberJump",3]
+  ["skipmonToggleTop"]
+  ["skipmonOpenPortfolioModal","Nodeyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy0","Evil \"<b>&'name","Votexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0"]
+  ["skipmonLookupPick","Votexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1"]
+page errors: []
+[Actions] warnings: []

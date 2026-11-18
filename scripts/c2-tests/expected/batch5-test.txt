@@ -1,0 +1,55 @@
+{
+ "unregistered": [],
+ "tabInline": 0,
+ "tabs": "skipmonitor,vtterminal,lookup,portfolio,leaderboard,delegation,compare,calculators",
+ "tabActive": "leaderboard / leaderboardTab",
+ "calcNavInline": 0,
+ "calcActive": "breakeven #/calculators/breakeven",
+ "compareSlotsInline": 0,
+ "compareFallback": 6,
+ "compareResults": 10,
+ "compareSearchInline": 0,
+ "calcBreakdownLink": "ok",
+ "calcCsInline": 0,
+ "calcPeriodBtns": 2,
+ "calcResultsInline": 0,
+ "periodAfterClick": "monthly / monthly btn active: true",
+ "walletSelectInline": 0,
+ "walletSelectClosed": true,
+ "walletInstallInline": 0,
+ "walletInstallClosed": true,
+ "nextLeaders": 5,
+ "nextLeadersInline": 0,
+ "currentLogoInline": 0,
+ "leaderImgFallback": "VVVVV",
+ "vpSuspects": 12,
+ "vpSusInline": 0,
+ "vpSortable": 10,
+ "vpTheadInline": 0,
+ "vpCopies": 12,
+ "vpBodyInline": 0,
+ "vpImgsWithFallback": 12,
+ "routerCalc": "compound / tab calculators",
+ "terminal": {
+  "liveBtn": true,
+  "dot": true,
+  "vtInline": 0,
+  "calls": [
+   "vtRefreshLive",
+   "vpOpenProbe"
+  ]
+ },
+ "terminalError": "retry calls: 1"
+}
+calls:
+  ["addToComparison","Votexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2"]
+  ["removeFromComparison","5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac"]
+  ["openStakeBreakdown","5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac","Evil \"<b>&'name",1000000,5]
+  ["fetchAndShowBreakdown","5ar5xXjefcD2sXZmhExfg4Sur5CJfBKRCp2LmATvQNac","Evil \"<b>&'name",1000000,5]
+  ["selectWallet","X1 Wallet"]
+  ["lookupValidator","Votexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1"]
+  ["vpFilterTo","Votexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10"]
+  ["vpSetSort","name"]
+  ["vpCopyPk","Votexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx10","<SPAN>"]
+page errors: []
+[Actions] warnings: []

@@ -25,10 +25,17 @@
 >    - **Needs Shaka's wallet, once:** a real MAX "Withdraw XNT" from a vote account (the fix is
 >      proven by mainnet simulation and by the live modal, not by a signed transaction).
 >    - **#2 privacy follow-up**: unchanged, on the owner's list (item B).
->    **Next: phase 2** (fix the flaky "42" test and the broken `manage-test.js` → CI + sanity gates on
->    published numbers, auto-closing failure issues + `TELEGRAM_CHAT_ID`, Node 24 in the workflows, a
->    stale-scores banner), then the **credits-based yield engine (#28)**, which replaces the interim
->    APR guard. **Ask Shaka before building #28** (open decision: should fully delinquent epochs
+>    **Phase 2 has started** (session 18): #21 tests made reliable and self-checking, and #7 part 1,
+>    the CI workflow (`.github/workflows/ci.yml`), handed over as push 7. **First thing next session:
+>    look at the CI runs on `main`** (Actions → CI). The first runs on GitHub's runners are the real
+>    test: everything passed in the cloud sandbox, but fonts and timing differ there. A suite that
+>    fails only on GitHub needs its waits or layout checks loosened, not a retry.
+>    **Still to do in phase 2:** sanity gates on the published numbers (#7 part 2: the builders refuse
+>    to publish and open an issue when e.g. APR p90 ÷ median > 1.3 or the validator count moves > 15 %
+>    in an hour), auto-closing failure issues + `TELEGRAM_CHAT_ID` (#14), Node 22/24 and pinned
+>    actions in the four bot workflows (#22; ci.yml already uses checkout v7.0.1 and setup-node v7.1.0
+>    by commit — run each bot once by hand after switching), the stale-scores banner (#10). Then the
+>    **credits-based yield engine (#28)**, which replaces the interim APR guard. **Ask Shaka before building #28** (open decision: should fully delinquent epochs
 >    count as 0 %? Today they are skipped). Decisions Shaka can still reverse from session 18: the
 >    site refuses program-derived addresses (multisig vaults) as a withdraw authority (CLI only), and
 >    the vote account's withdraw-authority change got the same confirmation as the stake one.
@@ -227,7 +234,9 @@ js/apr.js                     F11 Delegator APR: card tile (.apr-section) + #apr
 scripts/alerts-bot.js         F3 Telegram alerts bot (Node 20, zero deps) — see §4
 scripts/test-alerts-bot.js    mock tests for the bot (`node scripts/test-alerts-bot.js`)
 scripts/c2-tests/             offline Playwright suites (C2 dispatcher, strict CSP walk, alerts modal, fleet, apr, credits, identity, price pill,
-                              stake activation + vote withdraw, slot time, authority change, frame guard) — README there
+                              stake activation + vote withdraw, slot time, authority change, frame guard, start-up order) — README there
+scripts/c2-tests/run-all.js   ONE command for all of them (what CI runs); expected/*.txt = stored output of the five print-only suites
+.github/workflows/ci.yml      CI on every human push: node --check, the three node suites, run-all.js (bot commits carry [skip ci])
 data/alerts-state.enc         bot subscriptions + last-seen state, AES-256-GCM (key = ALERTS_STATE_KEY secret)
 .github/workflows/alerts.yml  Telegram alerts bot loop (~5h45m, self-dispatching, backup cron every 2 h)
 vendor/solana-web3.js-1.98.4.iife.min.js
@@ -1865,7 +1874,7 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
     a deploy a visitor can hold an old `index.html` with the new `modals.js` (no start.js tag → the
     listener starts the site) or the reverse (old modals.js calls init() itself → start.js finds no
     `startSite` and does nothing). Not started from DOMContentLoaded alone, because that waits for
-    the deferred Chart.js (cdnjs) and web3.js. New `startup-order-test.js` (22 checks) confirmed the
+    the deferred Chart.js (cdnjs) and web3.js. New `startup-order-test.js` (21 checks) confirmed the
     twins under the old order on a slow load: `#/terminal` and `#/delegation` opened nothing and
     `#/datacenter` rendered the card without the Fleet Health bar; all fine with the new order, both
     skew cases start exactly once. Cost: on a slow load nothing starts until the last script is in
@@ -1884,3 +1893,24 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   safeguard, look for its twin (stake vs vote-account withdraw authority); (3) a fix is not blanking
   the page if the parser keeps going: `innerHTML = ''` from a head script does not stop the rest of
   the document, `window.stop()` does.
+- **Phase 2 started, same day — #21 tests + #7 CI (push 7):**
+  - Flaky test: `test-alerts-bot.js` asserted that the ciphertext never contains "42". Measured over
+    20,000 encryptions: that fails 3.4 % of the time. Now a 12-digit chat id (0 of 20,000).
+  - `manage-test.js` is NOT broken here: it runs clean on the pre-session code and on today's (4 runs).
+    The "renderValidatorList is not defined" failure from 2026-10-16 was not reproduced.
+  - **Correction to earlier logs, mine included:** cards / manage / modals / batch4 / batch5 only print
+    their results and always exit 0, so "green" for those five has meant "no page errors, no [Actions]
+    warnings" plus whatever a person read — the spied calls were not machine-checked. Their output is
+    deterministic and identical between the pre-session tree and today's, so it is now stored in
+    `scripts/c2-tests/expected/` and compared by the new `scripts/c2-tests/run-all.js` (one command for
+    all 17 suites, exit 1 on any failure, one retry that is reported as "passed on retry"). Checked that
+    it bites: pointing one Manage button at the wrong function fails `manage-test` with a two-line diff.
+    I read all five stored outputs before freezing them (0 inline handlers, the documented calls and
+    arguments); they assert "unchanged since 2026-11-18", not more.
+  - `.github/workflows/ci.yml`: push to `main` (not `data/**`, `validator-locations.json`, `*.md`),
+    pull requests, manual. Steps: `node --check` on every script, the three node suites, Playwright
+    1.63.0 + Chromium, `run-all.js --jobs 2`. Read-only token, 15-minute limit, a newer push cancels
+    the older run. Simulated in a clean copy with a local `npm install`: 17 of 17, 1 min 42 s for
+    the browser part. Not yet run on GitHub at the time of writing.
+  - Noticed, not changed: three old preview PNGs under `Claude outputs/` are tracked in
+    the public repo although the folder is gitignored (audit #23).
