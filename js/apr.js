@@ -353,6 +353,46 @@
         'apr-close':   () => closeModal(),
         'apr-overlay': (el, e) => { if (e.target === el) closeModal(); },
       });
+      // Base rate for other modules (core.js validatorBaseRatePct / networkBaseRatePct): the gross
+      // yield from credits over the newest `n` epochs, in % per year; null without credits data.
+      function grossFromCredits(vote, n) {
+        const doc = window.RewardsLedger && window.RewardsLedger.doc;
+        const e = doc && doc.validators && doc.validators[vote];
+        if (!doc || !e || !Array.isArray(doc.pv) || !Array.isArray(e.cr)) return null;
+        let sum = 0, used = 0;
+        for (let i = doc.epochs.length - 1; i >= 0 && used < n; i--) {
+          const pv = doc.pv[i], cr = e.cr[i];
+          if (pv == null || cr == null) continue;
+          if (cr === 0 && !COUNT_OFFLINE_EPOCHS) continue;
+          sum += pv * cr; used++;
+        }
+        return used >= Math.min(MIN_EPOCHS, n) ? (sum / used) * epy() * 100 : null;
+      }
+      let _netGross = null, _netGrossKey = null;
+      function networkGross() {            // the median validator's base rate over the newest SHORT epochs
+        const doc = window.RewardsLedger && window.RewardsLedger.doc;
+        if (!doc || !Array.isArray(doc.pv)) return null;
+        const key = doc.generatedAt + '|' + Math.round(epy());
+        if (_netGrossKey === key) return _netGross;
+        const xs = [];
+        for (const vote of Object.keys(doc.validators)) { const g = grossFromCredits(vote, SHORT); if (g > 0) xs.push(g); }
+        xs.sort((a, b) => a - b);
+        _netGross = xs.length >= 10 ? xs[xs.length >> 1] : null; _netGrossKey = key;
+        return _netGross;
+      }
+      window.aprGross = grossFromCredits;
+      window.aprNetworkGross = networkGross;
+      // The calculators' two "custom rate" inputs start at a flat 8 %: replace that default with
+      // the network's base rate once it is known (never a value the visitor has typed).
+      function applyNetworkRateDefaults() {
+        const g = networkGross();
+        if (!(g > 0)) return;
+        for (const id of ['stakingApy', 'compoundAPY']) {
+          const el = document.getElementById(id);
+          if (el && el.value === '8' && el.defaultValue === '8') { el.value = g.toFixed(1); el.defaultValue = el.value; }
+        }
+      }
+      if (window.RewardsLedger) Promise.resolve(window.RewardsLedger.load()).then(applyNetworkRateDefaults, () => {});
       window.aprFor = aprFor;              // for other modules (fleet board / leaderboards later)
       window.aprHydrate = hydrateAll;
       window.aprNetwork = network;

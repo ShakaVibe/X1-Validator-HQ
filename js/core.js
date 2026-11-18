@@ -812,6 +812,27 @@
       return yearMs / (slots * measuredSlotMs());
     }
 
+    // BASE RATE (audit 2026-11-17 #9, 2026-11-18): what 1 XNT staked with a validator earns per
+    // year before commission, in %. Stake Details, the staking / compound calculators and Manage
+    // Validator used to derive it as  past rewards ÷ (today's self-stake + today's delegated stake ×
+    // commission)  — wrong whenever the stake had moved inside the window, the same mistake the
+    // Delegator APR had. It now comes from the credits data in the rewards ledger (js/apr.js:
+    // network rate per vote credit × the credits the validator earned), which needs no stake.
+    //   validatorBaseRatePct(vote, epochs) → % or null (no credits data: the caller keeps its own estimate)
+    //   networkBaseRatePct()               → the median validator's rate; the old flat 8 % only as a last resort
+    function validatorBaseRatePct(vote, epochs) {
+      try {
+        const r = typeof window.aprGross === 'function' ? window.aprGross(vote, epochs) : null;
+        return (r != null && isFinite(r)) ? r : null;
+      } catch (e) { return null; }
+    }
+    function networkBaseRatePct() {
+      try {
+        const r = typeof window.aprNetworkGross === 'function' ? window.aprNetworkGross() : null;
+        return (r != null && isFinite(r) && r > 0) ? r : 8;
+      } catch (e) { return 8; }
+    }
+
     // Persistent cache for self-stake account pubkeys (survives page reloads and epoch transitions)
     const SELF_STAKE_SELECTIONS_KEY = 'x1SelfStakeSelections';
     
@@ -1252,8 +1273,8 @@
         // self-stake accounts (the ledger only knows withdrawer matching).
         let ledgerRows = new Map(), knownSelf = null;
         const userSel = typeof getSelfStakeSelections === 'function' ? getSelfStakeSelections(voteAccount) : null;
+        await RewardsLedger.load();   // always: its credits data also feeds the base rate (validatorBaseRatePct)
         if (!hasUserClassification(userSel)) {
-          await RewardsLedger.load();
           const got = RewardsLedger.rows(voteAccount, epochsToFetch, commission);
           ledgerRows = got.rows; knownSelf = got.self;
         }

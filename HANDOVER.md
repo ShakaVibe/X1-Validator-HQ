@@ -30,10 +30,10 @@
 >    the scores, terminal and geo bots closed issues #3, #1 and #2 by themselves on 2026-11-18.
 >    #22: the geo bot has run on Node 22 + actions pinned by commit since push 8 (two runs pushed
 >    their commits); push 11 moves the scores, terminal-snapshot and alerts workflows the same way.
->    **First thing next session:** `update-scores` and `update-terminal-snapshot` runs after push 11
->    are green and still commit every hour (`git log --since='3 hours ago' --format='%an %s' | sort |
->    uniq -c`); the alerts loop uses the new setup from its next restart. If a bot cannot push, revert
->    that workflow's three lines to `actions/checkout@v4`, `actions/setup-node@v4`, `node-version: '20'`.
+>    Proven for scores and terminal-snapshot too: their 19:03 UTC runs on 2026-11-18 were green and
+>    published. The alerts loop uses the new setup from its next restart. If a bot ever cannot push,
+>    revert that workflow's three lines to `actions/checkout@v4`, `actions/setup-node@v4`,
+>    `node-version: '20'` (check with `git log --since='3 hours ago' --format='%an %s' | sort | uniq -c`).
 >    Push 9: the alerts bot watches the published data files (§4 "Published-data watch"). Live since
 >    the bot loop restarted at 18:08 UTC on 2026-11-18. **Shaka, optional:** send `/id` to
 >    @x1valhq_bot and store the number as the `TELEGRAM_CHAT_ID` secret (read at the loop's next
@@ -42,12 +42,16 @@
 >    validators in front of him: an epoch in which a validator was offline the whole time counts as
 >    0 %** (`COUNT_OFFLINE_EPOCHS` in `js/apr.js`, one switch).
 >    Step 1 is live: the hourly ledger carries `pv` (36 epochs, no nulls) and `cr` for all 384
->    validators since the 19:03 UTC run. Step 2, push 12: `js/apr.js` computes the tile and modal from
->    `pv × cr × (1 − commission)`. **First thing next session: live-check push 12** — a normal
->    validator (≈ 6.75 %, "30 ep · net of 10% fee"), an X1 Labs 0 %-commission one (≈ 7.5 %, "no fee"),
->    and "sosnowiec levykrak" (≈ 3.1 %, "… 16 offline …", modal row "Epochs offline"), assuming the
->    numbers of 2026-11-18. **Still open in #28:** the calculators and Stake Details still divide past
->    rewards by today's stake (audit #9) — feed them from `pv` / `cr` and rename "APY" to "APR"; the
+>    validators since the 19:03 UTC run. Step 2, push 12 (live-verified): `js/apr.js` computes the tile and
+>    modal from `pv × cr × (1 − commission)`. Step 3, push 13 — audit #9: Stake Details, the staking
+>    and compound calculators and Manage Validator take their base rate from the same credits data
+>    (`validatorBaseRatePct` / `networkBaseRatePct` in `js/core.js`), the flat 8 % is only the last
+>    resort, and every visible "APY" reads "APR". **First thing next session: live-check push 13** —
+>    Stake Details of a validator whose delegation changed in the last week (2026-11-18: SK.X1#4,
+>    Xenbros-01, gucci, Aegis-Ghost showed a base of ≈ 3.7 % and should show ≈ 7.4 %), "From
+>    Self-Stake (7.4% base)", "Validator APR"; Calculators → custom mode starts at the network rate
+>    (≈ 7.4) instead of 8. **Still open in #28:** the break-even calculator's `realAPY` (total
+>    rewards ÷ total stake, a different quantity, left as it is); the
 >    APR sanity gate in the builder (#7 part 2); once the credits method has run for a while, delete
 >    the stake-based fallback and the clean-epoch filter from `js/apr.js`, and the audit's
 >    `apr_check.py` can be rewritten against `pv` (its "stable-stake" estimate is 0.017 % low).
@@ -434,7 +438,7 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
       [ ] #2 privacy follow-up stays on the owner's list (Start-here item B)
 - [ ] **Weeks 1–2:** #21 fix the flaky + broken tests → #7 CI and sanity gates on published numbers ·
       #14 auto-close failure issues, set `TELEGRAM_CHAT_ID` · #22 Node 24 / actions v5+ · #10 stale-scores banner
-- [ ] **Weeks 2–4:** #28 credits-based yield engine (closes #1 and #9) · #18 rent helper · #12 RPC failover ·
+- [ ] **Weeks 2–4:** #28 credits-based yield engine (#1 and #9 done, session 18; fallback removal and the builder's gate open) · #18 rent helper · #12 RPC failover ·
       #6/#25 vendor third-party scripts, script-src 'self'
 - [ ] **Month 2:** #26 edge layer (headers #13, bot + scheduler #3, RPC cache, icon proxy #15) ·
       #27 data as a deploy artifact (closes #11, #17, #23) · #16 lazy ledger · #31 private ops docs
@@ -2046,4 +2050,35 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
     epochs, first epoch five epochs ago, 0 % commission, two epochs only, a recorded stake of 1 XNT
     in every cell (changes nothing), an epoch without a published rate. All 17 suites pass against
     the published ledger of 19:03 UTC and against a pre-credits ledger.
+  Live-verified after the push (`8f640e77`), built-in browser pane: all 350 validators in the
+  page's list use the credits method, 39 of them with offline epochs; sosnowiec levykrak 3.12 %
+  "30 ep · 16 offline · net of 10% fee", X1 Labs val0 7.54 % "30 ep · no fee", OWL 6.79 %,
+  WiznaPL 6.56 %, Bin Suardi 0.54 %; console clean apart from one transient network error.
+- **Push 13 — audit #9, the same credits data for Stake Details and the calculators.** They derived
+  the rate 1 XNT earns per year as past rewards ÷ (today's self-stake + today's delegated stake ×
+  commission) and fell back to a flat 8 %. Measured on mainnet before changing anything (14
+  validators, stake accounts read live, 7 epochs): where stake did not move the old and the new
+  figure agree (xenbros-07 7.36 / 7.37, XenMM 7.34 / 7.34, cboy ese X1 6.84 / 6.84); where a
+  delegation of ~1.1 M XNT arrived inside the week the old formula showed about half the truth
+  (SK.X1#4 3.74 → 7.39, Xenbros-01 3.69 → 7.37, gucci 3.79 → 7.39, X1 prime validator 2.92 → 7.26,
+  Aegis-Ghost 2.27 → 7.38). The error goes the other way after a withdrawal.
+  - `js/apr.js` exports `aprGross(vote, n)` (mean of `pv × cr` over the newest n epochs × epochs
+    per year; offline epochs count as 0 %, like the tile) and `aprNetworkGross()` (the median
+    validator, 7 epochs). `js/core.js` wraps them: `validatorBaseRatePct(vote, epochs)` → % or null,
+    `networkBaseRatePct()` → % with the old 8 as the last resort. Callers keep their previous
+    estimate when the helper returns null (ledger down, validator without `cr`).
+  - Used in `js/card-details.js` (`calcPeriodAPY`, both periods, and so `derivedBaseAPY` for the
+    combined Data Center view), `js/calculators.js` (staking and compound calculators),
+    `js/manage.js` (Manage Validator's earnings breakdown, which also printed the rate unrounded).
+    `fetchTotalValidatorRewards` now loads the ledger on the hand-classified path too. The
+    "actual earnings" figures (rewards really received) are unchanged; only the rate applied to
+    today's stake changed.
+  - The two custom-rate inputs of the calculators start at the network rate instead of 8; a value
+    typed before the ledger arrived is kept.
+  - Labels: "APY" → "APR" wherever it is shown (nothing compounds in these figures; the compound
+    calculator applies its own compounding to the APR), "(last N days)" → "(last N epochs)".
+    Internal names (`baseAPY`, `validatorAPY`, ids, CSS classes) are unchanged on purpose.
+  - New suite `scripts/c2-tests/base-rate-test.js` (18 checks, second implementation in node, the
+    stake-moved case in the staking calculator, fallbacks, the typed-value case). 18 of 18 suites,
+    CSP walk 0 violations.
   Not live-verified at the time of writing.

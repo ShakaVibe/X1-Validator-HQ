@@ -32,7 +32,7 @@ const SUITES = [
   ['csp-walk-test', 'csp'],
   ['alerts-modal-test', 'checks'], ['fleet-test', 'checks'], ['apr-test', 'checks'], ['credits-test', 'checks'], ['identity-test', 'checks'],
   ['price-pill-test', 'checks'], ['stake-activation-test', 'checks'], ['slot-time-test', 'checks'], ['authority-test', 'checks'],
-  ['frame-guard-test', 'checks'], ['startup-order-test', 'checks'],
+  ['frame-guard-test', 'checks'], ['startup-order-test', 'checks'], ['base-rate-test', 'checks'],
 ].filter(([name]) => !only || only.split(',').includes(name) || only.split(',').includes(name.replace(/-test$/, '')));
 
 // Output of an "expected" suite with the parts that legitimately vary removed

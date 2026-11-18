@@ -175,6 +175,17 @@ normally. Framed (plain, sandboxed with scripts, same-origin parent): no site ma
 scripts, only the notice and a top-level link. Control: the previous guard from git history leaves
 the framed site fully usable (skipped where the history is not available). 8 checks. Chromium only.
 
+**Base rate (audit #9, 2026-11-18)** — `validatorBaseRatePct` / `networkBaseRatePct` in `js/core.js`:
+
+    node scripts/c2-tests/base-rate-test.js "$PWD"
+
+The rate 1 XNT earns per year before commission, used by Stake Details, the staking and compound
+calculators and Manage Validator, comes from the ledger's vote credits instead of past rewards ÷
+today's stake. Compares the helper with a second implementation in node (7 and 30 epochs, offline
+epochs as 0 %, 40 real validators), the network median and its fallbacks, the staking calculator
+when the reward data would imply ~15,900 % at today's stake, the custom-rate inputs (network rate
+instead of 8, a typed value is kept) and that no visible "APY" is left. 18 checks.
+
 **Start-up order (2026-11-18)** — `js/start.js` + `startSite()` at the end of `js/modals.js`:
 
     node scripts/c2-tests/startup-order-test.js "$PWD"

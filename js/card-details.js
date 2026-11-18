@@ -217,7 +217,7 @@
             selfStakeAccounts,
             accountCount: data.result.length,
             detectionMethod: detectionMethod,
-            derivedBaseAPY: 8,
+            derivedBaseAPY: networkBaseRatePct(),
             historicalAPY: {},
             apyPending: true
           };
@@ -241,7 +241,7 @@
           // ── APY, in the background ──
           (async () => {
             const APY_EPOCHS = 30;
-            let derivedBaseAPY = 8;
+            let derivedBaseAPY = networkBaseRatePct();
             const historicalAPY = { days7: null, days30: null, days90: null, days365: null };
             try {
               const validatorRewards = await fetchTotalValidatorRewards(voteAccount, commission, APY_EPOCHS);
@@ -253,7 +253,10 @@
                   const totalRewardsXNT = periodRewards.reduce((sum, r) => sum + r.amount, 0) / 1e9;
                   const avgEpochRewardsXNT = totalRewardsXNT / periodRewards.length;
                   const annualizedRewards = avgEpochRewardsXNT * epochsPerYear();
-                  const baseAPY = divisor > 0 ? (annualizedRewards / divisor) * 100 : 8;
+                  // Base rate: from vote credits when the ledger has them (exact), else the old
+                  // estimate from past rewards over today's stake split.
+                  const exactBase = validatorBaseRatePct(voteAccount, days);
+                  const baseAPY = exactBase != null ? exactBase : (divisor > 0 ? (annualizedRewards / divisor) * 100 : networkBaseRatePct());
                   const selfEarnings = selfStake * (baseAPY / 100);
                   const commEarnings = delegatedStake * (baseAPY / 100) * (commission / 100);
                   const totalEarnings = selfEarnings + commEarnings;
@@ -419,7 +422,7 @@
           <div class="stake-inline-earnings">
             <div class="stake-inline-apy-display">
               <div class="stake-inline-apy-header">
-                <div class="stake-inline-apy-label">Validator APY</div>
+                <div class="stake-inline-apy-label">Validator APR</div>
                 <select class="stake-apy-period-select" data-change="stake-apy-period" data-vote="${escHtml(voteAccount)}">
                   ${historicalAPY.days7 ? `<option value="7" selected>7-day avg</option>` : ''}
                   ${historicalAPY.days30 ? `<option value="30">30-day avg</option>` : ''}
@@ -1120,7 +1123,7 @@
           
           <div class="stake-inline-earnings">
             <div class="stake-inline-apy-display">
-              <div class="stake-inline-apy-label">Portfolio APY (7-day avg)</div>
+              <div class="stake-inline-apy-label">Portfolio APR (7-day avg)</div>
               <div class="stake-inline-apy-value">${formatNumber(portfolioAPY, 2)}%</div>
               <div class="stake-inline-apy-note">Effective return on total self-stake</div>
             </div>

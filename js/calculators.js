@@ -481,7 +481,7 @@
           <div class="calc-earnings-section">
             <div class="calc-earnings-title">💰 Estimated Annual Earnings</div>
             <div class="calc-earnings-row">
-              <span class="calc-earnings-label">From Self-Stake (${apy}% APY)</span>
+              <span class="calc-earnings-label">From Self-Stake (${apy}% APR)</span>
               <span class="calc-earnings-value">${formatValue(selfStakeEarnings)}</span>
             </div>
             <div class="calc-earnings-row">
@@ -524,7 +524,7 @@
       // So: totalRewards = selfStake * baseAPY + delegatedStake * baseAPY * (commission/100)
       // We know totalRewards from real data, and if we have breakdown, we can solve for baseAPY
       
-      let baseAPY = 8; // Default network base APY
+      let baseAPY = networkBaseRatePct(); // network base rate until this validator's is known
       if (hasBreakdown && stakingRealRewardsData && selfStake > 0) {
         const totalAnnualRewards = stakingRealRewardsData.avgEpoch * epochsPerYear();
         // totalRewards = selfStake * baseAPY + delegatedStake * baseAPY * (commission/100)
@@ -534,6 +534,9 @@
           baseAPY = (totalAnnualRewards / divisor) * 100;
         }
       }
+      // Exact base rate from vote credits when the ledger has them (see core.js "BASE RATE")
+      const exactBaseRate = validatorBaseRatePct(validatorSelect.value, 7);
+      if (exactBaseRate != null) baseAPY = exactBaseRate;
       
       // Current earnings breakdown
       const currentSelfEarnings = selfStake * (baseAPY / 100);
@@ -572,7 +575,7 @@
         <div class="calc-current-breakdown">
           <div class="calc-breakdown-title">
             📊 Current Stake Breakdown
-            <span class="calc-apy-badge">📈 ${formatNumber(validatorAPY, 2)}% Validator APY <span style="font-size: 0.7rem; opacity: 0.8;">(7-day avg)</span></span>
+            <span class="calc-apy-badge">📈 ${formatNumber(validatorAPY, 2)}% Validator APR <span style="font-size: 0.7rem; opacity: 0.8;">(7-day avg)</span></span>
           </div>
           <div class="calc-breakdown-grid">
             <div class="calc-breakdown-item self">
@@ -592,7 +595,7 @@
         <div class="calc-earnings-section">
           <div class="calc-earnings-title">💰 Current Annual Earnings</div>
           <div class="calc-earnings-row">
-            <span class="calc-earnings-label">From Self-Stake (${formatNumber(baseAPY, 2)}% base APY)</span>
+            <span class="calc-earnings-label">From Self-Stake (${formatNumber(baseAPY, 2)}% base rate)</span>
             <span class="calc-earnings-value">${formatValue(currentSelfEarnings)}</span>
           </div>
           <div class="calc-earnings-row">
@@ -679,7 +682,7 @@
       if (stakingRealRewardsData) {
         html += `
           <div class="calc-actual-note" style="margin-top: 1rem;">
-            📊 APY calculated from actual reward data (last ${stakingRealRewardsData.epochs} days)
+            📊 Rates from on-chain reward data (last ${stakingRealRewardsData.epochs} epochs)
           </div>
         `;
       }
@@ -717,7 +720,7 @@
         // Show manual inputs for custom
         initialGroup.style.display = 'block';
         apyGroup.style.display = 'block';
-        hintEl.textContent = 'Enter your custom stake amount and APY above';
+        hintEl.textContent = 'Enter your custom stake amount and rate above';
         compoundValidatorStake = 0;
         compoundRealRewardsData = null;
         calculateCompoundGrowth();
@@ -788,10 +791,13 @@
             // Solve for baseAPY:
             const totalAnnualRewards = avgEpochRewardsXNT * epochsPerYear();
             const divisor = selfStake + (delegatedStake * commission / 100);
-            let baseAPY = 8; // Default
+            let baseAPY = networkBaseRatePct(); // network base rate as the default
             if (divisor > 0) {
               baseAPY = (totalAnnualRewards / divisor) * 100;
             }
+            // Exact base rate from vote credits when the ledger has them (see core.js "BASE RATE")
+            const exactBaseRate = validatorBaseRatePct(validatorSelect.value, 7);
+            if (exactBaseRate != null) baseAPY = exactBaseRate;
 
             // Now calculate earnings with derived baseAPY
             const selfStakeEarnings = selfStake * (baseAPY / 100);
@@ -928,7 +934,7 @@
           </div>
           ${selfStake > 0 ? `
           <div class="calc-validator-apy-box">
-            <div class="calc-validator-apy-label">Validator Effective APY (7-day avg)</div>
+            <div class="calc-validator-apy-label">Validator Effective APR (7-day avg)</div>
             <div class="calc-validator-apy-value">${apy.toFixed(2)}%</div>
             <div class="calc-validator-apy-note">
               ${formatNumber(selfStake, 0)} self-stake + ${commission}% commission on ${formatNumber(delegatedStake, 0)} delegated
@@ -945,7 +951,7 @@
       resultsContent.innerHTML = `
         ${earningsHtml}
         <div class="calc-section-header">
-          <span>📈 ${years}-Year Projection (${freqLabel} Compounding @ ${apy.toFixed(2)}% APY)</span>
+          <span>📈 ${years}-Year Projection (${freqLabel} Compounding @ ${apy.toFixed(2)}% APR)</span>
         </div>
         <div class="compound-comparison">
           <div class="compound-vs">
@@ -968,7 +974,7 @@
           </div>
         </div>
         <div class="calc-actual-note">
-          Projection based on ${apy.toFixed(2)}% APY (7-day average). Actual results will vary.
+          Projection based on ${apy.toFixed(2)}% APR (7-day average). Actual results will vary.
         </div>
       `;
       

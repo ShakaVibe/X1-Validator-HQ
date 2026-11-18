@@ -571,7 +571,7 @@ Please give me the diagnostic commands to run on my server so you can help me id
         delegators.sort((a, b) => b.amount - a.amount);
         
         // Fetch validator's inflation rewards to calculate derived baseAPY
-        let derivedBaseAPY = 8; // Default fallback
+        let derivedBaseAPY = networkBaseRatePct(); // network base rate as the fallback
         try {
           const validatorRewards = await fetchTotalValidatorRewards(voteAccount, commission, 7);
           if (validatorRewards && validatorRewards.length > 0) {
@@ -588,6 +588,9 @@ Please give me the diagnostic commands to run on my server so you can help me id
         } catch (e) {
           console.warn('Could not fetch validator rewards for APY calculation:', e);
         }
+        // Exact base rate from vote credits when the ledger has them (see core.js "BASE RATE")
+        const exactBaseRate = validatorBaseRatePct(voteAccount, 7);
+        if (exactBaseRate != null) derivedBaseAPY = exactBaseRate;
         
         const breakdownData = {
           selfStake,
@@ -1227,13 +1230,13 @@ Please give me the diagnostic commands to run on my server so you can help me id
         <div class="stake-apy-section">
           <div class="stake-apy-title">
             💰 Earnings Breakdown (Estimated Annual)
-            <span style="margin-left: 0.5rem; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; font-size: 1.1rem;">${formatNumber(validatorAPY, 2)}% APY</span>
+            <span style="margin-left: 0.5rem; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; font-size: 1.1rem;">${formatNumber(validatorAPY, 2)}% APR</span>
             <span style="font-size: 0.7rem; color: var(--text-dim); margin-left: 0.25rem;">(7-day avg)</span>
           </div>
           <div class="stake-apy-grid">
             <div class="stake-apy-item">
               <div class="stake-apy-value">${formatNumber(selfStakeEarnings, 0)} XNT</div>
-              <div class="stake-apy-label">From Self-Stake (${selfStakeAPY}% base)</div>
+              <div class="stake-apy-label">From Self-Stake (${formatNumber(selfStakeAPY, 2)}% base)</div>
             </div>
             <div class="stake-apy-item">
               <div class="stake-apy-value">${formatNumber(commissionEarnings, 0)} XNT</div>
