@@ -40,6 +40,14 @@
 >    effect at the bot loop's next restart (≤ 5 h 45 min, or cancel the run in Actions and start it
 >    again). **Shaka, optional:** send `/id` to @x1valhq_bot after that restart and store the number as
 >    the `TELEGRAM_CHAT_ID` secret; until then the notice arrives as a GitHub issue only.
+>    **Credits-based APR (#28), Shaka's decision 2026-11-18: an epoch in which a validator was offline
+>    the whole time counts as 0 %** (he answered "go" to that recommendation; keep it one switch).
+>    Step 1, push 10: the ledger builder publishes `cr` + `pv` (§4). **Check after the next hourly
+>    snapshot run** that `data/rewards.json` has a 36-entry `pv` with no nulls and `cr` on every
+>    validator. Step 2 (not built): `js/apr.js` computes from `pv × cr × (1 − c)` and drops the
+>    interim clean-epoch filter and the self-stake detour for 0 %-commission validators; show Shaka
+>    which validators move, and by how much, BEFORE it ships; then the calculators and Stake Details
+>    (#9) from the same numbers, and the APR sanity gate (#7 part 2) in the builder.
 >    **Still to do in phase 2:** sanity gates on the published numbers (#7 part 2: the builders refuse
 >    to publish and open an issue when e.g. APR p90 ÷ median > 1.3 or the validator count moves > 15 %
 >    in an hour — compute the APR part with the site's clean-epoch filter, the raw ledger would trip
@@ -346,6 +354,20 @@ CNAME / .nojekyll / _headers  Pages config
   authority; the vote (voter) authority keeps its "CHANGE VOTE AUTHORITY" phrase modal. The stake
   *staker* authority has no confirmation (the withdrawer can always reset it). The modal must stay
   AFTER the authority modals in `index.html` (same z-index, later = on top).
+- **Credits and point value in the ledger** (`scripts/build-rewards-ledger.js`, 2026-11-18, audit #28
+  step 1): `data/rewards.json` gains `cr` per validator (vote credits earned per epoch from the vote
+  account's `epochCredits`; 0 = on record but earned nothing that epoch; null = before its first epoch
+  on record or unreadable) and a top-level `pv` aligned to `epochs` (the network's point value:
+  lamports of reward per staked lamport per credit). A delegator's yield in epoch E is
+  `pv[E] × cr[E] × (1 − commission)` — no stake involved, so the `st` misalignment (audit #1) cannot
+  touch it. `pv` is READ, not estimated: every self-stake account's reward for the epoch gives
+  `amount ÷ ((postBalance − amount − rent) × credits × (1 − commission))`; the median over ~900
+  accounts is published (99 % agree within 0.1 %; the stragglers hold extra lamports or were warming
+  up). It is null when fewer than 20 accounts or under half of them agree, is computed once per epoch
+  and then carried over. Cost: +4 RPC calls per hourly run (the credits), ~180 once for the first
+  backfill. pv is not a constant: 5.35e-11 in epoch 446, but 5.96–6.02e-11 in 425–426, when the
+  network earned fewer credits in total and the same inflation was shared over fewer points.
+  The site does not read `cr` / `pv` yet (step 2).
 - **Stake cooldown** (`StakeActivation`, `js/core.js`, 2026-10-29): `getStakeActivation` is gone from
   Agave 2.x / X1 4.0.x RPCs. `fetchStakeHistory(epoch)` reads the StakeHistory sysvar once per epoch
   (jsonParsed, ~60 KB: per epoch `{effective, activating, deactivating}` cluster lamports, newest = the
@@ -1967,3 +1989,15 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   Run for real against the published files on raw.githubusercontent.com: ages 48–49 min, no notice;
   with the limit forced to 1 minute the notice text comes out right. Not yet run inside the bot loop
   on GitHub, and the real `gh` calls are covered by a stand-in only.
+- **Push 10 — #28 step 1, credits + point value in the ledger** (builder + its tests only; the site
+  is unchanged). Before building I checked whether the point value could be read instead of estimated
+  from "stable-stake" validators as the audit proposed: it can, from stake-account rewards (§4), and
+  that estimate differs from the audit's by a steady −0.017 % — exactly one epoch of compounding,
+  i.e. the audit's `st` being the next epoch's stake. Ran the real builder against mainnet from the
+  cloud, starting from the published ledger: 36 of 36 point values, 844–990 accounts each, 96–99 %
+  within 0.1 % of the median; 198 RPC calls / 16 s for the backfill, 17 calls for the next run;
+  every existing field (`v`, `s`, `st`, `c`, `self`, `w`) byte-identical for all 384 validators; file
+  569 → 676 KB raw, 286 → 325 KB gzipped. 74 of 384 vote accounts have at least one 0-credit epoch
+  in the window. `test-rewards-ledger.js` extended (credits rows incl. offline / new / unreadable
+  accounts, carried and back-filled point values, the too-few and no-agreement cases, no extra
+  calls on a routine run).

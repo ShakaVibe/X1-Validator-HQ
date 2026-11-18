@@ -32,13 +32,35 @@
  * not indexed):
  *   { v, generatedAt, currentEpoch, epochs: [asc],
  *     counts: { validators, selfAccounts, rpcCalls },
+ *     pv: [point value…],
  *     validators: { <vote>: { w: <withdrawer>, self: [<stake pubkey>…],
  *                             v: [vote reward…], s: [self-stake reward sum…],
- *                             st: [active stake, XNT…], c: [commission %…] } } }
+ *                             st: [active stake, XNT…], c: [commission %…],
+ *                             cr: [vote credits earned…] } } }
  *   `st` / `c` (added 2026-10-13, F11 APR) hold the validator's active stake
  *   and commission as seen when that epoch's `v` cell was fetched — i.e. the
  *   stake the reward was earned on. Cells carried over from a ledger written
  *   before this field existed are null; the site falls back to current stake.
+ *   CAUTION: `st` is the stake at FETCH time — normally the next epoch's, and
+ *   "that day's" for re-fetched cells — so reward ÷ st is wrong for a validator
+ *   whose stake moved (audit 2026-11-17 #1). Yields are computed from the two
+ *   fields below instead, which need no stake at all.
+ *
+ *   `cr` (per validator) and `pv` (top level), added 2026-11-18 (audit #28):
+ *     cr: vote credits the validator earned in each epoch, from its vote
+ *         account's on-chain epochCredits. 0 = the account existed but earned
+ *         nothing that epoch (offline all epoch); null = before its first epoch
+ *         on record, or the vote account could not be read.
+ *     pv: the network's point value per epoch — lamports of inflation reward
+ *         per staked lamport per vote credit. Every stake account earns
+ *         pv × its stake × its validator's credits, split by the commission, so
+ *         a delegator's yield in an epoch is pv[E] × cr[E] × (1 − commission).
+ *         Read from the chain, not estimated: each self-stake account's reward
+ *         gives  amount ÷ ((postBalance − amount − rent) × credits × (1 − c)),
+ *         and the median over ~900 accounts is published (97–98 % of them agree
+ *         to 0.01 %; the rest hold extra lamports or were still warming up).
+ *         null when too few accounts agree. Computed once per epoch, then
+ *         carried over.
  *
  * Node 20+, zero dependencies.   Usage: node scripts/build-rewards-ledger.js
  * Env: X1_RPC_URL (default https://rpc.mainnet.x1.xyz)
@@ -57,6 +79,8 @@ const DEFAULTS = {
   retries: 4,
   timeoutMs: 60000,
   recheckNewest: 3,    // re-fetch null cells this many epochs back (late indexing)
+  pvMinAccounts: 20,   // point value: at least this many self-stake accounts with a reward …
+  pvMinAgree: 0.5,     // … and at least this share of them within 0.1 % of the median
   log: (...a) => console.log(new Date().toISOString(), ...a),
 };
 
@@ -187,18 +211,84 @@ async function fetchSelfStakeAccounts(rpc, withdrawerOf, opts) {
   return { self, totalStakeAccounts: total };
 }
 
-// getInflationReward for many addresses in one epoch → { addr: lamports|null }
-async function fetchEpochRewards(rpc, addrs, epoch, opts) {
+// getInflationReward for many addresses in one epoch
+//   → { addr: { amount, postBalance, commission } | null }
+async function fetchEpochRewardDetails(rpc, addrs, epoch, opts) {
   const out = {};
   const batches = chunk(addrs, opts.addrBatch);
   await pooled(batches, opts.concurrency, async (sl) => {
     const res = await rpc('getInflationReward', [sl, { epoch }]);
     sl.forEach((a, i) => {
       const r = Array.isArray(res) ? res[i] : null;
-      out[a] = (r && r.amount != null) ? r.amount : null;
+      out[a] = (r && r.amount != null) ? { amount: r.amount, postBalance: r.postBalance == null ? null : r.postBalance, commission: r.commission == null ? null : r.commission } : null;
     });
   });
   return out;
+}
+// … → { addr: lamports|null }
+async function fetchEpochRewards(rpc, addrs, epoch, opts) {
+  const d = await fetchEpochRewardDetails(rpc, addrs, epoch, opts);
+  const out = {};
+  for (const a of addrs) out[a] = d[a] ? d[a].amount : null;
+  return out;
+}
+
+// Vote credits earned per epoch, from every vote account's epochCredits (the
+// account keeps up to 64 entries, so the whole window can be read at any time).
+//   → { vote: { earned: Map(epoch → credits), first: oldest epoch on record } }
+async function fetchEpochCredits(rpc, votes, opts) {
+  const out = {};
+  await pooled(chunk(votes, opts.gmaBatch), opts.concurrency, async (sl) => {
+    const res = await rpc('getMultipleAccounts', [sl, { encoding: 'jsonParsed' }]);
+    const vals = (res && res.value) || [];
+    sl.forEach((vote, i) => {
+      const info = vals[i] && vals[i].data && vals[i].data.parsed && vals[i].data.parsed.info;
+      const ec = info && Array.isArray(info.epochCredits) ? info.epochCredits : null;
+      if (!ec) return;
+      const earned = new Map();
+      let first = null;
+      for (const x of ec) {
+        const ep = Number(x.epoch), n = Number(x.credits) - Number(x.previousCredits);
+        if (!Number.isInteger(ep) || !Number.isFinite(n)) continue;
+        earned.set(ep, Math.max(0, n));
+        if (first === null || ep < first) first = ep;
+      }
+      out[vote] = { earned, first };
+    });
+  });
+  return out;
+}
+// One validator's credits aligned to `epochs`: the credits earned; 0 for an
+// epoch without an entry after the first one on record (it earned nothing);
+// null before that, or when the vote account could not be read.
+function creditsRow(c, epochs) {
+  return epochs.map((ep) => {
+    if (!c || c.first === null) return null;
+    if (c.earned.has(ep)) return c.earned.get(ep);
+    return ep > c.first ? 0 : null;
+  });
+}
+
+// The epoch's point value from stake-account rewards (see `pv` in the header).
+//   details: { stakeAddr: { amount, postBalance, commission } | null }
+//   → { pv: number|null, n: accounts used, agree: share within 0.1 % of the median }
+function pointValueFrom(details, ownerOf, creditsOf, epoch, rentLamports, opts) {
+  const est = [];
+  for (const addr of Object.keys(details)) {
+    const r = details[addr];
+    if (!r || !(r.amount > 0) || r.postBalance == null || r.commission == null || !(r.commission < 100)) continue;
+    const c = creditsOf[ownerOf[addr]];
+    const cr = c ? c.earned.get(epoch) : null;
+    const stake = r.postBalance - r.amount - rentLamports;      // delegated stake before this reward was added
+    if (!(cr > 0) || !(stake > 0)) continue;
+    est.push(r.amount / (stake * cr * (1 - r.commission / 100)));
+  }
+  if (est.length < opts.pvMinAccounts) return { pv: null, n: est.length, agree: null };
+  est.sort((a, b) => a - b);
+  const m = est.length >> 1, median = est.length % 2 ? est[m] : (est[m - 1] + est[m]) / 2;
+  const agree = est.filter((x) => Math.abs(x / median - 1) <= 1e-3).length / est.length;
+  if (agree < opts.pvMinAgree) return { pv: null, n: est.length, agree };
+  return { pv: Number(median.toPrecision(10)), n: est.length, agree };
 }
 
 // ---------------------------------------------------------------- build --
@@ -270,6 +360,7 @@ async function buildLedger(prev, options = {}) {
   // Fetch, oldest epoch first (the newest may be un-indexed and get dropped).
   const epochsToFetch = [...new Set([...needV.keys(), ...needS.keys()])].sort((a, b) => a - b);
   const unindexed = new Set();
+  const selfDetails = new Map();   // epoch → { stakeAddr: { amount, postBalance, commission } | null }
   for (const ep of epochsToFetch) {
     const i = epochs.indexOf(ep);
     const vList = needV.get(ep) || [];
@@ -289,14 +380,41 @@ async function buildLedger(prev, options = {}) {
     if (sList.length) {
       const addrs = [];
       for (const vote of sList) addrs.push(...entries[vote].self);
-      const r = await fetchEpochRewards(rpc, addrs, ep, opts);
+      const d = await fetchEpochRewardDetails(rpc, addrs, ep, opts);
+      selfDetails.set(ep, d);                                   // reused for the point value below
       for (const vote of sList) {
         let sum = 0, any = false;
-        for (const a of entries[vote].self) { const x = r[a]; if (x != null) { sum += x; any = true; } }
+        for (const a of entries[vote].self) { const x = d[a]; if (x != null) { sum += x.amount; any = true; } }
         entries[vote].s[i] = any ? sum : null;
       }
       log(`epoch ${ep}: self-stake rewards for ${sList.length} validators (${addrs.length} accounts)`);
     }
+  }
+
+  // Vote credits per epoch (`cr`) — read fresh for the whole window on every run.
+  const creditsOf = await fetchEpochCredits(rpc, votes, opts);
+  for (const vote of votes) entries[vote].cr = creditsRow(creditsOf[vote], epochs);
+
+  // Point value per epoch (`pv`): carried over once known, else read from the
+  // self-stake accounts' rewards for that epoch (fetched above for a new epoch;
+  // fetched here for the whole window the first time this field is built).
+  const pv = new Array(epochs.length).fill(null);
+  const prevPv = prevOk && Array.isArray(prev.pv) ? prev.pv : null;
+  const ownerOf = {};
+  for (const vote of votes) for (const a of (self[vote] || [])) ownerOf[a] = vote;
+  const allSelf = Object.keys(ownerOf);
+  let rentLamports = null;
+  for (let i = 0; i < epochs.length; i++) {
+    const ep = epochs[i], pi = prevIdx.get(ep);
+    if (prevPv && pi !== undefined && prevPv[pi] != null) { pv[i] = prevPv[pi]; continue; }
+    if (unindexed.has(ep) || !allSelf.length) continue;
+    if (rentLamports === null) rentLamports = await rpc('getMinimumBalanceForRentExemption', [200]);   // a stake account
+    const have = selfDetails.get(ep) || {};
+    const missing = allSelf.filter((a) => !(a in have));
+    const details = missing.length ? Object.assign({}, have, await fetchEpochRewardDetails(rpc, missing, ep, opts)) : have;
+    const r = pointValueFrom(details, ownerOf, creditsOf, ep, rentLamports, opts);
+    pv[i] = r.pv;
+    log(`epoch ${ep}: point value ${r.pv === null ? 'NOT published' : r.pv} (${r.n} self-stake accounts${r.agree == null ? '' : ', ' + (r.agree * 100).toFixed(0) + ' % within 0.1 % of the median'})`);
   }
 
   // Drop un-indexed epochs (only ever the newest one or two) from the window.
@@ -305,7 +423,7 @@ async function buildLedger(prev, options = {}) {
   const validators = {};
   for (const vote of votes) {
     const e = entries[vote];
-    const o = { w: e.w, self: e.self, v: keep.map(x => e.v[x.i]), st: keep.map(x => e.st[x.i]), c: keep.map(x => e.c[x.i]) };
+    const o = { w: e.w, self: e.self, v: keep.map(x => e.v[x.i]), st: keep.map(x => e.st[x.i]), c: keep.map(x => e.c[x.i]), cr: keep.map(x => e.cr[x.i]) };
     if (e.s) o.s = keep.map(x => e.s[x.i]);
     validators[vote] = o;
   }
@@ -316,6 +434,7 @@ async function buildLedger(prev, options = {}) {
     currentEpoch: cur,
     epochs: outEpochs,
     counts: { validators: votes.length, selfAccounts: selfTotal, stakeAccounts: totalStakeAccounts, rpcCalls: rpc.calls ? rpc.calls() : null },
+    pv: keep.map(x => pv[x.i]),
     validators,
   };
 }
@@ -341,7 +460,7 @@ async function main() {
 }
 
 if (typeof module !== 'undefined') {
-  module.exports = { buildLedger, makeRpc, base58, LEDGER_VERSION, DEFAULTS };
+  module.exports = { buildLedger, makeRpc, base58, pointValueFrom, creditsRow, LEDGER_VERSION, DEFAULTS };
   if (require.main === module) {
     main().catch(e => { console.error(e); process.exit(1); });
   }
