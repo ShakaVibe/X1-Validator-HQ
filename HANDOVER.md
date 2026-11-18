@@ -36,10 +36,14 @@
 >    the same three changes the geo workflow got (checkout SHA, setup-node SHA + `node-version: '22'`
 >    + `package-manager-cache: false`), then watch one run of each. Why staged: checkout v6+ stores the
 >    push credentials differently from v4, and a bot that cannot push stops the hourly data.
+>    Push 9: the alerts bot watches the published data files (§4 "Published-data watch"). It takes
+>    effect at the bot loop's next restart (≤ 5 h 45 min, or cancel the run in Actions and start it
+>    again). **Shaka, optional:** send `/id` to @x1valhq_bot after that restart and store the number as
+>    the `TELEGRAM_CHAT_ID` secret; until then the notice arrives as a GitHub issue only.
 >    **Still to do in phase 2:** sanity gates on the published numbers (#7 part 2: the builders refuse
 >    to publish and open an issue when e.g. APR p90 ÷ median > 1.3 or the validator count moves > 15 %
 >    in an hour — compute the APR part with the site's clean-epoch filter, the raw ledger would trip
->    it at once), `TELEGRAM_CHAT_ID` (Shaka; see the session 11 log), the stale-scores banner (#10).
+>    it at once), the stale-scores banner (#10; Shaka: optional, the data watch came first).
 >    Then the **credits-based yield engine (#28)**, which replaces the interim APR guard. **Ask Shaka before building #28** (open decision: should fully delinquent epochs
 >    count as 0 %? Today they are skipped). Decisions Shaka can still reverse from session 18: the
 >    site refuses program-derived addresses (multisig vaults) as a withdraw authority (CLI only), and
@@ -67,7 +71,7 @@
 >    changes* on top of origin/main, so Shaka's normal `git add -A && git commit` picks it up.
 > 2. **F3 Telegram alerts is LIVE (2026-09-28)** — bot **@x1valhq_bot**, run by
 >    `.github/workflows/alerts.yml` as a self-dispatching ~5h45m loop (like the heartbeat; backup cron
->    every 2 h). Code: `scripts/alerts-bot.js` (tests: `node scripts/test-alerts-bot.js`, 19 cases);
+>    every 2 h). Code: `scripts/alerts-bot.js` (tests: `node scripts/test-alerts-bot.js`, 28 cases);
 >    site entry point: "🔔 Telegram alerts" button in My Data Center → `#alertsModal` (`js/alerts.js`).
 >    Secrets set: `TELEGRAM_BOT_TOKEN` (new bot, created this session — the A2 failure alerts now work
 >    too) and `ALERTS_STATE_KEY` (AES key for `data/alerts-state.enc`; **never write the key or the
@@ -374,6 +378,16 @@ CNAME / .nojekyll / _headers  Pages config
   readable from the public repo); committed at once on subscription changes, status changes
   debounced to one commit per 10 min. Logs never print chat ids or names (only a 4-hex tag).
   RPC down → checks skipped, catch-up when back, admin notice after 30 min (needs TELEGRAM_CHAT_ID).
+  **Published-data watch (2026-11-18, audit #14):** every 30 min the bot reads `generatedAt` from the
+  first bytes of the site's `data/scores.json`, `terminal.json`, `rewards.json`, `delegation.json`.
+  Older than 3 h (two missed hourly runs) or missing → one admin notice naming the files, a reminder
+  every 6 h while it lasts, one all-clear when everything is fresh; no file answering for 30 min →
+  "the site is not answering" / "answers again". The notice goes to the Telegram admin chat when
+  `TELEGRAM_CHAT_ID` is set AND to one GitHub issue, "[bot] Published data is stale or the site is
+  down" (opened, commented, closed through `gh`; works without the secret). What was announced is in
+  `state.meta.fresh`, so a loop restart does not repeat it. `/stats` shows the ages; `/id` (unlisted)
+  answers any chat with its own id — that number is what goes into `TELEGRAM_CHAT_ID`. Limit: the
+  watch runs inside Actions like the bots; if Actions as a whole stops, so does the watch.
   Cloud sandbox and the Mac VM cannot reach the RPC or x1valhq.xyz — the bot was tested with mocks
   only and then live via the real run; `raw.githubusercontent.com` IS reachable from both (use it
   to read `data/*.json` and `alerts-state.enc`).
@@ -1936,3 +1950,20 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
     separate file (push from later steps is meant to keep working — that is what the geo run proves);
     setup-node v5+ auto-caches only when package.json names a package manager (there is none here).
     Node 22 rather than 24 because 22 is what every suite ran on today, here and in CI.
+  - Push 8 pushed by Shaka as `7d1d3096`; CI green on it. The issue-closing and the geo push are
+    checked after the next bot runs.
+- **Push 9 — published-data watch in the alerts bot** (Shaka asked why a "scores are old" banner was
+  needed "instead of making the scores right all the time"; answer: 30 % of the published score, vote
+  latency and uptime, comes from a week of hourly observations in `data/history.json` that a browser
+  cannot rebuild, so during an outage the choice is old-but-real or fresh-but-different; what keeps
+  scores right is knowing at once when the bots stop). `scripts/alerts-bot.js`: `checkFreshness()`,
+  `notifyAdmin()`, `makeGhIssue()`, `/id`, a freshness line in `/stats` (details in §4). Thresholds:
+  3 h, not the audit's 2 h, because one failed hourly run already makes a file ~2 h old and that case
+  has its own failure issue. The state file is written only when a notice goes out or clears (each
+  commit of it is a push to main). Tests: 9 new cases (28): silence when fresh, one notice for two
+  files, a third file, the 6 h reminder, no repeat after a restart, partial recovery, 404, site down
+  and back, issue-only mode, the `gh` calls with a look-alike issue left alone. One existing test
+  (commit debounce) caught my first version writing state for bookkeeping; fixed before hand-over.
+  Run for real against the published files on raw.githubusercontent.com: ages 48–49 min, no notice;
+  with the limit forced to 1 minute the notice text comes out right. Not yet run inside the bot loop
+  on GitHub, and the real `gh` calls are covered by a stand-in only.

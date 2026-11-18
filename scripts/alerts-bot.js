@@ -10,6 +10,8 @@
 //                                     → delinquent / back online / leader-slot skips
 //   every SNAP_MS (30 min)         → data/delegation.json + data/terminal.json from the site
 //                                     → Delegation Program status / version behind minimum
+//   every 30 min                   → "generatedAt" of the site's hourly data files
+//                                     → admin notice when they go stale or the site is down
 //
 // Subscriptions and the last-seen state of every watched validator live in ONE
 // encrypted file in the repo (data/alerts-state.enc, AES-256-GCM, key in the
@@ -21,7 +23,7 @@
 // scripts/test-alerts-bot.js injects fetch / clock / persist.
 //
 // Env: TELEGRAM_BOT_TOKEN (required), ALERTS_STATE_KEY (required, 64 hex chars),
-//      TELEGRAM_CHAT_ID (optional admin chat: /stats + RPC-down notice),
+//      TELEGRAM_CHAT_ID (optional admin chat: /stats, RPC-down notice, stale-data / site-down notice),
 //      X1_RPC_URL, SITE_URL, ALERTS_STATE_FILE, ALERTS_LOG_LEVEL (debug|info)
 // CLI: --minutes N (loop length, default 345)  --once (one check, no polling)
 //      --commit (git commit + push the state file when it changes)
@@ -46,6 +48,14 @@ const DEFAULTS = {
   recoveryChecks: 2,             // consecutive clean checks before "back online"
   skipWindowMs: 30 * 60 * 1000,  // coalesce skip alerts per validator
   rpcDownNoticeMs: 30 * 60 * 1000,
+  // Published-data watch (audit 2026-11-17 #14): the hourly files on the site. "Stale" is older
+  // than staleMs — three hours, i.e. two missed hourly runs, so one push race is not an alarm.
+  staleFiles: ['scores', 'terminal', 'rewards', 'delegation'],   // data/<name>.json, each with "generatedAt"
+  staleMs: 3 * 60 * 60 * 1000,
+  staleRemindMs: 6 * 60 * 60 * 1000,   // repeat the notice while it lasts
+  freshCheckMs: 30 * 60 * 1000,
+  siteDownNoticeMs: 30 * 60 * 1000,
+  actionsUrl: '',                 // link put into the notice (the CLI fills it from GITHUB_REPOSITORY)
   maxWatch: 20,                  // validators per chat
   slotSeconds: 0.37,
   settleSlots: 64,               // ignore the newest slots in getBlockProduction (confirmation lag)
@@ -297,6 +307,9 @@ function createBot(opts = {}) {
       case 'stats':
         if (adminChatId && chatId === adminChatId) return cmdStats(chatId);
         return;
+      case 'id':
+        // Unlisted: tells a chat its own id — what the site owner stores as TELEGRAM_CHAT_ID.
+        return send(chatId, `This chat's id is <code>${esc(chatId)}</code>.`);
       default:
         if (m.chat.type === 'private') return send(chatId, 'Unknown command. /help lists what I can do.');
     }
@@ -410,7 +423,15 @@ function createBot(opts = {}) {
     return send(chatId,
       `<b>Alerts bot</b> — up ${up}\n` +
       `${chats} chat(s) · ${watched.size} watched validator(s) · ${stats.alerts} alert(s) this run\n` +
-      `checks ${stats.checks} · RPC errors ${stats.rpcErrors} · last check ${stats.lastCheckOk ? fmtDuration(now() - stats.lastCheckOk) + ' ago' : 'never'} · last snapshot ${stats.lastSnapOk ? fmtDuration(now() - stats.lastSnapOk) + ' ago' : 'never'}`);
+      `checks ${stats.checks} · RPC errors ${stats.rpcErrors} · last check ${stats.lastCheckOk ? fmtDuration(now() - stats.lastCheckOk) + ' ago' : 'never'} · last snapshot ${stats.lastSnapOk ? fmtDuration(now() - stats.lastSnapOk) + ' ago' : 'never'}\n` +
+      esc(freshnessLine()));
+  }
+
+  function freshnessLine() {
+    const f = stats.fresh;
+    if (!f) return 'published data: not checked yet';
+    if (!f.reachable) return 'published data: site not reachable at the last check';
+    return 'published data: ' + f.files.map((x) => `${x.name} ${x.age == null ? 'missing' : fmtDuration(x.age)}`).join(' · ');
   }
 
   // -- status text -----------------------------------------------------------
@@ -671,12 +692,86 @@ function createBot(opts = {}) {
     }
   }
 
+  // -- published-data freshness (audit 2026-11-17 #14) --------------------------
+  // The site's hourly files each carry "generatedAt" near the top. When the bots stop — a
+  // failed run opens an issue, but a run that never starts alerts nobody — the files simply
+  // age. This watch tells the admin (Telegram chat and/or a GitHub issue, see notifyAdmin)
+  // when a file is older than staleMs or missing, when the site itself stops answering, and
+  // when things are back. What was already announced lives in state.meta.fresh, so a restart
+  // of the loop does not announce it again; the state file is only touched when a notice goes
+  // out or is cleared (every commit of it is a push to main). It runs inside GitHub Actions,
+  // like the bots it watches: if Actions as a whole stops, this stops too.
+  let lastFreshCheck = 0, siteDownSince = 0;
+  async function generatedAtOf(name) {
+    const res = await fetchFn(`${o.siteUrl}/data/${name}.json?t=${now()}`, { headers: { range: 'bytes=0-1023' }, signal: AbortSignal.timeout(60000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const m = /"generatedAt"\s*:\s*"([^"]+)"/.exec(String(await res.text()).slice(0, 4096));
+    const t = m ? Date.parse(m[1]) : NaN;
+    if (!Number.isFinite(t)) throw new Error('no generatedAt');
+    return t;
+  }
+  async function notifyAdmin(kind, title, lines) {
+    // kind: 'problem' | 'ok'. Reaches the Telegram admin chat when TELEGRAM_CHAT_ID is set and,
+    // through o.issue (the CLI wires it to `gh`), an issue that is opened / commented / closed.
+    log('info', `${kind === 'ok' ? 'all clear' : 'ADMIN NOTICE'}: ${title} — ${lines.join('; ')}`);
+    if (adminChatId) await send(adminChatId, `${kind === 'ok' ? '✅' : '⚠️'} <b>${esc(title)}</b>\n${lines.map(esc).join('\n')}`);
+    if (o.issue) { try { await o.issue({ open: kind !== 'ok', body: `${title}\n\n${lines.join('\n')}` }); } catch (e) { log('info', `issue update failed: ${String(e.message || e).split('\n')[0]}`); } }
+  }
+  async function checkFreshness() {
+    const t = now();
+    const fresh = state.meta.fresh || (state.meta.fresh = { stale: {}, siteNotified: false });
+    if (!fresh.stale) fresh.stale = {};
+    const files = await Promise.all(o.staleFiles.map(async (name) => {
+      try { return { name, age: t - (await generatedAtOf(name)) }; }
+      catch (e) { return { name, age: null, error: String(e.message || e).split('\n')[0] }; }
+    }));
+    const reachable = files.some((f) => f.age != null);
+    stats.fresh = { at: t, reachable, files };
+    const tail = o.actionsUrl ? [`Bots: ${o.actionsUrl}`] : [];
+
+    if (!reachable) {                                   // nothing answered: the site (or the way to it) is down
+      if (!siteDownSince) siteDownSince = t;            // in memory: a restart only restarts the 30-minute clock
+      if (!fresh.siteNotified && t - siteDownSince >= o.siteDownNoticeMs) {
+        fresh.siteNotified = true; dirty = true;
+        await notifyAdmin('problem', 'X1 Validator HQ: the site is not answering',
+          [`${o.siteUrl}/data/*.json has not answered for ${fmtDuration(t - siteDownSince)} (${files[0].error}).`]);
+      }
+      return;
+    }
+    if (fresh.siteNotified) {
+      await notifyAdmin('ok', 'X1 Validator HQ: the site answers again', [siteDownSince ? `It was unreachable for ${fmtDuration(t - siteDownSince)}.` : 'It is reachable again.']);
+      fresh.siteNotified = false; dirty = true;
+    }
+    siteDownSince = 0;
+
+    const bad = files.filter((f) => f.age == null || f.age > o.staleMs);
+    const describe = (f) => `data/${f.name}.json — ${f.age == null ? 'not available (' + f.error + ')' : fmtDuration(f.age) + ' old'}`;
+    const isNew = bad.some((f) => !fresh.stale[f.name]);
+    const dueReminder = bad.some((f) => fresh.stale[f.name] && t - fresh.stale[f.name] >= o.staleRemindMs);
+    if (bad.length && (isNew || dueReminder)) {
+      for (const f of bad) fresh.stale[f.name] = t;
+      dirty = true;
+      await notifyAdmin('problem', dueReminder && !isNew ? 'X1 Validator HQ: published data is still stale' : 'X1 Validator HQ: published data is stale',
+        bad.map(describe).concat(['These files are rebuilt every hour, so a bot has stopped or its source is not answering. The site shows the last copy, and switches to browser-computed scores once scores.json is 12 h old.'], tail));
+    }
+    const recovered = Object.keys(fresh.stale).filter((name) => !bad.some((f) => f.name === name));
+    if (recovered.length) {
+      for (const name of recovered) delete fresh.stale[name];
+      dirty = true;
+      if (!Object.keys(fresh.stale).length) {
+        await notifyAdmin('ok', 'X1 Validator HQ: published data is fresh again',
+          [files.map((f) => `${f.name} ${fmtDuration(f.age)}`).join(' · ')]);
+      }
+    }
+  }
+
   async function tick(force) {
     const t = now();
     const doSnap = force || !snap || t - (state.meta.lastSnap || 0) >= o.snapMs;
     if (doSnap && (await refreshSnap(true))) { state.meta.lastSnap = t; await checkSnap(); }
     const doLive = force || t - (state.meta.lastCheck || 0) >= o.checkMs;
     if (doLive && (await refreshLive(true))) { state.meta.lastCheck = t; await checkLive(); }
+    if (o.staleFiles.length && (force || !lastFreshCheck || t - lastFreshCheck >= o.freshCheckMs)) { lastFreshCheck = t; await checkFreshness(); }
     await persistIfNeeded(false);
   }
 
@@ -697,8 +792,27 @@ function createBot(opts = {}) {
 
   return {
     run, tick, pollUpdates, handleMessage, loadState, writeState, persistIfNeeded,
-    refreshLive, refreshSnap, resolveTarget,
+    refreshLive, refreshSnap, resolveTarget, checkFreshness,
     get state() { return state; }, get stats() { return stats; }, get live() { return live; }, get snap() { return snap; },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// The admin notice as a GitHub issue, through the `gh` CLI that every runner has.
+// One issue with a fixed title: a problem opens it (or adds a comment when it is already
+// open), the all-clear closes it. Only an issue with exactly this title is ever touched.
+// ---------------------------------------------------------------------------
+const DATA_ISSUE_TITLE = '[bot] Published data is stale or the site is down';
+function makeGhIssue(repo, gh = (...a) => execFileSync('gh', a, { stdio: ['ignore', 'pipe', 'pipe'] }).toString()) {
+  return ({ open, body }) => {
+    const found = JSON.parse(gh('issue', 'list', '--repo', repo, '--state', 'open', '--search', `"${DATA_ISSUE_TITLE}" in:title`, '--json', 'number,title') || '[]')
+      .filter((x) => x.title === DATA_ISSUE_TITLE).map((x) => String(x.number));
+    if (open) {
+      if (found.length) gh('issue', 'comment', found[0], '--repo', repo, '--body', body);
+      else gh('issue', 'create', '--repo', repo, '--title', DATA_ISSUE_TITLE, '--body', body);
+    } else {
+      for (const n of found) gh('issue', 'close', n, '--repo', repo, '--comment', body);
+    }
   };
 }
 
@@ -714,8 +828,13 @@ if (require.main === module) {
     console.log('[alerts] TELEGRAM_BOT_TOKEN and/or ALERTS_STATE_KEY not set — nothing to do (set both as repo secrets to enable the bot).');
     process.exit(0);
   }
+  // Admin notices also go to one GitHub issue (opened / commented / closed) when the run has a
+  // token for it — so the data watch works before TELEGRAM_CHAT_ID is set.
+  const repo = process.env.GITHUB_REPOSITORY || '';
+  const issue = (process.env.GH_TOKEN && repo) ? makeGhIssue(repo) : null;
   const bot = createBot({
-    token, key,
+    token, key, issue,
+    actionsUrl: repo ? `https://github.com/${repo}/actions` : '',
     adminChatId: process.env.TELEGRAM_CHAT_ID || null,
     rpcUrl: process.env.X1_RPC_URL || DEFAULTS.rpcUrl,
     siteUrl: process.env.SITE_URL || DEFAULTS.siteUrl,
@@ -729,4 +848,4 @@ if (require.main === module) {
     .catch((e) => { console.error('[alerts] fatal:', e && e.stack || e); process.exit(1); });
 }
 
-module.exports = { createBot, encryptState, decryptState, cmpVer, esc, DEFAULTS, CRITERIA };
+module.exports = { createBot, encryptState, decryptState, cmpVer, esc, makeGhIssue, DATA_ISSUE_TITLE, DEFAULTS, CRITERIA };

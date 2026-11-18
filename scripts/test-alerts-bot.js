@@ -11,7 +11,7 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { createBot, encryptState, decryptState, cmpVer, esc } = require('./alerts-bot.js');
+const { createBot, encryptState, decryptState, cmpVer, esc, makeGhIssue, DATA_ISSUE_TITLE } = require('./alerts-bot.js');
 
 const KEY = 'ab'.repeat(32);
 const TOKEN = '123:TESTTOKEN';
@@ -57,6 +57,8 @@ const site = {
     validators: [[V1, N1, 'Shaka_Vibes_1', '4.0.3'], [V2, N2, HOSTILE, '4.0.3'], [V3, N3, 'Shaka_Vibes_3', '3.1.14']],
   },
   down: false,
+  // published-data watch: age of each data/<name>.json's "generatedAt" (default 10 min), and 404s
+  age: {}, missing: new Set(),
 };
 
 const tg = { queue: [], sent: [], nextId: 1000, blocked: new Set(), commandsSet: 0 };
@@ -106,6 +108,12 @@ async function fetchMock(url, init = {}) {
   }
   if (u.startsWith('https://site.test/data/')) {
     if (site.down) return json({}, 503);
+    const name = (/data\/(\w+)\.json/.exec(u) || [])[1];
+    if (site.missing.has(name)) return json({}, 404);
+    if ((init.headers || {}).range) {         // the freshness watch reads only the first bytes
+      const stamp = new Date(now() - (site.age[name] === undefined ? 10 * MIN : site.age[name])).toISOString();
+      return { ok: true, status: 206, text: async () => `{"generatedAt":"${stamp}","rest":"…` };
+    }
     if (u.includes('delegation.json')) return json(site.delegation);
     if (u.includes('terminal.json')) return json(site.terminal);
   }
@@ -428,10 +436,131 @@ async function test(name, fn) {
     assert.throws(() => createBot({ token: TOKEN, key: 'short' }), /ALERTS_STATE_KEY/);
   });
 
+  // ── published-data watch (audit 2026-11-17 #14) ─────────────────────────────────────────
+  const stateFile2 = path.join(tmp, 'state-fresh.enc');
+  const issues = [];
+  const freshBot = (extra = {}) => makeBot({ stateFile: stateFile2, issue: async (x) => { issues.push(x); }, ...extra });
+  let fb = freshBot();
+  const H = 60 * MIN;
+  const step = async (ms) => { advance(ms); await fb.tick(false); };
+
+  await test('data watch: fresh files → silence; /stats shows the ages; /id answers with the chat id', async () => {
+    clearSent(); site.age = {}; site.missing.clear();
+    fb.loadState(); await fb.tick(true);
+    assert.strictEqual(sentTo(999).length, 0); assert.strictEqual(issues.length, 0);
+    assert.ok(fb.stats.fresh.reachable && fb.stats.fresh.files.length === 4);
+    incoming(999, '/stats'); incoming(555000111, '/id'); await fb.pollUpdates();
+    assert.ok(/published data: scores 10 min · terminal 10 min · rewards 10 min · delegation 10 min/.test(lastSent(999)), lastSent(999));
+    assert.ok(lastSent(555000111).includes('<code>555000111</code>'), lastSent(555000111));
+  });
+
+  await test('data watch: two files 3 h+ old → ONE notice naming both, an issue is opened; no repeat 30 min later', async () => {
+    clearSent(); issues.length = 0;
+    site.age = { scores: 3 * H + 10 * MIN, rewards: 3 * H + 5 * MIN, terminal: 2 * H + 50 * MIN };   // terminal: under the limit
+    await step(30 * MIN);
+    const m = sentTo(999);
+    assert.strictEqual(m.length, 1, JSON.stringify(m));
+    assert.ok(m[0].includes('published data is stale') && m[0].includes('data/scores.json — 3 h 10 min old') && m[0].includes('data/rewards.json — 3 h 5 min old'), m[0]);
+    assert.ok(!m[0].includes('terminal') && !m[0].includes('delegation'), 'only the stale files are named: ' + m[0]);
+    assert.deepStrictEqual(issues.map((x) => x.open), [true]);
+    await step(30 * MIN);
+    assert.strictEqual(sentTo(999).length, 1, 'no repeat while nothing changed');
+  });
+
+  await test('data watch: a third file goes stale → new notice with all three; after 6 h → "still stale" reminder', async () => {
+    clearSent(); issues.length = 0;
+    site.age.terminal = 3 * H + 20 * MIN;
+    await step(30 * MIN);
+    assert.strictEqual(sentTo(999).length, 1);
+    assert.ok(['scores', 'rewards', 'terminal'].every((n) => lastSent(999).includes(`data/${n}.json`)), lastSent(999));
+    for (let i = 0; i < 11; i++) await step(30 * MIN);          // 5 h 30 min: nothing
+    assert.strictEqual(sentTo(999).length, 1);
+    await step(30 * MIN);                                        // 6 h after the last notice
+    assert.strictEqual(sentTo(999).length, 2);
+    assert.ok(lastSent(999).includes('still stale'), lastSent(999));
+    assert.deepStrictEqual(issues.map((x) => x.open), [true, true]);
+  });
+
+  await test('data watch: a restarted bot does not announce the same stale files again', async () => {
+    clearSent(); issues.length = 0;
+    await fb.persistIfNeeded(true);
+    fb = freshBot(); fb.loadState();
+    assert.deepStrictEqual(Object.keys(fb.state.meta.fresh.stale).sort(), ['rewards', 'scores', 'terminal']);
+    await fb.tick(true);
+    assert.strictEqual(sentTo(999).length, 0); assert.strictEqual(issues.length, 0);
+  });
+
+  await test('data watch: partial recovery is silent; all fresh → one all-clear and the issue is closed', async () => {
+    clearSent(); issues.length = 0;
+    site.age = { rewards: 3 * H + 30 * MIN };                    // scores + terminal are back
+    await step(30 * MIN);
+    assert.strictEqual(sentTo(999).length, 0);
+    site.age = {};
+    await step(30 * MIN);
+    assert.strictEqual(sentTo(999).length, 1);
+    assert.ok(lastSent(999).includes('fresh again') && lastSent(999).startsWith('✅'), lastSent(999));
+    assert.deepStrictEqual(issues.map((x) => x.open), [false]);
+    assert.deepStrictEqual(fb.state.meta.fresh.stale, {});
+  });
+
+  await test('data watch: a missing file (404) counts as a problem', async () => {
+    clearSent(); issues.length = 0;
+    site.missing.add('rewards');
+    await step(30 * MIN);
+    assert.ok(lastSent(999).includes('data/rewards.json — not available (HTTP 404)'), lastSent(999));
+    site.missing.clear();
+    await step(30 * MIN);
+    assert.ok(lastSent(999).includes('fresh again'));
+  });
+
+  await test('data watch: site down → one notice after 30 min, none before, "answers again" when back', async () => {
+    clearSent(); issues.length = 0;
+    site.down = true;
+    await step(30 * MIN);                                        // first failed check: start the clock
+    assert.strictEqual(sentTo(999).length, 0);
+    await step(30 * MIN);
+    assert.strictEqual(sentTo(999).length, 1);
+    assert.ok(lastSent(999).includes('the site is not answering') && lastSent(999).includes('HTTP 503'), lastSent(999));
+    await step(30 * MIN);
+    assert.strictEqual(sentTo(999).length, 1, 'told once');
+    site.down = false;
+    await step(30 * MIN);
+    assert.strictEqual(sentTo(999).length, 2);
+    assert.ok(lastSent(999).includes('answers again'), lastSent(999));
+    assert.deepStrictEqual(issues.map((x) => x.open), [true, false]);
+  });
+
+  await test('data watch: without an admin chat the notice still reaches the issue; a failing issue call is survived', async () => {
+    clearSent(); issues.length = 0;
+    const stateFile3 = path.join(tmp, 'state-fresh3.enc');
+    const nb = makeBot({ stateFile: stateFile3, adminChatId: null, issue: async (x) => { issues.push(x); throw new Error('gh not available'); } });
+    nb.loadState();
+    site.age = { scores: 4 * H };
+    await nb.tick(true);
+    assert.strictEqual(tg.sent.length, 0);
+    assert.deepStrictEqual(issues.map((x) => x.open), [true]);
+    assert.ok(issues[0].body.includes('data/scores.json — 4 h old'), issues[0].body);
+    assert.ok(logs.some((l) => l.includes('issue update failed')));
+    site.age = {};
+  });
+
+  await test('data watch issue: opens once, comments while open, closes only the issue with the exact title', () => {
+    const calls = []; let open = [];
+    const gh = (...a) => { calls.push(a.slice(0, 3).join(' ')); if (a[1] === 'list') return JSON.stringify(open); if (a[1] === 'create') open.push({ number: 12, title: DATA_ISSUE_TITLE }); if (a[1] === 'close') open = open.filter((x) => String(x.number) !== a[2]); return ''; };
+    const issue = makeGhIssue('o/r', gh);
+    open = [{ number: 7, title: 'Question about: ' + DATA_ISSUE_TITLE }];            // a look-alike somebody else opened
+    issue({ open: true, body: 'stale' });
+    issue({ open: true, body: 'still stale' });
+    issue({ open: false, body: 'fresh again' });
+    issue({ open: false, body: 'fresh again' });                                       // nothing left to close
+    assert.deepStrictEqual(calls, ['issue list --repo', 'issue create --repo', 'issue list --repo', 'issue comment 12', 'issue list --repo', 'issue close 12', 'issue list --repo']);
+    assert.deepStrictEqual(open.map((x) => x.number), [7], 'the look-alike issue is untouched');
+  });
+
   await test('logs never contain a chat id or a validator name', () => {
     const joined = logs.join('\n');
     assert.ok(!joined.includes('42') || !/\b42\b/.test(joined.replace(/#[0-9a-f]{4}/g, '')), joined);
-    assert.ok(!joined.includes('-77'));
+    assert.ok(!joined.includes('-77') && !joined.includes('555000111') && !joined.includes('999'));
     assert.ok(!joined.includes('Shaka_Vibes'));
   });
 
