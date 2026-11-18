@@ -13,66 +13,56 @@
 >    unfixed security/privacy issues) and the private Claude Doc
 >    https://claude.ai/artifact/1cVuoKnxV5D3GLxRQV3BNp. Scripts that reproduce the evidence live in
 >    `private/audit-2026-11-17/` (`apr_check.py`, `vote_withdraw_sim.js`).
->    **Phase 1 ("this week") is done and live** (session 18, see the Session Log): #1 APR interim
->    guard (`a6f4a653`); #5 vote-account MAX withdraw, #8 one measured slot time, #4 authority-change
->    confirmation, #13 frame guard (`0314c746`), all live-verified in the pane.
->    - **APR tile stuck on "…" (found in the live check):** fixed in push 4 (`bc1f39ff`), and the cause
->      behind it — the site started before its last seven scripts had loaded — in push 5 (`c4f04ef6`,
->      `js/start.js`). Both live-verified. Nothing pending from session 18 on the code side.
->    - The pane's own test portfolio is Shaka_Vibes_1–5. On 2026-11-18 **Shaka_Vibes_4 and _5 were not
->      in `getVoteAccounts` and have no reward in the 36-epoch ledger**; the Fleet bar shows them as
->      delinquent ("3 of 5 healthy"). Not confirmed with Shaka whether that is intended.
->    - **Needs Shaka's wallet, once:** a real MAX "Withdraw XNT" from a vote account (the fix is
->      proven by mainnet simulation and by the live modal, not by a signed transaction).
->    - **#2 privacy follow-up**: unchanged, on the owner's list (item B).
->    **Phase 2 has started** (session 18): #21 tests reliable and self-checking + #7 part 1, CI
->    (`.github/workflows/ci.yml`, push `f2bd7d56`; green on every push since). #14 done and proven:
->    the scores, terminal and geo bots closed issues #3, #1 and #2 by themselves on 2026-11-18.
->    #22: the geo bot has run on Node 22 + actions pinned by commit since push 8 (two runs pushed
->    their commits); push 11 moves the scores, terminal-snapshot and alerts workflows the same way.
->    Proven for scores and terminal-snapshot too: their 19:03 UTC runs on 2026-11-18 were green and
->    published. The alerts loop uses the new setup from its next restart. If a bot ever cannot push,
->    revert that workflow's three lines to `actions/checkout@v4`, `actions/setup-node@v4`,
->    `node-version: '20'` (check with `git log --since='3 hours ago' --format='%an %s' | sort | uniq -c`).
->    Push 9: the alerts bot watches the published data files (§4 "Published-data watch"). Live since
->    the bot loop restarted at 18:08 UTC on 2026-11-18. **Shaka, optional:** send `/id` to
->    @x1valhq_bot and store the number as the `TELEGRAM_CHAT_ID` secret (read at the loop's next
->    start); until then the notice arrives as a GitHub issue only.
->    **Credits-based APR (#28). Shaka's decision, confirmed 2026-11-18 with the list of 31 affected
->    validators in front of him: an epoch in which a validator was offline the whole time counts as
->    0 %** (`COUNT_OFFLINE_EPOCHS` in `js/apr.js`, one switch).
->    Step 1 is live: the hourly ledger carries `pv` (36 epochs, no nulls) and `cr` for all 384
->    validators since the 19:03 UTC run. Step 2, push 12 (live-verified): `js/apr.js` computes the tile and
->    modal from `pv × cr × (1 − commission)`. Step 3, push 13 — audit #9: Stake Details, the staking
->    and compound calculators and Manage Validator take their base rate from the same credits data
->    (`validatorBaseRatePct` / `networkBaseRatePct` in `js/core.js`), the flat 8 % is only the last
->    resort, and every visible "APY" reads "APR" (live-verified). **Still open in #28:** the break-even calculator's `realAPY` (total
->    rewards ÷ total stake, a different quantity, left as it is); the
->    APR sanity gate in the builder (#7 part 2); once the credits method has run for a while, delete
->    the stake-based fallback and the clean-epoch filter from `js/apr.js`, and the audit's
->    `apr_check.py` can be rewritten against `pv` (its "stable-stake" estimate is 0.017 % low).
->    **Data check before publishing (#7 part 2), push 14:** `scripts/check-published-data.js` runs in
->    the scores and terminal-snapshot workflows between build and commit (§4 "Data check"). A file
->    that fails is not published, the others are; the run fails and opens the usual issue with the
->    reasons. The first runs with it (20:03 UTC, 2026-11-18) passed and published all four
->    files. If a rule ever cries wolf, set the repository variable `DATA_GATE_OFF` to the rule id
->    (or `all`) — no code change needed — and fix the limit in the script afterwards.
->    **Still to do in phase 2:** the stale-scores banner (#10; Shaka: optional, the data watch came
->    first). The geo bot (`validator-locations.json`) has no data check yet.
->    **Phase 3 ("weeks 2–4") has started. #12 RPC outage, push 15:** there is no second public X1
->    RPC (the X1 docs list only `rpc.mainnet.x1.xyz`; 314 of 366 gossip nodes advertise an RPC
->    port, but as plain http, which a browser refuses on an https page), so a real failover is not
->    possible today. Shaka chose "snapshot mode" instead (2026-11-18, question dialog): when the
->    RPC does not answer, the site builds its validator list from the hourly files and says so in
->    a banner (§4 "Snapshot mode"). **First thing next session:** with the RPC up, the live site
->    shows no banner and cards carry live balances; an outage cannot be produced on the live
->    site without touching the network, so the outage itself is covered by the offline suite only. **Open in #12:** the
->    bots still have one endpoint (they fail, the issue opens, the data watch reports stale files);
->    the card's "next leader slot" band stays on "…" in snapshot mode. **Next in the audit's
->    order:** #6/#25 host the third-party scripts ourselves, #18 rent helper.
->    Decisions Shaka can still reverse from session 18: the
->    site refuses program-derived addresses (multisig vaults) as a withdraw authority (CLI only), and
->    the vote account's withdraw-authority change got the same confirmation as the stake one.
+>    **State at the end of session 18 (2026-11-18, 15 pushes, last code commit `fcd17b25`): every
+>    push is live-verified, CI is green, nothing is half done.** The Session Log has the detail and
+>    the evidence for each push; §4 has the design of what was added.
+>    - **Phase 1 ("this week") done:** #1 APR, #5 vote-account MAX withdraw, #8 one measured slot
+>      time, #4 authority-change confirmation, #13 frame guard; plus the start-up order fix
+>      (`js/start.js`).
+>    - **Phase 2 ("weeks 1–2") done:** #21 self-checking tests and #7 CI (`ci.yml`, 19 browser
+>      suites + 4 node suites on every push); #14 failure issues close themselves; #22 all bots on
+>      Node 22 with actions pinned by commit; the alerts bot watches the published files (§4
+>      "Published-data watch"); #7 part 2, the data check before publishing (§4 "Data check";
+>      switch a rule off with the repository variable `DATA_GATE_OFF`). Only the stale-scores
+>      banner (#10) is open, and Shaka called it optional.
+>    - **Phase 3 ("weeks 2–4") started:** #28 credits-based APR is live (tile, modal, Stake Details,
+>      calculators, Manage Validator; "APY" reads "APR"). **Shaka's decision: an epoch in which a
+>      validator was offline the whole time counts as 0 %** (`COUNT_OFFLINE_EPOCHS` in `js/apr.js`).
+>      #12: there is no second public X1 RPC, so Shaka chose **snapshot mode** — when the RPC does
+>      not answer, the site runs on the hourly files and says so in a banner (§4 "Snapshot mode").
+>    **First thing next session** (all read-only):
+>    1. The bots still commit every hour and their step "Check the new data" passes:
+>       `git log --since='3 hours ago' --format='%an %s' | sort | uniq -c`, and no open
+>       "[bot] … is failing" issue. If the data check holds a file back for no good reason, set
+>       `DATA_GATE_OFF` to the rule id from the issue and fix the limit in the script.
+>    2. The live site shows no amber banner with the RPC up.
+>    **Next in the audit's order:** #6/#25 host the third-party scripts ourselves (cdnjs, unpkg →
+>    `script-src 'self'`), then #18 rent helper, then the rest of #28 (remove the stake-based
+>    fallback and the clean-epoch filter from `js/apr.js` once the credits method has run for a
+>    while; `apr_check.py` can then be rewritten against `pv`). After that the "Month 2" block (§5).
+>    **Small things left open on purpose:** the geo bot has no data check; the bots still have one
+>    RPC endpoint (they fail, the issue opens, the data watch reports stale files); in snapshot mode
+>    the card's "next leader slot" line stays on "…"; the break-even calculator still uses total
+>    rewards ÷ total stake (a different quantity, left as it is); three old PNGs under
+>    `Claude outputs/` are tracked in the public repo.
+>    **Waiting on Shaka** (asked in session 18, not answered yet):
+>    - one real MAX "Withdraw XNT" from a vote account with his wallet (the fix is proven by mainnet
+>      simulation and by the live modal, not by a signed transaction);
+>    - optional: send `/id` to @x1valhq_bot and store the number as the `TELEGRAM_CHAT_ID` secret
+>      (read at the alerts loop's next start); until then notices arrive as GitHub issues only;
+>    - Shaka_Vibes_4 and _5 (in the pane's test portfolio) are not in `getVoteAccounts` and have no
+>      reward in the 36-epoch ledger — retired on purpose?
+>    - #2 privacy follow-up (item B).
+>    **Decisions Shaka can still reverse from session 18:** the site refuses program-derived
+>    addresses (multisig vaults) as a withdraw authority (CLI only); the vote account's
+>    withdraw-authority change got the same confirmation as the stake one; offline epochs count as
+>    0 % in the APR; snapshot mode instead of a plain "RPC is down" notice.
+>    **Working notes for the next session:** if the Mac drops off the bridge while a patch is being
+>    applied, hand Shaka a block that applies the patch only if needed and commits only when
+>    `git apply --check -R` confirms the folder matches it (used for push 14). A patch sent as a
+>    chat file is not on his disk until he saves it — prefer writing it into `Claude outputs/` once
+>    the Mac is back. If a bot ever cannot push after the Node 22 move, revert that workflow's three
+>    lines to `actions/checkout@v4`, `actions/setup-node@v4`, `node-version: '20'`.
 > B. **Privacy follow-up (since 2026-09-25):** a GitHub Support ticket asking for a GC of the dangling
 >    pre-rewrite commits is pending; one of them still returned **200** on 2026-11-17. Its SHA is kept only
 >    in the private audit file now (audit #2 has the check and the re-create-the-repo fallback). Still on
@@ -503,10 +493,11 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
 - [x] **This week** (session 18, 2026-11-18, all live-verified): #1 APR interim guard · #5 vote-account rent ·
       #4 authority confirmation · #8 one slot time · #13 frame guard — [ ] one real wallet MAX withdraw (Shaka) ·
       [ ] #2 privacy follow-up stays on the owner's list (Start-here item B)
-- [ ] **Weeks 1–2:** #21, #7 (CI + data check), #14, #22 done in session 18; open: `TELEGRAM_CHAT_ID` (Shaka), #10 banner (optional). Was: #21 fix the flaky + broken tests → #7 CI and sanity gates on published numbers ·
-      #14 auto-close failure issues, set `TELEGRAM_CHAT_ID` · #22 Node 24 / actions v5+ · #10 stale-scores banner
-- [ ] **Weeks 2–4:** #28 credits-based yield engine (#1 and #9 done, session 18; fallback removal and the builder's gate open) · #18 rent helper · #12 RPC failover ·
-      #6/#25 vendor third-party scripts, script-src 'self'
+- [x] **Weeks 1–2** (session 18): #21 tests · #7 CI and data check before publishing · #14 failure issues close
+      themselves · #22 Node 22, actions pinned — [ ] `TELEGRAM_CHAT_ID` (Shaka) · [ ] #10 stale-scores banner (optional)
+- [ ] **Weeks 2–4:** [x] #28 credits-based yield (closes #1 and #9; [ ] remove the stake-based fallback later) ·
+      [x] #12 RPC outage → snapshot mode (no second endpoint exists; bots unchanged) · [ ] #6/#25 vendor third-party
+      scripts, script-src 'self' · [ ] #18 rent helper
 - [ ] **Month 2:** #26 edge layer (headers #13, bot + scheduler #3, RPC cache, icon proxy #15) ·
       #27 data as a deploy artifact (closes #11, #17, #23) · #16 lazy ledger · #31 private ops docs
 - [ ] **Quarter:** #29 shared ES modules (#10, #19) · #20 dead code · local-validator transaction tests ·
@@ -1911,7 +1902,11 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
 - Lesson: data bugs need data checks. Every unit test was green while 38 % of APRs were wrong; audit #7
   (sanity gates on published numbers) fixes the process, not just this bug.
 
-### 2026-11-18 — Session 18: audit phase 1 (~1 hour)
+### 2026-11-18 — Session 18: audit phases 1 and 2, credits APR, snapshot mode (one day, 15 pushes + this handover)
+- Summary: phase 1 (#1, #4, #5, #8, #13) and the start-up order fix; phase 2 (#21 tests, #7 CI and the
+  data check before publishing, #14, #22, the published-data watch); from phase 3 the credits-based
+  APR (#28, with #9: Stake Details and calculators) and snapshot mode for RPC outages (#12). Every
+  push below was live-verified; the entries are in the order they were made.
 - Start: folder linked, delete permission granted, tree clean and level with origin/main. Worked in a
   cloud clone and moved finished work to the Mac as patches (Start-here item 10).
 - **#1 Delegator APR, interim guard** (`js/apr.js`; details in §4). The audit proposed a cap at 1.25 ×
@@ -2192,4 +2187,11 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
     45 s retry timer and the 12 s "slow" limit): RPC down from the start, recovery by the site's own
     timer + Reload, a later refresh failing, no usable snapshot (missing / 8 days old / 20
     validators), a hanging RPC, RPC fine. 19 of 19 suites, CSP walk 0 violations.
-  Not live-verified at the time of writing.
+  Live-verified after the push (`fcd17b25`, CI green in 4.5 min). Normal operation: no banner,
+  `rpcOutage` null, 350 live validators, Shaka_Vibes_1's card with the live balance and the pace
+  badge. Outage, simulated in the built-in browser pane only (that tab's `fetch` made to fail for
+  the RPC URL, the list emptied, `loadNetworkStats()` called; nothing stored, nothing sent): banner
+  "… Showing the hourly snapshot from 46 min ago …", 350 snapshot entries, stats bar 350 / 335 /
+  15 / 1.01B, the card with "—" for the balance and the published skip rate and score; with the
+  stub switched off the site's own retry brought live data back, the banner turned green and its
+  Reload button restored the live card.
