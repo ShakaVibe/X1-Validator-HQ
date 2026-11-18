@@ -12,12 +12,12 @@
     const SkipMonitor = (function() {
       const POLL_INTERVAL_MS   = 3000;
       const UI_TICK_MS         = 1000;
-      const MAX_RECENT_SLOTS   = 1500;   // ~10 min of history at 420ms slots
+      const MAX_RECENT_SLOTS   = 1500;   // ~9 min of history at the measured ~366 ms slot
       const MAX_FEED           = 120;
       const INITIAL_BACKFILL   = 1400;   // slots to hydrate on first tick / long absence
       const CONFIRM_LAG        = 12;     // stay this many slots behind head
       const MAX_RANGE_PER_CALL = 500;    // safety cap on a single getBlocks call
-      const HOUR_SLOTS         = 8571;   // ~1 hour at 420ms/slot
+      const hourSlots = () => Math.round(3600000 / measuredSlotMs());   // slots in one hour at the measured slot time (~9,840; the old 8,571 assumed 420 ms = 52 min)
       const HOUR_POLL_MS       = 30000;  // refresh last-hour aggregate every 30s
       const EPOCH_POLL_MS      = 60000;  // refresh epoch-to-date aggregate every 60s
 
@@ -230,7 +230,7 @@
           if (!state || !state.running) return;
           const head       = epochInfo.absoluteSlot;
           const epochStart = head - epochInfo.slotIndex;
-          const firstSlot  = Math.max(epochStart, head - HOUR_SLOTS);
+          const firstSlot  = Math.max(epochStart, head - hourSlots());
           const lastSlot   = head;
           if (lastSlot <= firstSlot) return;
           const prod = await rpcCall('getBlockProduction', [{ range: { firstSlot, lastSlot } }]);
@@ -558,7 +558,7 @@
               ? 'no portfolio slots in window yet'
               : 'warming up…';
           } else {
-            const mins = (slots.length * 0.42 / 60).toFixed(1);
+            const mins = (slots.length * measuredSlotMs() / 60000).toFixed(1);
             liveSub.textContent = `${skips.length} skip${skips.length===1?'':'s'} · ${fmtNum(slots.length)} slots · ~${mins} min`;
           }
         }
@@ -623,7 +623,7 @@
             for (let i = slots.length - 1; i >= 0; i--) {
               if (slots[i].produced) streak++; else break;
             }
-            const streakMin = (streak * 0.42 / 60).toFixed(1);
+            const streakMin = (streak * measuredSlotMs() / 60000).toFixed(1);
             streakEl.textContent = streak >= 60
               ? `${fmtNum(streak)} slots · ~${streakMin}m`
               : `${fmtNum(streak)} slots`;
@@ -975,7 +975,7 @@
         el.innerHTML = html;
       }
 
-      // Interpolate head between ticks: at 420ms/slot the chain is constantly
+      // Interpolate head between ticks: at ~366 ms/slot the chain is constantly
       // advancing, and if we only re-render on tick (every 3s) the NOW indicator
       // feels frozen. Derive a "presumed" head from wall-clock elapsed since
       // the last tick, capped so a stalled connection can't run away.
@@ -983,7 +983,7 @@
         if (!state || !state.lastSeenHead) return null;
         if (!state.lastTickTs) return state.lastSeenHead;
         const elapsedMs = Date.now() - state.lastTickTs;
-        const advance = Math.max(0, Math.floor(elapsedMs / 420));
+        const advance = Math.max(0, Math.floor(elapsedMs / measuredSlotMs()));
         return state.lastSeenHead + Math.min(advance, 20);
       }
 
@@ -1048,7 +1048,7 @@
             if (offset <= 4)                cls += ' upcoming-next';
             else                            cls += ' upcoming';
             if (leader && portfolioNodePubkeys.has(leader)) cls += ' portfolio-mine';
-            const etaSec = offset * 0.42;
+            const etaSec = offset * measuredSlotMs() / 1000;
             const etaStr = etaSec < 60 ? `${etaSec.toFixed(1)}s` : `${(etaSec/60).toFixed(1)}m`;
             label = `Slot ${slot.toLocaleString()} · ${name} · in ${etaStr}`;
           }
@@ -1206,7 +1206,7 @@
         const curRate          = curElapsed > 0 ? (curSkipped / curElapsed) * 100 : null;
         const nextSlot         = upcomingSlots[0];
         const nextSlotsAway    = nextSlot !== undefined ? nextSlot - head : null;
-        const nextMs           = nextSlotsAway !== null ? nextSlotsAway * 420 : null;
+        const nextMs           = nextSlotsAway !== null ? nextSlotsAway * measuredSlotMs() : null;
 
         // Kick off (or refresh) the per-slot block-production cache for this
         // validator so the current-epoch timeline can render red dots at the

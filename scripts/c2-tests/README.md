@@ -114,3 +114,41 @@ Withdraw instruction's lamports decoded. The Manage action grid is checked too: 
 Stake" unlocks as soon as any of a deactivating stake has cooled (desc names the cooled amount),
 "Close Stake Account" only when fully cooled, and the locked-state explainer describes the 9 % cap.
 63 checks, 0 page errors.
+
+**Vote-account Withdraw XNT (audit #5, 2026-11-18)** is section 4b of `stake-activation-test.js`: the
+reserve is `getMinimumBalanceForRentExemption(space)` from the RPC (27,074,400 lamports for a
+3,762-byte vote account, not the old hard-coded 0.02 XNT), MAX rounds down, the figure shown on the
+Available line sends exactly the limit, the rent formula is the fallback when the RPC call fails, and
+nothing can be withdrawn before the rent is known.
+
+**One measured slot time (audit #8, 2026-11-18)** — `measuredSlotMs()` / `ensureMeasuredSlotMs()` in `js/core.js`:
+
+    node scripts/c2-tests/slot-time-test.js "$PWD"
+
+Mocks 60 one-minute performance samples (365.85 ms per slot) and checks that the page measures once
+on load, that the card's leader band, the epoch bar and epochs/year use the measurement (the 420 /
+400 ms constants gave "~1h 32m" and "12h 53m" where the truth is "~1h 20m" and "11h 47m"), that a
+reload reuses the session cache, that a failing RPC falls back to 368 ms without a retry storm, and
+that no fixed slot-time constant is left in `js/`. 13 checks.
+
+**Authority-change safety net (audit #4, 2026-11-18)** — `js/wallet-tx.js` + `#authorityDangerModal`:
+
+    node scripts/c2-tests/authority-test.js "$PWD"
+
+Signer stubbed, nothing is sent. Stake withdraw authority: the stake account itself, the vote account,
+program / sysvar ids, a program-derived address and the current authority are refused with the
+reason; a good address opens the confirmation modal instead of sending (full address, amount, what
+the chain knows about the address); only its last 6 characters unlock it; then exactly one Stake
+Authorize(Withdrawer) instruction. The on-chain lookup blocks programs and program-owned accounts,
+warns about never-used addresses and degrades to a caution when the RPC cannot answer. The vote
+account's withdraw authority goes through the same modal; the voter authority keeps its typed-phrase
+modal and gains the address checks. 34 checks.
+
+**Frame guard (audit #13, 2026-11-18)** — `js/frame-guard.js`:
+
+    node scripts/c2-tests/frame-guard-test.js "$PWD"
+
+Serves the site on 127.0.0.1 and a hostile page on localhost that frames it. Unframed: the site loads
+normally. Framed (plain, sandboxed with scripts, same-origin parent): no site markup and no site
+scripts, only the notice and a top-level link. Control: the previous guard from git history leaves
+the framed site fully usable (skipped where the history is not available). 8 checks. Chromium only.

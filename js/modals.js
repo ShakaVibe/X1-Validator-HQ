@@ -788,7 +788,7 @@
     // ─────────────────────────────────────────────────────────
     // SLOT EXPLORER MODAL  (current + last epoch + both)
     // ─────────────────────────────────────────────────────────
-    const SM_SLOT_MS = 420;
+    // Slot time: measuredSlotMs() (core.js), not a 420 ms constant.
 
     let _smNodePubkey    = null;
     let _smName          = null;
@@ -866,7 +866,7 @@
       // absolute slot numbers throughout).
       const si              = which === 'current' ? epochInfo.slotIndex : slotsPerEpoch;
       const nextSlotRel     = which === 'current' ? (mySlots.find(s => s > si) ?? null) : null;
-      const msUntil         = nextSlotRel !== null ? (nextSlotRel - si) * SM_SLOT_MS : null;
+      const msUntil         = nextSlotRel !== null ? (nextSlotRel - si) * measuredSlotMs() : null;
       const nextSlot        = nextSlotRel !== null ? nextSlotRel + firstSlotOfCurrentEpoch : null;
 
       // ── Per-slot produced/skipped reconciliation ──────────
@@ -1041,8 +1041,9 @@
         }
         pipObjs.push({ html: `<div class="sm-pip produced" title="Slot ${s.toLocaleString()} — Produced (pending finalization)"></div>`, red: false });
       });
+      const slotMs = measuredSlotMs();
       upcomingSlots.forEach(s => {
-        const ms = (s - d.slotIndex) * SM_SLOT_MS;
+        const ms = (s - d.slotIndex) * slotMs;
         pipObjs.push({ html: `<div class="sm-pip upcoming" title="Slot ${s.toLocaleString()} — in ${smCountdown(ms)}"></div>`, red: false });
       });
 

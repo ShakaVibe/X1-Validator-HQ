@@ -756,16 +756,55 @@
     // MEASURED ~367 ms ≈ 22 h → ~397 epochs a year. It is not 365: the old
     // 400 ms "target slot" assumption under-stated every APY and annual
     // figure by ~8 % (fixed 2026-10-13; verified against the chain — epoch
-    // 375 on 09-13, 408 on 10-13). The slot time is measured once per session
-    // by js/apr.js (getRecentPerformanceSamples, 60 samples) and cached in
-    // sessionStorage under SLOT_TIME_CACHE_KEY; until then the last measured
-    // value below is the fallback. One function, one number, site-wide.
+    // 375 on 09-13, 408 on 10-13). The slot time is measured once an hour per
+    // session by ensureMeasuredSlotMs() below (getRecentPerformanceSamples, 60
+    // one-minute samples = the last hour) and cached in sessionStorage under
+    // SLOT_TIME_CACHE_KEY; until then the last measured value below is the
+    // fallback. One function, one number, site-wide: since 2026-11-18 (audit
+    // #8) every countdown reads measuredSlotMs() too — the leader band, the
+    // epoch bar, the skip monitor and the Slot Explorer used 420 / 400 ms
+    // constants, which overstated "next leader slot in…" by ~15 %.
     let currentSlotsInEpoch = null;
-    const EPOCH_CALC_SLOT_MS = 368;                 // fallback: measured 2026-10-13
-    const SLOT_TIME_CACHE_KEY = 'x1SlotTimeCache';  // { ts, data: seconds } — written by js/apr.js
+    const EPOCH_CALC_SLOT_MS = 368;                 // fallback: measured 2026-10-13 (366 on 2026-11-18)
+    const SLOT_TIME_CACHE_KEY = 'x1SlotTimeCache';  // { ts, data: seconds }
+    const SLOT_TIME_MAX_AGE_MS = 3600000;
+    let _slotMsMem = null, _slotMsMemAt = 0;        // in-memory copy, for browsers without sessionStorage
+    let _slotMeasurePromise = null, _slotMeasureFailedAt = 0;
     function measuredSlotMs() {
-      const s = SessionCache.get(SLOT_TIME_CACHE_KEY, 3600000);
-      return (typeof s === 'number' && s > 0.1 && s < 2) ? s * 1000 : EPOCH_CALC_SLOT_MS;
+      const s = SessionCache.get(SLOT_TIME_CACHE_KEY, SLOT_TIME_MAX_AGE_MS);
+      if (typeof s === 'number' && s > 0.1 && s < 2) return s * 1000;
+      if (_slotMsMem && Date.now() - _slotMsMemAt < SLOT_TIME_MAX_AGE_MS) return _slotMsMem;
+      return EPOCH_CALC_SLOT_MS;
+    }
+    // Resolves with the slot time in ms, measuring it first when no fresh value
+    // is cached. Cheap to call often: one RPC call per hour per session, a
+    // failed call is not repeated for 5 minutes, and concurrent callers share
+    // one request. Called from setEpochBaseline() (every page load + the 90 s
+    // epoch re-sync) and by js/apr.js.
+    function ensureMeasuredSlotMs() {
+      const s = SessionCache.get(SLOT_TIME_CACHE_KEY, SLOT_TIME_MAX_AGE_MS);
+      if (typeof s === 'number' && s > 0.1 && s < 2) return Promise.resolve(s * 1000);
+      if (_slotMsMem && Date.now() - _slotMsMemAt < SLOT_TIME_MAX_AGE_MS) return Promise.resolve(_slotMsMem);
+      if (_slotMeasurePromise) return _slotMeasurePromise;
+      if (Date.now() - _slotMeasureFailedAt < 300000) return Promise.resolve(measuredSlotMs());
+      _slotMeasurePromise = (async () => {
+        let ok = false;
+        try {
+          const samples = await rpcCall('getRecentPerformanceSamples', [60]);
+          let secs = 0, slots = 0;
+          for (const x of (samples || [])) { secs += x.samplePeriodSecs || 0; slots += x.numSlots || 0; }
+          const sec = slots > 0 ? secs / slots : 0;
+          if (sec > 0.1 && sec < 2) {
+            SessionCache.set(SLOT_TIME_CACHE_KEY, sec);
+            _slotMsMem = sec * 1000; _slotMsMemAt = Date.now();
+            ok = true;
+          }
+        } catch (e) { /* keep the fallback */ }
+        if (!ok) _slotMeasureFailedAt = Date.now();
+        _slotMeasurePromise = null;
+        return measuredSlotMs();
+      })();
+      return _slotMeasurePromise;
     }
     function epochsPerYear() {
       const slots = (currentSlotsInEpoch > 0) ? currentSlotsInEpoch : 216000;
@@ -1515,6 +1554,27 @@
     function clampToLimitLamports(amountLamports, limitLamports) {
       if (amountLamports > limitLamports && amountLamports - limitLamports < 100000) return limitLamports;
       return amountLamports;
+    }
+
+    // Rent-exempt minimum for an account of `space` bytes, in lamports (audit
+    // 2026-11-17 #5 / #18). Asked from the RPC once per size per page load. If
+    // that call fails: the cluster's standard rent formula, (128 + space) bytes
+    // × 3,480 lamports per byte-year × 2 years, which matched the RPC for every
+    // size checked on 2026-11-18 (0 → 890,880 · 200 → 2,282,880 · 643 →
+    // 5,366,160 · 3,762 → 27,074,400). Use this instead of a hard-coded amount.
+    const _rentExemptCache = {};
+    function rentExemptFormulaLamports(space) { return (128 + Number(space)) * 6960; }
+    async function fetchRentExemptLamports(space) {
+      space = Number(space);
+      if (!Number.isInteger(space) || space < 0) throw new Error('fetchRentExemptLamports: bad account size');
+      if (_rentExemptCache[space]) return _rentExemptCache[space];
+      try {
+        const r = await rpcCall('getMinimumBalanceForRentExemption', [space]);
+        if (Number.isFinite(r) && r > 0) { _rentExemptCache[space] = r; return r; }
+      } catch (e) {
+        console.warn('getMinimumBalanceForRentExemption(' + space + ') failed, using the rent formula:', e);
+      }
+      return rentExemptFormulaLamports(space);   // not cached, so the next call asks the RPC again
     }
 
     function lamportsToXNT(lamports) {

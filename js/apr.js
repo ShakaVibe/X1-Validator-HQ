@@ -13,44 +13,24 @@
     // snapshot). Validators at 100 % commission pay delegators nothing.
     // Since 2026-11-18 an epoch is only used when its reward, stake and
     // commission fit each other — see "Clean-epoch filter" below.
-    // Globals used: Actions, escHtml, formatNumber, RewardsLedger, rpcCall,
-    // SessionCache, allValidators, currentSlotsInEpoch, delegEvaluate, delegLoad.
+    // Globals used: Actions, escHtml, formatNumber, RewardsLedger, allValidators,
+    // currentSlotsInEpoch, epochsPerYear, measuredSlotMs, ensureMeasuredSlotMs,
+    // delegEvaluate, delegLoad.
     // ═══════════════════════════════════════════════════════════════════════
     (function () {
       const LONG = 30, SHORT = 7, MIN_EPOCHS = 3;
       const MIN_NETWORK_STAKE_XNT = 1000;            // ignore dust validators in the network comparison
-      const FALLBACK_SLOTS = 216000, FALLBACK_SLOT_SEC = 0.368;  // measured 2026-10-13
-      const SLOT_CACHE_KEY = 'x1SlotTimeCache', SLOT_CACHE_MS = 3600000;   // same key core.js's epochsPerYear() reads
+      const FALLBACK_SLOTS = 216000;
       const esc = (s) => escHtml(String(s == null ? '' : s));
       const num = (n, d) => formatNumber(n, d == null ? 2 : d);
       const pct = (x, d) => (x == null || !isFinite(x)) ? '—' : num(x, d == null ? 2 : d) + '%';
 
       // ── Epoch length ──────────────────────────────────────────────
-      let _slotSec = null, _slotPromise = null;
-      function slotSeconds() {
-        if (_slotSec) return Promise.resolve(_slotSec);
-        const cached = (typeof SessionCache !== 'undefined') && SessionCache.get(SLOT_CACHE_KEY, SLOT_CACHE_MS);
-        if (cached && cached > 0.1 && cached < 2) { _slotSec = cached; return Promise.resolve(_slotSec); }
-        if (_slotPromise) return _slotPromise;
-        _slotPromise = (async () => {
-          try {
-            const s = await rpcCall('getRecentPerformanceSamples', [60]);
-            const secs = s.reduce((a, x) => a + (x.samplePeriodSecs || 0), 0), slots = s.reduce((a, x) => a + (x.numSlots || 0), 0);
-            if (slots > 0 && secs > 0) { _slotSec = secs / slots; if (typeof SessionCache !== 'undefined') SessionCache.set(SLOT_CACHE_KEY, _slotSec); }
-          } catch (e) { /* fall back below */ }
-          if (!_slotSec) _slotSec = FALLBACK_SLOT_SEC;
-          _slotPromise = null;
-          return _slotSec;
-        })();
-        return _slotPromise;
-      }
-      // One epoch-length figure for the whole site: core.js's epochsPerYear()
-      // reads the slot time this module measured (via the session cache).
-      function epy() {
-        if (typeof epochsPerYear === 'function') return epochsPerYear();
-        const slots = (typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS;
-        return 365.25 * 86400 / (slots * (_slotSec || FALLBACK_SLOT_SEC));
-      }
+      // One slot time and one epochs-per-year figure for the whole site, both
+      // owned by core.js: ensureMeasuredSlotMs() measures (once an hour per
+      // session), measuredSlotMs() reads, epochsPerYear() derives.
+      function slotSeconds() { return ensureMeasuredSlotMs().then(ms => ms / 1000); }
+      function epy() { return epochsPerYear(); }
 
       // ── Core computation ──────────────────────────────────────────
       function currentOf(vote) {
@@ -293,7 +273,7 @@
             '<div class="apm-row"><span>Active stake' + (L.method === 'self' ? '' : ' the reward was earned on') + '</span><b>' + esc(num(L.stakeXnt, 0)) + ' XNT</b></div>' +
             (L.method === 'self' ? '' : '<div class="apm-row"><span>Vote-account reward, epoch ' + esc(L.last) + ' (commission income)</span><b>' + esc(num(L.lastV / 1e9, 2)) + ' XNT</b></div>') +
             '<div class="apm-row"><span>Average yield per epoch</span><b>' + pct(L.netPerEpoch, 4) + '</b></div>' +
-            '<div class="apm-row"><span>Epochs per year</span><b>' + esc(num(k, 0)) + ' <small>(' + esc(num((typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS, 0)) + ' slots × ' + esc(num((_slotSec || FALLBACK_SLOT_SEC) * 1000, 0)) + ' ms ≈ ' + esc(num(((typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS) * (_slotSec || FALLBACK_SLOT_SEC) / 3600, 1)) + ' h)</small></b></div>' +
+            '<div class="apm-row"><span>Epochs per year</span><b>' + esc(num(k, 0)) + ' <small>(' + esc(num((typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS, 0)) + ' slots × ' + esc(num(measuredSlotMs(), 0)) + ' ms ≈ ' + esc(num(((typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS) * measuredSlotMs() / 3600000, 1)) + ' h)</small></b></div>' +
             '<div class="apm-row"><span>On 10,000 XNT delegated</span><b>≈ ' + esc(num(perTenK, 0)) + ' XNT / year</b></div>' +
           '</div>' +
           '<div class="dm-foot">' + method + ' ' + stakeNote + ' Source: <code>data/rewards.json</code>, rebuilt hourly from on-chain inflation rewards. Estimates from past epochs; future rewards depend on inflation (currently ~' + esc(num(6.4, 1)) + '% to validators and falling), vote credits and stake.</div>';

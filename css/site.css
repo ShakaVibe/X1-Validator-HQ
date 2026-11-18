@@ -12382,3 +12382,8 @@
       .apm-row { flex-direction: column; gap: 0.15rem; }
       .apm-row b { text-align: left; }
     }
+
+    /* ── AUTHORITY-CHANGE CONFIRMATION (audit 2026-11-17 #4) ── */
+    .authority-danger-address { word-break: break-all; white-space: normal; font-family: 'JetBrains Mono', monospace; }
+    .authority-danger-tail { color: var(--danger); font-weight: 700; }
+    .authority-danger-blocked { color: var(--danger); font-weight: 600; }

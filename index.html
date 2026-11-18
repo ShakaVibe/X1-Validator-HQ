@@ -9,13 +9,16 @@
        `X-Frame-Options` header, and `frame-ancestors` is ignored when CSP is
        delivered via <meta>. So this script is the only clickjacking defense
        that can ship here. It refuses to run inside an iframe: if the page is
-       framed it tries to break out, and if a hostile/sandboxed parent blocks
-       that, it blanks the document so there is nothing to click through.
+       framed it tries to break out and, whether or not that works, stops
+       the page and replaces it with a notice, so there is nothing to click
+       through (since 2026-11-18; before, it only blanked when the break-out
+       threw, which current browsers do not do).
 
-       NOTE: this is a band-aid, not a real header. A sandboxed iframe can
-       neutralize it. The proper fix is to serve real security headers from a
-       host that supports them (Cloudflare/Netlify _headers, or Cloudflare in
-       front of Pages). Track that as Issue #5. -->
+       NOTE: this is a band-aid, not a real header. A frame sandboxed without
+       allow-scripts stops it, though then no site script runs either. The
+       proper fix is to serve real security headers from a host that supports
+       them (Cloudflare/Netlify _headers, or Cloudflare in front of Pages).
+       Track that as Issue #5. -->
   <script src="js/frame-guard.js"></script>
   <!-- ─────────────────────────────────────────────────────────────────────
        CONTENT-SECURITY-POLICY (Issue #2 — defense-in-depth backstop)
@@ -1812,7 +1815,7 @@
             <span class="balance-amount" id="withdrawAvailableBalance">0.0000</span>
             <span class="balance-unit">XNT</span>
           </div>
-          <div class="balance-note" id="withdrawBalanceNote">Minimum rent-exempt balance (~0.02 XNT) must remain in account</div>
+          <div class="balance-note" id="withdrawBalanceNote">The rent-exempt minimum must remain in the vote account</div>
         </div>
         
         <!-- Amount Input -->
@@ -2326,6 +2329,62 @@
           <button class="send-cancel-btn" id="setWithdrawAuthorityCancelBtn" data-action="call" data-fn="closeSetWithdrawAuthorityModal">Cancel</button>
           <button class="send-confirm-btn" id="setWithdrawAuthorityBtn" disabled>
             Set New Authority
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authority-change confirmation (audit 2026-11-17 #4): withdraw authority of a stake account or of the vote account -->
+  <div class="modal-overlay" id="authorityDangerModal" style="display: none;" data-action="overlay-close" data-fn="closeAuthorityDangerModal">
+    <div class="modal send-modal" style="max-width: 520px;">
+      <div class="modal-header" style="background: linear-gradient(135deg, rgba(255, 82, 82, 0.2), rgba(255, 152, 0, 0.2)); border-bottom: 1px solid var(--danger);">
+        <h2 style="color: var(--danger);" id="authorityDangerTitle">⚠️ Confirm the new withdraw authority</h2>
+        <button class="modal-close" data-action="call" data-fn="closeAuthorityDangerModal">&times;</button>
+      </div>
+
+      <div class="send-modal-content">
+        <div class="danger-warning-box">
+          <div class="danger-title">THIS CANNOT BE UNDONE</div>
+          <div class="danger-text" id="authorityDangerLead"></div>
+          <ul class="danger-list">
+            <li>From then on <strong>only the new address</strong> can withdraw or change this authority again</li>
+            <li>If the address is wrong, or nobody holds its key, the funds are <strong>lost for good</strong></li>
+            <li>Nobody can reverse it: not this site, not the X1 Foundation</li>
+          </ul>
+        </div>
+
+        <div class="send-section" style="margin-top: 1.25rem;">
+          <div class="send-label" id="authorityDangerAccountLabel">Account:</div>
+          <div class="send-destination">
+            <div class="destination-address-row">
+              <span class="destination-address authority-danger-address" id="authorityDangerAccount"></span>
+            </div>
+          </div>
+          <div class="address-note" id="authorityDangerAmount"></div>
+        </div>
+
+        <div class="send-section">
+          <div class="send-label">New withdraw authority:</div>
+          <div class="send-destination">
+            <div class="destination-address-row">
+              <span class="destination-address authority-danger-address" id="authorityDangerNew"></span>
+            </div>
+          </div>
+          <div class="address-note" id="authorityDangerFacts"></div>
+        </div>
+
+        <div class="send-section">
+          <div class="send-label">Compare that address with your own record, then type its <span style="color: var(--danger); font-weight: 700;">last 6 characters</span> to confirm:</div>
+          <div class="send-input-wrapper">
+            <input type="text" class="send-address-input" id="authorityDangerInput" maxlength="6" placeholder="Last 6 characters of the new address" data-input="call-input" data-input-fn="validateAuthorityDangerInput" autocomplete="off" autocapitalize="off" spellcheck="false">
+          </div>
+        </div>
+
+        <div class="send-actions" style="margin-top: 1rem;">
+          <button class="send-cancel-btn" data-action="call" data-fn="closeAuthorityDangerModal">Cancel</button>
+          <button class="send-confirm-btn danger-btn" id="authorityDangerBtn" data-action="call" data-fn="proceedWithAuthorityChange" disabled style="background: linear-gradient(135deg, var(--danger), #ff5252);">
+            I checked it, change the authority
           </button>
         </div>
       </div>

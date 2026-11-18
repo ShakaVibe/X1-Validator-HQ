@@ -43,7 +43,8 @@
     // make no network calls.
     // ───────────────────────────────────────────────────────────
     const LeaderCountdown = (() => {
-      const SLOT_MS = 420;     // X1 slot time — matches the Validator Terminal
+      // Slot time: measuredSlotMs() (core.js) — the measured ~366 ms, not a constant.
+      // The old 420 ms made every "Next leader slot in …" read ~15 % too long.
       const SYNC_MS = 12000;   // re-sync epoch slot index / schedule
       let epochSlotIndex = null;  // slotIndex at last sync
       let slotsInEpoch   = null;
@@ -53,7 +54,7 @@
 
       function estIndex() {
         if (epochSlotIndex === null) return null;
-        const adv = Math.floor((Date.now() - syncedAt) / SLOT_MS);
+        const adv = Math.floor((Date.now() - syncedAt) / measuredSlotMs());
         const idx = epochSlotIndex + adv;
         return slotsInEpoch ? Math.min(idx, slotsInEpoch - 1) : idx;
       }
@@ -136,7 +137,7 @@
           if (next === Infinity) {
             setChip(chip, 'No more leader slots this epoch', 'none', epochNote);
           } else {
-            setChip(chip, 'Next leader slot in ' + fmt((next - idx) * SLOT_MS), '', epochNote);
+            setChip(chip, 'Next leader slot in ' + fmt((next - idx) * measuredSlotMs()), '', epochNote);
           }
         });
       }
@@ -880,7 +881,7 @@
     // truly live by combining three things:
     //
     //   1. Local 1-second tick that advances the bar based on the chain's
-    //      ~400ms slot duration relative to the last known baseline. Free —
+    //      measured slot duration relative to the last known baseline. Free —
     //      no RPC calls — so it can run forever without burning the public
     //      endpoint.
     //   2. Background re-sync of getEpochInfo every 90s to correct any drift
@@ -894,7 +895,7 @@
     // The renderer reads the baseline and projects forward.
     // ─────────────────────────────────────────────────────────────────────
     let _epochBaseline = null;  // { epoch, slotIndex, slotsInEpoch, fetchedAt }
-    const _EPOCH_SLOT_MS = 400;            // X1/Solana target slot time
+    // Slot time for the projection: measuredSlotMs() (core.js); was a 400 ms constant (9 % slow).
     const _EPOCH_RESYNC_MS = 90 * 1000;    // background re-sync cadence
 
     function setEpochBaseline(epochInfo) {
@@ -905,6 +906,7 @@
         slotsInEpoch: epochInfo.slotsInEpoch,
         fetchedAt: Date.now(),
       };
+      ensureMeasuredSlotMs();   // one RPC call an hour per session; every countdown reads the result
       renderEpochBar();
 
       // If the epoch number actually changed (rolled over), kick a full
@@ -926,14 +928,15 @@
       if (!fill || !pctEl || !timeEl) return;
 
       const elapsedMs = Date.now() - _epochBaseline.fetchedAt;
-      const slotsAdvanced = elapsedMs / _EPOCH_SLOT_MS;
+      const slotMs = measuredSlotMs();
+      const slotsAdvanced = elapsedMs / slotMs;
       const predictedIdx = Math.min(
         _epochBaseline.slotIndex + slotsAdvanced,
         _epochBaseline.slotsInEpoch
       );
       const pct = (predictedIdx / _epochBaseline.slotsInEpoch) * 100;
       const remainingSlots = Math.max(0, _epochBaseline.slotsInEpoch - predictedIdx);
-      const secondsRemaining = remainingSlots * (_EPOCH_SLOT_MS / 1000);
+      const secondsRemaining = remainingSlots * (slotMs / 1000);
       const hours = Math.floor(secondsRemaining / 3600);
       const minutes = Math.floor((secondsRemaining % 3600) / 60);
       const timeString = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;

@@ -6,29 +6,32 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-11-18):**
-> A. **Audit 2026-11-17 (session 17): work from it, in its order.** The full report (31 findings,
->    P0–P4, action plan, implementation notes) is **private**: `private/AUDIT-2026-11-17.md` in the X1VHQ
->    folder (gitignored; never commit it, because the repo and the site are public and several findings
->    are unfixed security/privacy issues) and the private Claude Doc
+> **Start here next session (as of 2026-11-18, end of session 18):**
+> A. **Audit 2026-11-17: work from it, in its order.** The full report (31 findings, P0–P4, action
+>    plan, implementation notes) is **private**: `private/AUDIT-2026-11-17.md` in the X1VHQ folder
+>    (gitignored; never commit it, because the repo and the site are public and several findings are
+>    unfixed security/privacy issues) and the private Claude Doc
 >    https://claude.ai/artifact/1cVuoKnxV5D3GLxRQV3BNp. Scripts that reproduce the evidence live in
->    `private/audit-2026-11-17/`: `apr_check.py` is the APR "done when" check (exit 1 while any validator
->    is more than 0.25 pts off) and `vote_withdraw_sim.js` reproduces #5. Phase 1 ("this week"):
->    - **#1 Delegator APR is wrong for 122 of 323 validators** (WiznaPL's card: 250,197.69 %; real ≈ 6.8 %).
->      The rewards ledger stores the next epoch's stake against each epoch's reward, and re-fetched cells
->      get that day's stake. Plan: an interim cap in `js/apr.js` (drop epochs above 1.25× the network
->      rate), then the credits model (point value × credits × (1 − commission); no stake needed).
->    - **#2 privacy follow-up**: details in the private file (minutes of work; partly done 2026-11-18 by
->      taking the commit SHA out of this file).
->    - **#5 "Withdraw XNT" MAX fails for every vote account**: a 0.02 XNT reserve is hard-coded, the real
->      rent minimum is 0.0270744 XNT → read it from the RPC.
->    - **#4 stake withdraw-authority change**: add the vote-authority "danger" confirmation + address checks.
->    - **#8 countdowns** use 420/400 ms slots (real: 366 ms) → one `measuredSlotMs()` everywhere.
->    - **#13 interim**: `js/frame-guard.js` blanks the page while it is framed.
->    Then phase 2 (fix the flaky "42" test → CI + sanity gates on published numbers, auto-closing failure
->    issues + `TELEGRAM_CHAT_ID`, Node 24 in the workflows, a stale-scores banner) and onwards per the
->    audit's section F. Ask Shaka before changing the APR methodology (open decision: should fully
->    delinquent epochs count as 0 %?).
+>    `private/audit-2026-11-17/` (`apr_check.py`, `vote_withdraw_sim.js`).
+>    **Phase 1 ("this week") was built in session 18** (see the Session Log):
+>    - **#1 APR** interim guard: LIVE and live-verified (push `a6f4a653`). 2 of 323 validators still
+>      differ from the credits model by more than 0.25 pts (worst 0.53); before: 122 (worst 250,267).
+>    - **#5** vote-account MAX withdraw, **#8** one measured slot time, **#4** authority-change
+>      confirmation, **#13** frame guard: built and tested offline, handed over as push 2.
+>      **First thing next session: confirm push 2 is on `main` and live-check it** (cache trick, item 9):
+>      leader band / epoch bar times; Manage → Withdraw XNT shows "0.0270744 XNT" in the note;
+>      Manage → a stake account → Set Withdraw Authority → a good address opens the red confirmation
+>      modal (do NOT confirm; needs Shaka's wallet for the real thing); `js/frame-guard.js` deployed.
+>    - **Needs Shaka's wallet, once:** a real MAX "Withdraw XNT" from a vote account (the fix was
+>      proven by mainnet simulation, not by a signed transaction).
+>    - **#2 privacy follow-up**: unchanged, on the owner's list (item B).
+>    **Next: phase 2** (fix the flaky "42" test and the broken `manage-test.js` → CI + sanity gates on
+>    published numbers, auto-closing failure issues + `TELEGRAM_CHAT_ID`, Node 24 in the workflows, a
+>    stale-scores banner), then the **credits-based yield engine (#28)**, which replaces the interim
+>    APR guard. **Ask Shaka before building #28** (open decision: should fully delinquent epochs
+>    count as 0 %? Today they are skipped). Decisions Shaka can still reverse from session 18: the
+>    site refuses program-derived addresses (multisig vaults) as a withdraw authority (CLI only), and
+>    the vote account's withdraw-authority change got the same confirmation as the stake one.
 > B. **Privacy follow-up (since 2026-09-25):** a GitHub Support ticket asking for a GC of the dangling
 >    pre-rewrite commits is pending; one of them still returned **200** on 2026-11-17. Its SHA is kept only
 >    in the private audit file now (audit #2 has the check and the re-create-the-repo fallback). Still on
@@ -114,6 +117,11 @@
 >    offline Playwright in the cloud (stage the changed files, `split/` copy served on localhost,
 >    external requests aborted, RPC-dependent globals mocked in `page.evaluate`) → Shaka pushes →
 >    live check in a fresh pane tab with the cache trick above → HANDOVER entry.
+>    Session 18 variant that avoided every staging pitfall: `git clone --depth 1` of the public repo in
+>    the cloud, edit + test there (`NODE_PATH=$(npm root -g) node scripts/c2-tests/<suite>.js "$PWD"`,
+>    suites can run in parallel), `git diff > patch`, send the patch to `Claude outputs/` with
+>    device_commit_files, `git apply --check && git apply` on the Mac, compare `sha256sum` of the changed
+>    files on both sides. The cloud reaches the RPC, so mainnet simulations run there too.
 
 ---
 
@@ -156,6 +164,7 @@ them before handing over the push commands.
 index.html                    the page: head (CSP, meta), all tab markup + modals, script tags
 css/site.css                  all CSS (the old <style> block; "VALIDATOR CARD v2" rules at the end)
 js/core.js                    logging gate, XSS helpers (escHtml/escAttrJs/safeUrl), pubkey + u64, StakeActivation (cooldown math),
+                              measuredSlotMs/ensureMeasuredSlotMs (the one slot time), fetchRentExemptLamports (rent from the RPC),
                               helpers, canonical scores loader, delegator identities, RPC throttle +
                               circuit breaker + rpcStats, state vars, self-stake selections,
                               RewardsLedger, fetchTotalValidatorRewards(+Live), format helpers,
@@ -174,6 +183,7 @@ js/manage.js                  goToHome, browse-validators modal, Manage Validato
                               list + cooldown popover, merge/split/undelegate/redelegate/withdraw/
                               close/send/create-stake modals
 js/wallet-tx.js               priority fee, signSendTx + rebroadcast + confirm, create stake,
+                              authority-change safety net (address checks + #authorityDangerModal),
                               stake/withdraw authority, wallet connect, withdraw XNT, commission,
                               identity (+ icon preview), vote authority
 js/card-details.js            chartInstances, inline Stake details + Earnings trend per card,
@@ -213,7 +223,8 @@ js/apr.js                     F11 Delegator APR: card tile (.apr-section) + #apr
                               actions apr-details/-close/-overlay; one cached getRecentPerformanceSamples per session)
 scripts/alerts-bot.js         F3 Telegram alerts bot (Node 20, zero deps) — see §4
 scripts/test-alerts-bot.js    mock tests for the bot (`node scripts/test-alerts-bot.js`)
-scripts/c2-tests/             offline Playwright suites (C2 dispatcher, strict CSP walk, alerts modal, fleet, apr, credits) — README there
+scripts/c2-tests/             offline Playwright suites (C2 dispatcher, strict CSP walk, alerts modal, fleet, apr, credits, identity, price pill,
+                              stake activation + vote withdraw, slot time, authority change, frame guard) — README there
 data/alerts-state.enc         bot subscriptions + last-seen state, AES-256-GCM (key = ALERTS_STATE_KEY secret)
 .github/workflows/alerts.yml  Telegram alerts bot loop (~5h45m, self-dispatching, backup cron every 2 h)
 vendor/solana-web3.js-1.98.4.iife.min.js
@@ -281,6 +292,39 @@ CNAME / .nojekyll / _headers  Pages config
   1.5 % floor; commission on voting rewards; block fees to the leader; bootstrap bonus paid as a
   one-time airdrop in Nov 2026, not through the vote account).
 
+- **Delegator APR, clean-epoch filter** (`js/apr.js`, 2026-11-18, interim until the credits engine):
+  the ledger's `st` is the stake at FETCH time (normally the next epoch's; "that day's" for re-fetched
+  cells), so reward ÷ st is wrong in both directions for a validator whose stake moved. `referenceRates()`
+  = per-epoch median gross rate of validators whose recorded stake was steady (±0.5 % against the
+  neighbouring cell, ≥ 1,000 XNT, 0 < c < 100; an epoch with fewer than 5 such validators borrows the
+  nearest epoch's rate). `rates()` leaves an epoch out when rate > 1.25 × reference, when the reward is
+  0 at a commission > 0, or when rate < 0.9 × reference AND the recorded stake is suspect (moved > 0.5 %
+  against the neighbour, identical to it = re-fetch stamp, or not recorded). A weak epoch on a steady
+  stake is kept. `aprFor()` returns `dropped`; the modal shows "Epochs left out N". **A plain upper cap
+  is not enough:** it removes the absurd values but leaves ~86 validators understated by up to 2.3 pts,
+  because every stake move produces one overstated and one understated cell. 0 %-commission validators
+  only get the upper cap. Fully delinquent epochs (no reward record, `v` null) are still skipped.
+- **One slot time** (`js/core.js`, 2026-11-18): `ensureMeasuredSlotMs()` measures
+  (`getRecentPerformanceSamples(60)`, once an hour per session, 5-min back-off after a failure, called
+  from `setEpochBaseline()` on every load and by `js/apr.js`), `measuredSlotMs()` reads (session cache →
+  in-memory copy → 368 ms fallback), `epochsPerYear()` derives. Every countdown uses it: leader band,
+  epoch bar, skip monitor (also its "last hour" window, now ~9,840 slots), Slot Explorer. Measured
+  366 ms on 2026-11-18 (399.5 epochs/yr). Do not add a slot-time constant anywhere.
+- **Rent** (`fetchRentExemptLamports(space)`, `js/core.js`, 2026-11-18): asks the RPC, cached per size;
+  fallback = the cluster formula (128 + space) × 6,960 lamports, which matched the RPC for 0 / 200 /
+  643 / 3,762 bytes (890,880 / 2,282,880 / 5,366,160 / 27,074,400). The vote-account Withdraw XNT
+  modal uses it with the account's own `space`. The stake-account rent is still hard-coded in
+  `js/manage.js` in five places (audit #18) — move those to this helper next.
+- **Authority changes** (`js/wallet-tx.js`, 2026-11-18): `authorityAddressProblem()` refuses, while
+  typing, any address that cannot be a wallet (the account itself, the validator's vote account, known
+  program / sysvar ids, off-curve = program-derived, the current authority); `openAuthorityDangerModal()`
+  (`#authorityDangerModal`) shows the full address + what the chain knows about it (`getAccountInfo`:
+  programs and program-owned accounts are blocked, a never-used address gets a warning, RPC down → a
+  caution) and unlocks only on the address's last 6 characters. Used by the stake withdraw authority
+  (`confirmSetWithdrawAuthority` → `executeSetWithdrawAuthority`) and the vote account's withdraw
+  authority; the vote (voter) authority keeps its "CHANGE VOTE AUTHORITY" phrase modal. The stake
+  *staker* authority has no confirmation (the withdrawer can always reset it). The modal must stay
+  AFTER the authority modals in `index.html` (same z-index, later = on top).
 - **Stake cooldown** (`StakeActivation`, `js/core.js`, 2026-10-29): `getStakeActivation` is gone from
   Agave 2.x / X1 4.0.x RPCs. `fetchStakeHistory(epoch)` reads the StakeHistory sysvar once per epoch
   (jsonParsed, ~60 KB: per epoch `{effective, activating, deactivating}` cluster lamports, newest = the
@@ -324,8 +368,9 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 
 ### Audit 2026-11-17: the current work order (details in `private/AUDIT-2026-11-17.md`)
 Numbers are the audit's finding numbers; the phase lists further down are older history.
-- [ ] **This week:** #1 APR interim cap · #2 privacy follow-up · #5 vote-account rent · #4 withdraw-authority
-      confirmation · #8 one slot time · #13 interim frame-guard
+- [x] **This week** (session 18, 2026-11-18): #1 APR interim guard (live) · #5 vote-account rent · #4 authority
+      confirmation · #8 one slot time · #13 frame guard (push 2; live check + one real wallet withdraw
+      still open) — [ ] #2 privacy follow-up stays on the owner's list (Start-here item B)
 - [ ] **Weeks 1–2:** #21 fix the flaky + broken tests → #7 CI and sanity gates on published numbers ·
       #14 auto-close failure issues, set `TELEGRAM_CHAT_ID` · #22 Node 24 / actions v5+ · #10 stale-scores banner
 - [ ] **Weeks 2–4:** #28 credits-based yield engine (closes #1 and #9) · #18 rent helper · #12 RPC failover ·
@@ -416,6 +461,8 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
 - [ ] Ask people who reported the terminal error which device/network they were on.
 
 ### Done
+- [x] 2026-11-18 — **Audit phase 1 (session 18)**: APR clean-epoch filter, vote-account MAX withdraw, one
+      measured slot time, authority-change confirmation, frame guard. See Session Log.
 - [x] 2026-11-17 — **Full audit (session 17)**: 31 findings, private report in `private/` + Claude Doc;
       work order at the top of this section. See Session Log.
 - [x] 2026-10-29 — **Stake cooldown fix**: active/cooled split from the StakeHistory sysvar (`StakeActivation`),
@@ -1731,3 +1778,56 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   work order in §5, the dangling-commit SHA removed from 4 places (it lives in the private file now).
 - Lesson: data bugs need data checks. Every unit test was green while 38 % of APRs were wrong; audit #7
   (sanity gates on published numbers) fixes the process, not just this bug.
+
+### 2026-11-18 — Session 18: audit phase 1 (~1 hour)
+- Start: folder linked, delete permission granted, tree clean and level with origin/main. Worked in a
+  cloud clone and moved finished work to the Mac as patches (Start-here item 10).
+- **#1 Delegator APR, interim guard** (`js/apr.js`; details in §4). The audit proposed a cap at 1.25 ×
+  the network rate. Measured first, against the credits model from `apr_check.py` (323 validators):
+  the cap alone takes "122 off, worst +250,267 pts" to "86 off, all understated, worst −2.3 pts", because
+  a stake move leaves one overstated and one understated cell. Added the low-side rule (rate < 0.9 ×
+  reference and the recorded stake is suspect) and "0 reward at a commission > 0": **2 off, worst 0.53,
+  no tile hidden**, highest APR shown 7.46 %, modal "top 10 %" 6.74 % (was 13.4 %). `apr-test.js`
+  rewritten around a second implementation of the rule + seven synthetic validators (32 checks; 14 fail
+  against the old code). Pushed by Shaka as `a6f4a653`. **Live-verified** (fresh pane tab, cache
+  reloaded): WiznaPL 6.78 % (was 250,197.69 %), "27 ep · net of 10% fee", modal row "Epochs left out 8";
+  Camerone 6.78 %, THE END X1 6.69 %, X1 prime 6.63 %, Bernard 6.69 %; 334 validators, max 7.47 %; no
+  console errors. This is NOT the methodology change: the credits engine (#28) still replaces it.
+- **#5 vote-account "Withdraw XNT"** (`js/wallet-tx.js`, `fetchRentExemptLamports` in `js/core.js`): the
+  reserve is the rent-exempt minimum for the account's real size, read from the RPC when the modal
+  opens (27,074,400 lamports for 3,762 bytes; the hard-coded 20,000,000 made every MAX fail with
+  InsufficientFunds). The note under "Available" names the amount; nothing can be withdrawn before the
+  rent is known; a modal reopened for another validator ignores the stale answer. Re-ran the audit's
+  mainnet simulation on OWL: leave 0.02 → InsufficientFunds, leave 0.0270744 → OK. Test: section 4b of
+  `stake-activation-test.js` (64 checks in the suite). Not yet done with a real signature.
+- **#8 one slot time** (§4): the 420 / 400 ms constants are gone from `js/network-live.js` (leader band,
+  epoch bar), `js/skip-monitor.js` (minutes, streak, head interpolation, ETA, next-slot time, the
+  "last hour" window) and `js/modals.js` (Slot Explorer); `js/apr.js` no longer measures on its own.
+  One extra RPC call per session hour. New `slot-time-test.js` (13 checks): a slot 13,200 slots away
+  reads "~1h 20m" (the constant said "~1h 32m"), the epoch bar "11h 47m" (was "12h 53m").
+- **#4 authority changes** (§4): address checks while typing + the red confirmation modal with the
+  last-6-characters check. Applied to the stake withdraw authority (the audit's finding) **and to the
+  vote account's withdraw authority**, which had the same one-click hole and is at least as costly;
+  the voter-authority flow gained the address checks. New `authority-test.js` (34 checks, signer
+  stubbed). `js/index-actions.js` allow-list: + `closeAuthorityDangerModal`,
+  `proceedWithAuthorityChange`, `validateAuthorityDangerInput`. Decision to confirm with Shaka: an
+  off-curve (program-derived) address is refused outright, so a multisig vault cannot be set from the
+  site (CLI only).
+- **#13 frame guard** (`js/frame-guard.js`): framed → hide, try to break out, `window.stop()`, replace
+  the document with a notice + a `target="_top"` link, and keep it that way (MutationObserver +
+  DOMContentLoaded/load). New `frame-guard-test.js` (8 checks): cross-origin frame, sandboxed frame and
+  same-origin parent show no site markup and run no site script; the old guard from git history leaves
+  the framed site fully usable. Chromium only (no Firefox / WebKit in the sandbox). The built-in pane
+  loads the site top-level (`window.top === window.self`), so live checks are unaffected. The real fix
+  is still a response header (audit #26).
+- Regression before hand-over: all 15 runnable Playwright suites green in the cloud clone (apr,
+  stake-activation, batch4, batch5, modals, cards, csp-walk with 0 violations, fleet, credits, identity,
+  price-pill, alerts-modal, slot-time, authority, frame-guard) + `test-rewards-ledger` +
+  `test-compute-scores`; `node --check` on every `js/*.js`. `manage-test.js` is still broken (audit #21).
+- **Push 2** (#5, #8, #4, #13 + this file) was handed to Shaka at the end of the session. Not
+  live-verified at the time of writing — that is the first job next session (Start-here item A).
+- Lessons: (1) measure a proposed fix against ground truth before shipping it — the audit's own "quick
+  win" would have traded 116 overstated cards for 86 understated ones; (2) when one flow gets a
+  safeguard, look for its twin (stake vs vote-account withdraw authority); (3) a fix is not blanking
+  the page if the parser keeps going: `innerHTML = ''` from a head script does not stop the rest of
+  the document, `window.stop()` does.

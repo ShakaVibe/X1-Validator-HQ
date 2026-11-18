@@ -400,6 +400,134 @@
       renderTxMessage('createStakeMessage', message, type, signature);
     }
 
+    // ═══════════════════════════════════════════════════════════════════════
+    // AUTHORITY-CHANGE SAFETY NET (audit 2026-11-17 #4)
+    // Handing a stake account's or a vote account's WITHDRAW authority to an
+    // address nobody holds the key for loses the funds for good, and the old
+    // flow sent the transaction on one click for any valid base58 string.
+    // Now: (1) the new address is refused outright when it cannot be a wallet
+    // — the account itself, the validator's vote account, a program / sysvar
+    // id, an address without a private key (off the ed25519 curve), or, after
+    // an on-chain lookup, a program or any account owned by a program; and
+    // (2) a confirmation modal shows the full address and what is at stake and
+    // only unlocks after its last 6 characters are typed. Multisig vaults and
+    // other program-derived authorities are deliberately not supported here —
+    // that is a job for the CLI.
+    // ═══════════════════════════════════════════════════════════════════════
+    const SYSTEM_PROGRAM_ID = '11111111111111111111111111111111';
+    const NEVER_AN_AUTHORITY = {
+      '11111111111111111111111111111111': 'the System Program',
+      'Stake11111111111111111111111111111111111111': 'the Stake Program',
+      'Vote111111111111111111111111111111111111111': 'the Vote Program',
+      'Config1111111111111111111111111111111111111': 'the Config Program',
+      'StakeConfig11111111111111111111111111111111': 'the Stake Config account',
+      'ComputeBudget111111111111111111111111111111': 'the Compute Budget Program',
+      'AddressLookupTab1e1111111111111111111111111': 'the Address Lookup Table Program',
+      'BPFLoaderUpgradeab1e11111111111111111111111': 'a program loader',
+      'BPFLoader2111111111111111111111111111111111': 'a program loader',
+      'BPFLoader1111111111111111111111111111111111': 'a program loader',
+      'NativeLoader1111111111111111111111111111111': 'a program loader',
+      'Ed25519SigVerify111111111111111111111111111': 'a signature-verification program',
+      'KeccakSecp256k11111111111111111111111111111': 'a signature-verification program',
+      'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA': 'the Token Program',
+      'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb': 'the Token-2022 Program',
+      'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL': 'the Associated Token Program',
+      'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr': 'the Memo Program',
+      '1nc1nerator11111111111111111111111111111111': 'the incinerator (a burn address)',
+      'Va1idator1nfo111111111111111111111111111111': 'the validator-info config key',
+    };
+    // Why `address` cannot become an authority, or null when nothing speaks
+    // against it. ctx = { current, forbidden: [{ address, label }] }.
+    function authorityAddressProblem(address, ctx) {
+      const v = String(address == null ? '' : address).trim();
+      if (!isValidPubkey(v)) return 'That is not a valid address.';
+      if (ctx && ctx.current && v === ctx.current) return 'That is already the current authority.';
+      for (const f of ((ctx && ctx.forbidden) || [])) {
+        if (f && f.address && v === f.address) return 'That is ' + f.label + ', not a wallet. Nobody could ever sign with it.';
+      }
+      const known = NEVER_AN_AUTHORITY[v] || (/^Sysvar/.test(v) ? 'a system variable account' : null);
+      if (known) return 'That is ' + known + ', not a wallet. Nobody holds a key for it.';
+      if (typeof solanaWeb3 === 'undefined') return 'The wallet library is still loading. Try again in a moment.';
+      try {
+        if (!solanaWeb3.PublicKey.isOnCurve(new solanaWeb3.PublicKey(v).toBytes())) {
+          return 'That address has no private key (it is a program-derived address, not a wallet). To hand authority to a multisig or another program, use the CLI.';
+        }
+      } catch (e) { return 'That is not a valid address.'; }
+      return null;
+    }
+    // What the chain knows about the address: { exists, lamports, executable,
+    // owner }, or null when the RPC cannot answer.
+    async function authorityAccountFacts(address) {
+      try {
+        const r = await rpcCall('getAccountInfo', [address, { encoding: 'base64', dataSlice: { offset: 0, length: 0 } }]);
+        const v = r && r.value;
+        return v ? { exists: true, lamports: Number(v.lamports) || 0, executable: !!v.executable, owner: v.owner } : { exists: false, lamports: 0, executable: false, owner: null };
+      } catch (e) { return null; }
+    }
+    function authorityFactsProblem(facts) {
+      if (!facts || !facts.exists) return null;
+      if (facts.executable) return 'That address is a program, not a wallet. Nobody holds a key for it.';
+      if (facts.owner === 'Stake11111111111111111111111111111111111111') return 'That address is a stake account, not a wallet.';
+      if (facts.owner === 'Vote111111111111111111111111111111111111111') return 'That address is a vote account, not a wallet.';
+      if (facts.owner && facts.owner !== SYSTEM_PROGRAM_ID) return 'That address is an account owned by a program, not a wallet.';
+      return null;
+    }
+
+    // The confirmation modal (#authorityDangerModal).
+    // o = { title, lead, accountLabel, account, amountNote, next, onProceed(next) }
+    let _authorityDanger = null;
+    function openAuthorityDangerModal(o) {
+      const tail = o.next.slice(-6);
+      const d = _authorityDanger = { next: o.next, tail, onProceed: o.onProceed, checked: false, blocked: false };
+      document.getElementById('authorityDangerTitle').textContent = '⚠️ ' + o.title;
+      document.getElementById('authorityDangerLead').innerHTML = o.lead;
+      document.getElementById('authorityDangerAccountLabel').textContent = o.accountLabel + ':';
+      document.getElementById('authorityDangerAccount').textContent = o.account;
+      document.getElementById('authorityDangerAmount').textContent = o.amountNote || '';
+      document.getElementById('authorityDangerNew').innerHTML = escHtml(o.next.slice(0, -6)) + '<b class="authority-danger-tail">' + escHtml(tail) + '</b>';
+      const facts = document.getElementById('authorityDangerFacts');
+      facts.textContent = 'Looking the address up on chain…';
+      facts.className = 'address-note';
+      const input = document.getElementById('authorityDangerInput');
+      input.value = ''; input.disabled = false;
+      document.getElementById('authorityDangerBtn').disabled = true;
+      document.getElementById('authorityDangerModal').style.display = 'flex';
+      authorityAccountFacts(o.next).then((f) => {
+        if (_authorityDanger !== d) return;                // closed or reopened meanwhile
+        const problem = authorityFactsProblem(f);
+        d.checked = true;
+        if (problem) {
+          d.blocked = true;
+          facts.textContent = '⛔ ' + problem + ' This change is not allowed here.';
+          facts.className = 'address-note authority-danger-blocked';
+          input.disabled = true;
+        } else if (!f) {
+          facts.textContent = 'Could not look this address up on chain right now. Check it against your own record with extra care.';
+        } else if (!f.exists) {
+          facts.textContent = 'This address holds no XNT and has never been used on chain. A brand-new wallet looks like this, and so does a mistyped address.';
+        } else {
+          facts.textContent = 'On chain: a wallet holding ' + formatNumber(lamportsToXNT(f.lamports), 4) + ' XNT.';
+        }
+        validateAuthorityDangerInput();
+      });
+    }
+    function closeAuthorityDangerModal() {
+      document.getElementById('authorityDangerModal').style.display = 'none';
+      _authorityDanger = null;
+    }
+    function validateAuthorityDangerInput() {
+      const d = _authorityDanger;
+      const typed = document.getElementById('authorityDangerInput').value.trim();
+      document.getElementById('authorityDangerBtn').disabled = !(d && d.checked && !d.blocked && typed === d.tail);
+    }
+    async function proceedWithAuthorityChange() {
+      const d = _authorityDanger;
+      if (!d || !d.checked || d.blocked) return;
+      if (document.getElementById('authorityDangerInput').value.trim() !== d.tail) return;
+      closeAuthorityDangerModal();
+      await d.onProceed(d.next);
+    }
+
     // Track current stake for authority changes
     let currentAuthorityStake = null;
 
@@ -452,29 +580,64 @@
       currentAuthorityStake = null;
     }
 
+    // Why this address cannot become the stake's withdraw authority (null = acceptable).
+    function stakeWithdrawAuthorityProblem(newAuthority, stake) {
+      return authorityAddressProblem(newAuthority, {
+        current: stake?.data?.meta?.authorized?.withdrawer,
+        forbidden: [
+          { address: stake?.pubkey, label: 'the stake account itself' },
+          { address: stake?.data?.stake?.delegation?.voter, label: "the validator's vote account" },
+          { address: currentManageValidator?.voteAccount, label: "the validator's vote account" },
+        ],
+      });
+    }
+
     function validateWithdrawAuthorityInput() {
       const newAuthority = document.getElementById('setWithdrawNewAuthority').value.trim();
       const btn = document.getElementById('setWithdrawAuthorityBtn');
       const withdrawer = currentAuthorityStake?.data.meta?.authorized?.withdrawer;
       
-      // Validate address is a real base58 pubkey (not just length)
-      if (isValidPubkey(newAuthority) && withdrawer === walletPublicKey) {
-        btn.disabled = false;
-      } else {
-        btn.disabled = true;
-      }
+      // A real base58 pubkey that can be a wallet (see authorityAddressProblem)
+      const problem = stakeWithdrawAuthorityProblem(newAuthority, currentAuthorityStake);
+      btn.disabled = !(!problem && withdrawer === walletPublicKey);
+      // Say why a complete address is refused; stay quiet while it is still being typed
+      if (problem && isValidPubkey(newAuthority)) showSetWithdrawAuthorityMessage(problem, 'error');
+      else document.getElementById('setWithdrawAuthorityMessage').style.display = 'none';
     }
 
+    // Step 1 (the modal's button): check the address, then ask for the typed confirmation.
     async function confirmSetWithdrawAuthority() {
       const newAuthority = document.getElementById('setWithdrawNewAuthority').value.trim();
+      const stake = currentAuthorityStake;
       
-      if (!newAuthority || !currentAuthorityStake) {
+      if (!newAuthority || !stake) {
         showSetWithdrawAuthorityMessage('Please enter a valid public key.', 'error');
         return;
       }
 
-      if (!isValidPubkey(newAuthority)) {
-        showSetWithdrawAuthorityMessage('That is not a valid address. Double-check the public key — this action is irreversible.', 'error');
+      const problem = stakeWithdrawAuthorityProblem(newAuthority, stake);
+      if (problem) {
+        showSetWithdrawAuthorityMessage(problem + ' Double-check the public key — this action is irreversible.', 'error');
+        return;
+      }
+
+      openAuthorityDangerModal({
+        title: 'Confirm the new withdraw authority',
+        lead: 'You are about to hand the <strong>withdraw authority</strong> of this stake account to another address.',
+        accountLabel: 'Stake account',
+        account: stake.pubkey,
+        amountNote: formatNumber(lamportsToXNT(stake.lamports || 0), 4) + ' XNT in this account',
+        next: newAuthority,
+        onProceed: (next) => executeSetWithdrawAuthority(next, stake.pubkey),
+      });
+    }
+
+    // Step 2 (after the typed confirmation): build and send the transaction.
+    async function executeSetWithdrawAuthority(newAuthority, stakePubkeyAtConfirm) {
+      if (!currentAuthorityStake || currentAuthorityStake.pubkey !== stakePubkeyAtConfirm) return;   // the modal moved on meanwhile
+      const problem = stakeWithdrawAuthorityProblem(newAuthority, currentAuthorityStake);
+      if (problem) {
+        showSetWithdrawAuthorityMessage(problem, 'error');
         return;
       }
       
@@ -1021,6 +1184,17 @@
 
     // Withdraw XNT Modal State
     let withdrawVoteBalanceLamports = 0;
+    // Rent-exempt minimum this vote account must keep. Read from the RPC for the
+    // account's real size when the modal opens (audit 2026-11-17 #5): the old
+    // hard-coded 0.02 XNT is below the 0.0270744 XNT a 3,762-byte vote account
+    // needs, so every MAX withdraw failed preflight with InsufficientFunds.
+    // null = not loaded yet → nothing can be withdrawn.
+    let withdrawVoteRentLamports = null;
+    const VOTE_ACCOUNT_SPACE_FALLBACK = 3762;   // only if the RPC answer carries no `space`
+    function withdrawVoteAvailableLamports() {
+      if (withdrawVoteRentLamports == null) return 0;
+      return Math.max(0, withdrawVoteBalanceLamports - withdrawVoteRentLamports);
+    }
     let voteAccountWithdrawAuthority = null;
     let userHasWithdrawAuthority = false;
 
@@ -1048,6 +1222,9 @@
       document.getElementById('withdrawConfirmBtn').onclick = confirmWithdrawXnt;
       document.getElementById('withdrawXntCancelBtn').textContent = 'Cancel';
       document.getElementById('withdrawAuthorityWarning').style.display = 'none';
+      document.getElementById('withdrawBalanceNote').textContent = 'The rent-exempt minimum must remain in the vote account';
+      withdrawVoteBalanceLamports = 0;
+      withdrawVoteRentLamports = null;
       
       // Fetch vote account data and check authority
       fetchWithdrawModalData();
@@ -1061,6 +1238,8 @@
     }
 
     async function fetchWithdrawModalData() {
+      const forVote = currentManageValidator.voteAccount;
+      const stillCurrent = () => currentManageValidator && currentManageValidator.voteAccount === forVote;
       try {
         const response = await fetch(RPC_URL, {
           method: 'POST',
@@ -1074,17 +1253,21 @@
         });
         
         const data = await response.json();
+        if (!stillCurrent()) return;   // the modal was reopened for another validator meanwhile
         
         if (data.result && data.result.value) {
-          // Get balance
-          withdrawVoteBalanceLamports = data.result.value.lamports;
+          // Reserve the rent-exempt minimum for this account's size (asked from the RPC)
+          const space = Number.isInteger(data.result.value.space) ? data.result.value.space : VOTE_ACCOUNT_SPACE_FALLBACK;
+          const rentLamports = await fetchRentExemptLamports(space);
+          if (!stillCurrent()) return;
           
-          // Reserve minimum rent-exempt balance (~0.02 XNT = 20000000 lamports)
-          const rentExempt = 20000000;
-          const availableLamports = Math.max(0, withdrawVoteBalanceLamports - rentExempt);
-          const availableXNT = lamportsToXNT(availableLamports);
+          withdrawVoteBalanceLamports = data.result.value.lamports;
+          withdrawVoteRentLamports = rentLamports;
+          const availableXNT = lamportsToXNT(withdrawVoteAvailableLamports());
           
           document.getElementById('withdrawAvailableBalance').textContent = formatNumber(availableXNT, 4);
+          document.getElementById('withdrawBalanceNote').textContent =
+            'The rent-exempt minimum (' + lamportsToXNT(rentLamports).toFixed(9).replace(/0+$/, '').replace(/\.$/, '') + ' XNT) must remain in the vote account';
           
           // Get withdraw authority
           const parsed = data.result.value.data.parsed;
@@ -1108,18 +1291,20 @@
         } else {
           document.getElementById('withdrawAvailableBalance').textContent = '0.0000';
           withdrawVoteBalanceLamports = 0;
+          withdrawVoteRentLamports = null;
         }
       } catch (e) {
         console.error('Error fetching vote account data:', e);
+        if (!stillCurrent()) return;
         document.getElementById('withdrawAvailableBalance').textContent = 'Error';
         withdrawVoteBalanceLamports = 0;
+        withdrawVoteRentLamports = null;
       }
     }
 
     function setWithdrawAmount(percentage) {
-      // Reserve minimum rent-exempt balance
-      const rentExempt = 20000000;
-      const availableLamports = Math.max(0, withdrawVoteBalanceLamports - rentExempt);
+      // Everything above the rent-exempt minimum (0 until the modal has loaded it)
+      const availableLamports = withdrawVoteAvailableLamports();
       
       if (availableLamports <= 0) return;
       
@@ -1153,8 +1338,11 @@
         return;
       }
       
-      const rentExempt = 20000000;
-      const availableLamports = withdrawVoteBalanceLamports - rentExempt;
+      if (withdrawVoteRentLamports == null) {
+        showWithdrawMessage('The vote account balance has not loaded yet. Close this window and open it again.', 'error');
+        return;
+      }
+      const availableLamports = withdrawVoteBalanceLamports - withdrawVoteRentLamports;
       // A typed amount within 0.0001 XNT above the limit (the rounded figure shown) means "all of it".
       const amountLamports = clampToLimitLamports(Math.floor(amount * 1000000000), availableLamports);
       
@@ -1904,11 +2092,21 @@
       const currentAuthority = voteAuthorityType === 'vote' ? voteAccountAuthorities.vote : voteAccountAuthorities.withdraw;
       const hasAuthority = currentAuthority === walletPublicKey;
       
-      // Validate: must have authority, input must be a real pubkey, and different from current
-      const isValidInput = isValidPubkey(input);
-      const isDifferent = input !== currentAuthority;
-      
-      btn.disabled = !(hasAuthority && isValidInput && isDifferent);
+      // Validate: must have authority, and the input must be an address that can be a wallet
+      // and differs from the current one (see authorityAddressProblem)
+      const problem = voteAuthorityProblem(input);
+      btn.disabled = !(hasAuthority && !problem);
+      // Say why a complete address is refused; stay quiet while it is still being typed
+      if (problem && isValidPubkey(input)) showChangeVoteAuthorityMessage(problem, 'error');
+      else document.getElementById('changeVoteAuthorityMessage').style.display = 'none';
+    }
+
+    // Why this address cannot become the vote account's vote / withdraw authority (null = acceptable).
+    function voteAuthorityProblem(newAuthority) {
+      return authorityAddressProblem(newAuthority, {
+        current: voteAuthorityType === 'vote' ? voteAccountAuthorities.vote : voteAccountAuthorities.withdraw,
+        forbidden: [{ address: currentManageValidator?.voteAccount, label: 'the vote account itself' }],
+      });
     }
 
     function showChangeVoteAuthorityMessage(message, type, signature) {
@@ -1920,8 +2118,9 @@
       
       if (!newAuthority || !walletPublicKey || !currentManageValidator) return;
 
-      if (!isValidPubkey(newAuthority)) {
-        showChangeVoteAuthorityMessage('That is not a valid address. Double-check the public key — this action is irreversible.', 'error');
+      const problem = voteAuthorityProblem(newAuthority);
+      if (problem) {
+        showChangeVoteAuthorityMessage(problem + ' Double-check the public key — this action is irreversible.', 'error');
         return;
       }
       
@@ -1931,8 +2130,21 @@
         return;
       }
       
-      // For withdraw authority, proceed directly
-      await executeVoteAuthorityChange(newAuthority);
+      // Withdraw authority: irreversible too (audit #4) — full address + typed confirmation first
+      const voteAtConfirm = currentManageValidator.voteAccount;
+      openAuthorityDangerModal({
+        title: 'Confirm the new withdraw authority',
+        lead: 'You are about to hand the <strong>withdraw authority</strong> of this vote account to another address. It controls the validator\'s rewards, its commission and every other authority.',
+        accountLabel: 'Vote account',
+        account: voteAtConfirm,
+        amountNote: currentManageValidator.name ? 'Validator: ' + currentManageValidator.name : '',
+        next: newAuthority,
+        onProceed: async (next) => {
+          if (!currentManageValidator || currentManageValidator.voteAccount !== voteAtConfirm || voteAuthorityType !== 'withdraw') return;
+          if (voteAuthorityProblem(next)) return;
+          await executeVoteAuthorityChange(next);
+        },
+      });
     }
 
     function showVoteAuthorityDangerModal() {

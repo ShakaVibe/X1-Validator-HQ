@@ -40,6 +40,7 @@ const fmt4 = (l) => (l / 1e9).toLocaleString('en-US', { minimumFractionDigits: 4
 
 // Mutable mock state
 let EPOCH = 425, history = HISTORY.slice(), sysvarBroken = false;
+let voteLamports = 1238800000, rentBroken = false; const rentCalls = [];   // vote-account Withdraw XNT (audit #5)
 
 (async () => {
   await new Promise(r => srv.listen(0, r)); const port = srv.address().port;
@@ -62,7 +63,7 @@ let EPOCH = 425, history = HISTORY.slice(), sysvarBroken = false;
             if (sysvarBroken) return { jsonrpc: '2.0', id: q.id, error: { code: -32603, message: 'mock: sysvar unavailable' } };
             return ok({ context: { slot: 1 }, value: { lamports: 1, owner: 'Sysvar1111111111111111111111111111111111111', executable: false, rentEpoch: 0, space: 16392, data: { program: 'sysvar', space: 16392, parsed: { type: 'stakeHistory', info: history } } } });
           }
-          if (p[0] === VOTE) return ok({ context: { slot: 1 }, value: { lamports: 1238800000, owner: 'Vote111111111111111111111111111111111111111', executable: false, rentEpoch: 0, space: 3762, data: { program: 'vote', space: 3762, parsed: { type: 'vote', info: { authorizedWithdrawer: WITHDRAWER, authorizedVoters: [{ authorizedVoter: NODE, epoch: EPOCH }], commission: 10, epochCredits: [{ epoch: String(EPOCH - 1), credits: '1393691034', previousCredits: '1390000000' }], nodePubkey: NODE, rootSlot: 1, votes: [] } } } } });
+          if (p[0] === VOTE) return ok({ context: { slot: 1 }, value: { lamports: voteLamports, owner: 'Vote111111111111111111111111111111111111111', executable: false, rentEpoch: 0, space: 3762, data: { program: 'vote', space: 3762, parsed: { type: 'vote', info: { authorizedWithdrawer: WITHDRAWER, authorizedVoters: [{ authorizedVoter: NODE, epoch: EPOCH }], commission: 10, epochCredits: [{ epoch: String(EPOCH - 1), credits: '1393691034', previousCredits: '1390000000' }], nodePubkey: NODE, rootSlot: 1, votes: [] } } } } });
           if (ACCOUNTS.some(a => a.pubkey === p[0])) return ok({ context: { slot: 1 }, value: acct(p[0]) });
           return ok({ context: { slot: 1 }, value: null });
         case 'getProgramAccounts': {
@@ -73,6 +74,10 @@ let EPOCH = 425, history = HISTORY.slice(), sysvarBroken = false;
         case 'getBalance': return ok({ context: { slot: 1 }, value: 3937000000 });
         case 'getLatestBlockhash': return ok({ context: { slot: 1 }, value: { blockhash: 'EETubP5AKHgjPAhzPAFcb8BAY1hMH639CWCFTqi3hq1k', lastValidBlockHeight: 1000 } });
         case 'getRecentPerformanceSamples': return ok([]);
+        case 'getMinimumBalanceForRentExemption':
+          rentCalls.push(p[0]);
+          if (rentBroken) return { jsonrpc: '2.0', id: q.id, error: { code: -32603, message: 'mock: rent unavailable' } };
+          return ok((128 + p[0]) * 6960);   // the cluster's rent: 3,762 bytes → 27,074,400 lamports
         case 'getStakeActivation': return { jsonrpc: '2.0', id: q.id, error: { code: -32601, message: 'Method not found' } };
         default: return ok(null);
       }
@@ -199,14 +204,59 @@ let EPOCH = 425, history = HISTORY.slice(), sysvarBroken = false;
   const sPart = await sendWith('1000');
   check(sPart.lamports === 1000e9, 'typed 1000 → 1,000 XNT exactly', sPart);
   await page.evaluate(() => closeWithdrawStakeModal());
-  // Vote-account Withdraw XNT MAX + the shared helpers
-  const vw = await page.evaluate(() => {
-    withdrawVoteBalanceLamports = 1238877416 + 20000000;   // available = 1.238877416 XNT → nearest-4dp "1.2389" would exceed
-    setWithdrawAmount(100);
-    return { input: withdrawAmountInput.value, floor: xntInputFloor4(1774532777416), clampIn: clampToLimitLamports(1774532800000, 1774532777416), clampOut: clampToLimitLamports(1774532900000, 1774532777416), clampUnder: clampToLimitLamports(5, 10) };
-  });
-  check(vw.input === '1.2388', 'vote-account Withdraw XNT MAX rounds down too (1.2388, not 1.2389)', vw);
+  // Shared amount helpers
+  const vw = await page.evaluate(() => ({ floor: xntInputFloor4(1774532777416), clampIn: clampToLimitLamports(1774532800000, 1774532777416), clampOut: clampToLimitLamports(1774532900000, 1774532777416), clampUnder: clampToLimitLamports(5, 10) }));
   check(vw.floor === '1774.5327' && vw.clampIn === 1774532777416 && vw.clampOut === 1774532900000 && vw.clampUnder === 5, 'xntInputFloor4 / clampToLimitLamports helpers', vw);
+
+  // ── 4b. Vote-account Withdraw XNT (audit 2026-11-17 #5) ─────────────────────────────────────
+  // The reserve is the rent-exempt minimum for the account's real size, asked from the RPC:
+  // 27,074,400 lamports for a 3,762-byte vote account. The old hard-coded 0.02 XNT left
+  // 7,074,400 lamports too little, so MAX failed on chain with InsufficientFunds.
+  console.log('4b. Withdraw XNT from the vote account (wallet = withdrawer)');
+  const RENT_VOTE = 27074400;
+  voteLamports = 1238877416 + RENT_VOTE;                    // available = 1.238877416 XNT
+  const openVoteWithdraw = async () => {
+    await page.evaluate((w) => { walletPublicKey = w; connectedWallet = { provider: {} }; initiateWithdraw(); }, WITHDRAWER);
+    await page.waitForFunction(() => !/Loading/.test(withdrawAvailableBalance.textContent), null, { timeout: 10000 });
+    return page.evaluate(() => ({ avail: withdrawAvailableBalance.textContent, note: withdrawBalanceNote.textContent, rent: withdrawVoteRentLamports, bal: withdrawVoteBalanceLamports, btnDisabled: withdrawConfirmBtn.disabled, shown: withdrawXntModal.style.display }));
+  };
+  const vm = await openVoteWithdraw();
+  check(vm.shown === 'flex' && vm.rent === RENT_VOTE && rentCalls.length === 1 && rentCalls[0] === 3762, 'modal asks the RPC for the rent of a 3,762-byte account → 27,074,400 lamports', { vm, rentCalls });
+  check(vm.avail === '1.2389' && /0\.0270744 XNT/.test(vm.note) && !vm.btnDisabled, 'Available = balance − rent (1.2389), the note names 0.0270744 XNT, withdraw enabled', vm);
+  const vMax = await page.evaluate(() => { setWithdrawAmount(100); return withdrawAmountInput.value; });
+  check(vMax === '1.2388', 'MAX rounds down (1.2388, not 1.2389)', vMax);
+  const sendVote = (typed) => page.evaluate(async (typed) => {
+    window.__tx = null;
+    window.signSendTx = async (c, tx) => { window.__tx = tx; return '5VERv8NMvzbJMEkV8xnrLkEaWRtSz9CosKDYjCJjBRnbJLgp8uirBgmQpjKhoR4tjF3ZpRzrFmBV6UjKdiSZkQUW'; };
+    window.confirmWithFallback = async () => true;
+    withdrawAmountInput.value = typed;
+    await confirmWithdrawXnt();
+    const ix = window.__tx && window.__tx.instructions[0];
+    const dv = ix ? new DataView(ix.data.buffer, ix.data.byteOffset, ix.data.byteLength) : null;
+    return { lamports: dv ? Number(dv.getBigUint64(4, true)) : null, index: dv ? dv.getUint32(0, true) : null, program: ix && ix.programId.toBase58(), left: dv ? withdrawVoteBalanceLamports - Number(dv.getBigUint64(4, true)) : null, msg: withdrawMessage.textContent.trim() };
+  }, typed);
+  const vSendMax = await sendVote('1.2388');
+  check(vSendMax.lamports === 1238800000 && vSendMax.index === 3 && vSendMax.program === 'Vote111111111111111111111111111111111111111' && /Withdrawal confirmed/.test(vSendMax.msg), 'MAX → Vote Withdraw ix (index 3) for 1.2388 XNT', vSendMax);
+  const vSendShown = await sendVote('1.2389');
+  check(vSendShown.lamports === 1238877416 && vSendShown.left === RENT_VOTE, 'typed 1.2389 (the figure shown) → exactly the limit; 27,074,400 lamports stay (the old reserve left 20,000,000 → InsufficientFunds)', vSendShown);
+  const vSendOver = await sendVote('1.2390');
+  check(vSendOver.lamports === null && /exceeds available/i.test(vSendOver.msg), '1.2390 is refused client-side, nothing sent', vSendOver);
+  await page.waitForTimeout(2300);                          // let the post-success refresh timers fire before going on
+  // RPC cannot answer the rent call → the rent formula gives the same reserve
+  rentBroken = true; rentCalls.length = 0;
+  await page.evaluate(() => { closeWithdrawXntModal(); delete _rentExemptCache[3762]; });
+  const vmF = await openVoteWithdraw();
+  check(rentCalls.length === 1 && vmF.rent === RENT_VOTE && vmF.avail === '1.2389', 'rent call fails → formula fallback, same 27,074,400 lamports', { vmF, rentCalls });
+  rentBroken = false;
+  // Rent not loaded → MAX fills nothing and the confirm refuses
+  const vNone = await page.evaluate(async () => {
+    withdrawVoteRentLamports = null; withdrawAmountInput.value = ''; setWithdrawAmount(100); const max = withdrawAmountInput.value;
+    window.__tx = null; withdrawAmountInput.value = '1'; await confirmWithdrawXnt();
+    return { max, sent: !!window.__tx, msg: withdrawMessage.textContent.trim() };
+  });
+  check(vNone.max === '' && !vNone.sent && /not loaded/i.test(vNone.msg), 'rent unknown → MAX fills nothing, confirm refuses', vNone);
+  await page.evaluate(() => closeWithdrawXntModal());
+  voteLamports = 1238800000;
 
   // ── 5. Stake classification modal ─────────────────────────────────────────────────────────
   console.log('5. Stake classification modal');
