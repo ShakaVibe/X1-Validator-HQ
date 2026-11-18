@@ -16,11 +16,12 @@
 >    **Phase 1 ("this week") is done and live** (session 18, see the Session Log): #1 APR interim
 >    guard (`a6f4a653`); #5 vote-account MAX withdraw, #8 one measured slot time, #4 authority-change
 >    confirmation, #13 frame guard (`0314c746`), all live-verified in the pane.
->    - **APR tile stuck on "…" (found in the live check):** fixed in push 4 (`bc1f39ff`, live), and the
->      cause behind it — the site started before its last seven scripts had loaded — in **push 5**
->      (`js/start.js`, handed over at the end of session 18). **First thing next session: confirm push 5
->      is on `main`** (`ls js/start.js`) and live-check a deep link each for `#/terminal`,
->      `#/delegation`, `#/datacenter` and `#/lookup/<vote>` in a fresh pane tab.
+>    - **APR tile stuck on "…" (found in the live check):** fixed in push 4 (`bc1f39ff`), and the cause
+>      behind it — the site started before its last seven scripts had loaded — in push 5 (`c4f04ef6`,
+>      `js/start.js`). Both live-verified. Nothing pending from session 18 on the code side.
+>    - The pane's own test portfolio is Shaka_Vibes_1–5. On 2026-11-18 **Shaka_Vibes_4 and _5 were not
+>      in `getVoteAccounts` and have no reward in the 36-epoch ledger**; the Fleet bar shows them as
+>      delinquent ("3 of 5 healthy"). Not confirmed with Shaka whether that is intended.
 >    - **Needs Shaka's wallet, once:** a real MAX "Withdraw XNT" from a vote account (the fix is
 >      proven by mainnet simulation and by the live modal, not by a signed transaction).
 >    - **#2 privacy follow-up**: unchanged, on the owner's list (item B).
@@ -1869,7 +1870,12 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
     `#/datacenter` rendered the card without the Fleet Health bar; all fine with the new order, both
     skew cases start exactly once. Cost: on a slow load nothing starts until the last script is in
     (the late scripts load one after the other). All 16 runnable suites green, CSP walk 0 violations.
-    Not live-verified at the time of writing.
+    Pushed by Shaka as `c4f04ef6`. **Live-verified** (pane, cache reloaded, one full reload per deep
+    link): `js/start.js` is the last script and `startSite.done` is true; `#/lookup/<OWL>` card with
+    APR 6.74 %, delegation tile and leader band; `#/terminal` 350 rows; `#/delegation` 371 rows + 10
+    tiles; `#/datacenter` 5 cards + Fleet Health bar + APR tiles; `getVoteAccounts` called once by
+    init() on each load; console clean. (The Mac disconnected once mid-check and the pane had to be
+    reopened; unrelated to the site.)
   - Pane note: one reload showed a 13 s gap between the document response and the first subresource
     (everything loaded from cache afterwards). Pane-side stall, not the site; expect odd timings there.
 - Lessons: (0) reproduce a live symptom before fixing it — push 3 fixed a plausible cause, not the cause;
