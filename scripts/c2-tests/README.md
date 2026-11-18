@@ -66,7 +66,8 @@ second implementation of the rule in the test, and synthetic validators cover a 
 epoch on a steady stake (kept) and a validator with fewer than 3 clean epochs ("—"); the whole served
 ledger must stay under 1.25 × the network rate with top 10 % ≤ 1.3 × median. A last section serves
 the ledger 2.5 s late and never answers `data/delegation.json` or the RPC: a card rendered before the
-ledger must still fill in once the ledger arrives. 35 checks.
+ledger must still fill in once the ledger arrives. A "late script" section serves `js/apr.js` 2.5 s
+late and renders the card before it has loaded: the tile must fill once the module runs. 38 checks.
 
 **Update Identity (2026-10-16)** — validator-info publish in `js/wallet-tx.js` (Manage Validator):
 

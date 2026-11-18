@@ -16,9 +16,17 @@
 >    **Phase 1 ("this week") is done and live** (session 18, see the Session Log): #1 APR interim
 >    guard (`a6f4a653`); #5 vote-account MAX withdraw, #8 one measured slot time, #4 authority-change
 >    confirmation, #13 frame guard (`0314c746`), all live-verified in the pane.
->    - **Push 3 (small, handed over at the end of session 18):** the APR tile now fills as soon as the
->      ledger is in instead of waiting for the delegation snapshot and the slot-time measurement too.
->      **First thing next session: confirm it is on `main`** (`grep -n "const again" js/apr.js`).
+>    - **APR tile stuck on "…" (found in the live check):** root cause fixed in push 4 — `js/apr.js`
+>      now fills tiles that were rendered before it loaded. **First thing next session: confirm push 4
+>      is on `main`** (`grep -n "already on the page" js/apr.js`) and live.
+>    - **Open finding, needs Shaka's OK (load order):** `init()` runs at the end of `js/modals.js`, but
+>      `terminal.js`, `delegation.js`, `alerts.js`, `fleet.js`, `apr.js`, `price-pill.js` and
+>      `forensics.js` load after it. On a slow load, whatever init() renders first can miss them: the
+>      Fleet Health bar on a `#/datacenter` deep link (`cards.js` skips `fleetRender` when it is not
+>      defined yet) and the `#/terminal` / `#/delegation` deep links (`app.js` skips `vtOpen` /
+>      `delegOpen`). Proposed fix: run `init()` after the last script (e.g. on DOMContentLoaded) —
+>      one line, but it changes start-up order for the whole site, so test with the differential /
+>      CSP-walk suites and a slow-script test like `apr-test.js`'s "late script" section.
 >    - **Needs Shaka's wallet, once:** a real MAX "Withdraw XNT" from a vote account (the fix is
 >      proven by mainnet simulation and by the live modal, not by a signed transaction).
 >    - **#2 privacy follow-up**: unchanged, on the owner's list (item B).
@@ -1836,15 +1844,25 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   scripts. Console: no errors other than the expected "Unsafe attempt to initiate navigation" from
   that frame check. The pane is 414 px wide: the confirmation's button is below the fold and reached
   by scrolling inside the modal (it is drawn on top of Manage Validator).
-- **Found during that live check — APR tile stuck on "…"** on the first reload after the deploy,
-  30+ s, with the ledger loaded; two further loads filled it in 2.3 s and 1.3 s. Not reproduced live,
-  so the trigger is unproven. What is proven (offline): a card rendered BEFORE the ledger arrives waited
-  for ledger + slot time + delegation snapshot together (`ensureData()`, unchanged since F11), so a
-  stalled `data/delegation.json` or a slow RPC held the tile although the ledger was in. Fix
-  (`js/apr.js`): the tile re-renders when the ledger arrives, and again when each of the other two
-  does. `apr-test.js` + 3 checks (35; ledger 2.5 s late, delegation never answers, RPC never answers →
-  tile fills). Handed over as **push 3**; not live-verified at the time of writing.
-- Lessons: (1) measure a proposed fix against ground truth before shipping it — the audit's own "quick
+- **Found during that live check — APR tile stuck on "…"** on the first reload after the push-2
+  deploy (30+ s, ledger loaded, `aprHydrate()` by hand filled it), and again on the first reload after
+  the push-3 deploy; every other load filled in 1–2 s.
+  - Push 3 (`a1400a36`) fixed a real but different weakness: a card rendered before the LEDGER arrived
+    waited for ledger + slot time + delegation snapshot together, so one stalled request held the tile.
+    Now it re-renders when the ledger arrives and again when each of the other two does. It did not
+    cure the live symptom — I had not reproduced that before shipping.
+  - **Root cause (push 4):** `init()` is the last statement of `js/modals.js`, and `js/apr.js` is loaded
+    five scripts later. When those scripts load slowly (first load after a deploy, slow connection)
+    while the RPC answers fast, the deep-linked card is on screen before apr.js's MutationObserver
+    exists, and nothing ever looked at tiles already there (F11 gap; `js/delegation.js` has a 2.5 s
+    post-load pass for the same reason). Fix: apr.js ends with a pass over existing `.apr-section`
+    tiles. Reproduced offline by serving `js/apr.js` 2.5 s late (`apr-test.js` "late script" section:
+    fails before, passes after; 38 checks). The same load-order gap affects other late modules — see
+    Start-here item A.
+  - Pane note: one reload showed a 13 s gap between the document response and the first subresource
+    (everything loaded from cache afterwards). Pane-side stall, not the site; expect odd timings there.
+- Lessons: (0) reproduce a live symptom before fixing it — push 3 fixed a plausible cause, not the cause;
+  (1) measure a proposed fix against ground truth before shipping it — the audit's own "quick
   win" would have traded 116 overstated cards for 86 understated ones; (2) when one flow gets a
   safeguard, look for its twin (stake vs vote-account withdraw authority); (3) a fix is not blanking
   the page if the parser keeps going: `innerHTML = ''` from a head script does not stop the rest of

@@ -318,4 +318,10 @@
       window.aprHydrate = hydrateAll;
       window.aprNetwork = network;
       window.aprEpochsPerYear = epy;
+
+      // Tiles that are already on the page. init() runs at the end of js/modals.js,
+      // before this file is loaded, so on a slow load a deep-linked card can be
+      // rendered before the observer above exists and would stay on "…" for good
+      // (seen live twice on 2026-11-18, each time on the first load after a deploy).
+      if (document.querySelector('.apr-section')) { hydrateAll(); ensureData(); }
     })();

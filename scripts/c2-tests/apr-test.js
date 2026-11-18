@@ -269,6 +269,28 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   check(!early.ledger && early.value === '…', 'slow data: the card is on screen before the ledger, tile shows "…"', early);
   check(late.ledger && Math.abs(parseFloat(late.value) - exp30) < 0.006, `slow data: the tile fills (${late.value}) once the ledger is in, with the delegation snapshot and the RPC still unanswered`, late);
   check(pageErrors2.length === 0, 'slow data: 0 page errors', pageErrors2);
+
+  // ── Late script (2026-11-18): init() runs at the end of js/modals.js, BEFORE js/apr.js is loaded,
+  // so on a slow load a deep-linked card can be on screen before this module's MutationObserver
+  // exists. The module must pick up tiles that are already there when it starts.
+  delete slow['/data/rewards.json']; delete slow['/data/delegation.json']; slow['/js/apr.js'] = 2500;
+  const page3 = await (await browser.newContext({ viewport: { width: 1300, height: 900 } })).newPage();
+  const pageErrors3 = []; page3.on('pageerror', e => pageErrors3.push(e.message));
+  await page3.route(/^(?!http:\/\/127\.0\.0\.1)/, r => r.abort());
+  await page3.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'commit' });
+  await page3.waitForFunction(() => typeof renderValidatorCard === 'function' && typeof init === 'function' && !!document.getElementById('validatorResults'), null, { timeout: 15000 });
+  const before3 = await page3.evaluate((v) => {
+    const m = document.getElementById('disclaimerModal'); if (m) m.style.display = 'none';
+    document.getElementById('resultsSection').style.display = 'block';
+    document.getElementById('validatorResults').innerHTML = renderValidatorCard(v, true, false);
+    return { aprLoaded: typeof window.aprHydrate === 'function', value: document.querySelector('#validatorResults .apr-section .stat-value').textContent };
+  }, mk(VOTE, NAME, STAKE_XNT, 10));
+  await page3.waitForFunction(() => typeof window.aprHydrate === 'function' && !!window.RewardsLedger.doc, null, { timeout: 15000 });
+  await page3.waitForTimeout(800);
+  const after3 = await page3.evaluate(() => document.querySelector('#validatorResults .apr-section .stat-value').textContent);
+  check(!before3.aprLoaded && before3.value === '…', 'late script: the card is on screen before js/apr.js has loaded', before3);
+  check(Math.abs(parseFloat(after3) - exp30) < 0.006, `late script: the tile fills (${after3}) once js/apr.js runs`, after3);
+  check(pageErrors3.length === 0, 'late script: 0 page errors', pageErrors3);
   if (srv.closeAllConnections) srv.closeAllConnections();
   await browser.close(); srv.close();
   console.log(fails ? `\n${fails} check(s) FAILED` : '\nall checks passed');
