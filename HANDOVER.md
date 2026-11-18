@@ -26,20 +26,18 @@
 >      proven by mainnet simulation and by the live modal, not by a signed transaction).
 >    - **#2 privacy follow-up**: unchanged, on the owner's list (item B).
 >    **Phase 2 has started** (session 18): #21 tests reliable and self-checking + #7 part 1, CI
->    (`.github/workflows/ci.yml`, push `f2bd7d56`; first run on GitHub green in 3 min 46 s). Push 8:
->    #14 every bot workflow closes its "[bot] … is failing" issue on the next green run, and #22 step 1,
->    the GEO bot alone moved to Node 22 + actions pinned by commit.
->    **First thing next session:** (1) Actions → CI is still green; (2) issues #1–#3 were closed by the
->    bots (if not, read the "Close the failure issue" step's log in a green run); (3) a geo run AFTER
->    push 8 pushed its commit (`git log --author='github-actions' -3 -- validator-locations.json`).
->    Only when (3) is true: give `update-scores.yml`, `update-terminal-snapshot.yml` and `alerts.yml`
->    the same three changes the geo workflow got (checkout SHA, setup-node SHA + `node-version: '22'`
->    + `package-manager-cache: false`), then watch one run of each. Why staged: checkout v6+ stores the
->    push credentials differently from v4, and a bot that cannot push stops the hourly data.
->    Push 9: the alerts bot watches the published data files (§4 "Published-data watch"). It takes
->    effect at the bot loop's next restart (≤ 5 h 45 min, or cancel the run in Actions and start it
->    again). **Shaka, optional:** send `/id` to @x1valhq_bot after that restart and store the number as
->    the `TELEGRAM_CHAT_ID` secret; until then the notice arrives as a GitHub issue only.
+>    (`.github/workflows/ci.yml`, push `f2bd7d56`; green on every push since). #14 done and proven:
+>    the scores, terminal and geo bots closed issues #3, #1 and #2 by themselves on 2026-11-18.
+>    #22: the geo bot has run on Node 22 + actions pinned by commit since push 8 (two runs pushed
+>    their commits); push 11 moves the scores, terminal-snapshot and alerts workflows the same way.
+>    **First thing next session:** `update-scores` and `update-terminal-snapshot` runs after push 11
+>    are green and still commit every hour (`git log --since='3 hours ago' --format='%an %s' | sort |
+>    uniq -c`); the alerts loop uses the new setup from its next restart. If a bot cannot push, revert
+>    that workflow's three lines to `actions/checkout@v4`, `actions/setup-node@v4`, `node-version: '20'`.
+>    Push 9: the alerts bot watches the published data files (§4 "Published-data watch"). Live since
+>    the bot loop restarted at 18:08 UTC on 2026-11-18. **Shaka, optional:** send `/id` to
+>    @x1valhq_bot and store the number as the `TELEGRAM_CHAT_ID` secret (read at the loop's next
+>    start); until then the notice arrives as a GitHub issue only.
 >    **Credits-based APR (#28), Shaka's decision 2026-11-18: an epoch in which a validator was offline
 >    the whole time counts as 0 %** (he answered "go" to that recommendation; keep it one switch).
 >    Step 1, push 10: the ledger builder publishes `cr` + `pv` (§4). **Check after the next hourly
@@ -2001,3 +1999,15 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   in the window. `test-rewards-ledger.js` extended (credits rows incl. offline / new / unreadable
   accounts, carried and back-filled point values, the too-few and no-agreement cases, no extra
   calls on a routine run).
+  Pushed by Shaka as `9a143fb8`.
+- **Geo bot under the new setup — proven.** Two runs after push 8 (17:21 UTC scheduled, 18:03 UTC from
+  the heartbeat) succeeded and pushed (`5d66f1ec`, `ab271928`); issue #2 was closed by the bot at
+  17:21:14. So checkout v7.0.1 keeps the push credentials working and all three old failure issues
+  are closed. The alerts loop restarted at 18:08 UTC and runs the push-9 code.
+- **Push 11 — #22 for the other bots:** `update-scores.yml`, `update-terminal-snapshot.yml` and
+  `alerts.yml` get the same three changes as the geo workflow (checkout and setup-node pinned by
+  commit, Node 22, `package-manager-cache: false`). On Node 22 here: the score generator ran for real
+  against mainnet (384 scores, 350 counted validators, 23 s) and the rewards builder too (push 10);
+  the terminal and delegation snapshot builders could only be started, not completed — api.x1.xyz
+  and the Foundation's delegation API are not reachable from the cloud sandbox today (they were on
+  10-29) — so their first real Node 22 run is the next hourly snapshot run on GitHub.

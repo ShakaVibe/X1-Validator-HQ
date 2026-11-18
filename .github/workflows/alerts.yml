@@ -56,13 +56,16 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
+      # Node 22 and actions pinned by commit (checkout v7.0.1, setup-node v7.1.0, looked up 2026-11-18;
+      # audit #22). The geo bot ran this way first: two runs pushed their commits on 2026-11-18.
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
-          node-version: '20'
+          node-version: '22'
+          package-manager-cache: false
 
       - name: Run the bot loop
         id: bot
