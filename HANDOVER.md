@@ -25,17 +25,22 @@
 >    - **Needs Shaka's wallet, once:** a real MAX "Withdraw XNT" from a vote account (the fix is
 >      proven by mainnet simulation and by the live modal, not by a signed transaction).
 >    - **#2 privacy follow-up**: unchanged, on the owner's list (item B).
->    **Phase 2 has started** (session 18): #21 tests made reliable and self-checking, and #7 part 1,
->    the CI workflow (`.github/workflows/ci.yml`), handed over as push 7. **First thing next session:
->    look at the CI runs on `main`** (Actions → CI). The first runs on GitHub's runners are the real
->    test: everything passed in the cloud sandbox, but fonts and timing differ there. A suite that
->    fails only on GitHub needs its waits or layout checks loosened, not a retry.
+>    **Phase 2 has started** (session 18): #21 tests reliable and self-checking + #7 part 1, CI
+>    (`.github/workflows/ci.yml`, push `f2bd7d56`; first run on GitHub green in 3 min 46 s). Push 8:
+>    #14 every bot workflow closes its "[bot] … is failing" issue on the next green run, and #22 step 1,
+>    the GEO bot alone moved to Node 22 + actions pinned by commit.
+>    **First thing next session:** (1) Actions → CI is still green; (2) issues #1–#3 were closed by the
+>    bots (if not, read the "Close the failure issue" step's log in a green run); (3) a geo run AFTER
+>    push 8 pushed its commit (`git log --author='github-actions' -3 -- validator-locations.json`).
+>    Only when (3) is true: give `update-scores.yml`, `update-terminal-snapshot.yml` and `alerts.yml`
+>    the same three changes the geo workflow got (checkout SHA, setup-node SHA + `node-version: '22'`
+>    + `package-manager-cache: false`), then watch one run of each. Why staged: checkout v6+ stores the
+>    push credentials differently from v4, and a bot that cannot push stops the hourly data.
 >    **Still to do in phase 2:** sanity gates on the published numbers (#7 part 2: the builders refuse
 >    to publish and open an issue when e.g. APR p90 ÷ median > 1.3 or the validator count moves > 15 %
->    in an hour), auto-closing failure issues + `TELEGRAM_CHAT_ID` (#14), Node 22/24 and pinned
->    actions in the four bot workflows (#22; ci.yml already uses checkout v7.0.1 and setup-node v7.1.0
->    by commit — run each bot once by hand after switching), the stale-scores banner (#10). Then the
->    **credits-based yield engine (#28)**, which replaces the interim APR guard. **Ask Shaka before building #28** (open decision: should fully delinquent epochs
+>    in an hour — compute the APR part with the site's clean-epoch filter, the raw ledger would trip
+>    it at once), `TELEGRAM_CHAT_ID` (Shaka; see the session 11 log), the stale-scores banner (#10).
+>    Then the **credits-based yield engine (#28)**, which replaces the interim APR guard. **Ask Shaka before building #28** (open decision: should fully delinquent epochs
 >    count as 0 %? Today they are skipped). Decisions Shaka can still reverse from session 18: the
 >    site refuses program-derived addresses (multisig vaults) as a withdraw authority (CLI only), and
 >    the vote account's withdraw-authority change got the same confirmation as the stake one.
@@ -1914,3 +1919,20 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
     the browser part. Not yet run on GitHub at the time of writing.
   - Noticed, not changed: three old preview PNGs under `Claude outputs/` are tracked in
     the public repo although the folder is gitignored (audit #23).
+  - CI first run on GitHub (run 44348237949, `f2bd7d56`): success, 3 min 46 s (node suites 1 min 36 s,
+    browser suites 1 min 42 s). Logs need a login, so "no suite needed its retry" is inferred from the
+    browser step taking the same time as the clean-copy run.
+- **Push 8 — #14 + #22 step 1** (workflows only):
+  - All five bot workflows (scores, geo, terminal snapshot, alerts bot, heartbeat) end with "Close the
+    failure issue once green again" (`if: success()`, `continue-on-error`): lists open issues, keeps the
+    one whose title is exactly "[bot] <workflow> is failing" (jq, exact match), closes it with a
+    "Recovered" comment. A later failure opens a new issue. Dry-run with a stand-in `gh`: closes #3 and
+    leaves a look-alike title alone. Open today: #1 terminal (9 comments), #2 geo, #3 scores — the next
+    green runs should close them, which is the live test. The alerts loop only picks the step up at
+    its next (≤ 5 h 45 min) restart.
+  - `update-geo-data.yml` only: Node 22, `actions/checkout@3d3c42e5…` (v7.0.1),
+    `actions/setup-node@949feb24…` (v7.1.0), `package-manager-cache: false`. Read the two actions'
+    changelogs at those tags: both run on node24; checkout v6 moved the persisted credentials to a
+    separate file (push from later steps is meant to keep working — that is what the geo run proves);
+    setup-node v5+ auto-caches only when package.json names a package manager (there is none here).
+    Node 22 rather than 24 because 22 is what every suite ran on today, here and in CI.

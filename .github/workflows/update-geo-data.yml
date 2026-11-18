@@ -17,15 +17,19 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      # Audit 2026-11-17 #22: Node 20 is end-of-life. This bot is the first to move to Node 22 and to
+      # actions pinned by commit (checkout v7.0.1, setup-node v7.1.0, looked up 2026-11-18); the other
+      # bots follow once a run of this one has pushed its commit with them.
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
-          node-version: '20'
+          node-version: '22'
+          package-manager-cache: false
       
       - name: Run geo update script
         run: node generate-geo.js
@@ -74,3 +78,21 @@ jobs:
             curl -s -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage" \
               -d chat_id="$TELEGRAM_CHAT_ID" -d text="⚠️ $TITLE — $RUN_URL" > /dev/null || true
           fi
+
+      # Audit 2026-11-17 #14: the failure issue used to stay open, and collect comments, for
+      # weeks after a one-off push race. A green run now closes it; a later failure opens a new one.
+      - name: Close the failure issue once green again
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "[bot] ${{ github.workflow }} is failing"
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          # Exact title match (the search is fuzzy), so nothing else is ever closed.
+          gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "\"$TITLE\" in:title" --json number,title \
+            | jq -r --arg t "$TITLE" '.[] | select(.title == $t) | .number' \
+            | while read -r N; do
+                gh issue close "$N" --repo "$GITHUB_REPOSITORY" \
+                  --comment "Recovered: this workflow succeeded at $(date -u +'%Y-%m-%d %H:%M UTC') ($RUN_URL). Closed automatically; a new failure opens a new issue." || true
+              done
