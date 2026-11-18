@@ -270,9 +270,10 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   check(late.ledger && Math.abs(parseFloat(late.value) - exp30) < 0.006, `slow data: the tile fills (${late.value}) once the ledger is in, with the delegation snapshot and the RPC still unanswered`, late);
   check(pageErrors2.length === 0, 'slow data: 0 page errors', pageErrors2);
 
-  // ── Late script (2026-11-18): init() runs at the end of js/modals.js, BEFORE js/apr.js is loaded,
-  // so on a slow load a deep-linked card can be on screen before this module's MutationObserver
-  // exists. The module must pick up tiles that are already there when it starts.
+  // ── Late script (2026-11-18): a card can be on screen before js/apr.js has run, i.e. before this
+  // module's MutationObserver exists. Until that day init() ran at the end of js/modals.js, five
+  // scripts earlier; the site now starts from js/start.js, but a visitor with a cached older
+  // modals.js still gets the old order. The module must pick up tiles that are already there.
   delete slow['/data/rewards.json']; delete slow['/data/delegation.json']; slow['/js/apr.js'] = 2500;
   const page3 = await (await browser.newContext({ viewport: { width: 1300, height: 900 } })).newPage();
   const pageErrors3 = []; page3.on('pageerror', e => pageErrors3.push(e.message));

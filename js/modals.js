@@ -1253,4 +1253,18 @@
       'sm-refresh':         () => smRefreshAll(),
     });
 
-init();
+// ─── START-UP ───────────────────────────────────────────────────────────────
+// init() used to be called right here, but seven more scripts load after this
+// file (terminal, delegation, alerts, fleet, apr, price-pill, forensics). On a
+// slow load init() could render the first view before they existed: a
+// #/terminal or #/delegation link opened nothing, the Fleet Health bar and the
+// Delegator APR tile stayed empty (found 2026-11-18). The site now starts from
+// js/start.js, the LAST script on the page. The DOMContentLoaded listener is
+// the safety net for a visitor whose cached index.html does not load start.js
+// yet (Pages caches every file for 10 minutes); startSite() runs init() once.
+function startSite() {
+  if (startSite.done) return;
+  startSite.done = true;
+  init();
+}
+document.addEventListener('DOMContentLoaded', startSite);

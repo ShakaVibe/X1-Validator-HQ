@@ -16,17 +16,11 @@
 >    **Phase 1 ("this week") is done and live** (session 18, see the Session Log): #1 APR interim
 >    guard (`a6f4a653`); #5 vote-account MAX withdraw, #8 one measured slot time, #4 authority-change
 >    confirmation, #13 frame guard (`0314c746`), all live-verified in the pane.
->    - **APR tile stuck on "…" (found in the live check):** root cause fixed in push 4 — `js/apr.js`
->      now fills tiles that were rendered before it loaded. **First thing next session: confirm push 4
->      is on `main`** (`grep -n "already on the page" js/apr.js`) and live.
->    - **Open finding, needs Shaka's OK (load order):** `init()` runs at the end of `js/modals.js`, but
->      `terminal.js`, `delegation.js`, `alerts.js`, `fleet.js`, `apr.js`, `price-pill.js` and
->      `forensics.js` load after it. On a slow load, whatever init() renders first can miss them: the
->      Fleet Health bar on a `#/datacenter` deep link (`cards.js` skips `fleetRender` when it is not
->      defined yet) and the `#/terminal` / `#/delegation` deep links (`app.js` skips `vtOpen` /
->      `delegOpen`). Proposed fix: run `init()` after the last script (e.g. on DOMContentLoaded) —
->      one line, but it changes start-up order for the whole site, so test with the differential /
->      CSP-walk suites and a slow-script test like `apr-test.js`'s "late script" section.
+>    - **APR tile stuck on "…" (found in the live check):** fixed in push 4 (`bc1f39ff`, live), and the
+>      cause behind it — the site started before its last seven scripts had loaded — in **push 5**
+>      (`js/start.js`, handed over at the end of session 18). **First thing next session: confirm push 5
+>      is on `main`** (`ls js/start.js`) and live-check a deep link each for `#/terminal`,
+>      `#/delegation`, `#/datacenter` and `#/lookup/<vote>` in a fresh pane tab.
 >    - **Needs Shaka's wallet, once:** a real MAX "Withdraw XNT" from a vote account (the fix is
 >      proven by mainnet simulation and by the live modal, not by a signed transaction).
 >    - **#2 privacy follow-up**: unchanged, on the owner's list (item B).
@@ -96,6 +90,8 @@
 >    ③ `data-action` dispatcher + strict CSP — DONE 2026-09-25; next: ④ single RPC transport (C3/C4).
 >    Rule for the split files: load-time code in one file must not call into a later file (they are
 >    plain classic scripts run in order; function hoisting no longer crosses file boundaries).
+>    **Start-up (2026-11-18):** `init()` is started by `js/start.js`, which must stay the LAST `<script>`
+>    in `index.html`; add new scripts above it. Never call `init()` from anywhere else.
 > 4. Useful console diagnostics on the live site: `rpcStats.byMethod` (RPC calls by method since
 >    load / `rpcStats.reset()`), `RewardsLedger.doc`, `PowerSaver.forceIdle(true/false)`.
 > 5. Shelved — don't re-propose: earnings chart/sparkline on the card ("takes up too much real
@@ -197,7 +193,8 @@ js/network-live.js            TPS, leader schedule, LeaderCountdown, epoch timel
                               current leader, disclaimer modal, network toggle, epoch bar, init()
 js/skip-monitor.js            SkipMonitor IIFE + its inline-onclick bridges
 js/modals.js                  reward breakdown modal, TPS modal, skipmon scorecard, slot explorer,
-                              Escape handler, and the final `init();` call
+                              Escape handler, and `startSite()` (runs init() once; DOMContentLoaded safety net)
+js/start.js                   LAST script on the page: calls startSite() — the site starts only when every script has loaded
 js/terminal.js                Validator Terminal module (IIFE: vtOpen/vtClose/vtRetry/vtRefreshLive)
 js/delegation.js              Delegation Program module (IIFE: delegOpen/delegRefresh/delegEvaluate)
 js/price-pill.js              XNT price pill (XDEX WXNT/USDC.X pool reserves read on-chain; XDEX API fallback)
@@ -1858,7 +1855,21 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
     post-load pass for the same reason). Fix: apr.js ends with a pass over existing `.apr-section`
     tiles. Reproduced offline by serving `js/apr.js` 2.5 s late (`apr-test.js` "late script" section:
     fails before, passes after; 38 checks). The same load-order gap affects other late modules — see
-    Start-here item A.
+    push 5 below.
+  - Push 4 (`bc1f39ff`) live: the first reload after the deploy filled the tile in 2.3 s — a fast load,
+    so the slow-load case itself is proven offline only.
+  - **Push 5 — start-up order** (Shaka: "go"): `init()` no longer runs at the end of `js/modals.js`.
+    `startSite()` there runs it once; `js/start.js`, a new last `<script>` in `index.html`, calls it,
+    and a DOMContentLoaded listener is the safety net. Why two files and a guard: for 10 minutes after
+    a deploy a visitor can hold an old `index.html` with the new `modals.js` (no start.js tag → the
+    listener starts the site) or the reverse (old modals.js calls init() itself → start.js finds no
+    `startSite` and does nothing). Not started from DOMContentLoaded alone, because that waits for
+    the deferred Chart.js (cdnjs) and web3.js. New `startup-order-test.js` (22 checks) confirmed the
+    twins under the old order on a slow load: `#/terminal` and `#/delegation` opened nothing and
+    `#/datacenter` rendered the card without the Fleet Health bar; all fine with the new order, both
+    skew cases start exactly once. Cost: on a slow load nothing starts until the last script is in
+    (the late scripts load one after the other). All 16 runnable suites green, CSP walk 0 violations.
+    Not live-verified at the time of writing.
   - Pane note: one reload showed a 13 s gap between the document response and the first subresource
     (everything loaded from cache afterwards). Pane-side stall, not the site; expect odd timings there.
 - Lessons: (0) reproduce a live symptom before fixing it — push 3 fixed a plausible cause, not the cause;

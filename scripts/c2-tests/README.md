@@ -155,3 +155,16 @@ Serves the site on 127.0.0.1 and a hostile page on localhost that frames it. Unf
 normally. Framed (plain, sandboxed with scripts, same-origin parent): no site markup and no site
 scripts, only the notice and a top-level link. Control: the previous guard from git history leaves
 the framed site fully usable (skipped where the history is not available). 8 checks. Chromium only.
+
+**Start-up order (2026-11-18)** — `js/start.js` + `startSite()` at the end of `js/modals.js`:
+
+    node scripts/c2-tests/startup-order-test.js "$PWD"
+
+Serves each of the seven scripts that load after `js/modals.js` 0.4 s late and answers the RPC at
+once. `init()` must not touch the network before the last script was served and must not wait for
+DOMContentLoaded; `#/terminal` and `#/delegation` deep links open their view; `#/datacenter` with a
+one-validator portfolio shows the card, the Fleet Health bar and a filled Delegator APR tile. Control:
+the previous arrangement (rebuilt from today's files: `init();` at the end of modals.js, no start.js)
+opens nothing for both links and renders the card without the Fleet Health bar. Cache skew both ways:
+old index.html + new modals.js starts once at DOMContentLoaded; new index.html + old modals.js starts
+exactly once. 22 checks.
