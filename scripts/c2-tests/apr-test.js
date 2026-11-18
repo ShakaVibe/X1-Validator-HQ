@@ -6,6 +6,11 @@
 // node over the served JSON, the 7-epoch trend pill, the Details modal (hero,
 // network comparison, rows, close paths), the 100 % and 0 % commission paths,
 // 0 inline handlers, 0 page errors, 0 [Actions] warnings.
+// Since 2026-11-18 (audit #1) also the clean-epoch filter: the expected values
+// below come from a second implementation of the rule documented in js/apr.js,
+// and synthetic validators cover each way a ledger cell can be wrong (stake
+// recorded as 1 XNT, a stake ramp shifted by one epoch, a re-fetch stamp, a 0
+// reward) plus the case that must NOT be filtered (a weak epoch on steady stake).
 //   node scripts/c2-tests/apr-test.js /path/to/repo
 const { chromium } = require('playwright');
 const http = require('http'), fs = require('fs'), path = require('path');
@@ -26,13 +31,48 @@ const subject = terminal.validators
   .filter(r => !r[ti.x1Labs] && r[ti.commission] === 10 && ledger.validators[r[ti.votePubkey]] && ledger.validators[r[ti.votePubkey]].v.slice(-30).every(x => x != null))
   .sort((a, b) => b[ti.activatedStake] - a[ti.activatedStake])[0];
 const VOTE = subject[ti.votePubkey], STAKE_XNT = subject[ti.activatedStake] / 1e9, NAME = subject[ti.name];
-// Expected APR with the page's offline constants (216,000 slots × 0.368 s; no `st`/`c` in the ledger yet → current stake/commission)
+// Expected APR with the page's offline constants (216,000 slots × 0.368 s)
 const EPY = 365.25 * 86400 / (216000 * 0.368);
-function expectedNet(n) {
-  const e = ledger.validators[VOTE]; const rows = [];
-  for (let i = ledger.epochs.length - 1; i >= 0 && rows.length < n; i--) { const v = e.v[i]; if (v == null) continue; const c = (e.c && e.c[i] != null) ? e.c[i] : 10; const st = (e.st && e.st[i] != null) ? e.st[i] : STAKE_XNT; rows.push((v / (c / 100)) / (st * 1e9) * (1 - c / 100)); }
-  return rows.reduce((a, b) => a + b, 0) / rows.length * EPY * 100;
+// ── Clean-epoch filter, second implementation (rule: js/apr.js "Clean-epoch filter") ──
+const RATE_MAX = 1.25, RATE_MIN = 0.9, STEADY = 0.005, NE = ledger.epochs.length;
+const nbr = (e, i) => { if (!e.st) return null; const j = i > 0 ? i - 1 : 1; return e.st[j] != null ? e.st[j] : null; };
+function refRates(validators) {            // network gross rate per ledger column: median over validators with a steady recorded stake
+  const ref = [];
+  for (let i = 0; i < NE; i++) {
+    const xs = [];
+    for (const e of Object.values(validators)) {
+      if (!e.st || !e.c || !(e.v[i] > 0) || e.st[i] == null || e.c[i] == null) continue;
+      const st = e.st[i], c = e.c[i], nb = nbr(e, i);
+      if (st < 1000 || !(c > 0) || c >= 100 || !(nb > 0) || Math.abs(st / nb - 1) > STEADY) continue;
+      xs.push((e.v[i] / (c / 100)) / (st * 1e9));
+    }
+    xs.sort((a, b) => a - b);
+    const m = xs.length >> 1;
+    ref.push(xs.length < 5 ? null : (xs.length % 2 ? xs[m] : (xs[m - 1] + xs[m]) / 2));
+  }
+  const have = ref.map((x, i) => x == null ? -1 : i).filter(i => i >= 0);
+  return ref.map((x, i) => x != null ? x : (have.length ? ref[have.reduce((b, j) => Math.abs(j - i) < Math.abs(b - i) ? j : b, have[0])] : null));
 }
+function cleanRows(e, n, ref, fbStake, fbComm) {   // newest-first net rates of the usable epochs + how many were left out
+  const rows = []; let dropped = 0;
+  for (let i = NE - 1; i >= 0 && rows.length < n; i--) {
+    const v = e.v[i]; if (v == null) continue;
+    const c = (e.c && e.c[i] != null) ? e.c[i] : fbComm, rec = !!(e.st && e.st[i] != null), st = rec ? e.st[i] : fbStake;
+    if (c == null || !(st > 0) || !(c > 0) || c >= 100) continue;
+    if (v === 0) { dropped++; continue; }
+    const g = (v / (c / 100)) / (st * 1e9), r = ref[i];
+    if (r) {
+      const ratio = g / r, nb = nbr(e, i);
+      if (ratio > RATE_MAX) { dropped++; continue; }
+      if (ratio < RATE_MIN && (!rec || (nb != null && (nb === st || Math.abs(st / nb - 1) > STEADY)))) { dropped++; continue; }
+    }
+    rows.push(g * (1 - c / 100));
+  }
+  return { rows, dropped };
+}
+const aprOf = (rows) => rows.reduce((a, b) => a + b, 0) / rows.length * EPY * 100;
+const ref0 = refRates(ledger.validators);
+const subj30 = cleanRows(ledger.validators[VOTE], 30, ref0, STAKE_XNT, 10), subj7 = cleanRows(ledger.validators[VOTE], 7, ref0, STAKE_XNT, 10);
 const mk = (vote, name, stakeXnt, commission, extra) => Object.assign({ voteAccount: vote, nodePubkey: 'node-' + name, name, commission, activatedStake: stakeXnt, rewardsBalance: 1, isDelinquent: false, version: '4.0.3', performanceScore: 97.5, skipRate: 0, epochCredits: 1, epochCreditsHistory: [], iconUrl: '' }, extra || {});
 const V_100 = 'Vote11111111111111111111111111111111111111', V_0 = 'Vote00000000000000000000000000000000000000', V_NEW = 'VoteNewNewNewNewNewNewNewNewNewNewNewNewNew';
 
@@ -76,9 +116,9 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   check(card.earn.length === 4 && card.health.length === 4, 'card keeps 4 + 4 tiles', { earn: card.earn, health: card.health });
   check(card.earn[3] === 'Delegator APR' && card.delegInHealth && !card.commissionTile, 'APR is the 4th Earnings tile; Foundation delegation moved to Health; Commission tile gone', card);
   const shown = parseFloat(card.value);
-  const exp30 = expectedNet(30), exp7 = expectedNet(7);
+  const exp30 = aprOf(subj30.rows), exp7 = aprOf(subj7.rows);
   check(Math.abs(shown - exp30) < 0.006, `tile value ${card.value} matches the formula over the served ledger (${exp30.toFixed(2)}%)`, { shown, exp30 });
-  check(/^30 ep · net of 10% fee$/.test(card.sub) && card.details, 'subtext: 30 ep · net of 10% fee + Details', card.sub);
+  check(card.sub === subj30.rows.length + ' ep · net of 10% fee' && card.details, 'subtext: ' + subj30.rows.length + ' ep · net of 10% fee + Details', card.sub);
   check(new RegExp('7d ' + exp7.toFixed(2).replace('.', '\\.') + '%').test(card.trend), '7-epoch trend pill matches', { trend: card.trend, exp7 });
   check(card.inline === 0, '0 inline handlers in the card');
 
@@ -96,7 +136,8 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   const net = await page.evaluate(() => window.aprNetwork());
   check(net && net.n > 100 && net.median > 3 && net.median < 20 && net.p90 >= net.median, 'network median/p90 plausible', net);
   check(modal.rows.some(r => /Epochs per year\s*39\d/.test(r)) && modal.rows.some(r => /On 10,000 XNT delegated\s*≈ \d/.test(r)), 'rows: epochs per year ~397 and the 10,000 XNT example', modal.rows);
-  check(/reward ÷ 10%/.test(modal.foot) && /today's active stake/.test(modal.foot), 'footnote explains the method and the current-stake caveat', modal.foot);
+  check(/reward ÷ 10%/.test(modal.foot) && ((/recorded with each epoch/.test(modal.foot) && /left out/.test(modal.foot)) || /today's active stake/.test(modal.foot)), 'footnote explains the method, the recorded stake and that unfit epochs are left out', modal.foot);
+  check(subj30.dropped === 0 ? !modal.rows.some(r => /Epochs left out/.test(r)) : modal.rows.some(r => new RegExp('Epochs left out\\s*' + subj30.dropped + '\\b').test(r)), 'modal ' + (subj30.dropped ? 'lists ' + subj30.dropped + ' epoch(s) left out' : 'has no "left out" row for a clean validator'), modal.rows);
   // close paths
   await page.click('#aprModal .modal-close'); await page.waitForTimeout(100);
   const c1 = await page.evaluate(() => getComputedStyle(document.getElementById('aprModal')).display);
@@ -124,6 +165,78 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   const exp0 = 2e9 / 1e13 * EPY * 100;
   check(Math.abs(parseFloat(edge[1].v) - exp0) < 0.006 && /own-stake yield/.test(edge[1].sub), `0% commission → self-stake method (${exp0.toFixed(2)}%)`, edge[1]);
   check(edge[2].v === '—' && /not enough reward history/.test(edge[2].sub), 'unknown validator → — · not enough reward history', edge[2]);
+
+  // ── Clean-epoch filter (audit #1): synthetic validators built on the served ledger's own network rate ──
+  const S = 500000, last = NE - 1;
+  const steady = Array.from({ length: NE }, (_, i) => +(S * (1 + 0.0002 * i)).toFixed(3));   // grows a little every epoch, like real stake
+  // v = the 10 % slice of ref × the stake that REALLY earned it; `st` = what the ledger recorded
+  const mkEntry = (st, real, tweak) => {
+    const e = { w: null, self: [], v: [], st: st.slice(), c: new Array(NE).fill(10) };
+    for (let i = 0; i < NE; i++) e.v.push(Math.round(ref0[i] * 0.10 * (real || st)[i] * 1e9));
+    if (tweak) tweak(e);
+    return e;
+  };
+  // Stake ramps ×10 over five epochs; every cell holds the NEXT epoch's stake (how the builder records it)
+  const k0 = last - 14;
+  const rampReal = steady.map((s, i) => i <= k0 ? s : i > k0 + 5 ? s * 10 : s * (1 + 9 * (i - k0) / 5));
+  const rampRec = rampReal.map((_, i) => +(i < last ? rampReal[i + 1] : rampReal[i] * 1.0002).toFixed(3));
+  const SY = { clean: 'VoteCLEANxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', spike: 'VoteSPiKExxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', ramp: 'VoteRAMPxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+               weak: 'VoteWEAKxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', zero: 'VoteZERoxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', stamp: 'VoteSTAMPxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', bad: 'VoteBADxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' };
+  const synth = {
+    [SY.clean]: mkEntry(steady),
+    [SY.spike]: mkEntry(steady, steady, e => { e.st[last - 4] = 1; }),                                   // one cell recorded 1 XNT against a normal reward (the 250,000 % card)
+    [SY.ramp]:  mkEntry(rampRec, rampReal),                                                              // five cells recorded against a larger, later stake
+    [SY.weak]:  mkEntry(steady, steady, e => { e.v[last - 3] = Math.round(e.v[last - 3] * 0.5); }),      // really earned half that epoch, stake steady → must stay in
+    [SY.zero]:  mkEntry(steady, steady, e => { e.v[last - 2] = 0; }),                                    // a 0 reward at 10 % commission
+    [SY.stamp]: mkEntry(steady, steady, e => { for (let i = 0; i < 12; i++) e.st[i] = 5 * S; }),         // re-fetch stamp: twelve old cells carry one identical, larger stake
+    [SY.bad]:   mkEntry(steady, steady, e => { for (let i = 0; i < last - 1; i++) e.st[i] = 1; }),       // only two usable epochs
+  };
+  await page.evaluate((entries) => { Object.assign(window.RewardsLedger.doc.validators, entries); }, synth);
+  // both sides now compute the reference over the same set (served ledger + the synthetic entries)
+  const ref1 = refRates(Object.assign({}, ledger.validators, synth));
+  const order = ['clean', 'spike', 'ramp', 'weak', 'zero', 'stamp', 'bad'];
+  await page.evaluate((cards) => { document.getElementById('validatorResults').innerHTML = cards.map(c => renderValidatorCard(c, true, false)).join(''); }, order.map(k => mk(SY[k], 'Synth-' + k, S, 10)));
+  await page.waitForTimeout(800);
+  const sy = await page.evaluate((votes) => votes.map(v => {
+    const t = document.querySelector('.apr-section[data-vote="' + v + '"]'), a = window.aprFor(v);
+    return { value: t.querySelector('.stat-value').textContent, sub: (t.querySelector('.stat-subtext') || {}).textContent, epochs: a.long && a.long.epochs, dropped: a.dropped };
+  }), order.map(k => SY[k]));
+  const got = Object.fromEntries(order.map((k, i) => [k, sy[i]]));
+  const want = Object.fromEntries(order.map(k => [k, cleanRows(synth[SY[k]], 30, ref1, S, 10)]));
+  const cleanApr = aprOf(want.clean.rows);
+  const matches = (k) => Math.abs(parseFloat(got[k].value) - aprOf(want[k].rows)) < 0.006 && got[k].dropped === want[k].dropped && got[k].epochs === want[k].rows.length;
+  check(matches('clean') && got.clean.dropped === 0 && got.clean.epochs === 30, `steady stake → ${got.clean.value}, 30 epochs, nothing left out`, got.clean);
+  check(matches('spike') && got.spike.dropped === 1 && Math.abs(parseFloat(got.spike.value) - cleanApr) < 0.05, `one cell recorded as 1 XNT → left out, tile ${got.spike.value} stays at the clean rate (${cleanApr.toFixed(2)}%)`, { got: got.spike, want: aprOf(want.spike.rows) });
+  check(matches('ramp') && got.ramp.dropped === 5 && Math.abs(parseFloat(got.ramp.value) - cleanApr) < 0.05, `stake ramp shifted by one epoch → 5 understated cells left out, tile ${got.ramp.value}`, { got: got.ramp, want: aprOf(want.ramp.rows) });
+  check(matches('weak') && got.weak.dropped === 0 && parseFloat(got.weak.value) < cleanApr - 0.05, `a weak epoch on a steady stake is kept (tile ${got.weak.value} < ${cleanApr.toFixed(2)}%)`, { got: got.weak, want: aprOf(want.weak.rows) });
+  check(matches('zero') && got.zero.dropped === 1 && Math.abs(parseFloat(got.zero.value) - cleanApr) < 0.05, `0 reward at 10% commission → left out, tile ${got.zero.value}`, { got: got.zero, want: aprOf(want.zero.rows) });
+  check(matches('stamp') && got.stamp.dropped === 12 && got.stamp.epochs === 24 && Math.abs(parseFloat(got.stamp.value) - cleanApr) < 0.05, `re-fetch stamp (12 identical, larger stakes) → left out, 24 epochs, tile ${got.stamp.value}`, { got: got.stamp, want: aprOf(want.stamp.rows) });
+  check(got.bad.value === '—' && /not enough clean epochs/.test(got.bad.sub) && got.bad.dropped === NE - 2, 'fewer than 3 clean epochs → — · stake changed · not enough clean epochs yet', got.bad);
+  const modalText = async (vote) => {
+    await page.click('.apr-section[data-vote="' + vote + '"] [data-action="apr-details"]'); await page.waitForTimeout(300);
+    const t = await page.evaluate(() => ({ rows: [...document.querySelectorAll('#aprModal .apm-row')].map(r => r.textContent.replace(/\s+/g, ' ').trim()), body: document.getElementById('aprModalBody').textContent.replace(/\s+/g, ' ').trim() }));
+    await page.keyboard.press('Escape'); await page.waitForTimeout(100);
+    return t;
+  };
+  const mSpike = await modalText(SY.spike), mBad = await modalText(SY.bad), mClean = await modalText(SY.clean);
+  check(mSpike.rows.some(r => /^Epochs left out\s*1\b/.test(r)) && !mClean.rows.some(r => /Epochs left out/.test(r)), 'modal: "Epochs left out 1" for the spiked validator, no such row for the clean one', mSpike.rows);
+  check(/Not enough completed epochs/.test(mBad.body) && new RegExp((NE - 2) + ' epochs were left out').test(mBad.body), 'modal for the unusable validator says how many epochs were left out and why', mBad.body);
+  // Whole served ledger: nothing above what the rule allows, and the comparison bars are sane (audit #7's gate)
+  const whole = await page.evaluate((skip) => {
+    const doc = window.RewardsLedger.doc, out = [];
+    for (const vote of Object.keys(doc.validators)) {
+      if (skip.includes(vote)) continue;
+      const e = doc.validators[vote]; if (!e.st || !e.c) continue;
+      const st = [...e.st].reverse().find(x => x != null), c = [...e.c].reverse().find(x => x != null);
+      if (!(st >= 1000) || !(c > 0) || c >= 100) continue;
+      const a = window.aprFor(vote, { stakeXnt: st, commission: c });
+      if (a.long) out.push(a.long.netApr);
+    }
+    return { n: out.length, max: Math.max(...out), net: window.aprNetwork() };
+  }, Object.values(SY));
+  const ceiling = RATE_MAX * Math.max(...ref1.filter(x => x != null)) * EPY * 100;
+  check(whole.n > 100 && whole.max <= ceiling, `served ledger: ${whole.n} validators, highest APR ${whole.max.toFixed(2)}% ≤ ${ceiling.toFixed(2)}% (1.25 × the network rate)`, whole);
+  check(whole.net && whole.net.p90 <= 1.3 * whole.net.median, `network bars: top 10% ${whole.net && whole.net.p90.toFixed(2)}% within 1.3 × median ${whole.net && whole.net.median.toFixed(2)}%`, whole.net);
 
   // Phone: modal hero stacks
   await page.setViewportSize({ width: 375, height: 812 });

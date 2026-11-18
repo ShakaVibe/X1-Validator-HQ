@@ -11,6 +11,8 @@
     // 0 % commission validators fall back to the reward observed on their own
     // self-stake accounts (`s` ÷ self-stake from the Delegation Program
     // snapshot). Validators at 100 % commission pay delegators nothing.
+    // Since 2026-11-18 an epoch is only used when its reward, stake and
+    // commission fit each other — see "Clean-epoch filter" below.
     // Globals used: Actions, escHtml, formatNumber, RewardsLedger, rpcCall,
     // SessionCache, allValidators, currentSlotsInEpoch, delegEvaluate, delegLoad.
     // ═══════════════════════════════════════════════════════════════════════
@@ -59,45 +61,123 @@
         try { const r = typeof delegEvaluate === 'function' ? delegEvaluate(vote) : null; return r && r.entry && r.entry.ss != null ? Number(r.entry.ss) / 1e9 : null; } catch (e) { return null; }
       }
 
-      // rates per epoch for the newest `n` indexed epochs of one validator.
+      // ── Clean-epoch filter (audit 2026-11-17 #1, interim guard) ───
+      // The ledger's `st` is the stake read when a cell was FETCHED: normally
+      // one epoch after the reward was earned, and "that day's" stake for cells
+      // re-fetched later. For a validator whose stake moved, reward ÷ st is then
+      // wrong in both directions (cards showed 250,000 %). Until APR is computed
+      // from vote credits (no stake needed), an epoch is only used when its
+      // numbers fit each other. Every staked XNT earns the same per vote credit,
+      // so no validator can beat the network's per-epoch rate by much:
+      //   reference(E) = median gross rate of the validators whose recorded
+      //                  stake was steady around E (their cells are right)
+      //   left out: rate > 1.25 × reference          (recorded stake too small)
+      //   left out: reward 0 at a commission > 0     (reward and recorded
+      //             commission disagree)
+      //   left out: rate < 0.9 × reference AND the recorded stake is suspect —
+      //             it moved > 0.5 % against the neighbouring cell, is identical
+      //             to it (stamped by a re-fetch), or was never recorded
+      // A genuinely weak epoch (low credits on a steady stake) is kept. Checked
+      // on 2026-11-18 against the credits model for 323 validators: 2 differ by
+      // more than 0.25 pts (worst 0.53), down from 122 (worst 250,267).
+      const RATE_MAX = 1.25, RATE_MIN = 0.9, STEADY = 0.005, REF_MIN_VALIDATORS = 5;
+      function neighbourStake(e, i) {          // the cell before; for the oldest cell, the one after
+        if (!e.st) return null;
+        const j = i > 0 ? i - 1 : 1;
+        return e.st[j] != null ? Number(e.st[j]) : null;
+      }
+      let _ref = null, _refKey = null;
+      function referenceRates() {              // gross per-epoch rate per ledger column, cached per ledger build
+        const doc = window.RewardsLedger && window.RewardsLedger.doc;
+        if (!doc || !doc.validators || !Array.isArray(doc.epochs)) return null;
+        const key = doc.generatedAt + '|' + doc.epochs.length + '|' + Object.keys(doc.validators).length;
+        if (_ref && _refKey === key) return _ref;
+        const n = doc.epochs.length, buckets = [];
+        for (let i = 0; i < n; i++) buckets.push([]);
+        for (const vote of Object.keys(doc.validators)) {
+          const e = doc.validators[vote];
+          if (!e || !Array.isArray(e.v) || !e.st || !e.c) continue;
+          for (let i = 0; i < n; i++) {
+            if (!(e.v[i] > 0) || e.st[i] == null || e.c[i] == null) continue;
+            const st = Number(e.st[i]), c = Number(e.c[i]), nb = neighbourStake(e, i);
+            if (!(st >= MIN_NETWORK_STAKE_XNT) || !(c > 0) || c >= 100) continue;
+            if (!(nb > 0) || Math.abs(st / nb - 1) > STEADY) continue;
+            buckets[i].push((e.v[i] / (c / 100)) / (st * 1e9));
+          }
+        }
+        const ref = buckets.map(xs => {
+          if (xs.length < REF_MIN_VALIDATORS) return null;
+          xs.sort((a, b) => a - b);
+          const m = xs.length >> 1;
+          return xs.length % 2 ? xs[m] : (xs[m - 1] + xs[m]) / 2;
+        });
+        // An epoch with too few steady validators borrows the nearest epoch's
+        // rate — it moves a few % between epochs, far inside the limits above.
+        const have = [];
+        ref.forEach((x, i) => { if (x != null) have.push(i); });
+        if (have.length) for (let i = 0; i < n; i++) {
+          if (ref[i] == null) ref[i] = ref[have.reduce((b, j) => Math.abs(j - i) < Math.abs(b - i) ? j : b, have[0])];
+        }
+        _ref = ref; _refKey = key;
+        return ref;
+      }
+
+      // rates per epoch for the newest `n` usable epochs of one validator.
       // fallback = { stakeXnt, commission } used for cells without st / c.
+      // `dropped` = epochs left out by the clean-epoch filter on the way.
       function rates(vote, n, fallback) {
         const doc = window.RewardsLedger && window.RewardsLedger.doc;
         const e = doc && doc.validators && doc.validators[vote];
         if (!doc || !e || !Array.isArray(e.v)) return null;
+        const ref = referenceRates();
         const out = [];
-        let method = 'commission';
+        let method = 'commission', dropped = 0;
         for (let i = doc.epochs.length - 1; i >= 0 && out.length < n; i--) {
           const v = e.v[i];
           if (v == null) continue;                           // not indexed / no reward → skip
           const c = (e.c && e.c[i] != null) ? Number(e.c[i]) : (fallback && fallback.commission != null ? Number(fallback.commission) : null);
-          const stXnt = (e.st && e.st[i] != null) ? Number(e.st[i]) : (fallback ? fallback.stakeXnt : null);
+          const recorded = !!(e.st && e.st[i] != null);
+          const stXnt = recorded ? Number(e.st[i]) : (fallback ? fallback.stakeXnt : null);
           if (c == null || !(stXnt > 0)) continue;
+          const r = ref && ref[i] > 0 ? ref[i] : null;       // network rate for this epoch (null → no filtering possible)
           let net, gross;
           if (c >= 100) continue;                           // nothing reaches delegators — handled by the callers
-          if (c > 0) { gross = (v / (c / 100)) / (stXnt * 1e9); net = gross * (1 - c / 100); }
-          else {
+          if (c > 0) {
+            if (v === 0) { dropped++; continue; }            // a 0 reward cannot be a c % slice of anything
+            gross = (v / (c / 100)) / (stXnt * 1e9); net = gross * (1 - c / 100);
+            if (r) {
+              const ratio = gross / r;
+              if (ratio > RATE_MAX) { dropped++; continue; }
+              if (ratio < RATE_MIN) {
+                const nb = neighbourStake(e, i);
+                const suspect = !recorded || (nb != null && (nb === stXnt || Math.abs(stXnt / nb - 1) > STEADY));
+                if (suspect) { dropped++; continue; }
+              }
+            }
+          } else {
             // 0 % commission: the vote account gets nothing — use the yield on the validator's own stake
             const s = e.s && e.s[i]; const ss = selfStakeXnt(vote);
             if (s == null || !(ss > 0)) continue;
             method = 'self'; net = s / (ss * 1e9); gross = net;
+            if (r && net / r > RATE_MAX) { dropped++; continue; }   // today's self-stake is smaller than it was then
           }
           out.push({ epoch: doc.epochs[i], net, gross, v, c, stXnt });
         }
-        return { rows: out, method };
+        return { rows: out, method, dropped };
       }
       function summarise(r) {
         if (!r || r.rows.length < MIN_EPOCHS) return null;
         const k = epy();
         const avg = (k) => { const xs = r.rows.map(x => x[k]).filter(x => x != null); return xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null; };
         const net = avg('net'), gross = avg('gross');
-        return { netApr: net * k * 100, grossApr: gross == null ? null : gross * k * 100, netPerEpoch: net * 100, epochs: r.rows.length,
+        return { netApr: net * k * 100, grossApr: gross == null ? null : gross * k * 100, netPerEpoch: net * 100, epochs: r.rows.length, dropped: r.dropped || 0,
                  first: r.rows[r.rows.length - 1].epoch, last: r.rows[0].epoch, method: r.method, commission: r.rows[0].c, stakeXnt: r.rows[0].stXnt, lastV: r.rows[0].v };
       }
       function aprFor(vote, fallback) {
         const fb = fallback || currentOf(vote);
-        const l = summarise(rates(vote, LONG, fb)), s = summarise(rates(vote, SHORT, fb));
-        return { long: l, short: s, fallback: fb };
+        const rl = rates(vote, LONG, fb);
+        const l = summarise(rl), s = summarise(rates(vote, SHORT, fb));
+        return { long: l, short: s, fallback: fb, dropped: rl ? rl.dropped : 0 };
       }
 
       // Network distribution (net APR over the long window) — cached per ledger build
@@ -149,7 +229,7 @@
         if (!a.long && !a.short) {
           valueEl.textContent = fb.commission >= 100 ? '0%' : '—'; valueEl.style.color = 'var(--text-dim)';
           if (trendEl) trendEl.remove();
-          sub(fb.commission >= 100 ? '100% commission · nothing to delegators' : 'not enough reward history yet');
+          sub(fb.commission >= 100 ? '100% commission · nothing to delegators' : (a.dropped ? 'stake changed · not enough clean epochs yet' : 'not enough reward history yet'));
           return;
         }
         const main = a.long || a.short;
@@ -184,7 +264,8 @@
         const a = aprFor(vote, cur);
         const L = a.long || a.short;
         if (!L) {
-          body.innerHTML = '<div class="dm-empty">' + (cur && cur.commission >= 100 ? 'This validator keeps 100% of rewards, so delegators earn nothing.' : 'Not enough completed epochs with rewards in the ledger yet (needs ' + MIN_EPOCHS + ').') + '</div>';
+          body.innerHTML = '<div class="dm-empty">' + (cur && cur.commission >= 100 ? 'This validator keeps 100% of rewards, so delegators earn nothing.' : 'Not enough completed epochs with rewards in the ledger yet (needs ' + MIN_EPOCHS + ').' +
+            (a.dropped ? ' ' + a.dropped + ' epoch' + (a.dropped === 1 ? ' was' : 's were') + ' left out because the stake recorded for ' + (a.dropped === 1 ? 'it' : 'them') + ' does not fit the reward — this validator\'s stake changed around then.' : '')) + '</div>';
           return;
         }
         const S = a.short, net = network(), k = epy();
@@ -195,7 +276,7 @@
           ? 'This validator charges 0% commission, so its vote account receives no reward to work from. The figure is the yield observed on its own self-stake accounts (' + esc(num(selfStakeXnt(vote) || 0, 0)) + ' XNT), which earn exactly what a delegator would.'
           : 'The vote account\'s inflation reward is the validator\'s commission slice, so <b>reward ÷ ' + esc(num(L.commission, 0)) + '%</b> recovers the total paid on all stake delegated to it that epoch; <b>× (1 − ' + esc(num(L.commission, 0)) + '%)</b> is the delegators\' share and <b>÷ active stake</b> the per-epoch yield.';
         const stakeNote = (doc.validators[vote] && doc.validators[vote].st && doc.validators[vote].st.some(x => x != null))
-          ? 'Stake and commission are the values recorded with each epoch.' : 'Per-epoch stake is not in the ledger yet for these epochs, so today\'s active stake (' + esc(num(L.stakeXnt, 0)) + ' XNT) is used — if stake was added recently the APR is understated; the ' + SHORT + '-epoch figure is the safer read.';
+          ? 'Stake and commission are the values recorded with each epoch; an epoch is left out when its recorded stake does not fit the reward (the stake changed around it).' :'Per-epoch stake is not in the ledger yet for these epochs, so today\'s active stake (' + esc(num(L.stakeXnt, 0)) + ' XNT) is used — if stake was added recently the APR is understated; the ' + SHORT + '-epoch figure is the safer read.';
         body.innerHTML =
           '<div class="apm-hero">' +
             '<div><label>Net APR · ' + L.epochs + ' epochs</label><b>' + pct(L.netApr) + '</b><span>what a delegator earns</span></div>' +
@@ -208,6 +289,7 @@
             '<div class="apm-bar"><span>top 10%</span><i class="net" style="width:' + barW(net.p90, maxBar) + '"></i><em>' + pct(net.p90) + '</em></div></div>' : '') +
           '<div class="apm-rows">' +
             '<div class="apm-row"><span>Epochs used</span><b>' + esc(L.first) + ' → ' + esc(L.last) + ' (' + L.epochs + ' with rewards)</b></div>' +
+            (L.dropped ? '<div class="apm-row"><span>Epochs left out</span><b>' + esc(L.dropped) + ' <small>(stake changed · recorded stake does not fit the reward)</small></b></div>' : '') +
             '<div class="apm-row"><span>Active stake' + (L.method === 'self' ? '' : ' the reward was earned on') + '</span><b>' + esc(num(L.stakeXnt, 0)) + ' XNT</b></div>' +
             (L.method === 'self' ? '' : '<div class="apm-row"><span>Vote-account reward, epoch ' + esc(L.last) + ' (commission income)</span><b>' + esc(num(L.lastV / 1e9, 2)) + ' XNT</b></div>') +
             '<div class="apm-row"><span>Average yield per epoch</span><b>' + pct(L.netPerEpoch, 4) + '</b></div>' +

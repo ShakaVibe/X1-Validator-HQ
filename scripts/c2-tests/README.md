@@ -60,6 +60,11 @@ against the same formula run in node over the served ledger, the 7-epoch trend p
 modal (hero, network median / top 10 %, rows, × / Escape / backdrop), the 100 % and 0 % commission
 paths, the no-history path, the 375 px modal, 0 inline handlers, 0 page errors. The ledger
 builder's `st` / `c` columns are covered by `node scripts/test-rewards-ledger.js`.
+Since 2026-11-18 (audit #1) it also covers the clean-epoch filter: the expected values come from a
+second implementation of the rule in the test, and synthetic validators cover a cell recorded as
+1 XNT, a stake ramp shifted by one epoch, a re-fetch stamp, a 0 reward at 10 % (all left out), a weak
+epoch on a steady stake (kept) and a validator with fewer than 3 clean epochs ("—"); the whole served
+ledger must stay under 1.25 × the network rate with top 10 % ≤ 1.3 × median. 32 checks.
 
 **Update Identity (2026-10-16)** — validator-info publish in `js/wallet-tx.js` (Manage Validator):
 
