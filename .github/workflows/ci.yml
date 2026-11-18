@@ -40,11 +40,12 @@ jobs:
             node --check "$f" || exit 1
           done
 
-      - name: Node suites (score generator, rewards ledger, alerts bot)
+      - name: Node suites (score generator, rewards ledger, alerts bot, data check)
         run: |
           node scripts/test-compute-scores.js
           node scripts/test-rewards-ledger.js
           node scripts/test-alerts-bot.js
+          node scripts/test-check-published-data.js
 
       - name: Install Playwright (Chromium only)
         run: |

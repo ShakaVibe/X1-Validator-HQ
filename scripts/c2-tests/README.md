@@ -16,7 +16,8 @@ output with `run-all.js "$PWD" --only <suite> --update` and commit it. For `csp-
 reads the verdict lines (0 violations, positive control refused, no page errors).
 
 The node suites need no browser: `node scripts/test-compute-scores.js`,
-`node scripts/test-rewards-ledger.js`, `node scripts/test-alerts-bot.js`.
+`node scripts/test-rewards-ledger.js`, `node scripts/test-alerts-bot.js`,
+`node scripts/test-check-published-data.js` (the data check that runs before the bots publish).
 
 ## The suites
 

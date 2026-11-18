@@ -46,19 +46,20 @@
 >    modal from `pv × cr × (1 − commission)`. Step 3, push 13 — audit #9: Stake Details, the staking
 >    and compound calculators and Manage Validator take their base rate from the same credits data
 >    (`validatorBaseRatePct` / `networkBaseRatePct` in `js/core.js`), the flat 8 % is only the last
->    resort, and every visible "APY" reads "APR". **First thing next session: live-check push 13** —
->    Stake Details of a validator whose delegation changed in the last week (2026-11-18: SK.X1#4,
->    Xenbros-01, gucci, Aegis-Ghost showed a base of ≈ 3.7 % and should show ≈ 7.4 %), "From
->    Self-Stake (7.4% base)", "Validator APR"; Calculators → custom mode starts at the network rate
->    (≈ 7.4) instead of 8. **Still open in #28:** the break-even calculator's `realAPY` (total
+>    resort, and every visible "APY" reads "APR" (live-verified). **Still open in #28:** the break-even calculator's `realAPY` (total
 >    rewards ÷ total stake, a different quantity, left as it is); the
 >    APR sanity gate in the builder (#7 part 2); once the credits method has run for a while, delete
 >    the stake-based fallback and the clean-epoch filter from `js/apr.js`, and the audit's
 >    `apr_check.py` can be rewritten against `pv` (its "stable-stake" estimate is 0.017 % low).
->    **Still to do in phase 2:** sanity gates on the published numbers (#7 part 2: the builders refuse
->    to publish and open an issue when e.g. APR p90 ÷ median > 1.3 or the validator count moves > 15 %
->    in an hour — compute the APR part with the site's clean-epoch filter, the raw ledger would trip
->    it at once), the stale-scores banner (#10; Shaka: optional, the data watch came first).
+>    **Data check before publishing (#7 part 2), push 14:** `scripts/check-published-data.js` runs in
+>    the scores and terminal-snapshot workflows between build and commit (§4 "Data check"). A file
+>    that fails is not published, the others are; the run fails and opens the usual issue with the
+>    reasons. **First thing next session:** the runs after push 14 are green and still commit every
+>    hour (their step "Check the new data" prints "nothing held back"); if a rule cries wolf, set
+>    the repository variable `DATA_GATE_OFF` to the rule id (or `all`) — no code change needed —
+>    and fix the limit in the script afterwards.
+>    **Still to do in phase 2:** the stale-scores banner (#10; Shaka: optional, the data watch came
+>    first). The geo bot (`validator-locations.json`) has no data check yet.
 >    Then the **credits-based yield engine (#28)**, which replaces the interim APR guard. **Ask Shaka before building #28** (open decision: should fully delinquent epochs
 >    count as 0 %? Today they are skipped). Decisions Shaka can still reverse from session 18: the
 >    site refuses program-derived addresses (multisig vaults) as a withdraw authority (CLI only), and
@@ -257,6 +258,8 @@ js/apr.js                     F11 Delegator APR: card tile (.apr-section) + #apr
                               actions apr-details/-close/-overlay; one cached getRecentPerformanceSamples per session)
 scripts/alerts-bot.js         F3 Telegram alerts bot (Node 20, zero deps) — see §4
 scripts/test-alerts-bot.js    mock tests for the bot (`node scripts/test-alerts-bot.js`)
+scripts/check-published-data.js  data check between build and commit in the hourly workflows — see §4 "Data check"
+scripts/test-check-published-data.js  its tests (`node scripts/test-check-published-data.js`)
 scripts/c2-tests/             offline Playwright suites (C2 dispatcher, strict CSP walk, alerts modal, fleet, apr, credits, identity, price pill,
                               stake activation + vote withdraw, slot time, authority change, frame guard, start-up order) — README there
 scripts/c2-tests/run-all.js   ONE command for all of them (what CI runs); expected/*.txt = stored output of the five print-only suites
@@ -422,6 +425,36 @@ CNAME / .nojekyll / _headers  Pages config
   `state.meta.fresh`, so a loop restart does not repeat it. `/stats` shows the ages; `/id` (unlisted)
   answers any chat with its own id — that number is what goes into `TELEGRAM_CHAT_ID`. Limit: the
   watch runs inside Actions like the bots; if Actions as a whole stops, so does the watch.
+- **Data check before publishing** (`scripts/check-published-data.js`, 2026-11-18, audit #7 part 2;
+  tests `node scripts/test-check-published-data.js`, 66 cases). Step "Check the new data" in
+  `update-scores.yml` (`scores`) and `update-terminal-snapshot.yml` (`terminal delegation rewards`),
+  between build and commit. It compares each freshly built file with the published one (git HEAD).
+  A file that fails is put back to the published version (`scores.json` together with
+  `history.json`), so the commit step publishes the good files only; the step "Fail the run if the
+  data check held a file back" then fails the run after the commit, and "Alert on failure" puts the
+  report (file, rule id, numbers) into the "[bot] … is failing" issue. The next good run publishes
+  and closes it. If the script itself crashes, the data is published unchecked and the run fails.
+  - *Absolute* rules (never waived): unreadable or misshapen file, `generatedAt` older than 3 h or
+    older than the published one, fewer than 100 validators, malformed rows, a score outside
+    0–100, a commission outside 0–100, credits above 216,000 × 16 per epoch, a per-credit rate
+    outside 2–30 % a year at full credits, any delegator APR above 30 %, gross yield p90 ÷ median
+    above 1.3, fewer than half the validators with a reward in the second-newest epoch.
+  - *Relative* rules (vs the published file): validator count ±15 %, total stake ±10 %, stake
+    accounts ±30 %, approved / active delegations ±25 %, median score ±5 points, more than 10 % of
+    the validators moving by more than 20 points (both skipped when `formulaVersion` changed), an
+    epoch going backwards, more than 1 % of already published reward cells rewritten, a published
+    `pv` changed. They are waived once the published file is older than 6 h
+    (`DATA_GATE_ACCEPT_AFTER_H`): a real change must not block the site for ever, and the owner
+    has had the issue for hours by then.
+  - Limits are 10–50 × the largest hourly change in a back-test over every publication from
+    2026-11-12 to 11-18 (659 file versions: counts moved at most 1.3 %, total stake 0.42 %, stake
+    accounts 3.6 %, the median score 0.1 points, 0.5 % of validators by more than 20 points, 0
+    reward cells rewritten). The real check functions tripped on 0 of the 659.
+  - Switch off without a code change: repository variable `DATA_GATE_OFF` (Settings → Secrets and
+    variables → Actions → Variables) = `all`, a file name (`rewards`) or rule ids separated by
+    commas. Rule ids are in the issue text.
+  - What it does not catch: numbers that are wrong but plausible (it would not have caught the APR
+    bug #1, which was a formula on the site, not a bad file), and the geo file.
   Cloud sandbox and the Mac VM cannot reach the RPC or x1valhq.xyz — the bot was tested with mocks
   only and then live via the real run; `raw.githubusercontent.com` IS reachable from both (use it
   to read `data/*.json` and `alerts-state.enc`).
@@ -436,7 +469,7 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
 - [x] **This week** (session 18, 2026-11-18, all live-verified): #1 APR interim guard · #5 vote-account rent ·
       #4 authority confirmation · #8 one slot time · #13 frame guard — [ ] one real wallet MAX withdraw (Shaka) ·
       [ ] #2 privacy follow-up stays on the owner's list (Start-here item B)
-- [ ] **Weeks 1–2:** #21 fix the flaky + broken tests → #7 CI and sanity gates on published numbers ·
+- [ ] **Weeks 1–2:** #21, #7 (CI + data check), #14, #22 done in session 18; open: `TELEGRAM_CHAT_ID` (Shaka), #10 banner (optional). Was: #21 fix the flaky + broken tests → #7 CI and sanity gates on published numbers ·
       #14 auto-close failure issues, set `TELEGRAM_CHAT_ID` · #22 Node 24 / actions v5+ · #10 stale-scores banner
 - [ ] **Weeks 2–4:** #28 credits-based yield engine (#1 and #9 done, session 18; fallback removal and the builder's gate open) · #18 rent helper · #12 RPC failover ·
       #6/#25 vendor third-party scripts, script-src 'self'
@@ -2081,4 +2114,23 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   - New suite `scripts/c2-tests/base-rate-test.js` (18 checks, second implementation in node, the
     stake-moved case in the staking calculator, fallbacks, the typed-value case). 18 of 18 suites,
     CSP walk 0 violations.
-  Not live-verified at the time of writing.
+  Live-verified after the push (`8a9073cf`, CI green): Stake Details of SK.X1#4 shows "From
+  Self-Stake (7.4% base)" 2,372 XNT, commission 8,608 XNT, "Validator APR 34.24%" (= (2,372 + 8,608)
+  ÷ 32,073 self-stake); the staking calculator shows the same for it with "Rates from on-chain reward
+  data (last 7 epochs)"; both custom-rate inputs start at 7.4; no "APY" in the page text.
+- **Push 14 — #7 part 2, data check before publishing.** New `scripts/check-published-data.js`
+  (§4 "Data check" has the rules) wired into `update-scores.yml` and
+  `update-terminal-snapshot.yml`; its tests run in CI's node step. How the limits were set:
+  measured the hour-to-hour movement of every published file over six days first (numbers in §4),
+  then ran the finished check functions over all 659 versions in order — 0 trips, also with no
+  published file to compare with. Fresh `scores.json` and `rewards.json` built from mainnet in the
+  work copy passed against the published ones; the same two files with 40 % of the validators
+  removed / the credits of 55 % of the validators recorded 40 % low were held back
+  (`scores.count-change`, `rewards.apr-spread` 1.67). `terminal.json` and `delegation.json` could
+  not be built in the work copy (their APIs are not reachable from there); for them the evidence
+  is the back-test plus synthetic faults. The issue-body shell lines were run with a report
+  containing back-ticks and `$(…)`: printed as text. `test-check-published-data.js`: 66 cases
+  (every rule with the fault meant for it and a nearby case that must pass, waiving, the switch,
+  and the command in a throw-away git repository: bad file put back, good file kept, history.json
+  with scores.json, never-published file removed, exit codes).
+  Not verified on GitHub at the time of writing: the first real runs.

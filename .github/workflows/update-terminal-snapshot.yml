@@ -70,6 +70,19 @@ jobs:
           X1_RPC_URL: https://rpc.mainnet.x1.xyz
           LEDGER_EPOCHS: '36'
 
+      # Audit 2026-11-17 #7 part 2: look at the numbers before they are published
+      # (scripts/check-published-data.js). A file that fails is put back to the published
+      # version, so the commit step below publishes only the files that are fine; the run is
+      # then failed after the commit, which opens the usual issue with the reasons in it.
+      # Switch rules off without a code change: repository variable DATA_GATE_OFF.
+      - name: Check the new data
+        id: gate
+        continue-on-error: true
+        run: node scripts/check-published-data.js terminal delegation rewards
+        env:
+          DATA_GATE_OFF: ${{ vars.DATA_GATE_OFF }}
+          GATE_REPORT: ${{ runner.temp }}/data-check.md
+
       - name: Commit updated snapshots
         run: |
           git config user.name "x1hq-terminal-bot"
@@ -91,9 +104,16 @@ jobs:
           echo "Could not push after 5 attempts" >&2
           exit 1
 
+      - name: Fail the run if the data check held a file back
+        if: steps.gate.outcome == 'failure'
+        run: |
+          echo "The data check held back at least one file (or could not run); see the step 'Check the new data'." >&2
+          exit 1
+
       - name: Alert on failure
         if: failure()
         env:
+          GATE_REPORT: ${{ runner.temp }}/data-check.md
           GH_TOKEN: ${{ github.token }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -101,6 +121,10 @@ jobs:
           TITLE="[bot] ${{ github.workflow }} is failing"
           RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           BODY="Run failed at $(date -u +'%Y-%m-%d %H:%M UTC'): $RUN_URL"
+          # What the data check found, if it ran (numbers and rule names only)
+          if [ -s "$GATE_REPORT" ]; then BODY="$BODY
+
+          $(head -c 3000 "$GATE_REPORT")"; fi
           # One open issue per workflow: comment if it exists, else create it.
           EXISTING=$(gh issue list --repo "${{ github.repository }}" --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number' || true)
           if [ -n "$EXISTING" ]; then
