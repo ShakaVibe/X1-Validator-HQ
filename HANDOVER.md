@@ -38,14 +38,19 @@
 >    the bot loop restarted at 18:08 UTC on 2026-11-18. **Shaka, optional:** send `/id` to
 >    @x1valhq_bot and store the number as the `TELEGRAM_CHAT_ID` secret (read at the loop's next
 >    start); until then the notice arrives as a GitHub issue only.
->    **Credits-based APR (#28), Shaka's decision 2026-11-18: an epoch in which a validator was offline
->    the whole time counts as 0 %** (he answered "go" to that recommendation; keep it one switch).
->    Step 1, push 10: the ledger builder publishes `cr` + `pv` (§4). **Check after the next hourly
->    snapshot run** that `data/rewards.json` has a 36-entry `pv` with no nulls and `cr` on every
->    validator. Step 2 (not built): `js/apr.js` computes from `pv × cr × (1 − c)` and drops the
->    interim clean-epoch filter and the self-stake detour for 0 %-commission validators; show Shaka
->    which validators move, and by how much, BEFORE it ships; then the calculators and Stake Details
->    (#9) from the same numbers, and the APR sanity gate (#7 part 2) in the builder.
+>    **Credits-based APR (#28). Shaka's decision, confirmed 2026-11-18 with the list of 31 affected
+>    validators in front of him: an epoch in which a validator was offline the whole time counts as
+>    0 %** (`COUNT_OFFLINE_EPOCHS` in `js/apr.js`, one switch).
+>    Step 1 is live: the hourly ledger carries `pv` (36 epochs, no nulls) and `cr` for all 384
+>    validators since the 19:03 UTC run. Step 2, push 12: `js/apr.js` computes the tile and modal from
+>    `pv × cr × (1 − commission)`. **First thing next session: live-check push 12** — a normal
+>    validator (≈ 6.75 %, "30 ep · net of 10% fee"), an X1 Labs 0 %-commission one (≈ 7.5 %, "no fee"),
+>    and "sosnowiec levykrak" (≈ 3.1 %, "… 16 offline …", modal row "Epochs offline"), assuming the
+>    numbers of 2026-11-18. **Still open in #28:** the calculators and Stake Details still divide past
+>    rewards by today's stake (audit #9) — feed them from `pv` / `cr` and rename "APY" to "APR"; the
+>    APR sanity gate in the builder (#7 part 2); once the credits method has run for a while, delete
+>    the stake-based fallback and the clean-epoch filter from `js/apr.js`, and the audit's
+>    `apr_check.py` can be rewritten against `pv` (its "stable-stake" estimate is 0.017 % low).
 >    **Still to do in phase 2:** sanity gates on the published numbers (#7 part 2: the builders refuse
 >    to publish and open an issue when e.g. APR p90 ÷ median > 1.3 or the validator count moves > 15 %
 >    in an hour — compute the APR part with the site's clean-epoch filter, the raw ledger would trip
@@ -365,7 +370,12 @@ CNAME / .nojekyll / _headers  Pages config
   and then carried over. Cost: +4 RPC calls per hourly run (the credits), ~180 once for the first
   backfill. pv is not a constant: 5.35e-11 in epoch 446, but 5.96–6.02e-11 in 425–426, when the
   network earned fewer credits in total and the same inflation was shared over fewer points.
-  The site does not read `cr` / `pv` yet (step 2).
+  The site reads them since push 12 (`js/apr.js`, "CREDITS METHOD"): the newest 30 epochs that have
+  both a `pv` and a `cr`; commission from the ledger's `c`; an epoch with `cr` 0 counts as 0 % and is
+  shown as "N offline" on the tile and "Epochs offline" in the modal; `cr` null (before the
+  validator's first epoch) is not counted; fewer than 3 epochs → "—". 0 %-commission validators use
+  the same formula (the self-stake detour is gone for them). A ledger or an entry without the fields
+  falls back to the stake-based formula with the clean-epoch filter.
 - **Stake cooldown** (`StakeActivation`, `js/core.js`, 2026-10-29): `getStakeActivation` is gone from
   Agave 2.x / X1 4.0.x RPCs. `fetchStakeHistory(epoch)` reads the StakeHistory sysvar once per epoch
   (jsonParsed, ~60 KB: per epoch `{effective, activating, deactivating}` cluster lamports, newest = the
@@ -2011,3 +2021,29 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   the terminal and delegation snapshot builders could only be started, not completed — api.x1.xyz
   and the Foundation's delegation API are not reachable from the cloud sandbox today (they were on
   10-29) — so their first real Node 22 run is the next hourly snapshot run on GitHub.
+- Push 11 pushed by Shaka as `3a7e8c89`; CI green. The 19:03 UTC runs of the scores and
+  terminal-snapshot bots — their first on Node 22 with the pinned actions — succeeded and published
+  (scores 19:04:00, terminal and delegation 19:03:09). The same run built the first ledger with `pv`
+  and `cr`: 36 point values, none null, the newest identical to my own run; `cr` on all 384
+  validators; 198 RPC calls, as measured beforehand.
+- **Push 12 — #28 step 2, the site computes APR from credits.** Before shipping, the comparison
+  promised to Shaka, on the ledger built from mainnet (336 validators with ≥ 1,000 XNT):
+  - Credits method vs the interim numbers, validators with no offline epoch (293): median +0.05 pts,
+    90 % between −0.02 and +0.07. The interim numbers ran slightly low; for Shaka_Vibes_1 the
+    per-epoch ratio is −0.017 % whenever the stake was steady and jumps by a few % at every stake
+    move, and the stake implied by reward ÷ (pv × cr) for epoch 446 is exactly the stake recorded in
+    the 445 cell — `st` is the next epoch's stake, confirmed to the XNT.
+  - The 12 X1 Labs validators (0 % commission) showed "—" and now show 7.50 %.
+  - The 0 % rule lowers 30 validators and gives one (30 of 30 epochs offline) 0.00 % instead of "—".
+    Largest by stake: sosnowiec levykrak 6.65 → 3.11 (16 offline epochs), iBand_Africa_4 6.66 →
+    5.40 (6), Bernard 6.75 → 6.30 (2), X1-WAKANDA 6.45 → 6.00 (2), X1 prime validator 6.37 → 5.93
+    (2), WiznaPL and Camerone 6.75 → 6.52 (1 each). 19 drop by more than 1 pt, 8 of them delinquent
+    that day. Shaka chose "count as 0 %" with this list shown (he was told that some offline epochs
+    fall in stretches when the validator had almost no stake).
+  - New site code vs an independent Python calculation: identical for all 336 (max difference
+    0.000000 pts). `apr-test.js` (46 checks) computes its expectation with whichever method the
+    served ledger supports and adds synthetic credits validators: full credits, three offline
+    epochs, first epoch five epochs ago, 0 % commission, two epochs only, a recorded stake of 1 XNT
+    in every cell (changes nothing), an epoch without a published rate. All 17 suites pass against
+    the published ledger of 19:03 UTC and against a pre-credits ledger.
+  Not live-verified at the time of writing.

@@ -76,7 +76,23 @@ function cleanRows(e, n, ref, fbStake, fbComm) {   // newest-first net rates of 
 }
 const aprOf = (rows) => rows.reduce((a, b) => a + b, 0) / rows.length * EPY * 100;
 const ref0 = refRates(ledger.validators);
-const subj30 = cleanRows(ledger.validators[VOTE], 30, ref0, STAKE_XNT, 10), subj7 = cleanRows(ledger.validators[VOTE], 7, ref0, STAKE_XNT, 10);
+// ── Credits method, second implementation (rule: js/apr.js "CREDITS METHOD"): pv[E] × cr[E] × (1 − c) ──
+// Used by the page whenever the ledger has `pv` and the validator has `cr`; an epoch with 0 credits counts as 0 %.
+function creditRows(e, n, pv, fbComm) {
+  const rows = []; let offline = 0;
+  for (let i = NE - 1; i >= 0 && rows.length < n; i--) {
+    if (pv[i] == null || e.cr[i] == null) continue;
+    const c = (e.c && e.c[i] != null) ? e.c[i] : fbComm;
+    if (c == null || c >= 100) continue;
+    if (e.cr[i] === 0) offline++;
+    rows.push(pv[i] * e.cr[i] * (1 - c / 100));
+  }
+  return { rows, dropped: 0, offline };
+}
+// The served ledger carries pv / cr from the first hourly run after 2026-11-18; this test passes with either kind.
+const SERVED_HAS_CREDITS = Array.isArray(ledger.pv) && Array.isArray(ledger.validators[VOTE].cr);
+const expectFor = (n) => SERVED_HAS_CREDITS ? creditRows(ledger.validators[VOTE], n, ledger.pv, 10) : cleanRows(ledger.validators[VOTE], n, ref0, STAKE_XNT, 10);
+const subj30 = expectFor(30), subj7 = expectFor(7);
 const mk = (vote, name, stakeXnt, commission, extra) => Object.assign({ voteAccount: vote, nodePubkey: 'node-' + name, name, commission, activatedStake: stakeXnt, rewardsBalance: 1, isDelinquent: false, version: '4.0.3', performanceScore: 97.5, skipRate: 0, epochCredits: 1, epochCreditsHistory: [], iconUrl: '' }, extra || {});
 const V_100 = 'Vote11111111111111111111111111111111111111', V_0 = 'Vote00000000000000000000000000000000000000', V_NEW = 'VoteNewNewNewNewNewNewNewNewNewNewNewNewNew';
 
@@ -140,7 +156,8 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   const net = await page.evaluate(() => window.aprNetwork());
   check(net && net.n > 100 && net.median > 3 && net.median < 20 && net.p90 >= net.median, 'network median/p90 plausible', net);
   check(modal.rows.some(r => /Epochs per year\s*39\d/.test(r)) && modal.rows.some(r => /On 10,000 XNT delegated\s*≈ \d/.test(r)), 'rows: epochs per year ~397 and the 10,000 XNT example', modal.rows);
-  check(/reward ÷ 10%/.test(modal.foot) && ((/recorded with each epoch/.test(modal.foot) && /left out/.test(modal.foot)) || /today's active stake/.test(modal.foot)), 'footnote explains the method, the recorded stake and that unfit epochs are left out', modal.foot);
+  if (SERVED_HAS_CREDITS) check(/network rate per credit × the vote credits it earned/.test(modal.foot) && /× \(1 − 10%\)/.test(modal.foot) && modal.rows.some(r => /^Vote credits, epoch \d+\s*[\d,]+ \([\d.]+% of the maximum\)/.test(r)), 'credits method: the footnote explains it and the rows show the epoch\'s vote credits', { foot: modal.foot, rows: modal.rows });
+  else check(/reward ÷ 10%/.test(modal.foot) && ((/recorded with each epoch/.test(modal.foot) && /left out/.test(modal.foot)) || /today's active stake/.test(modal.foot)), 'footnote explains the method, the recorded stake and that unfit epochs are left out', modal.foot);
   check(subj30.dropped === 0 ? !modal.rows.some(r => /Epochs left out/.test(r)) : modal.rows.some(r => new RegExp('Epochs left out\\s*' + subj30.dropped + '\\b').test(r)), 'modal ' + (subj30.dropped ? 'lists ' + subj30.dropped + ' epoch(s) left out' : 'has no "left out" row for a clean validator'), modal.rows);
   // close paths
   await page.click('#aprModal .modal-close'); await page.waitForTimeout(100);
@@ -241,6 +258,45 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   const ceiling = RATE_MAX * Math.max(...ref1.filter(x => x != null)) * EPY * 100;
   check(whole.n > 100 && whole.max <= ceiling, `served ledger: ${whole.n} validators, highest APR ${whole.max.toFixed(2)}% ≤ ${ceiling.toFixed(2)}% (1.25 × the network rate)`, whole);
   check(whole.net && whole.net.p90 <= 1.3 * whole.net.median, `network bars: top 10% ${whole.net && whole.net.p90.toFixed(2)}% within 1.3 × median ${whole.net && whole.net.median.toFixed(2)}%`, whole.net);
+
+  // ── Credits method (audit #28): synthetic validators with `cr`, on the ledger's own (or an injected) `pv` ──
+  const PVS = await page.evaluate((n) => { const doc = window.RewardsLedger.doc; if (!Array.isArray(doc.pv)) doc.pv = Array.from({ length: n }, (_, i) => 5.3e-11 + i * 1e-14); return doc.pv.slice(); }, NE);
+  const pvGap = PVS.slice(); pvGap[last - 1] = null;            // used at the end: an epoch without a published rate
+  const CY = { full: 'VoteCRFULLxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', off: 'VoteCRoFFxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', fresh: 'VoteCRNEWxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+               free: 'VoteCRFREExxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', two: 'VoteCRTWoxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', wrongSt: 'VoteCRSTxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' };
+  const crEntry = (cr, c, st) => ({ w: null, self: [], v: new Array(NE).fill(123456789), st: st || steady.slice(), c: new Array(NE).fill(c), cr });
+  const fullCr = Array.from({ length: NE }, (_, i) => 3400000 + i * 100);
+  const csynth = {
+    [CY.full]: crEntry(fullCr.slice(), 10),
+    [CY.off]: crEntry(fullCr.map((x, i) => (i === last - 2 || i === last - 9 || i === last - 20) ? 0 : x), 10),     // offline for three whole epochs
+    [CY.fresh]: crEntry(fullCr.map((x, i) => i < NE - 5 ? null : x), 10),                                             // first epoch on record five epochs ago
+    [CY.free]: crEntry(fullCr.slice(), 0),                                                                           // 0 % commission
+    [CY.two]: crEntry(fullCr.map((x, i) => i < NE - 2 ? null : x), 10),                                               // two epochs only
+    [CY.wrongSt]: crEntry(fullCr.slice(), 10, new Array(NE).fill(1)),                                                // recorded stake of 1 XNT in every cell: must not matter
+  };
+  await page.evaluate((entries) => { Object.assign(window.RewardsLedger.doc.validators, entries); }, csynth);
+  const corder = ['full', 'off', 'fresh', 'free', 'two', 'wrongSt'];
+  await page.evaluate((cards) => { document.getElementById('validatorResults').innerHTML = cards.map(c => renderValidatorCard(c, true, false)).join(''); }, corder.map(k => mk(CY[k], 'Credits-' + k, S, k === 'free' ? 0 : 10)));
+  await page.waitForTimeout(800);
+  const cy = await page.evaluate((votes) => votes.map(v => {
+    const t = document.querySelector('.apr-section[data-vote="' + v + '"]'), a = window.aprFor(v);
+    return { value: t.querySelector('.stat-value').textContent, sub: (t.querySelector('.stat-subtext') || {}).textContent, epochs: a.long && a.long.epochs, offline: a.long && a.long.offline, method: a.long && a.long.method, gross: a.long && a.long.grossApr, net: a.long && a.long.netApr };
+  }), corder.map(k => CY[k]));
+  const cg = Object.fromEntries(corder.map((k, i) => [k, cy[i]]));
+  const cw = Object.fromEntries(corder.map(k => [k, creditRows(csynth[CY[k]], 30, PVS, 10)]));
+  const cmatch = (k) => Math.abs(parseFloat(cg[k].value) - aprOf(cw[k].rows)) < 0.006 && cg[k].epochs === cw[k].rows.length && cg[k].method === 'credits';
+  const fullApr = aprOf(cw.full.rows);
+  check(cmatch('full') && cg.full.sub === '30 ep · net of 10% fee', `credits: full credits → ${cg.full.value} = rate × credits × 0.9, "30 ep · net of 10% fee"`, { got: cg.full, want: fullApr });
+  check(cmatch('off') && cg.off.offline === 3 && cg.off.sub === '30 ep · 3 offline · net of 10% fee' && parseFloat(cg.off.value) < fullApr * 0.92, `credits: three offline epochs count as 0% → ${cg.off.value}, "30 ep · 3 offline · net of 10% fee"`, { got: cg.off, want: aprOf(cw.off.rows) });
+  check(cmatch('fresh') && cg.fresh.epochs === 5 && cg.fresh.offline === 0, `credits: epochs before the validator's first one are not counted (5 epochs, ${cg.fresh.value})`, cg.fresh);
+  check(cmatch('free') && /no fee$/.test(cg.free.sub) && Math.abs(cg.free.net - cg.free.gross) < 1e-9 && parseFloat(cg.free.value) > fullApr, `credits: 0% commission → ${cg.free.value}, net = gross, "no fee"`, cg.free);
+  check(cg.two.value === '—', 'credits: two epochs only → —', cg.two);
+  check(cmatch('wrongSt') && Math.abs(parseFloat(cg.wrongSt.value) - fullApr) < 0.006, `credits: a recorded stake of 1 XNT in every cell changes nothing (${cg.wrongSt.value})`, cg.wrongSt);
+  const mOff = await modalText(CY.off), mFull = await modalText(CY.full);
+  check(mOff.rows.some(r => /^Epochs offline\s*3 of 30/.test(r)) && /counts as 0%/.test(mOff.body) && !mFull.rows.some(r => /Epochs offline/.test(r)) && !mFull.rows.some(r => /Active stake|Vote-account reward/.test(r)),
+    'credits modal: "Epochs offline 3 of 30" + the 0% sentence only for the validator that was offline; no stake / reward rows', { off: mOff.rows, full: mFull.rows });
+  const gap = await page.evaluate(({ v, pv }) => { const doc = window.RewardsLedger.doc, keep = doc.pv; doc.pv = pv; const a = window.aprFor(v); doc.pv = keep; return { epochs: a.long.epochs, last: a.long.last, first: a.long.first }; }, { v: CY.full, pv: pvGap });
+  check(gap.epochs === 30 && gap.first === ledger.epochs[NE - 31], 'credits: an epoch without a published rate is skipped and the window reaches one epoch further back', gap);
 
   // Phone: modal hero stacks
   await page.setViewportSize({ width: 375, height: 812 });

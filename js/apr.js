@@ -11,14 +11,24 @@
     // 0 % commission validators fall back to the reward observed on their own
     // self-stake accounts (`s` ÷ self-stake from the Delegation Program
     // snapshot). Validators at 100 % commission pay delegators nothing.
-    // Since 2026-11-18 an epoch is only used when its reward, stake and
-    // commission fit each other — see "Clean-epoch filter" below.
+    // CREDITS METHOD (2026-11-18, audit #28): when the ledger carries `pv` (the
+    // network's reward per staked lamport per vote credit, per epoch) and the
+    // validator's `cr` (vote credits earned per epoch), the yield needs no stake
+    // and no reward at all:  pv[E] × cr[E] × (1 − commission). Every staked XNT
+    // earns the same per vote credit, so this is exact, also for 0 %-commission
+    // validators. The stake-based formula above, with its clean-epoch filter,
+    // remains only for a ledger (or a validator entry) without those fields.
     // Globals used: Actions, escHtml, formatNumber, RewardsLedger, allValidators,
     // currentSlotsInEpoch, epochsPerYear, measuredSlotMs, ensureMeasuredSlotMs,
     // delegEvaluate, delegLoad.
     // ═══════════════════════════════════════════════════════════════════════
     (function () {
       const LONG = 30, SHORT = 7, MIN_EPOCHS = 3;
+      // An epoch in which the validator earned no vote credits at all (offline the whole epoch)
+      // paid its delegators nothing, and counts as 0 %. Decision 2026-11-18; set to false to
+      // leave such epochs out instead.
+      const COUNT_OFFLINE_EPOCHS = true;
+      const MAX_CREDITS_PER_EPOCH = 16;              // × slots in the epoch (timely vote credits)
       const MIN_NETWORK_STAKE_XNT = 1000;            // ignore dust validators in the network comparison
       const FALLBACK_SLOTS = 216000;
       const esc = (s) => escHtml(String(s == null ? '' : s));
@@ -102,6 +112,25 @@
         return ref;
       }
 
+      // Credits method: pv[E] × cr[E] × (1 − commission) for the newest `n` epochs that have
+      // both numbers. `offline` = epochs with 0 credits among them (counted as 0 % or left out,
+      // see COUNT_OFFLINE_EPOCHS).
+      function ratesFromCredits(doc, e, n, fallback) {
+        const out = [];
+        let offline = 0;
+        for (let i = doc.epochs.length - 1; i >= 0 && out.length < n; i--) {
+          const pv = doc.pv[i], cr = e.cr[i];
+          if (pv == null || cr == null) continue;           // no rate published / before the validator's first epoch
+          const c = (e.c && e.c[i] != null) ? Number(e.c[i]) : (fallback && fallback.commission != null ? Number(fallback.commission) : null);
+          if (c == null || c >= 100) continue;              // 100 %: nothing reaches delegators — handled by the callers
+          if (cr === 0) { if (!COUNT_OFFLINE_EPOCHS) continue; offline++; }
+          const gross = pv * cr;
+          out.push({ epoch: doc.epochs[i], net: gross * (1 - c / 100), gross, v: e.v ? e.v[i] : null, c, cr,
+                     stXnt: (e.st && e.st[i] != null) ? Number(e.st[i]) : (fallback ? fallback.stakeXnt : null) });
+        }
+        return { rows: out, method: 'credits', dropped: 0, offline };
+      }
+
       // rates per epoch for the newest `n` usable epochs of one validator.
       // fallback = { stakeXnt, commission } used for cells without st / c.
       // `dropped` = epochs left out by the clean-epoch filter on the way.
@@ -109,6 +138,7 @@
         const doc = window.RewardsLedger && window.RewardsLedger.doc;
         const e = doc && doc.validators && doc.validators[vote];
         if (!doc || !e || !Array.isArray(e.v)) return null;
+        if (Array.isArray(doc.pv) && Array.isArray(e.cr)) return ratesFromCredits(doc, e, n, fallback);
         const ref = referenceRates();
         const out = [];
         let method = 'commission', dropped = 0;
@@ -151,6 +181,7 @@
         const avg = (k) => { const xs = r.rows.map(x => x[k]).filter(x => x != null); return xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null; };
         const net = avg('net'), gross = avg('gross');
         return { netApr: net * k * 100, grossApr: gross == null ? null : gross * k * 100, netPerEpoch: net * 100, epochs: r.rows.length, dropped: r.dropped || 0,
+                 offline: r.offline || 0, lastCredits: r.rows[0].cr == null ? null : r.rows[0].cr,
                  first: r.rows[r.rows.length - 1].epoch, last: r.rows[0].epoch, method: r.method, commission: r.rows[0].c, stakeXnt: r.rows[0].stXnt, lastV: r.rows[0].v };
       }
       function aprFor(vote, fallback) {
@@ -176,7 +207,8 @@
           const stake = cur ? cur.stakeXnt : Math.max(...e.st.filter(x => x != null));
           if (!(stake >= MIN_NETWORK_STAKE_XNT)) continue;
           const c = cur ? cur.commission : (e.c || []).find(x => x != null);
-          if (!(c > 0) || c >= 100) continue;             // same method for everyone in the comparison
+          const viaCredits = Array.isArray(doc.pv) && Array.isArray(e.cr);
+          if (!(c >= 0) || c >= 100 || (!viaCredits && !(c > 0))) continue;   // one method for everyone in the comparison
           const r = summarise(rates(vote, LONG, { stakeXnt: stake, commission: c }));
           if (r && isFinite(r.netApr) && r.netApr >= 0 && r.netApr < 100) xs.push(r.netApr);
         }
@@ -220,8 +252,8 @@
           const t = '<span class="stat-change apr-trend ' + (up ? 'up' : 'down') + '" title="Last ' + a.short.epochs + ' epochs">' + SHORT + 'd ' + num(a.short.netApr, 2) + '%</span>';
           if (trendEl) trendEl.outerHTML = t; else valueEl.insertAdjacentHTML('afterend', t);
         } else if (trendEl) trendEl.remove();
-        const fee = main.method === 'self' ? 'own-stake yield' : ('net of ' + num(main.commission, 0) + '% fee');
-        sub(main.epochs + ' ep · ' + fee);
+        const fee = main.method === 'self' ? 'own-stake yield' : (main.commission > 0 ? 'net of ' + num(main.commission, 0) + '% fee' : 'no fee');
+        sub(main.epochs + ' ep · ' + (main.offline ? main.offline + ' offline · ' : '') + fee);
       }
       function hydrateAll(root) { (root || document).querySelectorAll('.apr-section').forEach(renderTile); }
 
@@ -252,31 +284,38 @@
         const perTenK = L.netApr / 100 * 10000;
         const barW = (x, max) => Math.max(2, Math.min(100, (x / max) * 100)).toFixed(0) + '%';
         const maxBar = Math.max(L.netApr, net ? net.p90 : 0, S ? S.netApr : 0) * 1.1 || 1;
-        const method = L.method === 'self'
+        const viaCredits = L.method === 'credits';
+        const slotsNow = (typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS;
+        const method = viaCredits
+          ? 'Every staked XNT on the network earns the same reward per vote credit. This validator\'s yield in an epoch is that <b>network rate per credit × the vote credits it earned</b>' + (L.commission > 0 ? ' <b>× (1 − ' + esc(num(L.commission, 0)) + '%)</b> commission' : '') + ', averaged over the epochs above. The rate is read each epoch from the rewards actually paid to stake accounts.' + (L.offline ? ' An epoch with no vote credits at all paid delegators nothing and counts as 0%.' : '')
+          : L.method === 'self'
           ? 'This validator charges 0% commission, so its vote account receives no reward to work from. The figure is the yield observed on its own self-stake accounts (' + esc(num(selfStakeXnt(vote) || 0, 0)) + ' XNT), which earn exactly what a delegator would.'
           : 'The vote account\'s inflation reward is the validator\'s commission slice, so <b>reward ÷ ' + esc(num(L.commission, 0)) + '%</b> recovers the total paid on all stake delegated to it that epoch; <b>× (1 − ' + esc(num(L.commission, 0)) + '%)</b> is the delegators\' share and <b>÷ active stake</b> the per-epoch yield.';
-        const stakeNote = (doc.validators[vote] && doc.validators[vote].st && doc.validators[vote].st.some(x => x != null))
+        const stakeNote = viaCredits ? '' : (doc.validators[vote] && doc.validators[vote].st && doc.validators[vote].st.some(x => x != null))
           ? 'Stake and commission are the values recorded with each epoch; an epoch is left out when its recorded stake does not fit the reward (the stake changed around it).' :'Per-epoch stake is not in the ledger yet for these epochs, so today\'s active stake (' + esc(num(L.stakeXnt, 0)) + ' XNT) is used — if stake was added recently the APR is understated; the ' + SHORT + '-epoch figure is the safer read.';
         body.innerHTML =
           '<div class="apm-hero">' +
             '<div><label>Net APR · ' + L.epochs + ' epochs</label><b>' + pct(L.netApr) + '</b><span>what a delegator earns</span></div>' +
             '<div><label>Net APR · ' + (S ? S.epochs : SHORT) + ' epochs</label><b>' + (S ? pct(S.netApr) : '—') + '</b><span>recent trend</span></div>' +
-            '<div><label>Gross yield</label><b class="dim">' + pct(L.grossApr) + '</b><span>' + (L.method === 'self' ? 'no commission' : 'before the ' + esc(num(L.commission, 0)) + '% commission') + '</span></div>' +
+            '<div><label>Gross yield</label><b class="dim">' + pct(L.grossApr) + '</b><span>' + (L.method === 'self' || !(L.commission > 0) ? 'no commission' : 'before the ' + esc(num(L.commission, 0)) + '% commission') + '</span></div>' +
           '</div>' +
           (net && net.n >= 10 ? '<div class="apm-bars"><label>vs network · net APR · ' + net.n + ' validators with ≥ ' + num(MIN_NETWORK_STAKE_XNT, 0) + ' XNT</label>' +
             '<div class="apm-bar"><span>this</span><i style="width:' + barW(L.netApr, maxBar) + '"></i><em>' + pct(L.netApr) + '</em></div>' +
             '<div class="apm-bar"><span>median</span><i class="net" style="width:' + barW(net.median, maxBar) + '"></i><em>' + pct(net.median) + '</em></div>' +
             '<div class="apm-bar"><span>top 10%</span><i class="net" style="width:' + barW(net.p90, maxBar) + '"></i><em>' + pct(net.p90) + '</em></div></div>' : '') +
           '<div class="apm-rows">' +
-            '<div class="apm-row"><span>Epochs used</span><b>' + esc(L.first) + ' → ' + esc(L.last) + ' (' + L.epochs + ' with rewards)</b></div>' +
+            '<div class="apm-row"><span>Epochs used</span><b>' + esc(L.first) + ' → ' + esc(L.last) + ' (' + L.epochs + (viaCredits ? ')' : ' with rewards)') + '</b></div>' +
             (L.dropped ? '<div class="apm-row"><span>Epochs left out</span><b>' + esc(L.dropped) + ' <small>(stake changed · recorded stake does not fit the reward)</small></b></div>' : '') +
-            '<div class="apm-row"><span>Active stake' + (L.method === 'self' ? '' : ' the reward was earned on') + '</span><b>' + esc(num(L.stakeXnt, 0)) + ' XNT</b></div>' +
-            (L.method === 'self' ? '' : '<div class="apm-row"><span>Vote-account reward, epoch ' + esc(L.last) + ' (commission income)</span><b>' + esc(num(L.lastV / 1e9, 2)) + ' XNT</b></div>') +
+            (viaCredits
+              ? (L.offline ? '<div class="apm-row"><span>Epochs offline</span><b>' + esc(L.offline) + ' of ' + L.epochs + ' <small>(no vote credits · counted as 0%)</small></b></div>' : '') +
+                '<div class="apm-row"><span>Vote credits, epoch ' + esc(L.last) + '</span><b>' + esc(num(L.lastCredits, 0)) + ' <small>(' + esc(num(L.lastCredits / (slotsNow * MAX_CREDITS_PER_EPOCH) * 100, 1)) + '% of the maximum)</small></b></div>'
+              : '<div class="apm-row"><span>Active stake' + (L.method === 'self' ? '' : ' the reward was earned on') + '</span><b>' + esc(num(L.stakeXnt, 0)) + ' XNT</b></div>' +
+                (L.method === 'self' ? '' : '<div class="apm-row"><span>Vote-account reward, epoch ' + esc(L.last) + ' (commission income)</span><b>' + esc(num(L.lastV / 1e9, 2)) + ' XNT</b></div>')) +
             '<div class="apm-row"><span>Average yield per epoch</span><b>' + pct(L.netPerEpoch, 4) + '</b></div>' +
             '<div class="apm-row"><span>Epochs per year</span><b>' + esc(num(k, 0)) + ' <small>(' + esc(num((typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS, 0)) + ' slots × ' + esc(num(measuredSlotMs(), 0)) + ' ms ≈ ' + esc(num(((typeof currentSlotsInEpoch !== 'undefined' && currentSlotsInEpoch) || FALLBACK_SLOTS) * measuredSlotMs() / 3600000, 1)) + ' h)</small></b></div>' +
             '<div class="apm-row"><span>On 10,000 XNT delegated</span><b>≈ ' + esc(num(perTenK, 0)) + ' XNT / year</b></div>' +
           '</div>' +
-          '<div class="dm-foot">' + method + ' ' + stakeNote + ' Source: <code>data/rewards.json</code>, rebuilt hourly from on-chain inflation rewards. Estimates from past epochs; future rewards depend on inflation (currently ~' + esc(num(6.4, 1)) + '% to validators and falling), vote credits and stake.</div>';
+          '<div class="dm-foot">' + method + ' ' + stakeNote + ' Source: <code>data/rewards.json</code>, rebuilt hourly from on-chain ' + (viaCredits ? 'vote credits and ' : '') + 'inflation rewards. Estimates from past epochs; future rewards depend on inflation (currently ~' + esc(num(6.4, 1)) + '% to validators and falling), vote credits and stake.</div>';
       }
 
       // ── Wiring ────────────────────────────────────────────────────
