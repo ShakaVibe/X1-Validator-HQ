@@ -54,14 +54,23 @@
 >    **Data check before publishing (#7 part 2), push 14:** `scripts/check-published-data.js` runs in
 >    the scores and terminal-snapshot workflows between build and commit (§4 "Data check"). A file
 >    that fails is not published, the others are; the run fails and opens the usual issue with the
->    reasons. **First thing next session:** the runs after push 14 are green and still commit every
->    hour (their step "Check the new data" prints "nothing held back"); if a rule cries wolf, set
->    the repository variable `DATA_GATE_OFF` to the rule id (or `all`) — no code change needed —
->    and fix the limit in the script afterwards.
+>    reasons. The first runs with it (20:03 UTC, 2026-11-18) passed and published all four
+>    files. If a rule ever cries wolf, set the repository variable `DATA_GATE_OFF` to the rule id
+>    (or `all`) — no code change needed — and fix the limit in the script afterwards.
 >    **Still to do in phase 2:** the stale-scores banner (#10; Shaka: optional, the data watch came
 >    first). The geo bot (`validator-locations.json`) has no data check yet.
->    Then the **credits-based yield engine (#28)**, which replaces the interim APR guard. **Ask Shaka before building #28** (open decision: should fully delinquent epochs
->    count as 0 %? Today they are skipped). Decisions Shaka can still reverse from session 18: the
+>    **Phase 3 ("weeks 2–4") has started. #12 RPC outage, push 15:** there is no second public X1
+>    RPC (the X1 docs list only `rpc.mainnet.x1.xyz`; 314 of 366 gossip nodes advertise an RPC
+>    port, but as plain http, which a browser refuses on an https page), so a real failover is not
+>    possible today. Shaka chose "snapshot mode" instead (2026-11-18, question dialog): when the
+>    RPC does not answer, the site builds its validator list from the hourly files and says so in
+>    a banner (§4 "Snapshot mode"). **First thing next session:** with the RPC up, the live site
+>    shows no banner and cards carry live balances; an outage cannot be produced on the live
+>    site without touching the network, so the outage itself is covered by the offline suite only. **Open in #12:** the
+>    bots still have one endpoint (they fail, the issue opens, the data watch reports stale files);
+>    the card's "next leader slot" band stays on "…" in snapshot mode. **Next in the audit's
+>    order:** #6/#25 host the third-party scripts ourselves, #18 rent helper.
+>    Decisions Shaka can still reverse from session 18: the
 >    site refuses program-derived addresses (multisig vaults) as a withdraw authority (CLI only), and
 >    the vote account's withdraw-authority change got the same confirmation as the stake one.
 > B. **Privacy follow-up (since 2026-09-25):** a GitHub Support ticket asking for a GC of the dangling
@@ -261,7 +270,8 @@ scripts/test-alerts-bot.js    mock tests for the bot (`node scripts/test-alerts-
 scripts/check-published-data.js  data check between build and commit in the hourly workflows — see §4 "Data check"
 scripts/test-check-published-data.js  its tests (`node scripts/test-check-published-data.js`)
 scripts/c2-tests/             offline Playwright suites (C2 dispatcher, strict CSP walk, alerts modal, fleet, apr, credits, identity, price pill,
-                              stake activation + vote withdraw, slot time, authority change, frame guard, start-up order) — README there
+                              stake activation + vote withdraw, slot time, authority change, frame guard, start-up order, base rate,
+                              RPC outage) — README there
 scripts/c2-tests/run-all.js   ONE command for all of them (what CI runs); expected/*.txt = stored output of the five print-only suites
 .github/workflows/ci.yml      CI on every human push: node --check, the three node suites, run-all.js (bot commits carry [skip ci])
 data/alerts-state.enc         bot subscriptions + last-seen state, AES-256-GCM (key = ALERTS_STATE_KEY secret)
@@ -425,6 +435,30 @@ CNAME / .nojekyll / _headers  Pages config
   `state.meta.fresh`, so a loop restart does not repeat it. `/stats` shows the ages; `/id` (unlisted)
   answers any chat with its own id — that number is what goes into `TELEGRAM_CHAT_ID`. Limit: the
   watch runs inside Actions like the bots; if Actions as a whole stops, so does the watch.
+- **Snapshot mode — what the site does when the RPC does not answer** (`js/core.js`, block "RPC
+  OUTAGE → SNAPSHOT MODE", 2026-11-18, audit #12; test `scripts/c2-tests/rpc-outage-test.js`).
+  Before: `loadNetworkStats()` logged the error and `allValidators` stayed empty — Lookup said
+  "Validator data is still loading" for ever, My Data Center and the leaderboards were blank, no
+  explanation. Now `window.rpcOutage` = `{ mode, slow, snapshotAt, epoch, liveAt, since }`:
+  - `mode: 'snapshot'` — no live list yet and the load failed, or (`slow: true`) nothing has
+    answered for 12 s: `allValidators` is built from `data/terminal.json` (dust accounts left out
+    like on the live path; entries carry `fromSnapshot: true`; per-epoch credits from the rewards
+    ledger with an empty entry for the epoch in progress, because the rest of the site reads the
+    last entry as "current"). `getValidatorInfo()` then makes no RPC call: rewards balance → "—"
+    "needs the live RPC"; lifetime credits and the 7-epoch skip rate from `data/scores.json`;
+    "Earned last epoch" and the APR from the ledger (`fetchTotalValidatorRewards` takes the epoch
+    from the ledger and sends nothing to the RPC); no credit-pace badge. Scores are the published
+    ones as always. The leaderboards skip their live skip-rate crawl.
+  - `mode: 'live-kept'` — a refresh failed but a live list exists: it stays (newer than the
+    snapshot), the banner says how old it is.
+  - `mode: 'none'` — no usable snapshot (missing, older than 7 days, fewer than 50 validators):
+    the banner says validator data is unavailable.
+  The banner (`#rpcOutageBanner`, first element in `<body>`, sticky, z-index 50 = below every modal
+  overlay) is hidden while the RPC answers. `loadNetworkStats()` is retried every 45 s while the tab
+  is visible; the first success clears the state. After snapshot mode the banner turns green and
+  offers "Reload" (cards on screen were drawn from the snapshot); after 'live-kept' it just goes.
+  Not covered: wallet actions and everything on a card that loads later from the RPC (stake
+  details, leader band, TPS) show their own loading / error state; the bots.
 - **Data check before publishing** (`scripts/check-published-data.js`, 2026-11-18, audit #7 part 2;
   tests `node scripts/test-check-published-data.js`, 66 cases). Step "Check the new data" in
   `update-scores.yml` (`scores`) and `update-terminal-snapshot.yml` (`terminal delegation rewards`),
@@ -2133,4 +2167,29 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   (every rule with the fault meant for it and a nearby case that must pass, waiving, the switch,
   and the command in a throw-away git repository: bad file put back, good file kept, history.json
   with scores.json, never-published file removed, exit codes).
-  Not verified on GitHub at the time of writing: the first real runs.
+  Verified on GitHub after the push (`d36cd6d3`, CI green): the first runs with the check, 20:03
+  UTC on 2026-11-18 — scores and terminal-snapshot both "Check the new data: success", "Fail the
+  run …: skipped", and all four files were published (generatedAt 20:03–20:04). That was also the
+  first check of freshly built `terminal.json` and `delegation.json`.
+- **Push 15 — #12, snapshot mode for RPC outages** (§4 "Snapshot mode" has the design).
+  - Looked for a second endpoint first: the X1 docs (build-on-x1/resources) list one mainnet RPC;
+    web searches found no third-party provider; `getClusterNodes` shows 314 of 366 nodes with an
+    RPC address, all `ip:8899` over plain http (not usable from an https page, and other people's
+    validators are not ours to lean on). Whether those ports answer could not be tested from the
+    work environments (blocked by their network allow-lists).
+  - Measured the outage before changing anything (Playwright, RPC aborted, data files served): 51
+    RPC attempts, stats bar half filled from `scores.json`, `allValidators` 0, Lookup "still
+    loading", Data Center and leaderboards empty, no message.
+  - After: banner, 350 validators (the snapshot's 384 minus 34 dust accounts — the same count the
+    live site shows), Lookup / Data Center / leaderboards work; card tiles for Shaka_Vibes_1:
+    balance "—", earned last epoch 41.77 XNT (#446), APR 6.75 %, lifetime credits 1.49B, skip
+    rate 0.00 % (3-epoch), score 98.30.
+  - Two mistakes caught by the existing suites on the way: the banner first had z-index 900 and
+    swallowed backdrop clicks of the overlays that sit at 100–200 (alerts, authority, APR modals) →
+    now 50; and a snapshot epoch returned from `getEpochInfoCached()` changed the stake-activation
+    test's result → the snapshot epoch is now used only inside `fetchTotalValidatorRewards`.
+  - `rpc-outage-test.js` (37 checks, sections run side by side, ~95 s because it waits for the real
+    45 s retry timer and the 12 s "slow" limit): RPC down from the start, recovery by the site's own
+    timer + Reload, a later refresh failing, no usable snapshot (missing / 8 days old / 20
+    validators), a hanging RPC, RPC fine. 19 of 19 suites, CSP walk 0 violations.
+  Not live-verified at the time of writing.

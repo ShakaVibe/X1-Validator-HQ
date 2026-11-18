@@ -129,6 +129,12 @@
   <link rel="stylesheet" href="css/site.css">
 </head>
 <body>
+  <!-- RPC outage / snapshot mode (js/core.js "RPC OUTAGE"): hidden unless the X1 RPC is not answering -->
+  <div class="rpc-outage-banner" id="rpcOutageBanner" role="status" aria-live="polite" hidden>
+    <span class="rpc-outage-dot" aria-hidden="true"></span>
+    <span class="rpc-outage-text" id="rpcOutageText"></span>
+    <button type="button" class="rpc-outage-btn" id="rpcOutageReload" data-action="rpc-outage-reload" hidden>Reload</button>
+  </div>
   <!-- Disclaimer Modal - Must accept before using app -->
   <div class="disclaimer-modal-overlay" id="disclaimerModal">
     <div class="disclaimer-modal">

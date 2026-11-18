@@ -794,6 +794,50 @@
       margin-top: 0.25rem;
     }
 
+    /* RPC outage / snapshot-mode banner (js/core.js "RPC OUTAGE"). Sticks to the top of the page so it
+       is visible in every view; hidden by the [hidden] attribute while the RPC answers. */
+    .rpc-outage-banner {
+      position: sticky;
+      top: 0;
+      z-index: 50;   /* above page content (≤ 30), below every modal overlay (≥ 100) */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      background: #2a1f05;
+      border-bottom: 1px solid var(--warning);
+      color: #ffd98a;
+      font-size: 0.82rem;
+      line-height: 1.35;
+    }
+    .rpc-outage-banner[hidden] { display: none; }
+    .rpc-outage-dot {
+      flex: 0 0 auto;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--warning);
+    }
+    .rpc-outage-banner.rpc-outage-ok { background: #062216; border-bottom-color: var(--success); color: #9df5c9; }
+    .rpc-outage-banner.rpc-outage-ok .rpc-outage-dot { background: var(--success); }
+    .rpc-outage-btn {
+      flex: 0 0 auto;
+      padding: 0.2rem 0.7rem;
+      border: 1px solid currentColor;
+      border-radius: 6px;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .rpc-outage-btn[hidden] { display: none; }
+    .rpc-outage-btn:hover { background: rgba(255, 255, 255, 0.08); }
+    @media (max-width: 600px) {
+      .rpc-outage-banner { justify-content: flex-start; font-size: 0.76rem; padding: 0.45rem 0.75rem; }
+    }
+
     /* Epoch Progress Bar — flush against the network stats box above. */
     .epoch-progress {
       margin-top: 0;

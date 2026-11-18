@@ -1259,8 +1259,12 @@
       }
 
       try {
-        // Epoch info — deduped/coalesced across concurrent reward fetches
-        const epochInfo = await getEpochInfoCached();
+        // Epoch info — deduped/coalesced across concurrent reward fetches. In snapshot mode
+        // (RPC outage, see "RPC OUTAGE") it is the epoch the hourly files were built in: this
+        // function then reads the ledger only.
+        const epochInfo = (isSnapshotMode() && window.rpcOutage.epoch != null)
+          ? { epoch: window.rpcOutage.epoch, slotsInEpoch: currentSlotsInEpoch || 216000 }
+          : await getEpochInfoCached();
         currentEpochNumber = epochInfo.epoch; currentSlotsInEpoch = epochInfo.slotsInEpoch;
 
         // Start from currentEpoch - 1 to exclude the current incomplete epoch
@@ -1283,7 +1287,8 @@
         // newest epoch right after a boundary, or everything when the ledger
         // is unavailable. A cell the bot saw as un-indexed in one of the two
         // newest epochs is re-checked live too (RPC may have caught up since).
-        const missing = epochsToFetch.filter(ep => {
+        // In snapshot mode (RPC outage) nothing goes to the RPC: the ledger rows are all there is.
+        const missing = isSnapshotMode() ? [] : epochsToFetch.filter(ep => {
           const r = ledgerRows.get(ep);
           return !r || (!r.indexed && ep >= currentEpochNumber - 2);
         });
@@ -1926,8 +1931,187 @@
       return supply;
     }
 
+    // ───────────────────────────────────────────────────────────────────
+    // RPC OUTAGE → SNAPSHOT MODE (audit 2026-11-17 #12, 2026-11-18)
+    //
+    // The site has one live source, rpc.mainnet.x1.xyz (the X1 docs list no other mainnet endpoint,
+    // and validators' own RPC ports are plain http, which a browser refuses on an https page). When
+    // it did not answer, allValidators stayed empty: Lookup said "still loading" for ever, My Data
+    // Center and the leaderboards were blank, and nothing told the visitor why.
+    //
+    // Now, when loadNetworkStats() fails:
+    //   • no validator list yet  → the list is built from the hourly snapshot the site publishes
+    //     anyway (data/terminal.json: vote / identity key, name, version, commission, stake,
+    //     delinquent; per-epoch vote credits from data/rewards.json when it is loaded). Scores come
+    //     from data/scores.json as always. Fields only the RPC knows (vote-account balance, current
+    //     skip rate, icon, website, lifetime credits) are shown as "—", never as 0.
+    //   • a live list is already there (a refresh failed) → it stays; it is newer than the snapshot.
+    // Either way a banner says what the visitor is looking at, loadNetworkStats() is retried every
+    // RPC_OUTAGE_RETRY_MS, and the first success clears the state (snapshot case: the banner offers
+    // a reload, because cards already on screen were drawn from the snapshot).
+    //   window.rpcOutage = null | { since, mode: 'snapshot' | 'live-kept' | 'none', slow, snapshotAt, epoch, liveAt }
+    // The same happens when the RPC hangs: no list at all after SNAPSHOT_AFTER_MS → the snapshot,
+    // with "has not answered yet" in the banner, while the request keeps running.
+    // In snapshot mode getValidatorInfo() makes no RPC call at all.
+    // ───────────────────────────────────────────────────────────────────
+    const RPC_OUTAGE_RETRY_MS = 45 * 1000;                 // the circuit breaker pauses for 30 s
+    // The RPC can also hang instead of failing (a request times out after 20 s and is retried once):
+    // with no validator list at all after this long, the snapshot is shown for the time being.
+    const SNAPSHOT_AFTER_MS = 12 * 1000;
+    const SNAPSHOT_FALLBACK_URL = 'data/terminal.json';
+    const SNAPSHOT_FALLBACK_MAX_AGE_MS = 7 * 24 * 3600000; // older than a week: better nothing than this
+    const SNAPSHOT_MIN_VALIDATORS = 50;
+    window.rpcOutage = null;
+    let _rpcOutageTimer = null, _liveListAt = 0, _rpcRecoveredFromSnapshot = false;
+
+    function isSnapshotMode() { return !!(window.rpcOutage && window.rpcOutage.mode === 'snapshot'); }
+
+    // allValidators from the hourly snapshot. Returns { at: the snapshot's generatedAt, epoch }, or null
+    // when a live list arrived in the meantime; throws if the snapshot is unusable.
+    async function loadValidatorsFromSnapshot() {
+      const res = await fetch(`${SNAPSHOT_FALLBACK_URL}?t=${Math.floor(Date.now() / 300000)}`);
+      if (!res.ok) throw new Error('snapshot HTTP ' + res.status);
+      const doc = await res.json();
+      const at = Date.parse(doc && doc.generatedAt);
+      if (!doc || doc.version !== 1 || !Array.isArray(doc.validatorFields) || !Array.isArray(doc.validators) || !at) throw new Error('snapshot has an unexpected format');
+      if (Date.now() - at > SNAPSHOT_FALLBACK_MAX_AGE_MS) throw new Error('snapshot is older than a week');
+      const col = Object.fromEntries(doc.validatorFields.map((f, i) => [f, i]));
+      for (const f of ['votePubkey', 'nodePubkey', 'name', 'commission', 'activatedStake', 'delinquent']) if (col[f] === undefined) throw new Error('snapshot lacks ' + f);
+      // Per-epoch vote credits from the rewards ledger, in getVoteAccounts' shape
+      // [epoch, cumulative, previous cumulative]; the cumulative base is unknown, so only the
+      // differences mean anything (that is all the scoring and the credit tiles' history use).
+      let ledger = null;
+      try { ledger = (typeof RewardsLedger !== 'undefined') ? await RewardsLedger.load() : null; } catch (e) { ledger = null; }
+      const creditsFor = (vote) => {
+        const e = ledger && ledger.validators && ledger.validators[vote];
+        if (!e || !Array.isArray(e.cr)) return [];
+        const out = []; let cum = 0;
+        for (let i = 0; i < ledger.epochs.length; i++) { const c = e.cr[i]; if (c == null) continue; out.push([ledger.epochs[i], cum + c, cum]); cum += c; }
+        // The rest of the site reads the LAST entry as the epoch in progress (getVoteAccounts
+        // always has one) and skips it when it wants completed epochs: add it, with nothing earned.
+        const cur = Number(ledger.currentEpoch);
+        if (out.length && Number.isFinite(cur) && cur > out[out.length - 1][0]) out.push([cur, cum, cum]);
+        return out;
+      };
+      const list = []; let dust = 0, totalStake = 0;
+      for (const row of doc.validators) {
+        const vote = row[col.votePubkey], node = row[col.nodePubkey], stake = Number(row[col.activatedStake]), delinquent = !!row[col.delinquent];
+        if (typeof vote !== 'string' || typeof node !== 'string' || !isFinite(stake)) continue;
+        totalStake += stake;
+        if (isDustVoteAccount(stake, delinquent)) { dust++; continue; }
+        const name = row[col.name];
+        list.push({
+          votePubkey: vote, nodePubkey: node,
+          name: (typeof name === 'string' && name) ? name : node.slice(0, 16) + '...',
+          website: '', iconUrl: '',
+          activatedStake: stake, commission: row[col.commission],
+          epochCredits: creditsFor(vote), delinquent,
+          version: (col.version !== undefined && row[col.version]) || null,
+          fromSnapshot: true
+        });
+      }
+      if (list.length < SNAPSHOT_MIN_VALIDATORS) throw new Error('snapshot lists only ' + list.length + ' validators');
+      // The RPC may have answered while the files were loading: never replace a live list.
+      if (allValidators.length && !allValidators[0].fromSnapshot) return null;
+      list.sort((a, b) => b.activatedStake - a.activatedStake);
+      list.forEach((v, i) => { v.rank = i + 1; v.totalValidators = list.length; });
+      allValidators = list;
+      allValidatorsFetchedAt = Date.now();
+      window.dustVoteAccountCount = dust;
+      const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+      const delinquentCount = list.filter(v => v.delinquent).length;
+      set('totalValidators', list.length);
+      set('activeValidators', list.length - delinquentCount);
+      set('delinquentValidators', delinquentCount);
+      set('totalStake', formatCompact(lamportsToXNT(totalStake)));
+      if (typeof calculateNetworkAverageCredits === 'function') { try { calculateNetworkAverageCredits(); } catch (e) { /* scores come from scores.json anyway */ } }
+      if (typeof updatePortfolioCount === 'function') updatePortfolioCount();
+      // The epoch the files were built in, for the reward lookups (fetchTotalValidatorRewards)
+      const scoresDoc = window.canonicalScores || window.canonicalScoresDoc;
+      const epoch = [ledger && ledger.currentEpoch, scoresDoc && scoresDoc.epoch].map(Number).find(Number.isFinite);
+      return { at: doc.generatedAt, epoch: epoch === undefined ? null : epoch };
+    }
+
+    function rpcOutageAgeText(ms) {
+      const min = Math.max(0, Math.round((Date.now() - ms) / 60000));
+      if (min < 2) return 'a moment ago';
+      if (min < 90) return min + ' min ago';
+      const h = Math.round(min / 60);
+      return h < 48 ? h + ' h ago' : Math.round(h / 24) + ' days ago';
+    }
+    function renderRpcOutageBanner() {
+      const banner = document.getElementById('rpcOutageBanner'), text = document.getElementById('rpcOutageText'), btn = document.getElementById('rpcOutageReload');
+      if (!banner || !text) return;
+      const o = window.rpcOutage;
+      if (!o && !_rpcRecoveredFromSnapshot) { banner.hidden = true; document.body.classList.remove('rpc-outage'); return; }
+      banner.hidden = false;
+      document.body.classList.toggle('rpc-outage', !!o);
+      banner.classList.toggle('rpc-outage-ok', !o);
+      if (!o) {
+        text.textContent = 'The X1 RPC is answering again. Reload to replace the snapshot figures with live data.';
+        if (btn) btn.hidden = false;
+        return;
+      }
+      if (btn) btn.hidden = true;
+      if (o.mode === 'snapshot') {
+        text.textContent = (o.slow ? 'The X1 RPC has not answered yet.' : 'The X1 RPC is not answering.') + ' Showing the hourly snapshot from ' + rpcOutageAgeText(Date.parse(o.snapshotAt)) +
+          '; live figures, balances and wallet actions are unavailable. Retrying automatically.';
+      } else if (o.mode === 'live-kept') {
+        text.textContent = 'The X1 RPC is not answering. Figures are from the last successful update, ' + rpcOutageAgeText(o.liveAt) + '. Retrying automatically.';
+      } else {
+        text.textContent = 'The X1 RPC is not answering and no snapshot could be loaded, so validator data is unavailable right now. Retrying automatically.';
+      }
+    }
+    function scheduleRpcOutageRetry() {
+      if (_rpcOutageTimer) return;
+      _rpcOutageTimer = setInterval(() => {
+        if (!window.rpcOutage) { clearInterval(_rpcOutageTimer); _rpcOutageTimer = null; return; }
+        renderRpcOutageBanner();                              // keeps the "… min ago" current
+        if (!document.hidden) loadNetworkStats().catch(() => {});
+      }, RPC_OUTAGE_RETRY_MS);
+    }
+    // loadNetworkStats() failed before it had a live validator list — or (slow = true) it has
+    // had no answer for SNAPSHOT_AFTER_MS and there is no list at all.
+    async function enterRpcOutage(err, slow) {
+      const since = (window.rpcOutage && window.rpcOutage.since) || Date.now();
+      if (allValidators.length && !allValidators[0].fromSnapshot) {
+        if (slow) return;
+        window.rpcOutage = { since, mode: 'live-kept', snapshotAt: null, liveAt: _liveListAt || since };
+      } else if (allValidators.length && window.rpcOutage && window.rpcOutage.mode === 'snapshot') {
+        // already on the snapshot: keep it (a newer hourly file is picked up by a reload)
+        if (!slow) window.rpcOutage.slow = false;
+      } else {
+        let snap = null;
+        try { snap = await loadValidatorsFromSnapshot(); }
+        catch (e) { console.warn('[snapshot] fallback unavailable: ' + (e && e.message)); }
+        // the RPC may have answered a parallel call while the snapshot was loading
+        if (allValidators.length && !allValidators[0].fromSnapshot) return;
+        if (!snap && slow) return;                            // nothing to show yet; the real failure reports it
+        window.rpcOutage = snap ? { since, mode: 'snapshot', slow: !!slow, snapshotAt: snap.at, epoch: snap.epoch, liveAt: null } : { since, mode: 'none', snapshotAt: null, epoch: null, liveAt: null };
+        if (snap) {
+          if (currentEpochNumber == null && snap.epoch != null) currentEpochNumber = snap.epoch;
+          console.warn('[snapshot] RPC unreachable (' + (err && err.message) + ') — validator list from data/terminal.json, generated ' + snap.at);
+        }
+      }
+      renderRpcOutageBanner();
+      scheduleRpcOutageRetry();
+    }
+    function leaveRpcOutage() {
+      _liveListAt = Date.now();
+      if (!window.rpcOutage) return;
+      if (window.rpcOutage.mode === 'snapshot') _rpcRecoveredFromSnapshot = true;
+      window.rpcOutage = null;
+      if (_rpcOutageTimer) { clearInterval(_rpcOutageTimer); _rpcOutageTimer = null; }
+      renderRpcOutageBanner();
+    }
+    Actions.register({ 'rpc-outage-reload': () => location.reload() });
+
     // Fetch network stats and all validators
     async function loadNetworkStats() {
+      let liveListBuilt = false;
+      const slowTimer = allValidators.length ? null : setTimeout(() => {
+        if (!liveListBuilt && !allValidators.length) enterRpcOutage(new Error('no answer after ' + SNAPSHOT_AFTER_MS / 1000 + ' s'), true).catch(() => {});
+      }, SNAPSHOT_AFTER_MS);
       try {
         const [voteAccounts, epochInfo, slot, identities, clusterNodes, supply] = await Promise.all([
           rpcCall('getVoteAccounts'),
@@ -2010,6 +2194,8 @@
             version: versionMap[v.nodePubkey] || null
           };
         });
+        liveListBuilt = true;
+        leaveRpcOutage();
 
         // Version adoption (nodes + stake per version) for the tracker strip
         // and the "Update available" badge.
@@ -2041,6 +2227,10 @@
 
       } catch (err) {
         console.error('Failed to load network stats:', err);
+        // A failure after the live list was built (skip rates, …) is not an outage of the list.
+        if (!liveListBuilt) await enterRpcOutage(err);
+      } finally {
+        if (slowTimer) clearTimeout(slowTimer);
       }
     }
 
@@ -2098,7 +2288,10 @@
       // both of which are known by this point. Sequential awaits meant every
       // per-validator fetch stacked ~4 round-trips of latency. Promise.all
       // collapses them into ~1 round-trip of latency (queue-limited).
-      const [balance, extendedEpochCredits, skipRate, skipRateHistory] = await Promise.all([
+      // Snapshot mode (RPC outage): no RPC call at all; what only the RPC knows stays null and the
+      // card shows "—" for it.
+      const snapshot = isSnapshotMode() && validator.fromSnapshot === true;
+      const [balance, extendedEpochCredits, skipRate, skipRateHistory] = snapshot ? [null, null, null, null] : await Promise.all([
         rpcCall('getBalance', [voteAccount]),
         fetchExtendedEpochCredits(voteAccount),
         fetchSkipRate(validator.nodePubkey),
@@ -2112,15 +2305,21 @@
         nodePubkey: validator.nodePubkey,
         iconUrl: validator.iconUrl || '',
         activatedStake: lamportsToXNT(validator.activatedStake),
-        rewardsBalance: lamportsToXNT(balance.value),
+        rewardsBalance: snapshot ? null : lamportsToXNT(balance.value),
         commission: validator.commission,
         isDelinquent: validator.delinquent,
         isZombie: validator.isZombie === true,
         isDust: validator.isDust === true,
-        epochCredits: epochCreditsHistory.length > 0 ? epochCreditsHistory[epochCreditsHistory.length - 1][1] : 0,
+        fromSnapshot: snapshot,
+        // Lifetime credits in snapshot mode: the published scores file has the real counter
+        // (the ledger only has per-epoch credits); null → the card shows "—".
+        epochCredits: snapshot
+          ? (() => { const m = typeof getVoteCreditsMap === 'function' ? getVoteCreditsMap() : null; const s = m && m.get(voteAccount); return s ? s.lifetime : null; })()
+          : (epochCreditsHistory.length > 0 ? epochCreditsHistory[epochCreditsHistory.length - 1][1] : 0),
         epochCreditsHistory: epochCreditsHistory,
         skipRate: skipRate,
-        skipRateHistory: skipRateHistory,
+        // snapshot mode: the published 7-epoch skip history (data/scores.json), or null
+        skipRateHistory: snapshot ? publishedSkipHistory(validator.nodePubkey) : skipRateHistory,
         rank: rank,
         totalValidators: totalValidators,
         version: validator.version || null

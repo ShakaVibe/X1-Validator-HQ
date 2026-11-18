@@ -177,7 +177,8 @@
       if (!allValidators || allValidators.length === 0) {
         await loadNetworkStats();
       }
-      if (!allValidators[0] || allValidators[0].skipRate === undefined) {
+      // Not in snapshot mode (RPC outage): the published skip rates are used instead.
+      if ((!allValidators[0] || allValidators[0].skipRate === undefined) && !(typeof isSnapshotMode === 'function' && isSnapshotMode())) {
         await fetchAllSkipRates();
       }
       // Make sure the published (canonical) scores had a chance to load —

@@ -176,6 +176,19 @@ normally. Framed (plain, sandboxed with scripts, same-origin parent): no site ma
 scripts, only the notice and a top-level link. Control: the previous guard from git history leaves
 the framed site fully usable (skipped where the history is not available). 8 checks. Chromium only.
 
+**RPC outage → snapshot mode (audit #12, 2026-11-18)** — `js/core.js`, block "RPC OUTAGE":
+
+    node scripts/c2-tests/rpc-outage-test.js "$PWD"
+
+A mocked RPC that can be switched off, on, or left hanging. Off from the start: banner, validator
+list = `data/terminal.json` minus dust accounts, a lookup card whose tiles are honest ("—" where only
+the RPC knows, published values where the hourly files have them), no RPC call from the card loader,
+Data Center and leaderboards filled. Back on: the site's own 45 s retry finds it, the banner turns
+green and its Reload button brings the live card. A refresh that fails later keeps the live list.
+No usable snapshot (missing, 8 days old, 20 validators): the banner says so. Hanging RPC: the
+snapshot appears after 12 s. RPC fine: no banner. 37 checks, about 95 s (it waits for the real
+timers; the sections run side by side).
+
 **Base rate (audit #9, 2026-11-18)** — `validatorBaseRatePct` / `networkBaseRatePct` in `js/core.js`:
 
     node scripts/c2-tests/base-rate-test.js "$PWD"

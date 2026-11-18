@@ -61,6 +61,11 @@
         skipRateDisplay = formatNumber(lastEpochSkipRate, 2) + '%';
         skipColor = getSkipRateColor(lastEpochSkipRate);
         skipLabel = 'Last epoch only';
+      } else if (validator.fromSnapshot) {
+        // Snapshot mode (RPC outage) and no published skip history for this validator
+        skipRateDisplay = '—';
+        skipColor = '';
+        skipLabel = 'needs the live RPC';
       } else {
         // No data at all
         skipRateDisplay = 'Awaiting';
@@ -148,7 +153,8 @@
       // Credit pace score: how well is validator earning vs network average, adjusted for epoch progress
       let credPctHtml = '';
       const credHistory = validator.epochCreditsHistory || [];
-      if (window.networkFullEpochCredits && window.epochProgressRatio && credHistory.length >= 1) {
+      // Not in snapshot mode: this epoch's credits are unknown there (the pace would read 0 %).
+      if (!validator.fromSnapshot && window.networkFullEpochCredits && window.epochProgressRatio && credHistory.length >= 1) {
         const latestEntry = credHistory[credHistory.length - 1];
         if (latestEntry && latestEntry.length >= 3) {
           const epochEarned = latestEntry[1] - latestEntry[2];
@@ -263,8 +269,8 @@
             <div class="stat-group-grid">
             <div class="stat-item" title="The validator's accumulated rewards that can be withdrawn.">
               <div class="stat-label">Rewards balance</div>
-              <div class="stat-value accent">${formatNumber(validator.rewardsBalance)}</div>
-              <div class="stat-subtext">XNT</div>
+              <div class="stat-value accent">${validator.rewardsBalance == null ? '—' : formatNumber(validator.rewardsBalance)}</div>
+              <div class="stat-subtext">${validator.rewardsBalance == null ? 'needs the live RPC' : 'XNT'}</div>
             </div>
             
             <div class="stat-item" title="What the validator earned in the last completed epoch — its voting commission plus the rewards on its own self-stake. Click Breakdown to see this split by source." id="lastEpoch-${validator.voteAccount.slice(0,8)}">
@@ -303,7 +309,7 @@
             <div class="stat-group-grid">
             <div class="stat-item epoch-credits-card" style="position:relative;" title="Epoch credits represent the validator's voting activity. More credits generally means better uptime and participation in consensus.">
               <div class="stat-label">Epoch credits</div>
-              <div class="stat-value">${formatCompact(validator.epochCredits)}</div>
+              <div class="stat-value">${validator.epochCredits == null ? '—' : formatCompact(validator.epochCredits)}</div>
               <div class="stat-sub-row">
                 <span class="stat-subtext">Cumulative</span>
                 ${credPctHtml}
