@@ -6,37 +6,43 @@
 > At the **end of every session** Claude updates the Session Log, the To-Do list and any
 > notes below, so this file is always the single source of truth.
 
-> **Start here next session (as of 2026-10-29):**
-> 000. **Stake cooldown fix (2026-10-29, session 16)** — an operator (OWL, vote `9RqMzFzi…`) saw a stake
->    labelled "inactive (cooled down)" that refused to withdraw. Cause: `getStakeActivation` no longer
->    exists on X1 4.0.x RPCs ("Method not found"), so the Manage Validator stake list fell back to epoch
->    math and called anything past its deactivation epoch fully cooled — but X1 releases only **9 %** of
->    cluster stake per epoch (feature `reduce_stake_warmup_cooldown`, active since slot 0), so a stake
->    deactivated in epoch N is often only partly withdrawable in N+1 (that day: 88.4 %). Fix: `StakeActivation`
->    in `js/core.js` replays the stake program's math over the StakeHistory sysvar (one `getAccountInfo`,
->    cached per epoch); consumers in `js/manage.js` (list badge COOLING · "88% cooled", Stake Account
->    Details, Withdraw modal, classification modal) + the unstaking calculator's "observed" preset
->    (`js/calculators.js`, `index.html` copy says 9 %). Test: `scripts/c2-tests/stake-activation-test.js`
->    (oracle = a mainnet `simulateTransaction`). Pushed `bbabf89d`, **live-verified** the same hour (see the
->    session 16 log). Worth a second look once epoch ≥ 426: the same `FpxU…xRiC` row should read INACTIVE
->    with "Close account" offered (if the operator hasn't withdrawn it by then).
-> 00a. **The cloud sandbox CAN now reach `rpc.mainnet.x1.xyz` and `api.x1.xyz`** (2026-10-29; it could
->    not before 10-16). Use it for probes, `simulateTransaction` and fixtures — Playwright + `@solana/web3.js`
->    in the scratchpad worked. (The Mac VM was not re-tested.)
-> 00. **Lifetime Credits (2026-10-27, session 15) — pushed (efc803d1), live-verified 2026-10-29 (session 16):**
->    `#/leaderboard/credits` 50 rows sorted by Lifetime total (top X1 Labs node1 1,417,948,046) and, after the
->    toggle, by Avg/Epoch (top lux8.net 3,440,048); Terminal 439 rows with "Life Credits" / "Avg/Epoch"
->    columns filled, Ver/CC after them; no console errors. Closed.
-> 0a. **Validator count (2026-10-13, session 13):** delinquent vote accounts with < 100 XNT are
->    "dust" and not counted anywhere (`isDustVoteAccount` in `js/core.js`, same rule in
->    `compute-scores.js`). Live 2026-10-16: 530 / 505 / 25 (verified); after the 408→409 epoch boundary the
->    600 deactivating 1-XNT accounts drop out of the RPC entirely (dust ~804 → ~200).
-> 0. **Privacy follow-up (2026-09-25):** a GitHub Support ticket asking for a GC of the dangling
->    pre-rewrite commits is pending (still **200** on 2026-10-13 — chase Support). When Support confirms, check that
->    `api.github.com/repos/ShakaVibe/X1-Validator-HQ/commits/3ad83423365dd53c8fe8c3e81e0748bca585c9b4`
->    returns 404, and re-run the Actions-runs scan (session 10 log). Still on the owner's list:
->    GitHub → Settings → Emails → "Keep my email addresses private" + "Block command line pushes
->    that expose my email"; registrar WHOIS privacy for x1valhq.xyz.
+> **Start here next session (as of 2026-11-18):**
+> A. **Audit 2026-11-17 (session 17): work from it, in its order.** The full report (31 findings,
+>    P0–P4, action plan, implementation notes) is **private**: `private/AUDIT-2026-11-17.md` in the X1VHQ
+>    folder (gitignored; never commit it, because the repo and the site are public and several findings
+>    are unfixed security/privacy issues) and the private Claude Doc
+>    https://claude.ai/artifact/1cVuoKnxV5D3GLxRQV3BNp. Scripts that reproduce the evidence live in
+>    `private/audit-2026-11-17/`: `apr_check.py` is the APR "done when" check (exit 1 while any validator
+>    is more than 0.25 pts off) and `vote_withdraw_sim.js` reproduces #5. Phase 1 ("this week"):
+>    - **#1 Delegator APR is wrong for 122 of 323 validators** (WiznaPL's card: 250,197.69 %; real ≈ 6.8 %).
+>      The rewards ledger stores the next epoch's stake against each epoch's reward, and re-fetched cells
+>      get that day's stake. Plan: an interim cap in `js/apr.js` (drop epochs above 1.25× the network
+>      rate), then the credits model (point value × credits × (1 − commission); no stake needed).
+>    - **#2 privacy follow-up**: details in the private file (minutes of work; partly done 2026-11-18 by
+>      taking the commit SHA out of this file).
+>    - **#5 "Withdraw XNT" MAX fails for every vote account**: a 0.02 XNT reserve is hard-coded, the real
+>      rent minimum is 0.0270744 XNT → read it from the RPC.
+>    - **#4 stake withdraw-authority change**: add the vote-authority "danger" confirmation + address checks.
+>    - **#8 countdowns** use 420/400 ms slots (real: 366 ms) → one `measuredSlotMs()` everywhere.
+>    - **#13 interim**: `js/frame-guard.js` blanks the page while it is framed.
+>    Then phase 2 (fix the flaky "42" test → CI + sanity gates on published numbers, auto-closing failure
+>    issues + `TELEGRAM_CHAT_ID`, Node 24 in the workflows, a stale-scores banner) and onwards per the
+>    audit's section F. Ask Shaka before changing the APR methodology (open decision: should fully
+>    delinquent epochs count as 0 %?).
+> B. **Privacy follow-up (since 2026-09-25):** a GitHub Support ticket asking for a GC of the dangling
+>    pre-rewrite commits is pending; one of them still returned **200** on 2026-11-17. Its SHA is kept only
+>    in the private audit file now (audit #2 has the check and the re-create-the-repo fallback). Still on
+>    the owner's list: GitHub → Settings → Emails → "Keep my email addresses private" + "Block command
+>    line pushes that expose my email"; registrar WHOIS privacy for x1valhq.xyz.
+> C. **Network on 2026-11-17:** 350 counted validators (335 active / 15 delinquent; the 34 dust vote
+>    accounts under 100 XNT are not counted, `isDustVoteAccount`, same rule in `compute-scores.js`), down
+>    from 444 on 10-26. v4.0.4 since ~11-06. The Delegation Program changed its rules at epoch 435:
+>    minimum self-stake **20,000 XNT** (was 5,000) and min version 4.0.4; the site reads both from the
+>    snapshot, nothing is hard-coded. Reachability: the cloud sandbox reaches `rpc.mainnet.x1.xyz`,
+>    `api.x1.xyz` and raw.githubusercontent.com (not x1valhq.xyz, not api.github.com for this repo); the
+>    Mac VM reaches api.github.com (unauthenticated) and github.com for git.
+> D. Closed since 10-29: the stake-cooldown follow-up (the OWL operator withdrew the full 2,007.94 XNT on
+>    10-29 at 20:54 UTC, a few hours after the fix went live) and the Lifetime Credits live check.
 > 1. `cd ~/Desktop/X1VHQ && git pull` — bots commit hourly (via the heartbeat; verified 2026-09-16:
 >    scores at :04, snapshots at :43, geo every 2 h at :03 — 79 bot commits in 24 h, no gaps).
 >    If Shaka's `git add` complains about `index.lock`, `rm -f .git/index.lock .git/objects/maintenance.lock`.
@@ -65,18 +71,19 @@
 >    **F4 Fleet Health is LIVE (2026-10-13)** — `js/fleet.js`, bar + collapsible table in My Data
 >    Center (`#fleetHealth`); **F11 Delegator APR is LIVE (2026-10-13)** — `js/apr.js`, card tile +
 >    `#aprModal`; the ledger builder now records `st`/`c` (stake XNT, commission) per epoch cell.
->    Next options (Shaka to pick): F3 loose ends (`/help`, `/status`, `TELEGRAM_CHAT_ID`, close issues
+>    Older backlog options (after the audit plan in item A): F3 loose ends (`/help`, `/status`, `TELEGRAM_CHAT_ID`, close issues
 >    #1/#2, "Watch on Telegram" link in the fleet bar), APR as a fleet-table column and a Leaderboards
 >    category, **F12 validator cost → net return** (see §5), F8b rewards CSV export, phone layouts
 >    for Delegation / Leaderboards / Terminal tables,
->    the 817 "unknown version" validators, ④ single RPC transport. Open offer: harden `js/frame-guard.js`.
+>    ④ single RPC transport (now audit #12). The "817 unknown version" item is moot (item C), and
+>    hardening `js/frame-guard.js` is audit #13.
 >    **Mobile rule (2026-10-13):** any grid/flex track that holds monospace numbers or a table must
 >    be `minmax(0, 1fr)` / `min-width: 0` — a plain `1fr` never shrinks below its content and the
 >    overflow is hidden by the card. Phone check = the 375 px clip scan in the session 12 log.
->    Network grew from ~725 to **1,337 validators** between 09-28 and 10-13 (817 with unknown
->    version in gossip) — watch payload sizes and anything that assumed ~725 rows.
->    Two stale "[bot] … is failing" issues (#1 terminal 10-04, #2 geo 10-10) are transient — all
->    bots green since; Shaka can close them.
+>    Network size: 1,337 vote accounts on 10-13 (most of them dust), 350 counted validators on
+>    2026-11-17 (item C).
+>    Open "[bot] … is failing" issues #1–#3 are transient push races (latest 2026-11-14, all bots green
+>    since); Shaka can close them. Audit #14: make them close themselves on the next green run.
 > 3. Under-the-hood queue: ② split `index.html` — DONE 2026-09-16 (see §3 for the file map);
 >    ③ `data-action` dispatcher + strict CSP — DONE 2026-09-25; next: ④ single RPC transport (C3/C4).
 >    Rule for the split files: load-time code in one file must not call into a later file (they are
@@ -87,7 +94,7 @@
 >    estate"). Rule: per-validator data goes in the stat grid with a Details link. (The card
 >    redesign itself is DONE — see 2026-09-15.)
 > 6. Housekeeping: `_to_delete/` (patch scripts) and `Claude outputs/` are gitignored — safe to
->    delete any time.
+>    delete any time. **`private/` is gitignored too but is NOT disposable**: it holds the audit (item A).
 > 7. **RULE — never write to the site's localStorage in Shaka's real Chrome** (`x1Portfolio`,
 >    `x1SelfStakeSelections`, …). Live checks in Chrome are read-only; anything that needs a
 >    test portfolio runs in the built-in Claude browser pane or a Playwright/staged copy. See the
@@ -96,6 +103,8 @@
 >    mockups as files (PNG + standalone HTML via SendUserFile) instead. Playwright smoke of the card
 >    works offline: serve the repo on localhost, block external requests, hide `#disclaimerModal`,
 >    show `#resultsSection`, call `renderValidatorCard(fakeValidator)` into `#validatorResults`.
+>    Session 17's audit went out as a private Claude Doc (item A); if it will not open, export it from the
+>    doc as PDF/Word, or read the Markdown copy in `private/`.
 > 9. Live-checking right after a push: Pages caches every file for 10 min, so the pane may still run
 >    the old `js/*.js`. Do `await fetch('/js/<file>.js', {cache:'reload'})` for each changed file
 >    (and `/index.html`), then `location.reload()` — NOT `location.href = …#/route` (a hash-only
@@ -313,6 +322,19 @@ CNAME / .nojekyll / _headers  Pages config
 The full prioritized backlog (97 items with IDs) lives on the **"X1 Validator HQ Roadmap"** Claude
 artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs below match it.
 
+### Audit 2026-11-17: the current work order (details in `private/AUDIT-2026-11-17.md`)
+Numbers are the audit's finding numbers; the phase lists further down are older history.
+- [ ] **This week:** #1 APR interim cap · #2 privacy follow-up · #5 vote-account rent · #4 withdraw-authority
+      confirmation · #8 one slot time · #13 interim frame-guard
+- [ ] **Weeks 1–2:** #21 fix the flaky + broken tests → #7 CI and sanity gates on published numbers ·
+      #14 auto-close failure issues, set `TELEGRAM_CHAT_ID` · #22 Node 24 / actions v5+ · #10 stale-scores banner
+- [ ] **Weeks 2–4:** #28 credits-based yield engine (closes #1 and #9) · #18 rent helper · #12 RPC failover ·
+      #6/#25 vendor third-party scripts, script-src 'self'
+- [ ] **Month 2:** #26 edge layer (headers #13, bot + scheduler #3, RPC cache, icon proxy #15) ·
+      #27 data as a deploy artifact (closes #11, #17, #23) · #16 lazy ledger · #31 private ops docs
+- [ ] **Quarter:** #29 shared ES modules (#10, #19) · #20 dead code · local-validator transaction tests ·
+      #30 web3.js plan · #24 bot sign-up cap
+
 ### Phase 0 — this week (safety + quick wins)
 - [x] **S1–S6** done 2026-09-10 (session 1, batch 2) — see Session Log
 - [x] **B1, R1, R2** done 2026-09-10
@@ -394,6 +416,8 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - [ ] Ask people who reported the terminal error which device/network they were on.
 
 ### Done
+- [x] 2026-11-17 — **Full audit (session 17)**: 31 findings, private report in `private/` + Claude Doc;
+      work order at the top of this section. See Session Log.
 - [x] 2026-10-29 — **Stake cooldown fix**: active/cooled split from the StakeHistory sysvar (`StakeActivation`),
       COOLING badge + exact withdrawable amount in Manage Validator, 9 % cap in the unstaking calculator. See Session Log.
 - [x] 2026-10-27 — **Lifetime vote credits**: two sortable Terminal columns + 🏆 Lifetime Credits leaderboard
@@ -1302,7 +1326,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
   name. Deleted all 89 via `DELETE /actions/runs/{id}` with a one-off fine-grained PAT (Actions:
   read/write, this repo only; revoked afterwards). Re-scan of 3,900 runs: 0 left.
 - **Leak 2 — dangling commits.** GitHub still serves the pre-rewrite commits by SHA (verified:
-  `3ad83423…` returns the old author). Only GitHub Support can GC them — ticket text given to the
+  one of them returns the old author; its SHA is kept out of this public file). Only GitHub Support can GC them — ticket text given to the
   owner (see Start-here item 0).
 - Prevention: global git identity on the Mac set to `ShakaVibe <145924450+ShakaVibe@users.noreply.github.com>`
   (verified with `git config --global --get-regexp user`). Rule stays: never write personal data
@@ -1344,7 +1368,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 ### 2026-09-28 — Session 11: F3 Telegram alerts (~2.5 hours)
 - Start: 198 bot commits behind, tree clean, heartbeat healthy (scores :04, snapshots :03, geo every
   2 h). Delete permission granted at start → `git pull --rebase --autostash` clean, no locks left.
-  Privacy item 0: the dangling commit `3ad83423…` still returns **200** — GitHub Support has not
+  Privacy item 0: the dangling commit still returns **200** — GitHub Support has not
   GC'd it yet; recent Actions runs all show bot authors. Observed: **142 delinquent of 725** in the
   terminal snapshot (was ~40 before 09-23, 146 right after epoch 387) — persisting, network-side.
   `minValidatorVersion` in the delegation config is now **4.0.3**.
@@ -1390,7 +1414,7 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Start: 1,178 bot commits behind (15 days), tree clean, `git pull --rebase --autostash` clean with
   delete permission granted at start, no locks. Heartbeat healthy (scores :03/:04, snapshots :03,
   geo every 2 h, 78 bot commits in 24 h); alerts bot loop in_progress and committing state (8 state
-  commits in 24 h). Dangling commit `3ad83423…` still 200. Open issues #1/#2 are one-off bot
+  commits in 24 h). Dangling commit still 200. Open issues #1/#2 are one-off bot
   failures (10-04, 10-10) with green runs since. **1,337 validators** in the snapshot (was ~725).
 - Shaka (phone screenshot): Validator Terminal **Self-Stake Percentiles** box clips P85/P99.
   Cause: `.vt-pctrow` at ≤980 px used `1fr 1fr 1fr`; a `1fr` track's minimum is its content's
@@ -1679,3 +1703,31 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 - Session 16 totals: 3 pushes by Shaka (`bbabf89d` cooldown fix, 7 files; `12283976` MAX rounding;
   the action-grid unlock) + HANDOVER commits. Scratch (cloud only):
   `scratchpad/sim/` (web3.js withdraw simulation), `scratchpad/x1clone/` (test runs).
+
+### 2026-11-17 — Session 17: health check, APR bug, full read-only audit (~1.5 hours)
+- Start: 1,355 bot commits behind (19 days), tree clean; folder linked and delete permission granted at
+  start → `git pull --rebase --autostash` clean, no locks. Bots healthy: scores and snapshots hourly
+  (largest gap between score commits in 7 days: 65 min; 27–28 snapshot commits a day because GitHub's own
+  cron still fires on top of the heartbeat), geo every 2 h, alerts bot in_progress and committing state.
+  Open issues #1–#3 = push races at the commit step (latest 11-14). Dangling commit still 200.
+- Network: 350 counted validators (444 on 10-26), v4.0.4 since ~11-06, Foundation rules changed at epoch
+  435 (min self-stake 20,000 XNT, min version 4.0.4). Cooldown follow-up closed: the OWL operator withdrew
+  the full 2,007.94 XNT on 10-29 at 20:54 UTC.
+- Live smoke in a fresh pane tab: header 350 / 335 / 15; Delegation tiles 20,000 XNT and v4.0.4; Terminal
+  350 rows / 7,861 stake accounts; OWL lookup + Manage Validator (10 STAKE rows); no console errors.
+- **Found: Delegator APR wrong for 122 of 323 validators** (WiznaPL card 250,197.69 %, Camerone 245,137 %,
+  Bernard 74.8 %; real ≈ 6.8 %). Cause in `scripts/build-rewards-ledger.js`: stake is recorded at fetch
+  time, which is the next epoch's stake, and full-window re-fetches stamp today's stake. Verified a
+  stake-independent model (point value × credits earned × (1 − commission); the point value from
+  stable-stake validators has 0.000 % interquartile spread). I started on a fix, then Shaka asked for a
+  **read-only audit** instead, so nothing in the project was changed that day.
+- Audit delivered as a private Claude Doc: 31 findings (1 P0, 6 P1, 7 P2, 10 P3, 7 P4), top 10, quick
+  wins, action plan, what could not be verified. Also confirmed by mainnet simulation: the vote-account MAX
+  withdraw fails (0.02 XNT reserve vs 0.0270744 XNT rent). Measured on 11-16: 3,090 runner-minutes for
+  the heartbeat + bot loops and 80 Pages builds; `.git` is 180 MB, +46 MB in 30 days.
+- 2026-11-18 (Shaka: "add it all to the files"): wrote `private/` (gitignored, new `.gitignore` line):
+  `AUDIT-2026-11-17.md` (doc export + implementation notes), `audit-2026-11-17/apr_check.py`,
+  `audit-2026-11-17/vote_withdraw_sim.js` and `README.md`. This file: new Start-here items A–D, the audit
+  work order in §5, the dangling-commit SHA removed from 4 places (it lives in the private file now).
+- Lesson: data bugs need data checks. Every unit test was green while 38 % of APRs were wrong; audit #7
+  (sanity gates on published numbers) fixes the process, not just this bug.
