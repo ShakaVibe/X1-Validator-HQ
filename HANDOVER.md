@@ -13,17 +13,14 @@
 >    unfixed security/privacy issues) and the private Claude Doc
 >    https://claude.ai/artifact/1cVuoKnxV5D3GLxRQV3BNp. Scripts that reproduce the evidence live in
 >    `private/audit-2026-11-17/` (`apr_check.py`, `vote_withdraw_sim.js`).
->    **Phase 1 ("this week") was built in session 18** (see the Session Log):
->    - **#1 APR** interim guard: LIVE and live-verified (push `a6f4a653`). 2 of 323 validators still
->      differ from the credits model by more than 0.25 pts (worst 0.53); before: 122 (worst 250,267).
->    - **#5** vote-account MAX withdraw, **#8** one measured slot time, **#4** authority-change
->      confirmation, **#13** frame guard: built and tested offline, handed over as push 2.
->      **First thing next session: confirm push 2 is on `main` and live-check it** (cache trick, item 9):
->      leader band / epoch bar times; Manage → Withdraw XNT shows "0.0270744 XNT" in the note;
->      Manage → a stake account → Set Withdraw Authority → a good address opens the red confirmation
->      modal (do NOT confirm; needs Shaka's wallet for the real thing); `js/frame-guard.js` deployed.
->    - **Needs Shaka's wallet, once:** a real MAX "Withdraw XNT" from a vote account (the fix was
->      proven by mainnet simulation, not by a signed transaction).
+>    **Phase 1 ("this week") is done and live** (session 18, see the Session Log): #1 APR interim
+>    guard (`a6f4a653`); #5 vote-account MAX withdraw, #8 one measured slot time, #4 authority-change
+>    confirmation, #13 frame guard (`0314c746`), all live-verified in the pane.
+>    - **Push 3 (small, handed over at the end of session 18):** the APR tile now fills as soon as the
+>      ledger is in instead of waiting for the delegation snapshot and the slot-time measurement too.
+>      **First thing next session: confirm it is on `main`** (`grep -n "const again" js/apr.js`).
+>    - **Needs Shaka's wallet, once:** a real MAX "Withdraw XNT" from a vote account (the fix is
+>      proven by mainnet simulation and by the live modal, not by a signed transaction).
 >    - **#2 privacy follow-up**: unchanged, on the owner's list (item B).
 >    **Next: phase 2** (fix the flaky "42" test and the broken `manage-test.js` → CI + sanity gates on
 >    published numbers, auto-closing failure issues + `TELEGRAM_CHAT_ID`, Node 24 in the workflows, a
@@ -368,9 +365,9 @@ artifact (claude.ai → artifacts gallery) and in `docs/audit-2026-09-10/`. IDs 
 
 ### Audit 2026-11-17: the current work order (details in `private/AUDIT-2026-11-17.md`)
 Numbers are the audit's finding numbers; the phase lists further down are older history.
-- [x] **This week** (session 18, 2026-11-18): #1 APR interim guard (live) · #5 vote-account rent · #4 authority
-      confirmation · #8 one slot time · #13 frame guard (push 2; live check + one real wallet withdraw
-      still open) — [ ] #2 privacy follow-up stays on the owner's list (Start-here item B)
+- [x] **This week** (session 18, 2026-11-18, all live-verified): #1 APR interim guard · #5 vote-account rent ·
+      #4 authority confirmation · #8 one slot time · #13 frame guard — [ ] one real wallet MAX withdraw (Shaka) ·
+      [ ] #2 privacy follow-up stays on the owner's list (Start-here item B)
 - [ ] **Weeks 1–2:** #21 fix the flaky + broken tests → #7 CI and sanity gates on published numbers ·
       #14 auto-close failure issues, set `TELEGRAM_CHAT_ID` · #22 Node 24 / actions v5+ · #10 stale-scores banner
 - [ ] **Weeks 2–4:** #28 credits-based yield engine (closes #1 and #9) · #18 rent helper · #12 RPC failover ·
@@ -1788,7 +1785,7 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   a stake move leaves one overstated and one understated cell. Added the low-side rule (rate < 0.9 ×
   reference and the recorded stake is suspect) and "0 reward at a commission > 0": **2 off, worst 0.53,
   no tile hidden**, highest APR shown 7.46 %, modal "top 10 %" 6.74 % (was 13.4 %). `apr-test.js`
-  rewritten around a second implementation of the rule + seven synthetic validators (32 checks; 14 fail
+  rewritten around a second implementation of the rule + seven synthetic validators (32 checks then; 14 fail
   against the old code). Pushed by Shaka as `a6f4a653`. **Live-verified** (fresh pane tab, cache
   reloaded): WiznaPL 6.78 % (was 250,197.69 %), "27 ep · net of 10% fee", modal row "Epochs left out 8";
   Camerone 6.78 %, THE END X1 6.69 %, X1 prime 6.63 %, Bernard 6.69 %; 334 validators, max 7.47 %; no
@@ -1824,8 +1821,29 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   stake-activation, batch4, batch5, modals, cards, csp-walk with 0 violations, fleet, credits, identity,
   price-pill, alerts-modal, slot-time, authority, frame-guard) + `test-rewards-ledger` +
   `test-compute-scores`; `node --check` on every `js/*.js`. `manage-test.js` is still broken (audit #21).
-- **Push 2** (#5, #8, #4, #13 + this file) was handed to Shaka at the end of the session. Not
-  live-verified at the time of writing — that is the first job next session (Start-here item A).
+- **Push 2** (#5, #8, #4, #13) pushed by Shaka as `0314c746`. **Live-verified** in the pane (cache
+  reloaded, OWL lookup; `walletPublicKey` set as a pane-only variable, no wallet connected, 0
+  `sendTransaction` calls): measured slot 365.67 ms, 399.54 epochs/yr; leader band "Next leader slot
+  in ~1h" for a slot 10,003 slots away (the old constant would say ~1h 10m); epoch bar "5h 14m" (old
+  constant: 5h 44m); skip monitor "500 slots · ~3.0 min"; Slot Explorer countdown agrees with the band.
+  Withdraw XNT: space 3,762 → rent 27,074,400, note "The rent-exempt minimum (0.0270744 XNT) must
+  remain in the vote account", Available 127.1129, MAX 127.1128. Set Withdraw Authority (stake): the
+  stake account itself, the vote account, the Stake Program, a PDA and the current authority refused
+  with the reason; a fresh keypair opens the confirmation (full address, "1,154,876.5531 XNT in this
+  account", "never been used on chain" warning), wrong characters keep it locked, the last 6 unlock it
+  (not clicked). Vote account → Withdraw Authority: same modal ("Vote account:", "Validator: OWL").
+  Frame guard: the site framed by itself in a sandboxed iframe shows only the notice + link, 0 site
+  scripts. Console: no errors other than the expected "Unsafe attempt to initiate navigation" from
+  that frame check. The pane is 414 px wide: the confirmation's button is below the fold and reached
+  by scrolling inside the modal (it is drawn on top of Manage Validator).
+- **Found during that live check — APR tile stuck on "…"** on the first reload after the deploy,
+  30+ s, with the ledger loaded; two further loads filled it in 2.3 s and 1.3 s. Not reproduced live,
+  so the trigger is unproven. What is proven (offline): a card rendered BEFORE the ledger arrives waited
+  for ledger + slot time + delegation snapshot together (`ensureData()`, unchanged since F11), so a
+  stalled `data/delegation.json` or a slow RPC held the tile although the ledger was in. Fix
+  (`js/apr.js`): the tile re-renders when the ledger arrives, and again when each of the other two
+  does. `apr-test.js` + 3 checks (35; ledger 2.5 s late, delegation never answers, RPC never answers →
+  tile fills). Handed over as **push 3**; not live-verified at the time of writing.
 - Lessons: (1) measure a proposed fix against ground truth before shipping it — the audit's own "quick
   win" would have traded 116 overstated cards for 86 understated ones; (2) when one flow gets a
   safeguard, look for its twin (stake vs vote-account withdraw authority); (3) a fix is not blanking

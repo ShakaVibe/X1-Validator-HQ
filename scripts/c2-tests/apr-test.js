@@ -16,11 +16,15 @@ const { chromium } = require('playwright');
 const http = require('http'), fs = require('fs'), path = require('path');
 const ROOT = path.resolve(process.argv[2] || '.');
 const MIME = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
+const slow = {};   // served path → 'stall' (never answered) | delay in ms — for the "slow data" section at the end
 const srv = http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]); if (p === '/') p = '/index.html';
   const f = path.join(ROOT, p);
   if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
-  res.writeHead(200, { 'content-type': MIME[path.extname(f)] || 'application/octet-stream' }); res.end(fs.readFileSync(f));
+  const send = () => { res.writeHead(200, { 'content-type': MIME[path.extname(f)] || 'application/octet-stream' }); res.end(fs.readFileSync(f)); };
+  if (slow[p] === 'stall') return;
+  if (typeof slow[p] === 'number') return void setTimeout(send, slow[p]);
+  send();
 });
 
 const ledger = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/rewards.json')));
@@ -246,6 +250,26 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
 
   check(pageErrors.length === 0, '0 page errors', pageErrors);
   check(warnings.length === 0, '0 [Actions] warnings', warnings);
+
+  // ── Slow data (2026-11-18): a card rendered BEFORE the ledger arrives must fill in as soon as the
+  // ledger is there, even while the delegation snapshot never answers and the RPC never answers the
+  // slot-time measurement. The tile used to wait for all three together and stayed on "…".
+  slow['/data/rewards.json'] = 2500; slow['/data/delegation.json'] = 'stall';
+  const page2 = await (await browser.newContext({ viewport: { width: 1300, height: 900 } })).newPage();
+  const pageErrors2 = []; page2.on('pageerror', e => pageErrors2.push(e.message));
+  await page2.route(/^(?!http:\/\/127\.0\.0\.1)/, r => { if (/rpc\.mainnet\.x1\.xyz/.test(r.request().url())) return; return r.abort(); });   // RPC: never answered
+  await page2.goto(`http://127.0.0.1:${port}/`, { waitUntil: 'domcontentloaded' });
+  await page2.waitForFunction(() => typeof renderValidatorCard === 'function' && typeof window.aprHydrate === 'function', null, { timeout: 15000 });
+  await page2.evaluate((v) => { document.getElementById('disclaimerModal').style.display = 'none'; document.getElementById('resultsSection').style.display = 'block'; document.getElementById('validatorResults').innerHTML = renderValidatorCard(v, true, false); }, mk(VOTE, NAME, STAKE_XNT, 10));
+  const tileNow = () => page2.evaluate(() => ({ ledger: !!window.RewardsLedger.doc, value: document.querySelector('#validatorResults .apr-section .stat-value').textContent }));
+  const early = await tileNow();
+  await page2.waitForFunction(() => !!window.RewardsLedger.doc, null, { timeout: 15000 });
+  await page2.waitForTimeout(500);
+  const late = await tileNow();
+  check(!early.ledger && early.value === '…', 'slow data: the card is on screen before the ledger, tile shows "…"', early);
+  check(late.ledger && Math.abs(parseFloat(late.value) - exp30) < 0.006, `slow data: the tile fills (${late.value}) once the ledger is in, with the delegation snapshot and the RPC still unanswered`, late);
+  check(pageErrors2.length === 0, 'slow data: 0 page errors', pageErrors2);
+  if (srv.closeAllConnections) srv.closeAllConnections();
   await browser.close(); srv.close();
   console.log(fails ? `\n${fails} check(s) FAILED` : '\nall checks passed');
   process.exit(fails ? 1 : 0);

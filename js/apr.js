@@ -291,15 +291,21 @@
       });
       mo.observe(document.body, { childList: true, subtree: true });
 
+      // A tile rendered before the ledger arrived shows "…" until this fills it.
+      // It needs only the ledger: the slot time refines epochs/year and the
+      // delegation snapshot matters for 0 %-commission validators, so each of
+      // those re-renders the tiles when it arrives. They used to be awaited all
+      // together, so one stalled request (delegation.json, or a slow RPC for
+      // the slot time) held every tile on "…" with the ledger long loaded
+      // (seen once live on 2026-11-18, right after a deploy).
       let _ensured = false;
       function ensureData() {
         if (_ensured) return; _ensured = true;
-        const after = () => { _ensured = false; hydrateAll(); };
-        Promise.all([
-          window.RewardsLedger ? Promise.resolve(window.RewardsLedger.load()).catch(() => {}) : null,
-          slotSeconds().catch(() => {}),
-          (typeof delegLoad === 'function') ? delegLoad().catch(() => {}) : null,
-        ]).then(after, after);
+        const again = () => hydrateAll();
+        const ledger = window.RewardsLedger ? Promise.resolve(window.RewardsLedger.load()).catch(() => {}) : Promise.resolve();
+        ledger.then(() => { _ensured = false; hydrateAll(); });
+        slotSeconds().then(again, again);
+        if (typeof delegLoad === 'function') delegLoad().then(again, again);
       }
 
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });

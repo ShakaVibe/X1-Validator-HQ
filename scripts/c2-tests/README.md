@@ -64,7 +64,9 @@ Since 2026-11-18 (audit #1) it also covers the clean-epoch filter: the expected 
 second implementation of the rule in the test, and synthetic validators cover a cell recorded as
 1 XNT, a stake ramp shifted by one epoch, a re-fetch stamp, a 0 reward at 10 % (all left out), a weak
 epoch on a steady stake (kept) and a validator with fewer than 3 clean epochs ("—"); the whole served
-ledger must stay under 1.25 × the network rate with top 10 % ≤ 1.3 × median. 32 checks.
+ledger must stay under 1.25 × the network rate with top 10 % ≤ 1.3 × median. A last section serves
+the ledger 2.5 s late and never answers `data/delegation.json` or the RPC: a card rendered before the
+ledger must still fill in once the ledger arrives. 35 checks.
 
 **Update Identity (2026-10-16)** — validator-info publish in `js/wallet-tx.js` (Manage Validator):
 
