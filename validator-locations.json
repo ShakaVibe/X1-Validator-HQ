@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-19T20:48:37.362Z",
+  "lastUpdated": "2026-11-19T22:03:07.751Z",
   "totalNodes": 338,
   "totalLocations": 335,
   "locations": {
@@ -2378,6 +2378,10 @@
       "name": "Poland",
       "count": 48
     },
+    "GB": {
+      "name": "United Kingdom",
+      "count": 3
+    },
     "KE": {
       "name": "Kenya",
       "count": 7
@@ -2385,10 +2389,6 @@
     "SE": {
       "name": "Sweden",
       "count": 4
-    },
-    "GB": {
-      "name": "United Kingdom",
-      "count": 3
     }
   }
 }
