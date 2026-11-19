@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-19T08:03:08.349Z",
-  "totalNodes": 336,
-  "totalLocations": 333,
+  "lastUpdated": "2026-11-19T10:03:13.881Z",
+  "totalNodes": 337,
+  "totalLocations": 334,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -2333,40 +2333,47 @@
       "city": "Lauterbourg",
       "lat": 48.9742,
       "lon": 8.1851
+    },
+    "178.162.232.145": {
+      "country": "Germany",
+      "countryCode": "DE",
+      "city": "Frankfurt am Main",
+      "lat": 50.097,
+      "lon": 8.63004
     }
   },
   "countries": {
-    "FR": {
-      "name": "France",
-      "count": 25
-    },
     "US": {
       "name": "United States",
       "count": 142
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 15
+    "DE": {
+      "name": "Germany",
+      "count": 27
     },
     "FI": {
       "name": "Finland",
       "count": 52
     },
+    "CA": {
+      "name": "Canada",
+      "count": 15
+    },
+    "FR": {
+      "name": "France",
+      "count": 25
+    },
     "PL": {
       "name": "Poland",
       "count": 48
     },
-    "DE": {
-      "name": "Germany",
-      "count": 26
-    },
     "NL": {
       "name": "The Netherlands",
       "count": 14
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     },
     "SE": {
       "name": "Sweden",
