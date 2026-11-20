@@ -11501,16 +11501,16 @@
       display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));
       border-top: 1px solid var(--border);
     }
-    .vt-pcell { padding: 0.8rem 0.85rem 0.9rem; border-right: 1px solid var(--border); min-width: 0; }
+    .vt-pcell { padding: 0.95rem 1rem 1rem; border-right: 1px solid var(--border); min-width: 0; }
     .vt-pcell:last-child { border-right: none; }
-    .vt-pcell .top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 0.4rem; }
+    .vt-pcell .top { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 0.55rem; }
     .vt-ppill {
-      font: 700 0.72rem 'JetBrains Mono', monospace; letter-spacing: 0.3px; color: var(--c);
+      font: 700 0.86rem 'JetBrains Mono', monospace; letter-spacing: 0.4px; color: var(--c);
       background: color-mix(in srgb, var(--c) 16%, transparent);
       border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
-      border-radius: 5px; padding: 1px 6px;
+      border-radius: 7px; padding: 2px 10px; line-height: 1.35;
     }
-    .vt-pcell .cap { color: var(--text-secondary); font-size: 0.7rem; white-space: nowrap; }
+    .vt-pcell .cap { color: var(--text-secondary); font-size: 0.76rem; white-space: nowrap; }
     .vt-pcell .v {
       font: 500 1.08rem 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums;
       color: var(--c); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -11518,18 +11518,23 @@
     .vt-pcell .v .u { color: var(--text-secondary); font: 500 0.62em 'Space Grotesk', sans-serif; margin-left: 4px; }
     .vt-pcell .sub { color: var(--text-secondary); font-size: 0.68rem; margin-top: 0.3rem; }
     .vt-pcell .sub b { color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-weight: 500; }
-    /* The key metric: lit cell, solid pill, larger value. */
+    /* The key metric (P85): a cyan → blue → violet ring drawn inside the cell
+       (a masked gradient, so only the 1.5 px border shows), a soft light from
+       the top, a solid pill and a larger glowing value. Shaka's pick "A",
+       2026-11-20. */
     .vt-pcell.is-key {
-      position: relative;
-      background: linear-gradient(180deg, rgba(0, 212, 255, 0.14), rgba(0, 212, 255, 0.04));
-      box-shadow: inset 0 0 0 1px rgba(0, 212, 255, 0.55), inset 0 2px 0 var(--accent-cyan);
+      position: relative; z-index: 1;
+      background: radial-gradient(120% 85% at 50% 0%, rgba(0, 212, 255, 0.16), transparent 70%);
     }
-    .vt-pcell.is-key .vt-ppill { color: #04111f; background: var(--c); border-color: var(--c); }
-    .vt-pcell.is-key .v { font-size: 1.35rem; text-shadow: 0 0 14px rgba(0, 212, 255, 0.45); }
-    .vt-keytag {
-      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
-      color: var(--accent-cyan); border: 1px solid rgba(0, 212, 255, 0.45); border-radius: 999px; padding: 0 6px;
+    .vt-pcell.is-key::before {
+      content: ''; position: absolute; inset: 5px; border-radius: 11px; padding: 1.5px; pointer-events: none;
+      background: linear-gradient(135deg, #00d4ff 0%, #4da6ff 50%, #c39bff 100%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude;
+      filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.55));
     }
+    .vt-pcell.is-key .vt-ppill { color: #04111f; background: var(--c); border-color: var(--c); box-shadow: 0 0 12px rgba(0, 212, 255, 0.5); }
+    .vt-pcell.is-key .v { font-size: 1.5rem; color: #5fe6ff; text-shadow: 0 0 16px rgba(0, 212, 255, 0.5); }
     @media (max-width: 1380px) {
       .vt-pcells { grid-template-columns: repeat(4, minmax(0, 1fr)); }
       .vt-pcell { border-bottom: 1px solid var(--border); }
@@ -11789,7 +11794,7 @@
          monospace values pushed the grid wider than the card and the last column
          was clipped by overflow:hidden (phones, 2026-10-13). */
       .vt-pcell .v { font-size: 1rem; }
-      .vt-pcell.is-key .v { font-size: 1.2rem; }
+      .vt-pcell.is-key .v { font-size: 1.3rem; }
     }
     @media (max-width: 560px) {
       .vt-pct { margin-left: 1rem; margin-right: 1rem; }

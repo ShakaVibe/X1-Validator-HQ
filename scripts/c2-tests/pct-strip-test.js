@@ -87,6 +87,7 @@ async function openTerminal(browser, { width, portfolio: pf, routes }) {
     check(r.cells.length === 7 && r.cells.map(c => c.k).join() === 'P50,P75,P85,P90,P95,P99,MAX', '7 cells P50 … MAX', r.cells.map(c => c.k));
     check(JSON.stringify(r.cells.map(c => num(c.v))) === JSON.stringify(expectedCells), 'cell values = independent percentiles (whole XNT)', { got: r.cells.map(c => num(c.v)), want: expectedCells });
     check(r.cells.filter(c => c.key).map(c => c.k).join() === 'P85', 'P85 is the only key cell');
+    check(await page.evaluate(() => !/key metric/i.test(document.getElementById('vtPct').textContent)), 'no "Key metric" tag (highlight is the ring)');
     check(/^P85 · [\d,]+\.?\d* XNT$/.test(r.cells[2].title), 'key cell title carries the exact value', r.cells[2].title);
     check(r.keySub.includes(atOrAboveP85 + ' of ' + S.length), 'key cell: "N of M validators at or above"', { got: r.keySub, want: atOrAboveP85 });
     check(r.dots === S.length, 'one dot per non-X1 validator', { got: r.dots, want: S.length });
@@ -132,10 +133,14 @@ async function openTerminal(browser, { width, portfolio: pf, routes }) {
   // ── 2b. Delegation snapshot arrives after the Terminal has drawn ──
   console.log('Late delegation.json');
   {
+    // Held until the Terminal has drawn (released by the test, not by a timer,
+    // so a slow machine cannot turn this into "arrived first").
+    let release; const gate = new Promise(z => { release = z; });
     const { ctx, page, errors } = await openTerminal(browser, { width: 1300, routes: [
-      [/\/data\/delegation\.json/, async r => { await new Promise(z => setTimeout(z, 4000)); r.continue(); }],
+      [/\/data\/delegation\.json/, async r => { await gate; r.continue(); }],
     ] });
     const before = await page.evaluate(() => ({ min: document.querySelectorAll('#vtPct .vt-smin').length, cfg: !!window.delegationConfig }));
+    release();
     await page.waitForFunction(() => !!document.querySelector('#vtPct .vt-smin'), null, { timeout: 15000 }).catch(() => {});
     const after = await page.evaluate(() => ({ min: document.querySelectorAll('#vtPct .vt-smin').length, sections: document.querySelectorAll('#vtPct').length,
       table: document.querySelectorAll('#vtTbl tbody tr').length }));

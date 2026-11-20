@@ -2217,3 +2217,12 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
 - New suite `scripts/c2-tests/pct-strip-test.js` (28 checks, in `run-all.js`): values against an independent
   calculation, P85 the only key, minimum line position, no/late delegation snapshot, hostile name, 375 px.
   Fails 3 checks if `PCT_KEY` is changed. 20 of 20 suites green in the cloud clone, CSP walk 0 violations.
+- Push 1 (`bfb2194`): site deployed, **CI run #10 failed** in "Browser suites" (log line ~31). Not reproduced:
+  the same commit passes 20 of 20 here with `--jobs 2` and `--jobs 8` on 2 cores, same Playwright 1.63.0 and
+  the same fallback font. Logs need a GitHub login (the built-in pane is signed out); asked Shaka for the lines.
+  Suspect, made deterministic anyway: the "late delegation.json" section held the file for a fixed 4 s, so a
+  slow runner could draw after it arrived — the test now releases it itself after the first draw.
+- Shaka on the live result: P badges larger, no "Key metric" tag, the highlight "looks generic". Four highlight
+  mockups (gradient frame / lifted card / target brackets / spotlight) → **A, gradient frame**: a 1.5 px
+  cyan → blue → violet ring inside the cell (masked gradient on `::before`, inset 5 px), soft light from the
+  top, solid glowing P85 pill, value 1.5rem. Cell pills 0.86rem. Push 2 = that + the test fix (29 checks).

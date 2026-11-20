@@ -198,7 +198,7 @@ served `data/terminal.json` / `data/delegation.json`: percentile values, one dot
 P85 as the only key metric (cell, marker, line), the Program minimum line (lamports → XNT) and the
 header facts, Data Center diamonds. Without `delegation.json`: no minimum line, nothing else lost.
 Snapshot arriving late: the section is redrawn with the line. A hostile validator name stays text.
-375 px: no overflow, pills hidden, 2 columns. 28 checks.
+375 px: no overflow, pills hidden, 2 columns. 29 checks.
 
 **Base rate (audit #9, 2026-11-18)** — `validatorBaseRatePct` / `networkBaseRatePct` in `js/core.js`:
 

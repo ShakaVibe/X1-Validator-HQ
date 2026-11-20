@@ -417,7 +417,7 @@
           const key = m.k === PCT_KEY;
           return '<div class="vt-pcell' + (key ? ' is-key' : '') + '" style="--c:' + m.c + '" title="' + esc(m.k + ' · ' + exact(m.v)) + '">' +
             '<div class="top"><span class="vt-ppill">' + m.k + '</span><span class="cap">' + m.cap + '</span>' +
-              (key ? '<span class="vt-keytag">Key metric</span>' : '') + '</div>' +
+'</div>' +
             '<div class="v">' + num(m.v, 0) + (key ? '<span class="u">XNT</span>' : '') + '</div>' +
             (key ? '<div class="sub"><b>' + atLeast(m.v) + '</b> of ' + n + ' validators at or above</div>' : '') +
           '</div>';
