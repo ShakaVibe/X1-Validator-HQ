@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-20T18:03:17.848Z",
+  "lastUpdated": "2026-11-20T20:03:07.740Z",
   "totalNodes": 336,
   "totalLocations": 332,
   "locations": {
@@ -1136,13 +1136,6 @@
       "city": "Los Angeles",
       "lat": 34.0549,
       "lon": -118.243
-    },
-    "69.11.226.131": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Appleton",
-      "lat": 44.3456,
-      "lon": -88.4343
     },
     "51.222.105.217": {
       "country": "Canada",
@@ -2326,17 +2319,16 @@
       "city": "Frankfurt am Main",
       "lat": 50.097,
       "lon": 8.63004
+    },
+    "69.11.227.38": {
+      "country": "United States",
+      "countryCode": "US",
+      "city": "Green Bay",
+      "lat": 44.482,
+      "lon": -88.0185
     }
   },
   "countries": {
-    "PL": {
-      "name": "Poland",
-      "count": 48
-    },
-    "FI": {
-      "name": "Finland",
-      "count": 52
-    },
     "FR": {
       "name": "France",
       "count": 24
@@ -2344,6 +2336,22 @@
     "US": {
       "name": "United States",
       "count": 140
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 15
+    },
+    "FI": {
+      "name": "Finland",
+      "count": 52
+    },
+    "PL": {
+      "name": "Poland",
+      "count": 48
     },
     "DE": {
       "name": "Germany",
@@ -2360,14 +2368,6 @@
     "GB": {
       "name": "United Kingdom",
       "count": 3
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 15
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
     }
   }
 }
