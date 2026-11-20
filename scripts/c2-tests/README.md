@@ -189,6 +189,17 @@ No usable snapshot (missing, 8 days old, 20 validators): the banner says so. Han
 snapshot appears after 12 s. RPC fine: no banner. 37 checks, about 95 s (it waits for the real
 timers; the sections run side by side).
 
+**Terminal self-stake percentiles (2026-11-20)** — `pctSectionHtml` in `js/terminal.js`:
+
+    node scripts/c2-tests/pct-strip-test.js "$PWD"
+
+The distribution strip and the seven value cells, checked against an independent calculation over the
+served `data/terminal.json` / `data/delegation.json`: percentile values, one dot per non-X1 validator,
+P85 as the only key metric (cell, marker, line), the Program minimum line (lamports → XNT) and the
+header facts, Data Center diamonds. Without `delegation.json`: no minimum line, nothing else lost.
+Snapshot arriving late: the section is redrawn with the line. A hostile validator name stays text.
+375 px: no overflow, pills hidden, 2 columns. 28 checks.
+
 **Base rate (audit #9, 2026-11-18)** — `validatorBaseRatePct` / `networkBaseRatePct` in `js/core.js`:
 
     node scripts/c2-tests/base-rate-test.js "$PWD"

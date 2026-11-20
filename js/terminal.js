@@ -378,6 +378,109 @@
         };
       }
 
+      // ── Self-stake percentiles: distribution strip ────
+      // One dot per non-X1 validator on a 0 … max scale, the percentiles as
+      // markers, the Delegation Program minimum (from data/delegation.json) as
+      // a gold line and the visitor's Data Center validators as diamonds; the
+      // values in a row of cells underneath. P85 is the key metric (the one
+      // the owner follows for delegation) and is highlighted in both places.
+      // Plain HTML with % positions, so it needs no resize handling.
+      const PCT_KEY = 'P85';
+      function pctSectionHtml(agg, pct) {
+        const list = agg.nonX1
+          .map(r => ({ x: Number(r.b.sActive) / 1e9, vote: r.v.votePubkey, name: r.v.name || '' }))
+          .sort((a, b) => a.x - b.x);
+        const n = list.length;
+        const max = n ? list[n - 1].x : 0;
+        const cfg = window.delegationConfig || null;
+        const min = cfg && Number(cfg.minSelfStake) > 0 ? Number(cfg.minSelfStake) / 1e9 : null;   // lamports → XNT
+        const atLeast = v => list.filter(o => o.x >= v - 1e-6).length;
+        const marks = [
+          { k: 'P50', v: pct.p50, cap: 'median',  c: '#a9d4ff' },
+          { k: 'P75', v: pct.p75, cap: 'top 25%', c: '#4da6ff' },
+          { k: 'P85', v: pct.p85, cap: 'top 15%', c: '#00d4ff' },
+          { k: 'P90', v: pct.p90, cap: 'top 10%', c: '#2ab8ff' },
+          { k: 'P95', v: pct.p95, cap: 'top 5%',  c: '#6ee7ff' },
+          { k: 'P99', v: pct.p99, cap: 'top 1%',  c: '#c39bff' },
+          { k: 'MAX', v: max,     cap: 'largest', c: '#ffffff' },
+        ];
+        const exact = v => num(v, 2) + ' XNT';
+        const facts =
+          '<span class="vt-fact"><b>' + n + '</b> validators</span>' +
+          (min != null
+            ? '<span class="vt-fact gold"><b>' + list.filter(o => o.x >= min && o.x < min + 1000).length + '</b> at ' +
+                num(min / 1000, 1) + '–' + num((min + 1000) / 1000, 1) + 'k (the minimum)</span>' +
+              '<span class="vt-fact"><b>' + list.filter(o => o.x < min).length + '</b> below it</span>'
+            : '');
+
+        const cells = marks.map(m => {
+          const key = m.k === PCT_KEY;
+          return '<div class="vt-pcell' + (key ? ' is-key' : '') + '" style="--c:' + m.c + '" title="' + esc(m.k + ' · ' + exact(m.v)) + '">' +
+            '<div class="top"><span class="vt-ppill">' + m.k + '</span><span class="cap">' + m.cap + '</span>' +
+              (key ? '<span class="vt-keytag">Key metric</span>' : '') + '</div>' +
+            '<div class="v">' + num(m.v, 0) + (key ? '<span class="u">XNT</span>' : '') + '</div>' +
+            (key ? '<div class="sub"><b>' + atLeast(m.v) + '</b> of ' + n + ' validators at or above</div>' : '') +
+          '</div>';
+        }).join('');
+
+        if (!(max > 0)) {
+          return '<section class="vt-pct" id="vtPct"><div class="vt-pct-head"><div><div class="t">Self-stake percentiles</div>' +
+            '<div class="s">non-X1 validators · XNT</div></div></div><div class="vt-pcells">' + cells + '</div></section>';
+        }
+
+        const scaleMax = max * 1.02;
+        const L = v => Math.max(0, Math.min(100, v / scaleMax * 100)).toFixed(3) + '%';
+        // Pills: the key one first on the lower row, then left to right; a pill
+        // that would sit within 6 % of the scale of one already on the lower
+        // row goes up a row.
+        const order = marks.slice().sort((a, b) => (b.k === PCT_KEY) - (a.k === PCT_KEY) || a.v - b.v);
+        const lower = [];
+        const pills = order.map(m => {
+          const p = m.v / scaleMax * 100;
+          const up = m.k !== PCT_KEY && lower.some(q => Math.abs(q - p) < 6);
+          if (!up) lower.push(p);
+          return '<span class="vt-smark' + (up ? ' up' : '') + (m.k === PCT_KEY ? ' is-key' : '') + '" style="left:' + L(m.v) + ';--c:' + m.c + '">' + m.k + '</span>';
+        }).join('');
+        const lines = marks.map(m =>
+          '<i class="vt-sline' + (m.k === PCT_KEY ? ' is-key' : '') + '" style="left:' + L(m.v) + ';--c:' + m.c + '"></i>').join('');
+        // Dots: horizontal = self-stake; vertical = a fixed scatter from the vote key (stable between renders).
+        const dots = list.map(o => {
+          let h = 0; for (let i = 0; i < o.vote.length; i++) h = (h * 31 + o.vote.charCodeAt(i)) >>> 0;
+          const y = 12 + (h % 1000) / 1000 * 76;
+          return '<i class="vt-sdot' + (min != null && o.x < min ? ' low' : '') + '" style="left:' + L(o.x) + ';top:' + y.toFixed(1) + '%"' +
+            ' title="' + esc((o.name || o.vote.slice(0, 8)) + ' · ' + exact(o.x)) + '"></i>';
+        }).join('');
+        const mine = typeof myPortfolio !== 'undefined' && Array.isArray(myPortfolio) ? new Set(myPortfolio) : new Set();
+        const diamonds = list.filter(o => mine.has(o.vote) && o.x > 0).map(o =>
+          '<i class="vt-sme" style="left:' + L(o.x) + '" title="' + esc((o.name || o.vote.slice(0, 8)) + ' · ' + exact(o.x)) + '"></i>').join('');
+        const raw = scaleMax / 4, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+        const step = [1, 2, 2.5, 5, 10].map(f => f * mag).find(s => s >= raw);
+        const ticks = [];
+        for (let t = 0; t <= scaleMax; t += step) {
+          if (min != null && Math.abs(t - min) / scaleMax < 0.06) continue;   // the minimum has its own label
+          ticks.push('<span class="vt-stick' + (t === 0 ? ' zero' : '') + '" style="left:' + L(t) + '">' + (t === 0 ? '0' : num(t / 1000, 1) + 'k') + '</span>');
+        }
+        const minHtml = min != null
+          ? '<i class="vt-smin" style="left:' + L(min) + '"></i>'
+          : '';
+        const legend =
+          '<span><i class="lg-dot"></i>one validator</span>' +
+          (min != null ? '<span><i class="lg-min"></i>Delegation Program minimum</span>' : '') +
+          (diamonds ? '<span><i class="lg-me"></i>your validators</span>' : '');
+
+        return '<section class="vt-pct" id="vtPct" aria-label="Self-stake percentiles">' +
+          '<div class="vt-pct-head"><div><div class="t">Self-stake percentiles</div><div class="s">non-X1 validators · XNT</div></div>' +
+            '<div class="vt-facts">' + facts + '</div></div>' +
+          '<div class="vt-strip" aria-hidden="true">' +
+            '<div class="vt-spills">' + pills + '</div>' +
+            '<div class="vt-sband">' + dots + lines + minHtml + '</div>' +
+            '<div class="vt-sunder">' + diamonds + ticks.join('') + (min != null ? '<span class="vt-sminlbl" style="left:' + L(min) + '">' + num(min, 0) + ' minimum</span>' : '') + '</div>' +
+          '</div>' +
+          '<div class="vt-slegend">' + legend + '</div>' +
+          '<div class="vt-pcells">' + cells + '</div>' +
+        '</section>';
+      }
+
       // ── Render full body ──────────────────────────────
       function render() {
         if (!_computed) return;
@@ -495,17 +598,7 @@
             '</div>' +
           '</div>';
 
-        const pctHtml =
-          '<div class="vt-pctrow">' +
-            '<div class="head">SELF-STAKE PERCENTILES (NON-X1, XNT)</div>' +
-            '<div><div class="lbl">P50</div><div class="v">' + num(pct.p50, 2) + '</div></div>' +
-            '<div><div class="lbl">P75</div><div class="v hi">' + num(pct.p75, 2) + '</div></div>' +
-            '<div><div class="lbl">P85</div><div class="v hi">' + num(pct.p85, 2) + '</div></div>' +
-            '<div><div class="lbl">P90</div><div class="v hi">' + num(pct.p90, 2) + '</div></div>' +
-            '<div><div class="lbl">P95</div><div class="v">' + num(pct.p95, 2) + '</div></div>' +
-            '<div><div class="lbl">P99</div><div class="v">' + num(pct.p99, 2) + '</div></div>' +
-            '<div><div class="lbl">Max</div><div class="v">' + num(agg.maxSelf, 2) + '</div></div>' +
-          '</div>';
+        const pctHtml = pctSectionHtml(agg, pct);
 
         const toolsHtml =
           '<div class="vt-tools" id="vtTools">' +
@@ -572,6 +665,16 @@
         document.getElementById('vtHeadSlot').innerHTML = headHtml;
         document.getElementById('vtContent').innerHTML =
           kpiHtml + pctHtml + toolsHtml + tableHtml + footerHtml;
+
+        // The Program minimum comes from data/delegation.json; if it was not in
+        // yet, redraw only the percentile section when it arrives.
+        if (!window.delegationConfig && typeof window.delegLoad === 'function') {
+          const forComputed = _computed;
+          window.delegLoad().then(() => {
+            const el = document.getElementById('vtPct');
+            if (el && _computed === forComputed && window.delegationConfig) el.outerHTML = pctSectionHtml(agg, pct);
+          }).catch(() => { /* no minimum line, nothing else changes */ });
+        }
 
         wireUp();
       }

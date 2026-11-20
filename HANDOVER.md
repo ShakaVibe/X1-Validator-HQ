@@ -2195,3 +2195,25 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   15 / 1.01B, the card with "—" for the balance and the published skip rate and score; with the
   stub switched off the site's own retry brought live data back, the banner turned green and its
   Reload button restored the live card.
+
+### 2026-11-20 — Session 19: Terminal self-stake percentiles redesign
+- Start checks (read-only), all fine: tree level with origin/main after `git pull --rebase` (delete permission
+  granted); since session 18 the scores and terminal-snapshot bots each ran 57 times, never more than 60 min
+  apart, and every run published all its files (the data check held nothing back); alerts bot committing
+  state; live site: 350 validators, no outage banner, console clean. Open issues not checked (this cloud
+  session has no GitHub API access to the repo).
+- Shaka: the Terminal's "Self-stake percentiles" box is bland, P75/P85 barely readable. Four mockups from the
+  real snapshot (A distribution strip, B ladder, C median hero + tiles, D histogram; PNG + HTML in chat).
+  Shaka chose **A** and asked for emphasis on **P85 — the main metric he follows for delegation**.
+- Built (`pctSectionHtml` in `js/terminal.js`, CSS block "Self-stake percentiles — distribution strip" in
+  `css/site.css`, the old `.vt-pctrow` rules removed): one dot per non-X1 validator on a 0 … max scale (title =
+  name + exact XNT; muted below the minimum), percentile markers, the Delegation Program minimum as a gold line
+  (`window.delegationConfig.minSelfStake`, **lamports** — the first draft read it as XNT), the visitor's Data
+  Center validators as white diamonds, header facts (338 validators · 124 at 20–21k · 67 below it), seven
+  cells with whole-XNT values (exact value in the title). P85 = `PCT_KEY`: solid marker + glowing line, lit cell
+  with a "Key metric" tag, larger value and "51 of 338 validators at or above". Percent positions, no resize
+  code. If the delegation snapshot is not in yet, only this section is redrawn when it arrives. Phones: pills
+  hidden (the cells carry the labels), minimum label right of the line, cells in 2 columns.
+- New suite `scripts/c2-tests/pct-strip-test.js` (28 checks, in `run-all.js`): values against an independent
+  calculation, P85 the only key, minimum line position, no/late delegation snapshot, hostile name, 375 px.
+  Fails 3 checks if `PCT_KEY` is changed. 20 of 20 suites green in the cloud clone, CSP walk 0 violations.
