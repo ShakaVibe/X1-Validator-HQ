@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-20T16:03:10.848Z",
-  "totalNodes": 339,
-  "totalLocations": 335,
+  "lastUpdated": "2026-11-20T18:03:17.848Z",
+  "totalNodes": 336,
+  "totalLocations": 332,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -58,13 +58,6 @@
       "city": "Manchester",
       "lat": 53.4809,
       "lon": -2.2374
-    },
-    "66.45.235.250": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
     },
     "74.50.94.66": {
       "country": "United States",
@@ -2306,26 +2299,12 @@
       "lat": 40.7862,
       "lon": -74.0749
     },
-    "162.245.187.106": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Secaucus",
-      "lat": 40.7862,
-      "lon": -74.0743
-    },
     "185.246.85.53": {
       "country": "France",
       "countryCode": "FR",
       "city": "Paris",
       "lat": 48.8575,
       "lon": 2.35138
-    },
-    "169.58.110.30": {
-      "country": "France",
-      "countryCode": "FR",
-      "city": "Lauterbourg",
-      "lat": 48.9742,
-      "lon": 8.1851
     },
     "178.162.232.145": {
       "country": "Germany",
@@ -2350,29 +2329,21 @@
     }
   },
   "countries": {
-    "FR": {
-      "name": "France",
-      "count": 25
-    },
-    "US": {
-      "name": "United States",
-      "count": 142
-    },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 15
+    "PL": {
+      "name": "Poland",
+      "count": 48
     },
     "FI": {
       "name": "Finland",
       "count": 52
     },
-    "PL": {
-      "name": "Poland",
-      "count": 48
+    "FR": {
+      "name": "France",
+      "count": 24
+    },
+    "US": {
+      "name": "United States",
+      "count": 140
     },
     "DE": {
       "name": "Germany",
@@ -2389,6 +2360,14 @@
     "GB": {
       "name": "United Kingdom",
       "count": 3
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 15
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     }
   }
 }
