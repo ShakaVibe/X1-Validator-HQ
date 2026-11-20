@@ -2226,3 +2226,10 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   mockups (gradient frame / lifted card / target brackets / spotlight) → **A, gradient frame**: a 1.5 px
   cyan → blue → violet ring inside the cell (masked gradient on `::before`, inset 5 px), soft light from the
   top, solid glowing P85 pill, value 1.5rem. Cell pills 0.86rem. Push 2 = that + the test fix (29 checks).
+- Push 2 (`c86d2cc`) CI failed too; Shaka sent the log: `pct-strip-test` "no horizontal overflow — 378" at
+  375 px. Cause NOT the new section: the Terminal's status filter (`#vtStatusFilter`, ALL · CURRENT · DELINQ ·
+  X1 LABS · NON-X1) does not wrap, and with Ubuntu's fallback font (DejaVu Sans; Google Fonts are blocked in
+  the tests) it is 3 px wider than the phone. Reproduced here by making DejaVu Sans the default font
+  (fontconfig alias, Inter rejected): 378 exactly. Fix: under 560 px the filter wraps (flex-wrap, buttons
+  flex). Checked at 320/360/375/414 px with both fonts: no overflow. 20 of 20 suites with DejaVu, `--jobs 2`.
+  **Lesson: to reproduce a layout failure from CI, render with the runner's fonts (DejaVu), not the sandbox's.**

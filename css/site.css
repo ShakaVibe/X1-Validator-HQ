@@ -11798,6 +11798,11 @@
     }
     @media (max-width: 560px) {
       .vt-pct { margin-left: 1rem; margin-right: 1rem; }
+      /* Status filter (ALL · CURRENT · DELINQ · X1 LABS · NON-X1): wraps instead of
+         pushing the page sideways; with a wider fallback font it was 3 px over at
+         375 px (CI, 2026-11-20). */
+      .vt-tools .seg { display: flex; flex-wrap: wrap; max-width: 100%; }
+      .vt-tools .seg button { flex: 1 1 auto; padding: 0.35rem 0.55rem; }
       .vt-pct-head, .vt-strip, .vt-slegend { padding-left: 0.9rem; padding-right: 0.9rem; }
       .vt-spills { height: 10px; }
       .vt-smark { display: none; }          /* the cells below carry the labels on phones */
