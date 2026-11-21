@@ -16,8 +16,11 @@ name: Heartbeat (keeps the hourly bots hourly)
 # The cron below is only a SAFETY NET: whenever GitHub does get around to
 # firing it, the guard exits immediately if the chain is alive, and restarts
 # the chain if it died (failed dispatch, GitHub incident, someone cancelled a
-# run). The bots keep their own cron too — a duplicate run is harmless (each
-# has a concurrency group and takes ~1 minute).
+# run). The bots keep their own cron too — a duplicate run is harmless: each
+# has a concurrency group (the second run waits ~1 minute) and checks out the
+# newest commit (ref: github.ref), so it builds on the first run's data. Until
+# 2026-11-21 it checked out the commit it was queued with, and a duplicate that
+# had to wait could not push (scores run #2604).
 #
 # Cost: one runner sleeping ~58 min per hour. The repo is public, so Actions
 # minutes are free. A job may run up to 6 h; ours is capped at 75 min.

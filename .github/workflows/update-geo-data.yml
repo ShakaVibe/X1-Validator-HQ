@@ -20,10 +20,14 @@ jobs:
       # Audit 2026-11-17 #22: Node 20 is end-of-life. This bot is the first to move to Node 22 and to
       # actions pinned by commit (checkout v7.0.1, setup-node v7.1.0, looked up 2026-11-18); the other
       # bots follow once a run of this one has pushed its commit with them.
+      # ref: the newest commit of the branch when the job starts. Without it, checkout uses the commit
+      # the run was created with, so a run that waited behind another one (concurrency group) or a
+      # re-run builds on old data and cannot push it (scores run #2604, 2026-11-21).
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.ref }}
       
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
@@ -49,6 +53,15 @@ jobs:
           # non-fast-forward push.
           for i in 1 2 3 4 5; do
             git pull --rebase origin "${GITHUB_REF_NAME}" && git push && exit 0
+            # A conflict means this file changed on main after this run's checkout. Retrying
+            # cannot fix that, and a half-done rebase makes every later pull fail ("you have
+            # unmerged files"), so undo it and stop with a clear message.
+            CONFLICT=$(git diff --name-only --diff-filter=U | tr '\n' ' ')
+            git rebase --abort 2>/dev/null || true
+            if [ -n "$CONFLICT" ]; then
+              echo "::error::${CONFLICT}changed on main while this run was working. Nothing was pushed; the next run publishes fresh data."
+              exit 1
+            fi
             echo "push attempt $i failed; retrying in 10s"
             sleep 10
           done

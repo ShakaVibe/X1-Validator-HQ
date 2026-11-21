@@ -62,7 +62,8 @@
 >    `git apply --check -R` confirms the folder matches it (used for push 14). A patch sent as a
 >    chat file is not on his disk until he saves it — prefer writing it into `Claude outputs/` once
 >    the Mac is back. If a bot ever cannot push after the Node 22 move, revert that workflow's three
->    lines to `actions/checkout@v4`, `actions/setup-node@v4`, `node-version: '20'`.
+>    lines to `actions/checkout@v4`, `actions/setup-node@v4`, `node-version: '20'`. (A push that fails
+>    with "CONFLICT … Merge conflict in data/…" is NOT that: see session 20, queued duplicate runs.)
 > B. **Privacy follow-up (since 2026-09-25):** a GitHub Support ticket asking for a GC of the dangling
 >    pre-rewrite commits is pending; one of them still returned **200** on 2026-11-17. Its SHA is kept only
 >    in the private audit file now (audit #2 has the check and the re-create-the-repo fallback). Still on
@@ -118,6 +119,8 @@
 >    2026-11-17 (item C).
 >    Open "[bot] … is failing" issues #1–#3 are transient push races (latest 2026-11-14, all bots green
 >    since); Shaka can close them. Audit #14: make them close themselves on the next green run.
+>    (2026-11-21: those "push races" were most likely a duplicate run that waited behind another and
+>    built on old data; fixed with `ref:` on the bots' checkout, session 20.)
 > 3. Under-the-hood queue: ② split `index.html` — DONE 2026-09-16 (see §3 for the file map);
 >    ③ `data-action` dispatcher + strict CSP — DONE 2026-09-25; next: ④ single RPC transport (C3/C4).
 >    Rule for the split files: load-time code in one file must not call into a later file (they are
@@ -2233,3 +2236,35 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   (fontconfig alias, Inter rejected): 378 exactly. Fix: under 560 px the filter wraps (flex-wrap, buttons
   flex). Checked at 320/360/375/414 px with both fonts: no overflow. 20 of 20 suites with DejaVu, `--jobs 2`.
   **Lesson: to reproduce a layout failure from CI, render with the runner's fonts (DejaVu), not the sandbox's.**
+
+### 2026-11-21 — Session 20: scores run #2604 failed to push (queued duplicate on old data)
+- Shaka sent the run: scheduled run #2604 of "Update canonical validator scores" failed in "Commit updated
+  data" with `CONFLICT (content): Merge conflict in data/scores.json`, then four times "Pulling is not
+  possible because you have unmerged files" and "Could not push after 5 attempts". The data check had
+  passed. His re-run (attempt 2) failed the same way.
+- Cause: GitHub's own cron for the scores bot fired at about 23:03 UTC, while the heartbeat's run #2603
+  was still going. The concurrency group made #2604 wait, but `actions/checkout` without `ref:` checks
+  out the commit the run was created with (`github.sha`, here `476fc632`; read in checkout v7.0.1's
+  `src/input-helper.ts`), not the newest one. #2603 published `40b13d1a` at 23:03:55; #2604 then built
+  new scores on the old copy and could not rebase them: `scores.json` and `history.json` are one line
+  each, so any two builds conflict. The push loop never undid the stopped rebase, so attempts 2–5
+  failed at once. A re-run reuses the original commit, so re-running such a run can never work.
+- No harm to the site: #2603's scores were live. Of the 25 scores runs on 11-21, #2604 was the only
+  failure; the two other scheduled runs that day (#2588, #2597) came at a safe moment and succeeded.
+  The terminal-snapshot and geo bots have the same setup (they publish duplicates too, e.g. geo at
+  20:35 UTC); the alerts bot would start from an old state file if a queued cron run ever started.
+- Fix (workflows only): `ref: ${{ github.ref }}` on the checkout of the scores, terminal-snapshot,
+  geo and alerts workflows (the branch tip when the job starts, also for re-runs). In the three
+  data bots' push loops a conflict now undoes the rebase and stops with
+  `::error::<files> changed on main while this run was working…` (shown as the run's annotation);
+  an ordinary push race still retries. The "a duplicate run is harmless" comments in
+  `heartbeat.yml` and `alerts.yml` now say why it is.
+- Tested in the cloud: #2604's log reproduced line for line from the real files (checkout pinned to
+  `476fc632`, origin at `40b13d1a` + `03099db5`, the workflow's own script); with the branch-tip
+  checkout the same script publishes. All three bots, old vs new step: stale checkout → old step =
+  #2604 (left mid-rebase), new step = one clear error, nothing half-done; fresh checkout → both
+  publish; push race on another file → one retry, published. actionlint 1.7.12 + shellcheck clean.
+- Live check after the push: the next time GitHub's cron lands during a heartbeat run, that bot shows
+  a second green run and a second commit minutes after the first, instead of a failure.
+- Lesson: a concurrency group makes a second run wait; it does not make it start from the newest
+  commit. Every workflow that commits generated files and can be queued needs `ref:` on its checkout.

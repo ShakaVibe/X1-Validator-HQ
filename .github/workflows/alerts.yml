@@ -12,7 +12,9 @@ name: Telegram alerts bot
 # loops never poll Telegram at the same time (a second run just waits, and only
 # one waiting run is kept). The cron is a SAFETY NET only — if the chain ever
 # dies, the next cron firing restarts it (or queues behind a live one, which is
-# harmless: it starts when that one ends).
+# harmless: it starts when that one ends, and from the newest commit — the
+# checkout has ref: github.ref — so it loads the latest state file, not the
+# one from when it was queued).
 #
 # STATE
 # Subscriptions + last-seen validator state live in data/alerts-state.enc,
@@ -58,8 +60,12 @@ jobs:
     steps:
       # Node 22 and actions pinned by commit (checkout v7.0.1, setup-node v7.1.0, looked up 2026-11-18;
       # audit #22). The geo bot ran this way first: two runs pushed their commits on 2026-11-18.
+      # ref: the newest commit of the branch when the job starts (not the one the run was created
+      # with), so a run that waited behind a live loop starts from the latest data/alerts-state.enc.
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.ref }}
 
       - name: Setup Node
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
