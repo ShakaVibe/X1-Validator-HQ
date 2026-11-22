@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-22T10:03:05.980Z",
+  "lastUpdated": "2026-11-22T12:03:14.984Z",
   "totalNodes": 335,
-  "totalLocations": 330,
+  "totalLocations": 331,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -2312,6 +2312,13 @@
       "city": "Ypsilanti",
       "lat": 42.244,
       "lon": -83.5823
+    },
+    "95.111.253.127": {
+      "country": "France",
+      "countryCode": "FR",
+      "city": "Lauterbourg",
+      "lat": 48.9742,
+      "lon": 8.1851
     }
   },
   "countries": {
@@ -2319,41 +2326,41 @@
       "name": "United States",
       "count": 141
     },
-    "PL": {
-      "name": "Poland",
-      "count": 46
+    "DE": {
+      "name": "Germany",
+      "count": 28
     },
     "FI": {
       "name": "Finland",
       "count": 52
     },
+    "CA": {
+      "name": "Canada",
+      "count": 15
+    },
     "FR": {
       "name": "France",
-      "count": 23
+      "count": 24
     },
-    "DE": {
-      "name": "Germany",
-      "count": 28
+    "PL": {
+      "name": "Poland",
+      "count": 46
     },
     "NL": {
       "name": "The Netherlands",
-      "count": 16
-    },
-    "SE": {
-      "name": "Sweden",
-      "count": 4
+      "count": 15
     },
     "GB": {
       "name": "United Kingdom",
       "count": 3
     },
-    "CA": {
-      "name": "Canada",
-      "count": 15
-    },
     "KE": {
       "name": "Kenya",
       "count": 7
+    },
+    "SE": {
+      "name": "Sweden",
+      "count": 4
     }
   }
 }
