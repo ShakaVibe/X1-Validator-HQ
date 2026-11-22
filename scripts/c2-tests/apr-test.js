@@ -57,8 +57,8 @@ function refRates(validators) {            // network gross rate per ledger colu
   const have = ref.map((x, i) => x == null ? -1 : i).filter(i => i >= 0);
   return ref.map((x, i) => x != null ? x : (have.length ? ref[have.reduce((b, j) => Math.abs(j - i) < Math.abs(b - i) ? j : b, have[0])] : null));
 }
-function cleanRows(e, n, ref, fbStake, fbComm) {   // newest-first net rates of the usable epochs + how many were left out
-  const rows = []; let dropped = 0;
+function cleanRows(e, n, ref, fbStake, fbComm) {   // newest-first net rates of the usable epochs (+ their ledger columns) + how many were left out
+  const rows = [], idx = []; let dropped = 0;
   for (let i = NE - 1; i >= 0 && rows.length < n; i--) {
     const v = e.v[i]; if (v == null) continue;
     const c = (e.c && e.c[i] != null) ? e.c[i] : fbComm, rec = !!(e.st && e.st[i] != null), st = rec ? e.st[i] : fbStake;
@@ -70,9 +70,9 @@ function cleanRows(e, n, ref, fbStake, fbComm) {   // newest-first net rates of 
       if (ratio > RATE_MAX) { dropped++; continue; }
       if (ratio < RATE_MIN && (!rec || (nb != null && (nb === st || Math.abs(st / nb - 1) > STEADY)))) { dropped++; continue; }
     }
-    rows.push(g * (1 - c / 100));
+    rows.push(g * (1 - c / 100)); idx.push(i);
   }
-  return { rows, dropped };
+  return { rows, idx, dropped };
 }
 const aprOf = (rows) => rows.reduce((a, b) => a + b, 0) / rows.length * EPY * 100;
 const ref0 = refRates(ledger.validators);
@@ -225,13 +225,19 @@ const check = (ok, label, extra) => { console.log((ok ? '  ✓ ' : '  ✗ ') + l
   const got = Object.fromEntries(order.map((k, i) => [k, sy[i]]));
   const want = Object.fromEntries(order.map(k => [k, cleanRows(synth[SY[k]], 30, ref1, S, 10)]));
   const cleanApr = aprOf(want.clean.rows);
+  // "Stays at the clean rate" = the clean validator's APR over the SAME epochs this one kept. Leaving
+  // cells out reaches further back for the 30, and the network rate is not flat over the window:
+  // comparing with the clean 30 broke on 2026-11-21 when the ledger window moved (CI #13).
+  const cleanAll = cleanRows(synth[SY.clean], NE, ref1, S, 10);
+  const cleanAt = Object.fromEntries(cleanAll.idx.map((i, j) => [i, cleanAll.rows[j]]));
+  const cleanSame = (k) => aprOf(want[k].idx.map(i => cleanAt[i]));
   const matches = (k) => Math.abs(parseFloat(got[k].value) - aprOf(want[k].rows)) < 0.006 && got[k].dropped === want[k].dropped && got[k].epochs === want[k].rows.length;
   check(matches('clean') && got.clean.dropped === 0 && got.clean.epochs === 30, `steady stake → ${got.clean.value}, 30 epochs, nothing left out`, got.clean);
-  check(matches('spike') && got.spike.dropped === 1 && Math.abs(parseFloat(got.spike.value) - cleanApr) < 0.05, `one cell recorded as 1 XNT → left out, tile ${got.spike.value} stays at the clean rate (${cleanApr.toFixed(2)}%)`, { got: got.spike, want: aprOf(want.spike.rows) });
-  check(matches('ramp') && got.ramp.dropped === 5 && Math.abs(parseFloat(got.ramp.value) - cleanApr) < 0.05, `stake ramp shifted by one epoch → 5 understated cells left out, tile ${got.ramp.value}`, { got: got.ramp, want: aprOf(want.ramp.rows) });
+  check(matches('spike') && got.spike.dropped === 1 && Math.abs(parseFloat(got.spike.value) - cleanSame('spike')) < 0.05, `one cell recorded as 1 XNT → left out, tile ${got.spike.value} stays at the clean rate (${cleanSame('spike').toFixed(2)}%)`, { got: got.spike, want: aprOf(want.spike.rows), clean: cleanSame('spike') });
+  check(matches('ramp') && got.ramp.dropped === 5 && Math.abs(parseFloat(got.ramp.value) - cleanSame('ramp')) < 0.05, `stake ramp shifted by one epoch → 5 understated cells left out, tile ${got.ramp.value}`, { got: got.ramp, want: aprOf(want.ramp.rows), clean: cleanSame('ramp') });
   check(matches('weak') && got.weak.dropped === 0 && parseFloat(got.weak.value) < cleanApr - 0.05, `a weak epoch on a steady stake is kept (tile ${got.weak.value} < ${cleanApr.toFixed(2)}%)`, { got: got.weak, want: aprOf(want.weak.rows) });
-  check(matches('zero') && got.zero.dropped === 1 && Math.abs(parseFloat(got.zero.value) - cleanApr) < 0.05, `0 reward at 10% commission → left out, tile ${got.zero.value}`, { got: got.zero, want: aprOf(want.zero.rows) });
-  check(matches('stamp') && got.stamp.dropped === 12 && got.stamp.epochs === 24 && Math.abs(parseFloat(got.stamp.value) - cleanApr) < 0.05, `re-fetch stamp (12 identical, larger stakes) → left out, 24 epochs, tile ${got.stamp.value}`, { got: got.stamp, want: aprOf(want.stamp.rows) });
+  check(matches('zero') && got.zero.dropped === 1 && Math.abs(parseFloat(got.zero.value) - cleanSame('zero')) < 0.05, `0 reward at 10% commission → left out, tile ${got.zero.value}`, { got: got.zero, want: aprOf(want.zero.rows), clean: cleanSame('zero') });
+  check(matches('stamp') && got.stamp.dropped === 12 && got.stamp.epochs === 24 && Math.abs(parseFloat(got.stamp.value) - cleanSame('stamp')) < 0.05, `re-fetch stamp (12 identical, larger stakes) → left out, 24 epochs, tile ${got.stamp.value}`, { got: got.stamp, want: aprOf(want.stamp.rows), clean: cleanSame('stamp') });
   check(got.bad.value === '—' && /not enough clean epochs/.test(got.bad.sub) && got.bad.dropped === NE - 2, 'fewer than 3 clean epochs → — · stake changed · not enough clean epochs yet', got.bad);
   const modalText = async (vote) => {
     await page.click('.apr-section[data-vote="' + vote + '"] [data-action="apr-details"]'); await page.waitForTimeout(300);

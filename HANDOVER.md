@@ -2268,3 +2268,14 @@ Numbers are the audit's finding numbers; the phase lists further down are older 
   a second green run and a second commit minutes after the first, instead of a failure.
 - Lesson: a concurrency group makes a second run wait; it does not make it start from the newest
   commit. Every workflow that commits generated files and can be queued needs `ref:` on its checkout.
+- Pushed by Shaka as `5cb5a2f3`; **CI #13 failed in `apr-test`** ("re-fetch stamp … tile 6.67%"). Not the
+  push (workflows only): the same code passes with the ledger of the last green CI (`9c6435f0`, epochs
+  414–449) and fails with today's (415–450). The synthetic "stamp" validator keeps 24 epochs, the
+  "clean" one 30, and the check wanted both within 0.05 pts — true only while the network rate is
+  flat over the six extra epochs. Now each synthetic validator is compared with the clean one over
+  the SAME epochs (`cleanSame`, `cleanRows` returns the ledger columns too). 46/46 with today's
+  ledger and with the 414–449 one. Ledgers older than 48 h fail 3 checks with the old and the new
+  test alike (the site ignores a stale ledger, by design) — not a test input.
+- Lesson: CI runs only on human pushes while the bots replace the data hourly, so a test that reads
+  published data can go red with no code change. Compare like with like (same epochs), not against a
+  fixed tolerance across a moving window.
