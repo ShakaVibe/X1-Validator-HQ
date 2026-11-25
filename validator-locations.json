@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-25T04:03:19.543Z",
-  "totalNodes": 337,
-  "totalLocations": 334,
+  "lastUpdated": "2026-11-25T06:03:08.926Z",
+  "totalNodes": 338,
+  "totalLocations": 335,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -2340,6 +2340,13 @@
       "city": "Astoria",
       "lat": 46.1978,
       "lon": -123.8294
+    },
+    "188.117.169.83": {
+      "country": "Poland",
+      "countryCode": "PL",
+      "city": "Warsaw",
+      "lat": 52.2297,
+      "lon": 21.0122
     }
   },
   "countries": {
@@ -2365,7 +2372,7 @@
     },
     "PL": {
       "name": "Poland",
-      "count": 46
+      "count": 47
     },
     "DE": {
       "name": "Germany",
