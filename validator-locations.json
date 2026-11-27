@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-27T00:03:10.105Z",
-  "totalNodes": 334,
-  "totalLocations": 330,
+  "lastUpdated": "2026-11-27T02:03:08.681Z",
+  "totalNodes": 332,
+  "totalLocations": 328,
   "locations": {
     "135.181.139.140": {
       "country": "Finland",
@@ -198,13 +198,6 @@
       "city": "Secaucus",
       "lat": 40.7862,
       "lon": -74.0743
-    },
-    "149.50.101.138": {
-      "country": "Poland",
-      "countryCode": "PL",
-      "city": "Warsaw",
-      "lat": 52.2299,
-      "lon": 21.0093
     },
     "74.50.75.30": {
       "country": "United States",
@@ -1270,13 +1263,6 @@
       "lat": 40.7128,
       "lon": -74.006
     },
-    "192.154.104.234": {
-      "country": "United States",
-      "countryCode": "US",
-      "city": "Salt Lake City",
-      "lat": 40.7687,
-      "lon": -111.886
-    },
     "66.23.237.190": {
       "country": "United States",
       "countryCode": "US",
@@ -2315,29 +2301,21 @@
     }
   },
   "countries": {
-    "FR": {
-      "name": "France",
-      "count": 22
-    },
     "US": {
       "name": "United States",
-      "count": 142
+      "count": 141
     },
-    "KE": {
-      "name": "Kenya",
-      "count": 7
-    },
-    "CA": {
-      "name": "Canada",
-      "count": 15
+    "PL": {
+      "name": "Poland",
+      "count": 46
     },
     "FI": {
       "name": "Finland",
       "count": 52
     },
-    "PL": {
-      "name": "Poland",
-      "count": 47
+    "FR": {
+      "name": "France",
+      "count": 22
     },
     "DE": {
       "name": "Germany",
@@ -2354,6 +2332,14 @@
     "GB": {
       "name": "United Kingdom",
       "count": 3
+    },
+    "CA": {
+      "name": "Canada",
+      "count": 15
+    },
+    "KE": {
+      "name": "Kenya",
+      "count": 7
     }
   }
 }
